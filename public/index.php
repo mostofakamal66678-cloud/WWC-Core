@@ -1,2 +1,2 @@
 <?php
-// Silence is golden.
+require_once __DIR__ . '/feed.php';
