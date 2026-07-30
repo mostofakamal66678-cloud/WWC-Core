@@ -14,8 +14,11 @@ echo '
 <body>
 
 <div id="video-feed">
-    <h2>WWC Video Feed</h2>
-    <p>First Version Loading...</p>
+<video controls autoplay muted loop>
+    <source src="videos/demo.mp4" type="video/mp4">
+    আপনার ব্রাউজার ভিডিও সাপোর্ট করে না।
+</video>
+    
 </div>
 
 <script src="js/app.js"></script>
