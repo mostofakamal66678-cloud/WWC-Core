@@ -18,7 +18,15 @@ echo '
  <source src="videos/Video_২০২৬০৮০১_১২৪৮৪১.mp4" type="video/mp4">    
     আপনার ব্রাউজার ভিডিও সাপোর্ট করে না।
 </video>
+   
+   
     
+    <div class="actions">
+        <button>❤️</button>
+        <button>💬</button>
+        <button>↗️</button>
+    </div>
+</div> 
 </div>
 
 <script src="js/app.js"></script>
