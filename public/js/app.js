@@ -1,10 +1,8 @@
-// WWC Core JavaScript
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("WWC Video Feed Loaded");
 
-    const feed = document.getElementById("video-feed");
+document.addEventListener("DOMContentLoaded", () => {
+    const video = document.querySelector("video");
 
-    if (feed) {
-        feed.innerHTML = "<h2>WWC Video Feed Ready</h2><p>Next Step: Load Videos</p>";
+    if (video) {
+        video.play().catch(() => {});
     }
 });
