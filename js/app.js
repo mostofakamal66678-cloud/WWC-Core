@@ -1,9 +1,42 @@
+
+import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  increment,
+  arrayUnion
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+// ================================
+// 🔥 FIREBASE
+// ================================
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCgio17aPErF7d6juqIhn3yIMF6SW_t04",
+  authDomain: "world-wide-connect-62c87.firebaseapp.com",
+  projectId: "world-wide-connect-62c87",
+  storageBucket: "world-wide-connect-62c87.firebasestorage.app",
+  messagingSenderId: "93178453668",
+  appId: "1:93178453668:web:634f69070a082677445031",
+  measurementId: "G-R2L5YYXQPH"
+};
+
+const app = getApps().length
+  ? getApps()[0]
+  : initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+// ================================
+// 🎬 VIDEO
+// ================================
+
 const videos = document.querySelectorAll("video");
 let current = 0;
 
-// =====================
-// 🎥 ভিডিও চালু
-// =====================
 if (videos.length > 0) {
   videos[current].play().catch(() => {});
 }
@@ -27,21 +60,28 @@ document.addEventListener("wheel", (e) => {
   });
 });
 
-// =====================
-// ❤️ LIKE + সংখ্যা
-// =====================
+// ================================
+// ❤️ LIKE
+// ================================
+
 const buttons = document.querySelectorAll(
-  "button, [role='button'], a"
+  'button, [role="button"], a'
 );
 
 buttons.forEach((button) => {
   const text = button.textContent.trim();
 
-  if (text.includes("❤️") || text.toLowerCase().includes("like")) {
+  if (
+    text.includes("❤️") ||
+    text.includes("♥️") ||
+    text.toLowerCase().includes("like")
+  ) {
+    const likedKey = "wwc-liked";
+    const localLikeKey = "wwc-like-count";
 
-    let liked = localStorage.getItem("wwc-liked") === "true";
+    let liked = localStorage.getItem(likedKey) === "true";
     let likeCount = parseInt(
-      localStorage.getItem("wwc-like-count") || "0"
+      localStorage.getItem(localLikeKey) || "0"
     );
 
     function updateLike() {
@@ -54,7 +94,7 @@ buttons.forEach((button) => {
 
     updateLike();
 
-    button.addEventListener("click", (e) => {
+    button.addEventListener("click", async (e) => {
       e.preventDefault();
 
       if (!liked) {
@@ -62,58 +102,119 @@ buttons.forEach((button) => {
         likeCount++;
       } else {
         liked = false;
-        if (likeCount > 0) likeCount--;
+
+        if (likeCount > 0) {
+          likeCount--;
+        }
       }
 
-      localStorage.setItem("wwc-liked", liked);
-      localStorage.setItem("wwc-like-count", likeCount);
+      localStorage.setItem(likedKey, liked);
+      localStorage.setItem(localLikeKey, likeCount);
 
       updateLike();
+
+      // Firebase-এ Like সংরক্ষণ
+      try {
+        const videoRef = doc(db, "videos", "video1");
+        const snapshot = await getDoc(videoRef);
+
+        if (!snapshot.exists()) {
+          await setDoc(videoRef, {
+            likes: likeCount,
+            comments: []
+          });
+        } else {
+          await updateDoc(videoRef, {
+            likes: likeCount
+          });
+        }
+
+        console.log("Like Firebase-এ সংরক্ষণ হয়েছে");
+      } catch (error) {
+        console.error("Like save error:", error);
+      }
     });
   }
+});
 
-  // =====================
-  // 💬 COMMENT
-  // =====================
+// ================================
+// 💬 COMMENT
+// ================================
+
+buttons.forEach((button) => {
+  const text = button.textContent.trim();
+
   if (
     text.includes("💬") ||
     text.toLowerCase().includes("comment")
   ) {
-
-    button.addEventListener("click", (e) => {
+    button.addEventListener("click", async (e) => {
       e.preventDefault();
 
-      const comment = prompt("💬 আপনার মন্তব্য লিখুন:");
+      const comment = prompt("💬 আপনার মতামত লিখুন:");
 
       if (comment && comment.trim() !== "") {
+        const newComment = {
+          text: comment.trim(),
+          time: new Date().toISOString()
+        };
 
+        // LocalStorage
         let comments = JSON.parse(
           localStorage.getItem("wwc-comments") || "[]"
         );
 
-        comments.push({
-          text: comment.trim(),
-          time: new Date().toLocaleString()
-        });
+        comments.push(newComment);
 
         localStorage.setItem(
           "wwc-comments",
           JSON.stringify(comments)
         );
 
-        alert("💬 আপনার মন্তব্য সংরক্ষণ হয়েছে!");
+        // Firebase
+        try {
+          const videoRef = doc(db, "videos", "video1");
+          const snapshot = await getDoc(videoRef);
+
+          if (!snapshot.exists()) {
+            await setDoc(videoRef, {
+              likes: likeCountSafe(),
+              comments: [newComment]
+            });
+          } else {
+            await updateDoc(videoRef, {
+              comments: arrayUnion(newComment)
+            });
+          }
+
+          alert("💬 আপনার মন্তব্য সংরক্ষণ হয়েছে!");
+        } catch (error) {
+          console.error("Comment save error:", error);
+          alert("মন্তব্য সংরক্ষণ করা যায়নি।");
+        }
       }
     });
   }
+});
 
-  // =====================
-  // ↗️ SHARE
-  // =====================
+// Like count বের করার ছোট helper
+function likeCountSafe() {
+  return parseInt(
+    localStorage.getItem("wwc-like-count") || "0"
+  );
+}
+
+// ================================
+// 📤 SHARE
+// ================================
+
+buttons.forEach((button) => {
+  const text = button.textContent.trim();
+
   if (
-    text.includes("↗️") ||
+    text.includes("📤") ||
     text.toLowerCase().includes("share")
   ) {
-
     button.addEventListener("click", async (e) => {
       e.preventDefault();
 
@@ -131,7 +232,7 @@ buttons.forEach((button) => {
             window.location.href
           );
 
-          alert("↗️ লিংক কপি হয়েছে!");
+          alert("📋 লিংক কপি হয়েছে!");
         }
       } catch (error) {
         console.log("Share cancelled");
