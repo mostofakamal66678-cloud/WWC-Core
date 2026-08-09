@@ -238,45 +238,40 @@ buttons.forEach((button) => {
 // 🔗 SHARE
 // ========================
 
-buttons.forEach((button) => {
-  const text = button.textContent.trim().toLowerCase();
+const shareBtn = document.getElementById("shareBtn");
 
-  if (
-    text.includes("↗") ||
-    text.includes("share")
-  ) {
-    button.addEventListener("click", async (e) => {
-      e.preventDefault();
-      e.stopPropagation();
+if (shareBtn) {
+  shareBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
 
-      const shareUrl = window.location.href;
+    const shareUrl = window.location.href;
 
-      try {
-        if (navigator.share) {
-          await navigator.share({
-            title: "WWC-Core",
-            text: "🌐 এই ভিডিওটি দেখুন ❤️",
-            url: shareUrl
-          });
-        } else if (navigator.clipboard) {
-          await navigator.clipboard.writeText(shareUrl);
-          alert("🔗 লিংক কপি হয়েছে!");
-        } else {
-          const input = document.createElement("input");
-          input.value = shareUrl;
-          document.body.appendChild(input);
-          input.select();
-          document.execCommand("copy");
-          input.remove();
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: "WWC-Core",
+          text: "🌐 এই ভিডিওটি দেখুন ❤️",
+          url: shareUrl
+        });
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(shareUrl);
+        alert("🔗 লিংক কপি হয়েছে!");
+      } else {
+        const input = document.createElement("input");
+        input.value = shareUrl;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand("copy");
+        input.remove();
 
-          alert("🔗 লিংক কপি হয়েছে!");
-        }
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          console.error("Share error:", error);
-          alert("🔗 শেয়ার করা যায়নি!");
-        }
+        alert("🔗 লিংক কপি হয়েছে!");
       }
-    });
-  }
-});
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        console.error("Share error:", error);
+        alert("🔗 শেয়ার করা যায়নি!");
+      }
+    }
+  });
+}
