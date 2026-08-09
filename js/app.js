@@ -69,7 +69,20 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
   });
+  // ▶️ ভিডিও শেষ হলে পরের ভিডিও
+  videos.forEach((video, index) => {
+    video.addEventListener("ended", () => {
+      if (index < videos.length - 1) {
+        current = index + 1;
 
+        videos[current].scrollIntoView({
+          behavior: "smooth"
+        });
+
+        videos[current].play().catch(() => {});
+      }
+    });
+  });
 
   // ==============================
   // ❤️ LIKE
