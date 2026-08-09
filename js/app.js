@@ -1,5 +1,5 @@
 alert("APP JS OK");
-import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/12.7.1/firebase-app.js";
+import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 
 import {
   getFirestore,
@@ -9,7 +9,7 @@ import {
   updateDoc,
   increment,
   arrayUnion
-} from "https://www.gstatic.com/firebasejs/12.7.1/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
 
 // ==============================
