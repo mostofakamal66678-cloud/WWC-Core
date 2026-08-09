@@ -6,14 +6,19 @@ body{
   font-family:Arial,sans-serif;
   overflow:hidden;
 }
-
 #video-feed{
   width:100vw;
   height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  overflow-y:scroll;
+  scroll-snap-type:y mandatory;
   background:#000;
+}
+.video-item{
+  width:100vw;
+  height:100vh;
+  position:relative;
+  scroll-snap-align:start;
+  flex-shrink:0;
 }
 
 video{
