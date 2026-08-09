@@ -212,41 +212,38 @@ buttons.forEach((button) => {
 
           } else {
 
-            await updateDoc(videoRef, {
-              comments: arrayUnion(newComment)
-            });
-
-          }
-
-          alert("💬 আপনার মন্তব্য সংরক্ষণ হয়েছে!");
-
-        } catch (error) {
-
-          console.error("Comment save error:", error);
-
-          alert("মন্তব্য সংরক্ষণ করা যায়নি।");
-
-        }
+            
+        await updateDoc(videoRef, {
+          comments: arrayUnion(newComment)
+        });
 
       }
 
-    });
+      alert("💬 আপনার মন্তব্য সংরক্ষণ হয়েছে!");
+
+    } catch (error) {
+
+      console.error("Comment save error:", error);
+
+      alert("মন্তব্য সংরক্ষণ করা যায়নি");
+
+    }
 
   }
 
 });
 
-
-// ==============================
-// 📤 SHARE
-// ==============================
+});
+// ========================
+// 🔗 SHARE
+// ========================
 
 buttons.forEach((button) => {
 
   const text = button.textContent.trim();
 
   if (
-    text.includes("📤") ||
+    text.includes("↗") ||
     text.toLowerCase().includes("share")
   ) {
 
@@ -256,29 +253,54 @@ buttons.forEach((button) => {
 
       const shareData = {
         title: "WWC-Core",
-        text: "এই ভিডিওটি দেখুন ❤️",
+        text: "🌐 এই ভিডিওটি দেখুন ❤️",
         url: window.location.href
       };
 
       try {
 
+        // মোবাইলের আসল Share Menu
         if (navigator.share) {
 
           await navigator.share(shareData);
 
         } else {
 
-          await navigator.clipboard.writeText(
-            window.location.href
-          );
+          // Share API না থাকলে লিংক কপি
+          if (navigator.clipboard) {
 
-          alert("🔗 লিংক কপি হয়েছে!");
+            await navigator.clipboard.writeText(
+              window.location.href
+            );
 
+            alert("🔗 লিংক কপি হয়েছে!");
+
+          } else {
+
+            // পুরোনো ব্রাউজারের জন্য fallback
+            const input = document.createElement("input");
+
+            input.value = window.location.href;
+
+            document.body.appendChild(input);
+
+            input.select();
+
+            document.execCommand("copy");
+
+            input.remove();
+
+            alert("🔗 লিংক কপি হয়েছে!");
+
+          }
         }
 
       } catch (error) {
 
-        console.log("Share cancelled");
+        // ব্যবহারকারী Share Menu বন্ধ করলে কোনো error দেখাবে না
+        if (error.name !== "AbortError") {
+          console.error("Share error:", error);
+        }
 
       }
 
