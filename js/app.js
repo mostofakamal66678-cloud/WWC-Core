@@ -1,3 +1,4 @@
+alert("APP JS OK");
 import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/12.7.1/firebase-app.js";
 
 import {
