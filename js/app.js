@@ -270,7 +270,7 @@ if (shareBtn) {
     } catch (error) {
       if (error.name !== "AbortError") {
         console.error("Share error:", error);
-        alert("🔗 শেয়ার করা যায়নি!");
+        alert("🔗 লিংক কপি করা যায়নি!");
       }
     }
   });
