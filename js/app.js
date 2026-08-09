@@ -1,4 +1,3 @@
-
 import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 
 import {
@@ -7,7 +6,6 @@ import {
   getDoc,
   setDoc,
   updateDoc,
-  increment,
   arrayUnion
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
@@ -17,7 +15,7 @@ import {
 // ==============================
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCgi017aPErF7d6juqIhn3yIMF6SW_t04",
+  apiKey: "AIzaSyCgj017aPErF7d6juqhJn3y1MF6SW_t04",
   authDomain: "world-wide-connect-62c87.firebaseapp.com",
   projectId: "world-wide-connect-62c87",
   storageBucket: "world-wide-connect-62c87.firebasestorage.app",
@@ -34,99 +32,131 @@ const db = getFirestore(app);
 
 
 // ==============================
-// 🎬 VIDEO
+// 🎥 VIDEO
 // ==============================
 
-const videos = document.querySelectorAll("video");
-let current = 0;
+document.addEventListener("DOMContentLoaded", () => {
 
-if (videos.length > 0) {
-  videos[current].play().catch(() => {});
-}
+  const videos = document.querySelectorAll("video");
+  let current = 0;
 
-
-// ভিডিও পরিবর্তন
-document.addEventListener("wheel", (e) => {
-  if (videos.length === 0) return;
-
-  videos[current].pause();
-
-  if (e.deltaY > 0) {
-    current = (current + 1) % videos.length;
-  } else {
-    current = (current - 1 + videos.length) % videos.length;
+  if (videos.length > 0) {
+    videos[current].play().catch(() => {});
   }
 
-  videos[current].play().catch(() => {});
 
-  videos[current].scrollIntoView({
-    behavior: "smooth"
+  // ==============================
+  // 🎥 ভিডিও পরিবর্তন
+  // ==============================
+
+  document.addEventListener("wheel", (e) => {
+
+    if (videos.length === 0) return;
+
+    videos[current].pause();
+
+    if (e.deltaY > 0) {
+      current = (current + 1) % videos.length;
+    } else {
+      current = (current - 1 + videos.length) % videos.length;
+    }
+
+    videos[current].play().catch(() => {});
+
+    videos[current].scrollIntoView({
+      behavior: "smooth"
+    });
+
   });
-});
 
 
-// ==============================
-// ❤️ LIKE
-// ==============================
+  // ==============================
+  // ❤️ LIKE
+  // ==============================
 
-const buttons = document.querySelectorAll(
-  'button, [role="button"], a'
-);
+  const actionButtons = document.querySelectorAll(".actions button");
 
-buttons.forEach((button) => {
+  const likeButton = actionButtons[0];
+  const commentButton = actionButtons[1];
+  const shareButton = document.getElementById("shareBtn");
 
-  const text = button.textContent.trim();
 
-  if (
-    text.includes("❤️") ||
-    text.includes("♥️") ||
-    text.toLowerCase().includes("like")
-  ) {
+  if (likeButton) {
 
     const likedKey = "wwc-liked";
     const localLikeKey = "wwc-like-count";
 
-    let liked = localStorage.getItem(likedKey) === "true";
+    let liked =
+      localStorage.getItem(likedKey) === "true";
 
-    let likeCount = parseInt(
-      localStorage.getItem(localLikeKey) || "0"
-    );
+    let likeCount =
+      parseInt(
+        localStorage.getItem(localLikeKey) || "0",
+        10
+      );
+
 
     function updateLike() {
+
       if (liked) {
-        button.textContent = "❤️ Liked " + likeCount;
+        likeButton.textContent = "❤️ Liked " + likeCount;
       } else {
-        button.textContent = "❤️ Like " + likeCount;
+        likeButton.textContent = "❤️ Like " + likeCount;
       }
+
     }
+
 
     updateLike();
 
-    button.addEventListener("click", async (e) => {
+
+    likeButton.addEventListener("click", async (e) => {
 
       e.preventDefault();
+      e.stopPropagation();
+
 
       if (!liked) {
+
         liked = true;
         likeCount++;
+
       } else {
+
         liked = false;
 
         if (likeCount > 0) {
           likeCount--;
         }
+
       }
 
-      localStorage.setItem(likedKey, liked);
-      localStorage.setItem(localLikeKey, likeCount);
+
+      localStorage.setItem(
+        likedKey,
+        liked
+      );
+
+      localStorage.setItem(
+        localLikeKey,
+        likeCount
+      );
+
 
       updateLike();
+
 
       // Firebase
       try {
 
-        const videoRef = doc(db, "videos", "video1");
+        const videoRef = doc(
+          db,
+          "videos",
+          "video1"
+        );
+
         const snapshot = await getDoc(videoRef);
+
 
         if (!snapshot.exists()) {
 
@@ -147,7 +177,10 @@ buttons.forEach((button) => {
 
       } catch (error) {
 
-        console.error("Like save error:", error);
+        console.error(
+          "Like save error:",
+          error
+        );
 
       }
 
@@ -155,41 +188,51 @@ buttons.forEach((button) => {
 
   }
 
-});
+
+  // ==============================
+  // 💬 COMMENT
+  // ==============================
+
+  if (commentButton) {
+
+    commentButton.addEventListener(
+      "click",
+      async (e) => {
+
+        e.preventDefault();
+        e.stopPropagation();
 
 
-// ==============================
-// 💬 COMMENT
-// ==============================
+        const comment = prompt(
+          "💬 আপনার মন্তব্য লিখুন:"
+        );
 
-buttons.forEach((button) => {
 
-  const text = button.textContent.trim();
+        if (
+          !comment ||
+          comment.trim() === ""
+        ) {
+          return;
+        }
 
-  if (
-    text.includes("💬") ||
-    text.toLowerCase().includes("comment")
-  ) {
-
-    button.addEventListener("click", async (e) => {
-
-      e.preventDefault();
-
-      const comment = prompt("💬 আপনার মন্তব্য লিখুন:");
-
-      if (comment && comment.trim() !== "") {
 
         const newComment = {
+
           text: comment.trim(),
+
           time: new Date().toISOString()
+
         };
+
 
         // LocalStorage
         let comments = JSON.parse(
           localStorage.getItem("wwc-comments") || "[]"
         );
 
+
         comments.push(newComment);
+
 
         localStorage.setItem(
           "wwc-comments",
@@ -200,78 +243,164 @@ buttons.forEach((button) => {
         // Firebase
         try {
 
-          const videoRef = doc(db, "videos", "video1");
-          const snapshot = await getDoc(videoRef);
+          const videoRef = doc(
+            db,
+            "videos",
+            "video1"
+          );
+
+          const snapshot = await getDoc(
+            videoRef
+          );
+
 
           if (!snapshot.exists()) {
 
             await setDoc(videoRef, {
+
               likes: 0,
-              comments: [newComment]
+
+              comments: [
+                newComment
+              ]
+
             });
 
           } else {
 
-            
-        await updateDoc(videoRef, {
-          comments: arrayUnion(newComment)
-        });
+            await updateDoc(videoRef, {
+
+              comments: arrayUnion(
+                newComment
+              )
+
+            });
+
+          }
+
+
+          alert(
+            "💬 আপনার মন্তব্য সংরক্ষণ হয়েছে!"
+          );
+
+
+        } catch (error) {
+
+          console.error(
+            "Comment save error:",
+            error
+          );
+
+          alert(
+            "মন্তব্য সংরক্ষণ করা যায়নি।"
+          );
+
+        }
 
       }
+    );
 
-      alert("💬 আপনার মন্তব্য সংরক্ষণ হয়েছে!");
+  }
 
-    } catch (error) {
 
-      console.error("Comment save error:", error);
+  // ==============================
+  // 🔗 SHARE
+  // ==============================
 
-      alert("মন্তব্য সংরক্ষণ করা যায়নি");
+  if (shareButton) {
 
-    }
+    shareButton.addEventListener(
+      "click",
+      async (e) => {
+
+        e.preventDefault();
+        e.stopPropagation();
+
+
+        const shareUrl =
+          window.location.href;
+
+
+        try {
+
+          // Android / Chrome Share
+          if (navigator.share) {
+
+            await navigator.share({
+
+              title: "WWC-Core",
+
+              text: "🌐 এই ভিডিওটি দেখুন ❤️",
+
+              url: shareUrl
+
+            });
+
+          }
+
+          // Clipboard
+          else if (
+            navigator.clipboard
+          ) {
+
+            await navigator.clipboard.writeText(
+              shareUrl
+            );
+
+            alert(
+              "🔗 লিংক কপি হয়েছে!"
+            );
+
+          }
+
+          // পুরোনো Browser
+          else {
+
+            const input =
+              document.createElement("input");
+
+            input.value = shareUrl;
+
+            document.body.appendChild(
+              input
+            );
+
+            input.select();
+
+            document.execCommand("copy");
+
+            input.remove();
+
+
+            alert(
+              "🔗 লিংক কপি হয়েছে!"
+            );
+
+          }
+
+        } catch (error) {
+
+          // User share cancel করলে error দেখাবে না
+          if (
+            error.name !== "AbortError"
+          ) {
+
+            console.error(
+              "Share error:",
+              error
+            );
+
+            alert(
+              "🔗 লিংক শেয়ার করা যায়নি।"
+            );
+
+          }
+
+        }
+
+      }
+    );
 
   }
 
 });
-
-
-// ========================
-// 🔗 SHARE
-// ========================
-
-const shareBtn = document.getElementById("shareBtn");
-
-if (shareBtn) {
-  shareBtn.addEventListener("click", async (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const shareUrl = window.location.href;
-
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: "WWC-Core",
-          text: "🌐 এই ভিডিওটি দেখুন ❤️",
-          url: shareUrl
-        });
-      } else if (navigator.clipboard) {
-        await navigator.clipboard.writeText(shareUrl);
-        alert("🔗 লিংক কপি হয়েছে!");
-      } else {
-        const input = document.createElement("input");
-        input.value = shareUrl;
-        document.body.appendChild(input);
-        input.select();
-        document.execCommand("copy");
-        input.remove();
-
-        alert("🔗 লিংক কপি হয়েছে!");
-      }
-    } catch (error) {
-      if (error.name !== "AbortError") {
-        console.error("Share error:", error);
-        alert("🔗 লিংক কপি করা যায়নি!");
-      }
-    }
-  });
-}
