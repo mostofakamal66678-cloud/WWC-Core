@@ -239,73 +239,44 @@ buttons.forEach((button) => {
 // ========================
 
 buttons.forEach((button) => {
-
-  const text = button.textContent.trim();
+  const text = button.textContent.trim().toLowerCase();
 
   if (
     text.includes("↗") ||
-    text.toLowerCase().includes("share")
+    text.includes("share")
   ) {
-
     button.addEventListener("click", async (e) => {
-
       e.preventDefault();
+      e.stopPropagation();
 
-      const shareData = {
-        title: "WWC-Core",
-        text: "🌐 এই ভিডিওটি দেখুন ❤️",
-        url: window.location.href
-      };
+      const shareUrl = window.location.href;
 
       try {
-
-        // মোবাইলের আসল Share Menu
         if (navigator.share) {
-
-          await navigator.share(shareData);
-
+          await navigator.share({
+            title: "WWC-Core",
+            text: "🌐 এই ভিডিওটি দেখুন ❤️",
+            url: shareUrl
+          });
+        } else if (navigator.clipboard) {
+          await navigator.clipboard.writeText(shareUrl);
+          alert("🔗 লিংক কপি হয়েছে!");
         } else {
+          const input = document.createElement("input");
+          input.value = shareUrl;
+          document.body.appendChild(input);
+          input.select();
+          document.execCommand("copy");
+          input.remove();
 
-          // Share API না থাকলে লিংক কপি
-          if (navigator.clipboard) {
-
-            await navigator.clipboard.writeText(
-              window.location.href
-            );
-
-            alert("🔗 লিংক কপি হয়েছে!");
-
-          } else {
-
-            // পুরোনো ব্রাউজারের জন্য fallback
-            const input = document.createElement("input");
-
-            input.value = window.location.href;
-
-            document.body.appendChild(input);
-
-            input.select();
-
-            document.execCommand("copy");
-
-            input.remove();
-
-            alert("🔗 লিংক কপি হয়েছে!");
-
-          }
+          alert("🔗 লিংক কপি হয়েছে!");
         }
-
       } catch (error) {
-
-        // ব্যবহারকারী Share Menu বন্ধ করলে কোনো error দেখাবে না
         if (error.name !== "AbortError") {
           console.error("Share error:", error);
+          alert("🔗 শেয়ার করা যায়নি!");
         }
-
       }
-
     });
-
   }
-
 });
