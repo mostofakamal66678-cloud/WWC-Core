@@ -1,1 +1,208 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World wide connect - Register / Login</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #111318;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    .auth-box {
+      width: 92%;
+      max-width: 420px;
+      padding: 30px 22px;
+      background: #1d2027;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 10px 35px rgba(0,0,0,.35);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    .subtitle {
+      color: #aaa;
+      margin-bottom: 28px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 12px;
+      border: 0;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #googleBtn {
+      background: #fff;
+      color: #222;
+    }
+
+    #emailBtn {
+      background: #4f46e5;
+      color: #fff;
+    }
+
+    #message {
+      min-height: 24px;
+      margin-top: 18px;
+      color: #bbb;
+      font-size: 14px;
+    }
+
+    .small {
+      margin-top: 20px;
+      color: #888;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="auth-box">
+
+    <h1>World wide connect</h1>
+
+    <div class="subtitle">
+      Register / Login করুন
+    </div>
+
+    <button id="googleBtn">
+      Continue with Google
+    </button>
+
+    <button id="emailBtn">
+      Email / Password
+    </button>
+
+    <div id="message"></div>
+
+    <div class="small">
+      Google দিয়ে দ্রুত ও সহজে অ্যাকাউন্ট তৈরি করুন।
+    </div>
+
+  </div>
+
+
+  <script type="module">
+
+    /* =========================================
+       Firebase
+       ========================================= */
+
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+
+
+    /* =========================================
+       আপনার Firebase Config এখানে বসাবেন
+       ========================================= */
+
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+
+    /* =========================================
+       Firebase শুরু
+       ========================================= */
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const provider = new GoogleAuthProvider();
+
+
+    const googleBtn = document.getElementById("googleBtn");
+    const emailBtn = document.getElementById("emailBtn");
+    const message = document.getElementById("message");
+
+
+    /* =========================================
+       Google Register / Login
+       ========================================= */
+
+    googleBtn.addEventListener("click", async () => {
+
+      message.textContent = "Google Sign-In চালু হচ্ছে...";
+
+      try {
+
+        const result = await signInWithPopup(auth, provider);
+
+        const user = result.user;
+
+        message.textContent =
+          "স্বাগতম, " + (user.displayName || user.email) + "!";
+
+        /*
+          Login সফল হলে মূল প্ল্যাটফর্মে যাবে
+        */
+
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 800);
+
+      } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+          "Login ব্যর্থ হয়েছে: " + error.message;
+      }
+
+    });
+
+
+    /* =========================================
+       Email / Password
+       ========================================= */
+
+    emailBtn.addEventListener("click", () => {
+
+      /*
+        Email/Password আমরা পরে সম্পূর্ণ Login/Register
+        ফর্ম হিসেবে চালু করব।
+      */
+
+      alert(
+        "Email / Password Register এবং Login পরের ধাপে চালু করা হবে।"
+      );
+
+    });
+
+  </script>
+
+</body>
+</html>
