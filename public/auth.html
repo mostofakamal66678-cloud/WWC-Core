@@ -114,10 +114,13 @@
       from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
     import {
-      getAuth,
-      GoogleAuthProvider,
-      signInWithPopup
-    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  getAuth,
+  GoogleAuthProvider,
+  signInWithRedirect,
+  getRedirectResult,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+      
 
 
     /* =========================================
@@ -134,77 +137,61 @@
   measurementId: "G-PKFJ5NEMGQ"
 };  
       
+googleBtn.addEventListener("click", async () => {
+
+  message.textContent = "Google Sign-In শুরু হচ্ছে...";
+
+  try {
+    await signInWithRedirect(auth, provider);
+  } catch (error) {
+    console.error(error);
+    message.textContent =
+      "Google Login ব্যর্থ হয়েছে: " + error.message;
+  }
+
+});
 
 
-    /* =========================================
-       Firebase শুরু
-       ========================================= */
+getRedirectResult(auth)
+  .then((result) => {
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    if (result && result.user) {
 
-    const provider = new GoogleAuthProvider();
+      message.textContent =
+        "স্বাগতম, " +
+        (result.user.displayName || result.user.email) +
+        "!";
 
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 500);
 
-    const googleBtn = document.getElementById("googleBtn");
-    const emailBtn = document.getElementById("emailBtn");
-    const message = document.getElementById("message");
+    }
 
+  })
+  .catch((error) => {
 
-    /* =========================================
-       Google Register / Login
-       ========================================= */
+    console.error(error);
 
-    googleBtn.addEventListener("click", async () => {
+    message.textContent =
+      "Google Login ব্যর্থ হয়েছে: " + error.message;
 
-      message.textContent = "Google Sign-In চালু হচ্ছে...";
-
-      try {
-
-        const result = await signInWithPopup(auth, provider);
-
-        const user = result.user;
-
-        message.textContent =
-          "স্বাগতম, " + (user.displayName || user.email) + "!";
-
-        /*
-          Login সফল হলে মূল প্ল্যাটফর্মে যাবে
-        */
-
-        setTimeout(() => {
-          window.location.href = "index.html";
-        }, 800);
-
-      } catch (error) {
-
-        console.error(error);
-
-        message.textContent =
-          "Login ব্যর্থ হয়েছে: " + error.message;
-      }
-
-    });
+  });
 
 
-    /* =========================================
-       Email / Password
-       ========================================= */
+onAuthStateChanged(auth, (user) => {
 
-    emailBtn.addEventListener("click", () => {
+  if (user) {
 
-      /*
-        Email/Password আমরা পরে সম্পূর্ণ Login/Register
-        ফর্ম হিসেবে চালু করব।
-      */
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 500);
 
-      alert(
-        "Email / Password Register এবং Login পরের ধাপে চালু করা হবে।"
-      );
+  }
 
-    });
+});
 
-  </script>
+    
 
 </body>
 </html>
