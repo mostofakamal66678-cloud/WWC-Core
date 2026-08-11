@@ -113,12 +113,11 @@
     import { initializeApp }
       from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 
-    import {
+    
+  import {
   getAuth,
   GoogleAuthProvider,
-  signInWithRedirect,
-  getRedirectResult,
-  onAuthStateChanged
+  signInWithPopup
 } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
       
 
@@ -143,12 +142,22 @@ const provider = new GoogleAuthProvider();
 const googleBtn = document.getElementById("googleBtn");
 const emailBtn = document.getElementById("emailBtn");
 const message = document.getElementById("message");    
+
 googleBtn.addEventListener("click", async () => {
 
   message.textContent = "Google Sign-In শুরু হচ্ছে...";
 
   try {
-    await signInWithRedirect(auth, provider);
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    message.textContent =
+      "স্বাগতম, " + (user.displayName || user.email) + "!";
+
+    setTimeout(() => {
+      window.location.href = "index.html";
+    }, 500);
+
   } catch (error) {
     console.error(error);
     message.textContent =
@@ -156,46 +165,10 @@ googleBtn.addEventListener("click", async () => {
   }
 
 });
+  
 
 
-getRedirectResult(auth)
-  .then((result) => {
-
-    if (result && result.user) {
-
-      message.textContent =
-        "স্বাগতম, " +
-        (result.user.displayName || result.user.email) +
-        "!";
-
-      setTimeout(() => {
-        window.location.href = "index.html";
-      }, 500);
-
-    }
-
-  })
-  .catch((error) => {
-
-    console.error(error);
-
-    message.textContent =
-      "Google Login ব্যর্থ হয়েছে: " + error.message;
-
-  });
-
-
-onAuthStateChanged(auth, (user) => {
-
-  if (user) {
-
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 500);
-
-  }
-
-});
+  
 
     
 
