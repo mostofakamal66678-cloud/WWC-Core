@@ -96,7 +96,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }, { passive: true });
 
+// 📱 TOUCH SWIPE SYSTEM
 
+let touchStartY = 0;
+let touchEndY = 0;
+
+document.addEventListener("touchstart", (e) => {
+  touchStartY = e.changedTouches[0].screenY;
+}, { passive: true });
+
+document.addEventListener("touchend", (e) => {
+  touchEndY = e.changedTouches[0].screenY;
+
+  const swipeDistance = touchStartY - touchEndY;
+
+  // 👆 Swipe Up
+  if (swipeDistance > 50) {
+    if (videos.length === 0) return;
+
+    videos[current].pause();
+
+    current = (current + 1) % videos.length;
+
+    videos[current].scrollIntoView({
+      behavior: "smooth"
+    });
+
+    videos[current].play().catch(() => {});
+  }
+
+  // 👇 Swipe Down
+  if (swipeDistance < -50) {
+    if (videos.length === 0) return;
+
+    videos[current].pause();
+
+    current =
+      (current - 1 + videos.length) % videos.length;
+
+    videos[current].scrollIntoView({
+      behavior: "smooth"
+    });
+
+    videos[current].play().catch(() => {});
+  }
+}, { passive: true });
   // ========================================
   // ❤️ LIKE + 💬 COMMENT + ↗️ SHARE
   // ========================================
