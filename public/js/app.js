@@ -36,7 +36,7 @@ const app = getApps().length
   : initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
-
+const auth = getAuth(app);
 
 // ========================================
 // 🎬 WWC-CORE VIDEO SYSTEM
