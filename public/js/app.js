@@ -9,7 +9,14 @@ import {
   arrayUnion
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
-
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 // ========================================
 // 🔥 FIREBASE
 // ========================================
