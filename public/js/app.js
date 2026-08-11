@@ -71,7 +71,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
   });
 
+// ===============================
+// 👤 FOLLOW SYSTEM
+// ===============================
 
+const followButtons = document.querySelectorAll(".follow-btn");
+
+followButtons.forEach((button) => {
+  const username = button.dataset.user;
+  const followKey = `wwc-follow-${username}`;
+
+  if (localStorage.getItem(followKey) === "true") {
+    button.textContent = "Following";
+  }
+
+  button.addEventListener("click", () => {
+    const isFollowing =
+      localStorage.getItem(followKey) === "true";
+
+    if (isFollowing) {
+      localStorage.removeItem(followKey);
+      button.textContent = "Follow";
+    } else {
+      localStorage.setItem(followKey, "true");
+      button.textContent = "Following";
+    }
+  });
+});
   // ========================================
   // 📱 Swipe / Mouse Wheel
   // ========================================
