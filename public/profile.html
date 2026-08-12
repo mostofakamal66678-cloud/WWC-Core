@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WWC Profile</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    .profile-header {
+      padding: 25px 20px;
+      text-align: center;
+      border-bottom: 1px solid #333;
+    }
+
+    .profile-photo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #555;
+    }
+
+    .username {
+      font-size: 24px;
+      margin: 12px 0 5px;
+    }
+
+    .handle {
+      color: #aaa;
+      margin-bottom: 15px;
+    }
+
+    .bio {
+      color: #ddd;
+      margin: 10px auto 20px;
+      max-width: 400px;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 35px;
+      margin: 20px 0;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 20px;
+    }
+
+    .stat span {
+      color: #aaa;
+      font-size: 13px;
+    }
+
+    .follow-btn {
+      border: none;
+      background: #fff;
+      color: #000;
+      padding: 10px 30px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .back-btn {
+      position: absolute;
+      left: 15px;
+      top: 15px;
+      background: transparent;
+      color: #fff;
+      border: none;
+      font-size: 25px;
+      cursor: pointer;
+    }
+
+    .videos-title {
+      padding: 15px;
+      font-size: 18px;
+      border-bottom: 1px solid #333;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .video-grid video {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: #111;
+    }
+  </style>
+</head>
+
+<body>
+
+  <button class="back-btn" onclick="history.back()">←</button>
+
+  <section class="profile-header">
+
+    <img
+      class="profile-photo"
+      src="./images/profile.png"
+      alt="Profile"
+    >
+
+    <h1 class="username">গোলাম মোস্তফা</h1>
+
+    <div class="handle">@wwc_user</div>
+
+    <div class="bio">
+      Welcome to my WWC profile 🌍
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <strong id="followers">0</strong>
+        <span>Followers</span>
+      </div>
+
+      <div class="stat">
+        <strong>0</strong>
+        <span>Following</span>
+      </div>
+
+      <div class="stat">
+        <strong>0</strong>
+        <span>Likes</span>
+      </div>
+    </div>
+
+    <button class="follow-btn" id="followBtn">
+      Follow
+    </button>
+
+  </section>
+
+  <div class="videos-title">
+    🎬 Videos
+  </div>
+
+  <section class="video-grid">
+
+    <video controls muted playsinline>
+      <source src="./videos/video1.mp4" type="video/mp4">
+    </video>
+
+    <video controls muted playsinline>
+      <source src="./videos/video2.mp4" type="video/mp4">
+    </video>
+
+    <video controls muted playsinline>
+      <source src="./videos/video3.mp4" type="video/mp4">
+    </video>
+
+  </section>
+
+  <script>
+    const followBtn = document.getElementById("followBtn");
+    const followers = document.getElementById("followers");
+
+    let following =
+      localStorage.getItem("wwc-profile-following") === "true";
+
+    let followerCount =
+      Number(localStorage.getItem("wwc-profile-followers") || 0);
+
+    function updateFollow() {
+      if (following) {
+        followBtn.textContent = "Following";
+        followers.textContent = followerCount;
+      } else {
+        followBtn.textContent = "Follow";
+        followers.textContent = followerCount;
+      }
+    }
+
+    followBtn.addEventListener("click", () => {
+
+      if (following) {
+        following = false;
+
+        if (followerCount > 0) {
+          followerCount--;
+        }
+
+      } else {
+        following = true;
+        followerCount++;
+      }
+
+      localStorage.setItem(
+        "wwc-profile-following",
+        following
+      );
+
+      localStorage.setItem(
+        "wwc-profile-followers",
+        followerCount
+      );
+
+      updateFollow();
+    });
+
+    updateFollow();
+  </script>
+
+</body>
+  </html>,
