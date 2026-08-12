@@ -54,14 +54,15 @@ document.addEventListener("DOMContentLoaded", () => {
   // ▶️ প্রথম ভিডিও চালু
   // ========================================
 if (videos.length > 0) {
-  videos[0].muted = false;
+  videos[0].muted = true;
+
+  videos[0].play().catch(() => {});
 
   document.addEventListener("click", () => {
-    videos[0].play().catch(err => console.log(err));
+    videos[0].muted = false;
+    videos[0].play().catch(() => {});
   }, { once: true });
 }
-  
-    
   
 
 
