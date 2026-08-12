@@ -173,55 +173,7 @@
 
   </section>
 
-  <script>
-    const followBtn = document.getElementById("followBtn");
-    const followers = document.getElementById("followers");
-
-    let following =
-      localStorage.getItem("wwc-profile-following") === "true";
-
-    let followerCount =
-      Number(localStorage.getItem("wwc-profile-followers") || 0);
-
-    function updateFollow() {
-      if (following) {
-        followBtn.textContent = "Following";
-        followers.textContent = followerCount;
-      } else {
-        followBtn.textContent = "Follow";
-        followers.textContent = followerCount;
-      }
-    }
-
-    followBtn.addEventListener("click", () => {
-
-      if (following) {
-        following = false;
-
-        if (followerCount > 0) {
-          followerCount--;
-        }
-
-      } else {
-        following = true;
-        followerCount++;
-      }
-
-      localStorage.setItem(
-        "wwc-profile-following",
-        following
-      );
-
-      localStorage.setItem(
-        "wwc-profile-followers",
-        followerCount
-      );
-
-      updateFollow();
-    });
-
-    updateFollow();
-  </script>
+  
 
 </body>
   </html>,
