@@ -142,6 +142,7 @@
       id="password"
       placeholder="Password"
       autocomplete="current-password"
+      
     >
       
 <button type="button" id="loginBtn">
@@ -181,6 +182,8 @@
 
     import {
       getAuth,
+      setPersistence,
+browserLocalPersistence,
       signInWithEmailAndPassword,
       createUserWithEmailAndPassword,
       sendPasswordResetEmail,
@@ -213,7 +216,7 @@ const firebaseConfig = {
       : initializeApp(firebaseConfig);
 
     const auth = getAuth(app);
-
+await setPersistence(auth, browserLocalPersistence);
 
     // =========================
     // 📢 MESSAGE
@@ -247,7 +250,7 @@ message.textContent = "✅ JavaScript ঠিকভাবে চালু হয�
           return;
         }
 
-        try {
+        try {await setPersistence(auth, browserLocalPersistence);
 
           await signInWithEmailAndPassword(
             auth,
