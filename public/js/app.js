@@ -204,8 +204,6 @@ updateLikeButton(button, liked);
   }
 
 
-  }
-
 
   // ===============================
   // 💬 COMMENT
