@@ -296,7 +296,7 @@ document
       if (error.code === "auth/user-not-found") {
         showMessage("❌ এই Email দিয়ে কোনো Account পাওয়া যায়নি।");
       } else {
-        showMessage("❌ Password Reset ব্যর্থ হয়েছে। আবার চেষ্টা করুন।");
+        showMessage("❌ " + error.code + " — " + error.message);
       }
     }
   });
