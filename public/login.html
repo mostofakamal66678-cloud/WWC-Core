@@ -185,7 +185,7 @@
       createUserWithEmailAndPassword,
       sendPasswordResetEmail,
       GoogleAuthProvider,
-      signInWithRedirect
+      signInWithPopup
     } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
 
@@ -369,7 +369,7 @@ document
 
         try {
 
-        await signInWithRedirect(
+        await signInWithPopup(
   auth,
   googleProvider
 );
