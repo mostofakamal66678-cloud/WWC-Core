@@ -334,10 +334,10 @@ message.textContent = "✅ JavaScript ঠিকভাবে চালু হয�
 
         try {
 
-          await signInWithPopup(
-            auth,
-            googleProvider
-          );
+        await signInWithRedirect(
+  auth,
+  googleProvider
+);
 
           showMessage("✅ Google Login সফল হয়েছে!");
 
