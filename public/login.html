@@ -353,8 +353,8 @@ message.textContent = "✅ JavaScript ঠিকভাবে চালু হয�
             showMessage("⚠️ Google Login বন্ধ করা হয়েছে।");
           } else {
             showMessage(
-              "❌ Google Login ব্যর্থ হয়েছে।"
-            );
+  "❌ " + error.code + " — " + error.message
+);
           }
         }
       });
