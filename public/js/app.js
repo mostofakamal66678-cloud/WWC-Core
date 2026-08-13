@@ -162,9 +162,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
       liked = !liked;
 
-      localStorage.setItem(storageKey, liked);
+localStorage.setItem(storageKey, liked);
 
-      updateLikeButton(button, liked);
+const countKey = `wwc_like_count_${index}`;
+let count = parseInt(localStorage.getItem(countKey) || "0");
+
+if (liked) {
+  count++;
+} else {
+  count = Math.max(0, count - 1);
+}
+
+localStorage.setItem(countKey, count);
+
+updateLikeButton(button, liked);
+
+    
 
     });
 
@@ -172,16 +185,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   function updateLikeButton(button, liked) {
+  const countSpan = button.querySelector(".like-count");
 
-    if (liked) {
-      button.innerHTML = "❤️";
-      button.classList.add("liked");
-      button.style.transform = "scale(1.2)";
-    } else {
-      button.innerHTML = "🤍";
-      button.classList.remove("liked");
-      button.style.transform = "scale(1)";
-    }
+  if (liked) {
+    button.classList.add("liked");
+    button.style.transform = "scale(1.2)";
+  } else {
+    button.classList.remove("liked");
+    button.style.transform = "scale(1)";
+  }
+
+  if (countSpan) {
+    const index = [...likeButtons].indexOf(button);
+    const countKey = `wwc_like_count_${index}`;
+    const count = parseInt(localStorage.getItem(countKey) || "0");
+    countSpan.textContent = count;
+  }
+  }
+
 
   }
 
