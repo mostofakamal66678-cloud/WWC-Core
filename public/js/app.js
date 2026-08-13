@@ -46,8 +46,11 @@ if (logoutBtn) {
       window.location.href = "./login.html";
     } catch (error) {
       console.error("Logout error:", error);
+      alert("Logout failed. আবার চেষ্টা করুন।");
     }
   });
+}
+
 }
 // ========================================
 // 🎬 WWC-CORE VIDEO SYSTEM
