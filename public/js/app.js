@@ -16,6 +16,7 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup
+    signOut
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 // ========================================
 // 🔥 FIREBASE
