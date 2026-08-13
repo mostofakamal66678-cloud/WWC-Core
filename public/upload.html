@@ -161,46 +161,58 @@ const status = document.getElementById("status");
 const userStatus = document.getElementById("userStatus");
 const progressBar = document.getElementById("progressBar");
 
-let currentUser = auth.currentUser;
+let currentUser = null;
 
-// ========================
-// LOGIN CHECK
-// ========================
+// =========================
+// 🔐 LOGIN CHECK
+// =========================
 
-if (currentUser) {
-  userStatus.textContent =
-    "✅ Login করা আছে: " + (currentUser.email || currentUser.uid);
+async function checkLogin() {
+  try {
+    await auth.authStateReady();
 
-  uploadBtn.disabled = false;
-} else {
-  userStatus.textContent = "❌ আগে Login করুন";
-  uploadBtn.disabled = true;
+    currentUser = auth.currentUser;
 
-  status.innerHTML =
-    'ভিডিও Upload করতে <a href="./login.html">Login</a> করুন।';
+    if (currentUser) {
+      userStatus.textContent =
+        "✅ Login করা আছে: " + (currentUser.email || currentUser.uid);
+
+      uploadBtn.disabled = false;
+    } else {
+      userStatus.textContent = "❌ আগে Login করুন";
+      uploadBtn.disabled = true;
+
+      status.innerHTML =
+        'ভিডিও Upload করতে <a href="./login.html">Login</a> করুন';
+    }
+
+  } catch (error) {
+    console.error("Login check error:", error);
+
+    userStatus.textContent = "❌ Login check করা যায়নি";
+    uploadBtn.disabled = true;
+  }
 }
 
-// Also listen for login/logout changes
+// Login / Logout change হলে আবার check করবে
 onAuthStateChanged(auth, (user) => {
+  currentUser = user;
 
   if (user) {
-    currentUser = user;
-
     userStatus.textContent =
       "✅ Login করা আছে: " + (user.email || user.uid);
 
     uploadBtn.disabled = false;
-
   } else {
-    currentUser = null;
-
     userStatus.textContent = "❌ আগে Login করুন";
     uploadBtn.disabled = true;
 
     status.innerHTML =
-      'ভিডিও Upload করতে <a href="./login.html">Login</a> করুন।';
+      'ভিডিও Upload করতে <a href="./login.html">Login</a> করুন';
   }
+});
 
+checkLogin();
 
     // ==============================
     // 📹 VIDEO UPLOAD
