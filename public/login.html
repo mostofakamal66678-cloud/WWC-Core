@@ -148,9 +148,13 @@
   🔐 Login
 </button>
     
-    <button type="button" id="signupBtn">
-      📝 Create Account
-    </button>
+  <button type="button" id="resetPasswordBtn">
+  🔑 Forgot Password
+</button>
+
+<button type="button" id="signupBtn">
+  📝 Create Account
+</button>
 
     <div class="divider">OR</div>
 
@@ -178,6 +182,7 @@
       getAuth,
       signInWithEmailAndPassword,
       createUserWithEmailAndPassword,
+      sendPasswordResetEmail,
       GoogleAuthProvider,
       signInWithRedirect
     } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
@@ -265,6 +270,35 @@ message.textContent = "✅ JavaScript ঠিকভাবে চালু হয�
         }
       });
 
+ 
+// 🔑 FORGOT PASSWORD
+document
+  .getElementById("resetPasswordBtn")
+  .addEventListener("click", async () => {
+
+    const email =
+      document.getElementById("email").value.trim();
+
+    if (!email) {
+      showMessage("⚠️ আগে Email লিখুন");
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+
+      showMessage("✅ Password Reset Email পাঠানো হয়েছে। আপনার Email দেখুন।");
+
+    } catch (error) {
+      console.error("Password reset error:", error);
+
+      if (error.code === "auth/user-not-found") {
+        showMessage("❌ এই Email দিয়ে কোনো Account পাওয়া যায়নি।");
+      } else {
+        showMessage("❌ Password Reset ব্যর্থ হয়েছে। আবার চেষ্টা করুন।");
+      }
+    }
+  });
 
     // =========================
     // 📝 CREATE ACCOUNT
