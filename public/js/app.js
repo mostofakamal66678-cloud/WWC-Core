@@ -2,28 +2,23 @@ import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/12.7.
 
 import {
   getFirestore,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  arrayUnion
+  collection,
+  addDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
 import {
   getAuth,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  GoogleAuthProvider,
-  signInWithPopup
-    signOut
+  signOut
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-// ========================================
+
+
+// ===============================
 // 🔥 FIREBASE
-// ========================================
+// ===============================
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCgJ017APerF7d6jdunQ3ny1MF6SW_t04",
+  apiKey: "AIzaSyC7Id7APerF7d6jdunQ3ny1MF6SW_t04",
   authDomain: "world-wide-connect-62c87.firebaseapp.com",
   projectId: "world-wide-connect-62c87",
   storageBucket: "world-wide-connect-62c87.firebasestorage.app",
@@ -38,6 +33,12 @@ const app = getApps().length
 
 const db = getFirestore(app);
 const auth = getAuth(app);
+
+
+// ===============================
+// 🚪 LOGOUT
+// ===============================
+
 const logoutBtn = document.getElementById("logoutBtn");
 
 if (logoutBtn) {
@@ -47,13 +48,15 @@ if (logoutBtn) {
       window.location.href = "./login.html";
     } catch (error) {
       console.error("Logout error:", error);
-      alert("Logout failed. আবার চেষ্টা করুন।");
+      alert("Logout করা যায়নি। আবার চেষ্টা করুন।");
     }
   });
 }
-// ========================================
-// 🎬 WWC-CORE VIDEO SYSTEM
-// ========================================
+
+
+// ===============================
+// 🎬 VIDEO SYSTEM
+// ===============================
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -63,515 +66,395 @@ document.addEventListener("DOMContentLoaded", () => {
   let current = 0;
 
 
-  // ========================================
-  // ▶️ প্রথম ভিডিও চালু
-  // ========================================
-if (videos.length > 0) {
-  videos[0].muted = true;
+  // ===============================
+  // ▶️ VIDEO PLAY
+  // ===============================
 
-  videos[0].play().catch(() => {});
+  function playVideo(index) {
 
-  document.addEventListener("click", () => {
-    videos[0].muted = false;
-    videos[0].play().catch(() => {});
-  }, { once: true });
-}
-  
+    if (!videos.length) return;
+
+    if (index < 0) index = 0;
+    if (index >= videos.length) index = 0;
+
+    current = index;
+
+    videos.forEach((video, i) => {
+
+      if (i === current) {
+        video.style.display = "block";
+        video.muted = true;
+
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
+
+    });
+
+  }
 
 
-  // ========================================
-  // 🔄 ভিডিও শেষ হলে পরের ভিডিও
-  // ========================================
+  // প্রথম ভিডিও
+  if (videos.length > 0) {
+    playVideo(0);
+  }
+
+
+  // ===============================
+  // ⏭️ VIDEO শেষ হলে পরের ভিডিও
+  // ===============================
 
   videos.forEach((video, index) => {
 
     video.addEventListener("ended", () => {
 
-      current = (index + 1) % videos.length;
+      const next = index + 1;
 
-      videos[current].scrollIntoView({
-        behavior: "smooth"
-      });
+      if (next < videos.length) {
+        playVideo(next);
+      } else {
+        playVideo(0);
+      }
 
-      videos[current].play().catch(() => {});
     });
 
   });
 
-// ===============================
-// 👤 FOLLOW SYSTEM
-// ===============================
 
-const followButtons = document.querySelectorAll(".follow-btn");
+  // ===============================
+  // 🔊 VIDEO CLICK = SOUND
+  // ===============================
 
-followButtons.forEach((button) => {
-  const username = button.dataset.user;
-  const followKey = `wwc-follow-${username}`;
+  videos.forEach((video) => {
 
-  if (localStorage.getItem(followKey) === "true") {
-    button.textContent = "Following";
-  }
+    video.addEventListener("click", () => {
 
-  button.addEventListener("click", () => {
-    const isFollowing =
-      localStorage.getItem(followKey) === "true";
+      video.muted = !video.muted;
 
-    if (isFollowing) {
-      localStorage.removeItem(followKey);
-      button.textContent = "Follow";
-    } else {
-      localStorage.setItem(followKey, "true");
-      button.textContent = "Following";
-    }
+      video.play().catch(() => {});
+
+    });
+
   });
-});
-  // ========================================
-  // 📱 Swipe / Mouse Wheel
-  // ========================================
 
-  document.addEventListener("wheel", (e) => {
 
-    if (videos.length === 0) return;
+  // ===============================
+  // ❤️ LIKE
+  // ===============================
 
-    videos[current].pause();
+  const likeButtons = document.querySelectorAll(
+    ".actions button:nth-child(1)"
+  );
 
-    if (e.deltaY > 0) {
-      current = (current + 1) % videos.length;
+  likeButtons.forEach((button, index) => {
+
+    const storageKey = `wwc_like_${index}`;
+
+    let liked = localStorage.getItem(storageKey) === "true";
+
+    updateLikeButton(button, liked);
+
+
+    button.addEventListener("click", (event) => {
+
+      event.stopPropagation();
+
+      liked = !liked;
+
+      localStorage.setItem(storageKey, liked);
+
+      updateLikeButton(button, liked);
+
+    });
+
+  });
+
+
+  function updateLikeButton(button, liked) {
+
+    if (liked) {
+      button.innerHTML = "❤️";
+      button.classList.add("liked");
+      button.style.transform = "scale(1.2)";
     } else {
-      current = (current - 1 + videos.length) % videos.length;
+      button.innerHTML = "🤍";
+      button.classList.remove("liked");
+      button.style.transform = "scale(1)";
     }
 
-    videos[current].scrollIntoView({
-      behavior: "smooth"
-    });
-
-    videos[current].play().catch(() => {});
-
-  }, { passive: true });
-
-// 📱 TOUCH SWIPE SYSTEM
-
-let touchStartY = 0;
-let touchEndY = 0;
-
-document.addEventListener("touchstart", (e) => {
-  touchStartY = e.changedTouches[0].screenY;
-}, { passive: true });
-
-document.addEventListener("touchend", (e) => {
-  touchEndY = e.changedTouches[0].screenY;
-
-  const swipeDistance = touchStartY - touchEndY;
-
-  // 👆 Swipe Up
-  if (swipeDistance > 50) {
-    if (videos.length === 0) return;
-
-    videos[current].pause();
-
-    current = (current + 1) % videos.length;
-
-    videos[current].scrollIntoView({
-      behavior: "smooth"
-    });
-
-    videos[current].play().catch(() => {});
   }
 
-  // 👇 Swipe Down
-  if (swipeDistance < -50) {
-    if (videos.length === 0) return;
 
-    videos[current].pause();
+  // ===============================
+  // 💬 COMMENT
+  // ===============================
 
-    current =
-      (current - 1 + videos.length) % videos.length;
+  const commentButtons = document.querySelectorAll(
+    ".actions button:nth-child(2)"
+  );
 
-    videos[current].scrollIntoView({
-      behavior: "smooth"
+  commentButtons.forEach((button, index) => {
+
+    button.addEventListener("click", async (event) => {
+
+      event.stopPropagation();
+
+      const comment = prompt("আপনার মন্তব্য লিখুন:");
+
+      if (!comment || !comment.trim()) {
+        return;
+      }
+
+      const cleanComment = comment.trim();
+
+
+      // 화면ে দেখানো
+      const item = button.closest(".video-item");
+
+      if (item) {
+
+        let commentBox = item.querySelector(".wwc-comments");
+
+        if (!commentBox) {
+
+          commentBox = document.createElement("div");
+
+          commentBox.className = "wwc-comments";
+
+          commentBox.style.position = "absolute";
+          commentBox.style.bottom = "90px";
+          commentBox.style.left = "15px";
+          commentBox.style.right = "15px";
+          commentBox.style.zIndex = "20";
+          commentBox.style.background = "rgba(0,0,0,0.75)";
+          commentBox.style.color = "white";
+          commentBox.style.padding = "10px";
+          commentBox.style.borderRadius = "10px";
+          commentBox.style.fontSize = "15px";
+
+          item.appendChild(commentBox);
+
+        }
+
+        const newComment = document.createElement("div");
+
+        newComment.textContent = "💬 " + cleanComment;
+
+        newComment.style.marginBottom = "5px";
+
+        commentBox.appendChild(newComment);
+
+      }
+
+
+      // Firestore-এ সংরক্ষণ
+      try {
+
+        await addDoc(collection(db, "comments"), {
+          videoIndex: index,
+          comment: cleanComment,
+          createdAt: serverTimestamp()
+        });
+
+      } catch (error) {
+
+        console.log("Comment save skipped:", error);
+
+      }
+
     });
 
-    videos[current].play().catch(() => {});
-  }
-}, { passive: true });
-  // ========================================
-  // ❤️ LIKE + 💬 COMMENT + ↗️ SHARE
-  // ========================================
-
-  videoItems.forEach((item, index) => {
-
-    const buttons = item.querySelectorAll(".actions button");
-
-    const likeButton = buttons[0];
-    const commentButton = buttons[1];
-
-    const shareButton =
-      item.querySelector('[id^="shareBtn"]') ||
-      buttons[2];
+  });
 
 
-    // ========================================
-    // ❤️ LIKE SYSTEM
-    // ========================================
+  // ===============================
+  // ↗️ SHARE
+  // ===============================
 
-    if (likeButton) {
+  const shareButtons = document.querySelectorAll(
+    ".actions button[id^='shareBtn']"
+  );
 
-      const likedKey = `wwc-liked-${index}`;
-      const countKey = `wwc-like-count-${index}`;
+  shareButtons.forEach((button) => {
 
-      let liked =
-        localStorage.getItem(likedKey) === "true";
+    button.addEventListener("click", async (event) => {
 
-      let likeCount =
-        parseInt(
-          localStorage.getItem(countKey) || "0",
-          10
-        );
+      event.stopPropagation();
+
+      const shareData = {
+        title: "WWC Video Feed",
+        text: "WWC-Core এ এই ভিডিওটি দেখুন ❤️",
+        url: window.location.href
+      };
 
 
-      function updateLike() {
+      // Android / Browser Share
+      if (navigator.share) {
 
-        if (liked) {
+        try {
 
-          likeButton.textContent =
-            `❤️ Liked ${likeCount}`;
+          await navigator.share(shareData);
 
-        } else {
+        } catch (error) {
 
-          likeButton.textContent =
-            `❤️ Like ${likeCount}`;
+          console.log("Share cancelled");
+
+        }
+
+      } else {
+
+        // Share না থাকলে clipboard
+        try {
+
+          await navigator.clipboard.writeText(
+            window.location.href
+          );
+
+          alert("লিংক কপি হয়েছে ✅");
+
+        } catch (error) {
+
+          alert("লিংক কপি করা যায়নি।");
 
         }
 
       }
 
+    });
 
-      updateLike();
-
-
-      likeButton.addEventListener("click", async (e) => {
-
-        e.preventDefault();
-        e.stopPropagation();
+  });
 
 
-        if (liked) {
+  // ===============================
+  // 👤 FOLLOW / UNFOLLOW
+  // ===============================
 
-          liked = false;
+  const followButtons = document.querySelectorAll(".follow-btn");
 
-          if (likeCount > 0) {
-            likeCount--;
-          }
+  followButtons.forEach((button) => {
 
-        } else {
+    const username =
+      button.dataset.user || "unknown";
 
-          liked = true;
-          likeCount++;
+    const storageKey =
+      `wwc_follow_${username}`;
 
-        }
-
-
-        localStorage.setItem(
-          likedKey,
-          liked
-        );
-
-        localStorage.setItem(
-          countKey,
-          likeCount
-        );
+    let following =
+      localStorage.getItem(storageKey) === "true";
 
 
-        updateLike();
+    updateFollowButton(button, following);
 
 
-        // ========================================
-        // 🔥 Firebase Like Save
-        // ========================================
+    button.addEventListener("click", (event) => {
 
-        try {
+      event.stopPropagation();
 
-          const videoRef = doc(
-            db,
-            "videos",
-            `video${index + 1}`
-          );
+      following = !following;
+
+      localStorage.setItem(
+        storageKey,
+        following
+      );
+
+      updateFollowButton(
+        button,
+        following
+      );
+
+    });
+
+  });
 
 
-          const snapshot =
-            await getDoc(videoRef);
+  function updateFollowButton(button, following) {
+
+    if (following) {
+
+      button.textContent = "Following ✓";
+
+      button.style.background = "#444";
+      button.style.color = "white";
+
+    } else {
+
+      button.textContent = "Follow";
+
+      button.style.background = "";
+      button.style.color = "";
+
+    }
+
+  }
 
 
-          if (snapshot.exists()) {
+  // ===============================
+  // 🖱️ ACTION BUTTON CLICK
+  // ===============================
 
-            await updateDoc(
-              videoRef,
-              {
-                likes: likeCount
-              }
-            );
+  document
+    .querySelectorAll(".actions button")
+    .forEach((button) => {
 
-          } else {
-
-            await setDoc(
-              videoRef,
-              {
-                likes: likeCount,
-                comments: []
-              }
-            );
-
-          }
-
-        } catch (error) {
-
-          console.error(
-            "Like save error:",
-            error
-          );
-
-        }
-
+      button.addEventListener("click", (event) => {
+        event.stopPropagation();
       });
 
+    });
+
+
+  // ===============================
+  // 📱 SWIPE / TOUCH
+  // ===============================
+
+  let touchStartY = 0;
+  let touchEndY = 0;
+
+
+  document.addEventListener("touchstart", (event) => {
+
+    touchStartY =
+      event.changedTouches[0].screenY;
+
+  });
+
+
+  document.addEventListener("touchend", (event) => {
+
+    touchEndY =
+      event.changedTouches[0].screenY;
+
+    const difference =
+      touchStartY - touchEndY;
+
+
+    if (Math.abs(difference) < 50) {
+      return;
     }
 
 
-    // ========================================
-    // 💬 COMMENT SYSTEM
-    // ========================================
+    if (difference > 0) {
 
-    if (commentButton) {
+      // Swipe up
+      if (current < videos.length - 1) {
 
-      commentButton.addEventListener(
-        "click",
-        async (e) => {
+        playVideo(current + 1);
 
-          e.preventDefault();
-          e.stopPropagation();
+      } else {
 
+        playVideo(0);
 
-          const comment =
-            prompt("💬 আপনার মন্তব্য লিখুন:");
+      }
 
+    } else {
 
-          if (
-            !comment ||
-            comment.trim() === ""
-          ) {
-            return;
-          }
+      // Swipe down
+      if (current > 0) {
 
+        playVideo(current - 1);
 
-          const newComment = {
-
-            text: comment.trim(),
-
-            time:
-              new Date().toISOString()
-
-          };
-
-
-          // ========================================
-          // LocalStorage
-          // ========================================
-
-          let comments =
-            JSON.parse(
-              localStorage.getItem(
-                `wwc-comments-${index}`
-              ) || "[]"
-            );
-
-
-          comments.push(newComment);
-
-
-          localStorage.setItem(
-            `wwc-comments-${index}`,
-            JSON.stringify(comments)
-          );
-
-
-          // ========================================
-          // Firebase
-          // ========================================
-
-          try {
-
-            const videoRef = doc(
-              db,
-              "videos",
-              `video${index + 1}`
-            );
-
-
-            const snapshot =
-              await getDoc(videoRef);
-
-
-            let firebaseComments = [];
-
-
-            if (snapshot.exists()) {
-
-              firebaseComments =
-                snapshot.data().comments || [];
-
-            }
-
-
-            firebaseComments.push(
-              newComment
-            );
-
-
-            await setDoc(
-              videoRef,
-              {
-                comments: firebaseComments
-              },
-              {
-                merge: true
-              }
-            );
-
-
-            alert("💬 মন্তব্য সফলভাবে সংরক্ষণ হয়েছে!");
-
-          } catch (error) {
-
-            console.error(
-              "Comment save error:",
-              error
-            );
-
-            alert("❌ মন্তব্য সংরক্ষণ করা যায়নি।");
-
-          }
-
-        }
-      );
-
-    }
-
-
-    // ========================================
-    // ↗️ SHARE SYSTEM
-    // ========================================
-
-    if (shareButton) {
-
-      shareButton.addEventListener(
-        "click",
-        async (e) => {
-
-          e.preventDefault();
-          e.stopPropagation();
-
-
-          const shareUrl =
-            window.location.href;
-
-
-          try {
-
-            // Android / Chrome Share
-            if (
-              navigator.share
-            ) {
-
-              await navigator.share({
-
-                title: "WWC-Core",
-
-                text:
-                  "🌐 WWC-Core ভিডিও দেখুন ❤️",
-
-                url: shareUrl
-
-              });
-
-            }
-
-            // Clipboard
-            else if (
-              navigator.clipboard
-            ) {
-
-              await navigator.clipboard.writeText(
-                shareUrl
-              );
-
-              alert(
-                "🔗 লিংক কপি হয়েছে!"
-              );
-
-            }
-
-            // পুরোনো Browser
-            else {
-
-              const input =
-                document.createElement(
-                  "input"
-                );
-
-
-              input.value =
-                shareUrl;
-
-
-              document.body.appendChild(
-                input
-              );
-
-
-              input.select();
-
-
-              document.execCommand(
-                "copy"
-              );
-
-
-              input.remove();
-
-
-              alert(
-                "🔗 লিংক কপি হয়েছে!"
-              );
-
-            }
-
-          } catch (error) {
-
-            // User share cancel করলে কিছু না
-            if (
-              error.name ===
-              "AbortError"
-            ) {
-
-              return;
-
-            }
-
-
-            console.error(
-              "Share error:",
-              error
-            );
-
-
-            alert(
-              "❌ শেয়ার করা যায়নি।"
-            );
-
-          }
-
-        }
-      );
+      }
 
     }
 
