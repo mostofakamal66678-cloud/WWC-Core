@@ -141,58 +141,67 @@ browserLocalPersistence
 
     const auth = getAuth(app);
 
+// Keep login session
 try {
   await setPersistence(auth, browserLocalPersistence);
+  await auth.authStateReady();
 } catch (error) {
-  console.error("Auth persistence error:", error);
+  console.error("Auth initialization error:", error);
 }
 
 const storage = getStorage(app);
-    // ==============================
-    // 📌 ELEMENTS
-    // ==============================
 
-    const videoFile = document.getElementById("videoFile");
-    const uploadBtn = document.getElementById("uploadBtn");
-    const status = document.getElementById("status");
-    const userStatus = document.getElementById("userStatus");
-    const progressBar = document.getElementById("progressBar");
+// ========================
+// ELEMENTS
+// ========================
 
+const videoFile = document.getElementById("videoFile");
+const uploadBtn = document.getElementById("uploadBtn");
+const status = document.getElementById("status");
+const userStatus = document.getElementById("userStatus");
+const progressBar = document.getElementById("progressBar");
 
-    let currentUser = null;
+let currentUser = auth.currentUser;
 
+// ========================
+// LOGIN CHECK
+// ========================
 
-    // ==============================
-    // 🔐 LOGIN CHECK
-    // ==============================
+if (currentUser) {
+  userStatus.textContent =
+    "✅ Login করা আছে: " + (currentUser.email || currentUser.uid);
 
-    onAuthStateChanged(auth, (user) => {
+  uploadBtn.disabled = false;
+} else {
+  userStatus.textContent = "❌ আগে Login করুন";
+  uploadBtn.disabled = true;
 
-      if (user) {
+  status.innerHTML =
+    'ভিডিও Upload করতে <a href="./login.html">Login</a> করুন।';
+}
 
-        currentUser = user;
+// Also listen for login/logout changes
+onAuthStateChanged(auth, (user) => {
 
-        userStatus.textContent =
-          "✅ Login করা আছে: " +
-          (user.email || user.uid);
+  if (user) {
+    currentUser = user;
 
-        uploadBtn.disabled = false;
+    userStatus.textContent =
+      "✅ Login করা আছে: " + (user.email || user.uid);
 
-      } else {
+    uploadBtn.disabled = false;
 
-        currentUser = null;
+  } else {
+    currentUser = null;
 
-        userStatus.textContent =
-          "❌ আগে Login করুন।";
+    userStatus.textContent = "❌ আগে Login করুন";
+    uploadBtn.disabled = true;
 
-        uploadBtn.disabled = true;
+    status.innerHTML =
+      'ভিডিও Upload করতে <a href="./login.html">Login</a> করুন।';
+  }
 
-        status.innerHTML =
-          'ভিডিও Upload করতে <a href="./login.html">Login</a> করুন।';
-      }
-
-    });
-
+});
 
     // ==============================
     // 📹 VIDEO UPLOAD
