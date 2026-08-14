@@ -125,7 +125,29 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===============================
   // 🔊 VIDEO CLICK = SOUND
   // ===============================
+// 📱 MOBILE SWIPE
+let touchStartY = 0;
+let touchEndY = 0;
 
+document.addEventListener("touchstart", (e) => {
+  touchStartY = e.changedTouches[0].screenY;
+}, { passive: true });
+
+document.addEventListener("touchend", (e) => {
+  touchEndY = e.changedTouches[0].screenY;
+
+  const swipeDistance = touchStartY - touchEndY;
+
+  // ⬆️ উপরে Swipe = পরের ভিডিও
+  if (swipeDistance > 50) {
+    playVideo(current + 1);
+  }
+
+  // ⬇️ নিচে Swipe = আগের ভিডিও
+  if (swipeDistance < -50) {
+    playVideo(current - 1);
+  }
+});
   videos.forEach((video) => {
 
     video.addEventListener("click", () => {
