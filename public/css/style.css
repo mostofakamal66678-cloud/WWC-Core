@@ -149,7 +149,7 @@ body {
   right: 15px !important;
   bottom: 120px !important;
   z-index: 20 !important;
-  display: flex !important;
+  display: flex !important:
   flex-direction: column !important;
   align-items: center !important;
   gap: 12px !important;
@@ -160,4 +160,12 @@ body {
   color: #fff !important;
   border: none !important;
   border-radius: 6px !important;
+  
+  height: 50px !important;
+  min-height: 50px !important;
+  padding: 0 14px !important;
+  font-size: 18px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
