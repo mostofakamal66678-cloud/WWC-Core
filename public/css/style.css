@@ -117,18 +117,26 @@ body {
   font-size: 11px !important;
   font-weight: 600 !important;
   cursor: pointer;
-  padding: 4px !important;
+
   width: 50px !important;
   height: 50px !important;
   min-width: 50px !important;
   min-height: 50px !important;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
   border-radius: 50% !important;
+
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+
   text-align: center !important;
   line-height: 12px !important;
-  margin: 0 !important;
+
+  position: relative !important;
+  left: 25px !important;
   transform: none !important;
 }
 
