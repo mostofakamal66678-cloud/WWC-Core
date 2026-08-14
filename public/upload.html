@@ -167,7 +167,7 @@ const progressBar = document.getElementById("progressBar");
 // 🔐 LOGIN CHECK
 // =========================
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   currentUser = user;
 
   if (user) {
@@ -175,7 +175,7 @@ onAuthStateChanged(auth, (user) => {
       "✅ Login করা আছে: " + (user.email || user.uid);
 
     uploadBtn.disabled = false;
-    status.textContent = "ভিডিও Upload করার জন্য প্রস্তুত।";
+    status.textContent = "ভিডিও Upload করার জন্য প্রস্তুত";
   } else {
     userStatus.textContent = "❌ আগে Login করুন";
     uploadBtn.disabled = true;
@@ -184,8 +184,7 @@ onAuthStateChanged(auth, (user) => {
       'ভিডিও Upload করতে <a href="./login.html">Login</a> করুন';
   }
 });
-
-
+  
     uploadBtn.addEventListener("click", async () => {
 
       if (!currentUser) {
