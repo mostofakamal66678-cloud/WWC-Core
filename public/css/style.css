@@ -108,7 +108,23 @@ body {
 }
 
 .video-item .follow-btn {
+  background: rgba(0, 0, 0, 0.45) !important;
+  border: none !important;
+  color: #fff !important;
+  font-size: 16px !important;
+  cursor: pointer;
+  padding: 8px 12px !important;
+  min-width: 50px;
+  min-height: 50px;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   margin: 0 !important;
+}
+
+.video-item .follow-btn:active {
+  transform: scale(0.9);
 }
 
 .video-item .actions {
