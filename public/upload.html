@@ -193,7 +193,7 @@ onAuthStateChanged(auth, (user) => {
 });
     uploadBtn.addEventListener("click", async () => {
 
-      if (!currentUser) {
+    if (!auth.currentUser) {
 
         status.textContent =
           "❌ আগে Login করুন।";
