@@ -90,6 +90,7 @@ body {
   right: 15px !important;
   left: auto !important;
   width: 70px !important;
+  background: #1877f2 !important;
   z-index: 20 !important;
   display: flex !important;
   flex-direction: column !important;
@@ -107,7 +108,7 @@ body {
 }
 
 .video-item .follow-btn {
-  background: rgba(0, 0, 0, 0.45) !important;
+background: #1877f2 !important;
   border: none !important;
   color: #fff !important;
   font-size: 16px !important;
@@ -115,7 +116,7 @@ body {
   padding: 8px 12px !important;
   min-width: 50px;
   min-height: 50px;
-  border-radius: 50% !important;
+  border-radius: 6px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
