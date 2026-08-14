@@ -623,131 +623,66 @@ function updateLike(
 
 function setupComment() {
 
-  const buttons =
-    document.querySelectorAll(
-      ".comment-btn, [data-action='comment']"
-    );
-
-
-  buttons.forEach(
-    (button) => {
-
-      button.addEventListener(
-        "click",
-        (event) => {
-
-          event.preventDefault();
-          event.stopPropagation();
-
-
-          const text =
-            prompt(
-              "আপনার মন্তব্য লিখুন:"
-            );
-
-
-          if (
-            !text ||
-            !text.trim()
-          ) {
-
-            return;
-
-          }
-
-
-          const item =
-            button.closest(
-              ".video-item"
-            );
-
-
-          if (!item) return;
-
-
-          let box =
-            item.querySelector(
-              ".wwc-comments"
-            );
-
-
-          if (!box) {
-
-            box =
-              document.createElement(
-                "div"
-              );
-
-
-            box.className =
-              "wwc-comments";
-
-
-            box.style.position =
-              "absolute";
-
-
-            box.style.left =
-              "15px";
-
-
-            box.style.right =
-              "15px";
-
-
-            box.style.bottom =
-              "100px";
-
-
-            box.style.background =
-              "rgba(0,0,0,.85)";
-
-
-            box.style.color =
-              "#fff";
-
-
-            box.style.padding =
-              "10px";
-
-
-            box.style.borderRadius =
-              "10px";
-
-
-            box.style.zIndex =
-              "9999";
-
-
-            item.appendChild(box);
-
-          }
-
-
-          const comment =
-            document.createElement(
-              "div"
-            );
-
-
-          comment.textContent =
-            "💬 " +
-            text.trim();
-
-
-          comment.style.marginBottom =
-            "6px";
-
-
-          box.appendChild(
-            comment
-          );
-
-        }
-      );
-
-    }
+  const buttons = document.querySelectorAll(
+    ".actions button:nth-child(2), .comment-btn, [data-action='comment']"
   );
+
+  buttons.forEach((button) => {
+
+    button.addEventListener("click", (event) => {
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const item = button.closest(".video-item");
+
+      if (!item) {
+        console.log("Video item পাওয়া যায়নি");
+        return;
+      }
+
+      const text = prompt("আপনার মন্তব্য লিখুন:");
+
+      if (!text || !text.trim()) {
+        return;
+      }
+
+      let box = item.querySelector(".wwc-comments");
+
+      if (!box) {
+
+        box = document.createElement("div");
+
+        box.className = "wwc-comments";
+
+        box.style.position = "absolute";
+        box.style.left = "15px";
+        box.style.right = "15px";
+        box.style.bottom = "100px";
+        box.style.maxHeight = "180px";
+        box.style.overflowY = "auto";
+        box.style.background = "rgba(0,0,0,0.85)";
+        box.style.color = "#fff";
+        box.style.padding = "10px";
+        box.style.borderRadius = "10px";
+        box.style.zIndex = "9999";
+
+        item.appendChild(box);
+      }
+
+      const comment = document.createElement("div");
+
+      comment.textContent = "💬 " + text.trim();
+
+      comment.style.marginBottom = "8px";
+
+      box.appendChild(comment);
+
+      console.log("Comment added:", text.trim());
+
+    });
+
+  });
 
 }
 
@@ -758,73 +693,73 @@ function setupComment() {
 
 function setupShare() {
 
-  const buttons =
-    document.querySelectorAll(
-      ".share-btn, [data-action='share']"
-    );
-
-
-  buttons.forEach(
-    (button) => {
-
-      button.addEventListener(
-        "click",
-        async (event) => {
-
-          event.preventDefault();
-          event.stopPropagation();
-
-
-          const url =
-            window.location.href;
-
-
-          try {
-
-            if (
-              navigator.share
-            ) {
-
-              await navigator.share({
-                title:
-                  "World Wide Connect",
-
-                text:
-                  "এই ভিডিওটি দেখুন ❤️",
-
-                url: url
-
-              });
-
-            } else {
-
-              await navigator.clipboard.writeText(
-                url
-              );
-
-
-              alert(
-                "লিংক কপি হয়েছে ✅"
-              );
-
-            }
-
-          } catch (error) {
-
-            console.log(
-              "Share cancelled:",
-              error
-            );
-
-          }
-
-        }
-      );
-
-    }
+  const buttons = document.querySelectorAll(
+    ".actions button:nth-child(3), " +
+    ".share-btn, " +
+    "[data-action='share'], " +
+    "#shareBtn1, " +
+    "#shareBtn2, " +
+    "#shareBtn3"
   );
 
-}
+  buttons.forEach((button) => {
+
+    button.addEventListener("click", async (event) => {
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const url = window.location.href;
+
+      const shareData = {
+        title: "World Wide Connect",
+        text: "WWC-Core এ ভিডিও দেখুন ❤️",
+        url: url
+      };
+
+      try {
+
+        if (navigator.share) {
+
+          await navigator.share(shareData);
+
+          console.log("Share successful");
+
+        } else {
+
+          await navigator.clipboard.writeText(url);
+
+          alert("লিংক কপি হয়েছে ✅");
+
+        }
+
+      } catch (error) {
+
+        console.log("Share cancelled/error:", error);
+
+        try {
+
+          await navigator.clipboard.writeText(url);
+
+          alert("লিংক কপি হয়েছে ✅");
+
+        } catch (copyError) {
+
+          prompt(
+            "এই লিংকটি কপি করুন:",
+            url
+          );
+
+        }
+
+      }
+
+    });
+
+  });
+
+    }
+
 
 
 // ======================================================
