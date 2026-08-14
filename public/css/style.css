@@ -581,3 +581,77 @@ body {
     align-items: center !important;
     gap: 12px !important;
 }
+/* ===== FORCE PROFILE + FOLLOW VISIBLE ===== */
+
+.video-item .profile-area {
+    display: flex !important;
+    position: absolute !important;
+
+    top: 90px !important;
+    left: 15px !important;
+
+    width: 100px !important;
+    height: auto !important;
+
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 8px !important;
+
+    z-index: 9999 !important;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+.video-item .profile-area .profile-photo {
+    display: block !important;
+
+    width: 55px !important;
+    height: 55px !important;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    object-fit: cover !important;
+    border-radius: 50% !important;
+}
+
+.video-item .profile-area .username {
+    display: block !important;
+
+    color: white !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    white-space: nowrap !important;
+}
+
+.video-item .profile-area .follow-btn {
+    display: flex !important;
+
+    width: 80px !important;
+    height: 38px !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    background: #1877f2 !important;
+    color: white !important;
+
+    border: 0 !important;
+    border-radius: 20px !important;
+
+    font-size: 14px !important;
+    font-weight: bold !important;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    z-index: 10000 !important;
+}
