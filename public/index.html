@@ -27,29 +27,19 @@
 
     <!-- Video 1 -->
     <div class="video-item">
-      <div style="position:absolute;top:20px;left:15px;z-index:10;display:flex;align-items:center;gap:10px;color:white;">
-
-  
+      <div style="position:absolute;top:20px;left:15px;z-index:10;display:flex;flex-direction:column;align-items:center;gap:10px;color:white;">
   <img
-  class="profile-photo"
-  src="/images/profile.png"
-  alt="Profile"
-  style="width:45px;height:45px;border-radius:50%;object-fit:cover;background:#555;"
->  
-    
+    class="profile-photo"
+    src="./images/profile.png"
+    alt="Profile"
+    style="width:45px;height:45px;border-radius:50%;object-fit:cover;background:#555;"
+  >
 
-  <div>
-    <strong class="profile-name">@wwc_user</strong><br>
+  <strong class="profile-name">@wwc_user</strong>
 
-    <button class="follow-btn" data-user="wwc_user">Follow</button>
-  </div>
-
+  <button class="follow-btn" data-user="wwc_user">Follow</button>
       </div>
 
-  
-
-      
-      
   
 <video class="feed-video"  autoplay muted playsinline preload="auto">
 
@@ -69,14 +59,19 @@
 
     <!-- Video 2 -->
     <div class="video-item">
-      <div style="position:absolute;top:20px;left:15px;z-index:10;display:flex;align-items:center;gap:10px;color:white;">
-  <div style="width:45px;height:45px;border-radius:50%;background:#555;display:flex;justify-content:center;align-items:center;">
-    👤
-  </div>
-  <div>
-    <strong>@wwc_user2</strong><br>
-    
-    <button class="follow-btn" data-user="wwc_user2">Follow</button>
+      <div style="position:absolute;top:20px;left:15px;z-index:10;display:flex;flex-direction:column;align-items:center;gap:10px;color:white;">
+  <img
+    class="profile-photo"
+    src="./images/profile.png"
+    alt="Profile"
+    style="width:45px;height:45px;border-radius:50%;object-fit:cover;background:#555;"
+  >
+
+  <strong class="profile-name">@wwc_user2</strong>
+
+  <button class="follow-btn" data-user="wwc_user2">Follow</button>
+      </div>
+  
       
     
   </div>
@@ -97,23 +92,22 @@
 <!-- Video 3 -->
 <div class="video-item">
 
-  <div style="position:absolute;top:20px;left:15px;z-index:10;display:flex;align-items:center;gap:10px;color:white;">
-    <div style="width:45px;height:45px;border-radius:50%;background:#555;display:flex;align-items:center;justify-content:center;">
-      👤
+    <div style="position:absolute;top:20px;left:15px;z-index:10;display:flex;flex-direction:column;align-items:center;gap:10px;color:white;">
+  <img
+    class="profile-photo"
+    src="./images/profile.png"
+    alt="Profile"
+    style="width:45px;height:45px;border-radius:50%;object-fit:cover;background:#555;"
+  >
+
+  <strong class="profile-name">@wwc_user_3</strong>
+
+  <button class="follow-btn" data-user="wwc_user_3">Follow</button>
     </div>
-
-    <div>
-      <strong>@wwc_user_3</strong><br>
-
-      <button class="follow-btn" data-user="wwc_user_3">Follow</button>
-    </div>
-  </div>
-
-  <video  autoplay muted playsinline>
-    <source src="./videos/video3.mp4" type="video/mp4">
-    আপনার ব্রাউজার ভিডিও চালাতে পারে না।
-  </video>
-
+<video class="feed-video" autoplay muted playsinline preload="auto">
+  <source src="./videos/video3.mp4" type="video/mp4">
+  আপনার ব্রাউজার ভিডিও চালাতে পারে না।
+</video>
   <div class="actions">
     <button class="like-btn">❤️ <span class="like-count">0</span></button>
     <button>💬</button>
