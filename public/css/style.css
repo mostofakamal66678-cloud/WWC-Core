@@ -24,7 +24,7 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   scroll-snap-type: y mandatory;
-  touch-action: pan-y;
+  
 }
   
 .video-item {
