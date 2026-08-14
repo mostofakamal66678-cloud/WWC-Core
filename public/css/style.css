@@ -129,6 +129,7 @@ body {
   text-align: center !important;
   line-height: 12px !important;
   margin: 0 !important;
+  transform: none !important;
 }
 
 .video-item .follow-btn:active {
