@@ -155,11 +155,8 @@ function setupVideos() {
 
 
   if (!videos.length) {
-
-    console.warn("কোনো video পাওয়া যায়নি");
-
+    console.warn("কোনো video পাওয়া যায়নি");
     return;
-
   }
 
 
