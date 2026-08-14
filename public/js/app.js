@@ -9,13 +9,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 
 import {
-  getFirestore,
-  collection,
-  addDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-
-import {
   getAuth,
   signOut,
   onAuthStateChanged
@@ -23,7 +16,7 @@ import {
 
 
 // ======================================================
-// FIREBASE
+// FIREBASE CONFIG
 // ======================================================
 
 const firebaseConfig = {
@@ -33,19 +26,23 @@ const firebaseConfig = {
   storageBucket: "world-wide-connect-62c87.firebasestorage.app",
   messagingSenderId: "931784536688",
   appId: "1:931784536688:web:634f69070a082677445031",
-  measurementId: "G-R2L5YXQXPH"
+  measurementId: "G-R2L5YXQXPHQ"
 };
+
+
+// ======================================================
+// FIREBASE INITIALIZE
+// ======================================================
 
 const app = getApps().length
   ? getApps()[0]
   : initializeApp(firebaseConfig);
 
-const db = getFirestore(app);
 const auth = getAuth(app);
 
 
 // ======================================================
-// GLOBAL VARIABLES
+// GLOBAL
 // ======================================================
 
 let currentUser = null;
@@ -55,19 +52,42 @@ let videoItems = [];
 
 
 // ======================================================
-// AUTH STATE
+// WAIT FOR HTML
 // ======================================================
 
-onAuthStateChanged(auth, (user) => {
+document.addEventListener("DOMContentLoaded", () => {
 
-  currentUser = user;
+  console.log("WWC-Core app.js started ✅");
 
-  console.log(
-    user
-      ? "Logged in:",
-        user.email || user.displayName
-      : "Not logged in"
-  );
+
+  // ------------------------------------------
+  // AUTH
+  // ------------------------------------------
+
+  onAuthStateChanged(auth, (user) => {
+
+    currentUser = user;
+
+    console.log(
+      user
+        ? "Logged in: " + (user.email || user.displayName || "User")
+        : "Not logged in"
+    );
+
+  });
+
+
+  // ------------------------------------------
+  // START FEATURES
+  // ------------------------------------------
+
+  setupLogout();
+  setupVideos();
+  setupLike();
+  setupComment();
+  setupShare();
+  setupFollow();
+  setupActionProtection();
 
 });
 
@@ -76,70 +96,63 @@ onAuthStateChanged(auth, (user) => {
 // LOGOUT
 // ======================================================
 
-const logoutButtons = document.querySelectorAll(
-  "#logoutBtn, .logout-btn, [data-action='logout']"
-);
+function setupLogout() {
 
-logoutButtons.forEach((button) => {
+  const buttons = document.querySelectorAll(
+    "#logoutBtn, .logout-btn, [data-action='logout']"
+  );
 
-  button.addEventListener("click", async (event) => {
 
-    event.preventDefault();
-    event.stopPropagation();
+  buttons.forEach((button) => {
 
-    try {
+    button.addEventListener("click", async (event) => {
 
-      await signOut(auth);
+      event.preventDefault();
+      event.stopPropagation();
 
-      alert("Logout সফল হয়েছে");
 
-      window.location.href = "./auth.html";
+      try {
 
-    } catch (error) {
+        await signOut(auth);
 
-      console.error("Logout error:", error);
+        console.log("Logout successful");
 
-      alert("Logout করা যায়নি");
+        window.location.href = "./login.html";
 
-    }
+      } catch (error) {
+
+        console.error("Logout error:", error);
+
+        alert("Logout করা যায়নি। আবার চেষ্টা করুন।");
+
+      }
+
+    });
 
   });
 
-});
-
-
-// ======================================================
-// START APP
-// ======================================================
-
-document.addEventListener("DOMContentLoaded", () => {
-
-  setupVideoSystem();
-  setupLikeButtons();
-  setupCommentButtons();
-  setupShareButtons();
-  setupFollowButtons();
-  setupActionButtons();
-
-});
+}
 
 
 // ======================================================
 // VIDEO SYSTEM
 // ======================================================
 
-function setupVideoSystem() {
+function setupVideos() {
 
   videoItems = Array.from(
     document.querySelectorAll(".video-item")
   );
 
+
   videos = Array.from(
-    document.querySelectorAll(".video-item video, video")
+    document.querySelectorAll(".video-item video")
   );
+
 
   console.log("Video items:", videoItems.length);
   console.log("Videos:", videos.length);
+
 
   if (!videos.length) {
 
@@ -150,38 +163,36 @@ function setupVideoSystem() {
   }
 
 
-  // প্রথম ভিডিও
-  currentVideoIndex = 0;
-
-  prepareVideos();
-
-  playVideo(0);
-
-
-  // ভিডিও শেষ হলে পরের ভিডিও
+  // Video setup
   videos.forEach((video, index) => {
 
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+
+    video.preload = "metadata";
+
+
+    // Video শেষ হলে পরের ভিডিও
     video.addEventListener("ended", () => {
 
-      let next = index + 1;
+      if (index < videos.length - 1) {
 
-      if (next >= videos.length) {
-        next = 0;
+        goToVideo(index + 1);
+
+      } else {
+
+        goToVideo(0);
+
       }
-
-      playVideo(next);
 
     });
 
-  });
 
-
-  // ভিডিওতে click = sound / pause
-  videos.forEach((video) => {
-
+    // Video click
     video.addEventListener("click", (event) => {
 
       event.stopPropagation();
+
 
       if (video.paused) {
 
@@ -198,26 +209,44 @@ function setupVideoSystem() {
   });
 
 
-  // Intersection Observer
-  setupVideoObserver();
+  // প্রথম ভিডিও
+  currentVideoIndex = 0;
+
+  playCurrentVideo();
+
+
+  // Swipe
+  setupSwipe();
+
+
+  // Scroll
+  setupScroll();
 
 }
 
 
 // ======================================================
-// PREPARE VIDEOS
+// PLAY CURRENT VIDEO
 // ======================================================
 
-function prepareVideos() {
+function playCurrentVideo() {
 
   videos.forEach((video, index) => {
 
-    video.setAttribute("playsinline", "");
-    video.setAttribute("webkit-playsinline", "");
+    if (index === currentVideoIndex) {
 
-    video.preload = "auto";
+      video.muted = true;
 
-    if (index !== currentVideoIndex) {
+      video.play().catch((error) => {
+
+        console.log(
+          "Autoplay blocked:",
+          error
+        );
+
+      });
+
+    } else {
 
       video.pause();
 
@@ -229,300 +258,222 @@ function prepareVideos() {
 
 
 // ======================================================
-// PLAY VIDEO
+// GO TO VIDEO
 // ======================================================
 
-function playVideo(index) {
+function goToVideo(index) {
 
   if (!videos.length) return;
 
 
   if (index < 0) {
+
     index = 0;
+
   }
 
+
   if (index >= videos.length) {
+
     index = videos.length - 1;
+
   }
 
 
   currentVideoIndex = index;
 
 
-  videos.forEach((video, i) => {
-
-    if (i === index) {
-
-      video.style.display = "block";
-
-      video.currentTime = 0;
-
-      video.muted = true;
-
-      video.play().catch((error) => {
-
-        console.log("Autoplay blocked:", error);
-
-      });
-
-    } else {
-
-      video.pause();
-
-    }
-
-  });
+  const item = videoItems[index];
 
 
-  if (videoItems[index]) {
+  if (item) {
 
-    videoItems[index].scrollIntoView({
+    item.scrollIntoView({
       behavior: "smooth",
       block: "start"
     });
 
   }
 
-}
 
+  setTimeout(() => {
 
-// ======================================================
-// NEXT VIDEO
-// ======================================================
+    playCurrentVideo();
 
-function nextVideo() {
-
-  if (!videos.length) return;
-
-
-  let next = currentVideoIndex + 1;
-
-  if (next >= videos.length) {
-
-    next = 0;
-
-  }
-
-  playVideo(next);
+  }, 150);
 
 }
 
 
 // ======================================================
-// PREVIOUS VIDEO
+// SWIPE
 // ======================================================
 
-function previousVideo() {
+function setupSwipe() {
 
-  if (!videos.length) return;
-
-
-  let previous = currentVideoIndex - 1;
-
-  if (previous < 0) {
-
-    previous = videos.length - 1;
-
-  }
-
-  playVideo(previous);
-
-}
+  const feed =
+    document.getElementById("video-feed") ||
+    document.querySelector(".video-feed");
 
 
-// ======================================================
-// SWIPE / TOUCH
-// ======================================================
+  if (!feed) {
 
-let touchStartY = 0;
-let touchEndY = 0;
+    console.warn("video-feed পাওয়া যায়নি");
 
-let touchStartX = 0;
-let touchEndX = 0;
-
-const feed =
-  document.getElementById("video-feed") ||
-  document.querySelector("#video-feed") ||
-  document.body;
-
-
-feed.addEventListener(
-  "touchstart",
-  (event) => {
-
-    if (!event.touches.length) return;
-
-    touchStartY = event.touches[0].clientY;
-    touchStartX = event.touches[0].clientX;
-
-  },
-  { passive: true }
-);
-
-
-feed.addEventListener(
-  "touchend",
-  (event) => {
-
-    if (!event.changedTouches.length) return;
-
-    touchEndY = event.changedTouches[0].clientY;
-    touchEndX = event.changedTouches[0].clientX;
-
-
-    const differenceY =
-      touchStartY - touchEndY;
-
-    const differenceX =
-      touchStartX - touchEndX;
-
-
-    // horizontal swipe হলে কিছু করবে না
-    if (Math.abs(differenceX) > Math.abs(differenceY)) {
-      return;
-    }
-
-
-    // Swipe Up
-    if (differenceY > 60) {
-
-      nextVideo();
-
-    }
-
-
-    // Swipe Down
-    else if (differenceY < -60) {
-
-      previousVideo();
-
-    }
-
-  },
-  { passive: true }
-);
-
-
-// ======================================================
-// MOUSE WHEEL / DESKTOP SCROLL
-// ======================================================
-
-let wheelLocked = false;
-
-feed.addEventListener(
-  "wheel",
-  (event) => {
-
-    if (wheelLocked) return;
-
-    if (Math.abs(event.deltaY) < 20) return;
-
-
-    wheelLocked = true;
-
-
-    if (event.deltaY > 0) {
-
-      nextVideo();
-
-    } else {
-
-      previousVideo();
-
-    }
-
-
-    setTimeout(() => {
-
-      wheelLocked = false;
-
-    }, 500);
-
-  },
-  { passive: true }
-);
-
-
-// ======================================================
-// KEYBOARD
-// ======================================================
-
-document.addEventListener("keydown", (event) => {
-
-  if (event.key === "ArrowDown") {
-
-    event.preventDefault();
-
-    nextVideo();
+    return;
 
   }
 
 
-  if (event.key === "ArrowUp") {
-
-    event.preventDefault();
-
-    previousVideo();
-
-  }
-
-});
+  let startY = 0;
+  let startX = 0;
 
 
-// ======================================================
-// VIDEO OBSERVER
-// ======================================================
+  feed.addEventListener(
+    "touchstart",
+    (event) => {
 
-function setupVideoObserver() {
+      if (!event.touches.length) return;
 
-  const observer = new IntersectionObserver(
-    (entries) => {
 
-      entries.forEach((entry) => {
+      startY =
+        event.touches[0].clientY;
 
-        if (
-          entry.isIntersecting &&
-          entry.intersectionRatio >= 0.6
-        ) {
 
-          const video = entry.target;
-
-          const index = videos.indexOf(video);
-
-          if (index !== -1) {
-
-            currentVideoIndex = index;
-
-            videos.forEach((v) => {
-
-              if (v !== video) {
-
-                v.pause();
-
-              }
-
-            });
-
-            video.play().catch(() => {});
-
-          }
-
-        }
-
-      });
+      startX =
+        event.touches[0].clientX;
 
     },
-    {
-      threshold: [0.6]
-    }
+    { passive: true }
   );
 
 
-  videos.forEach((video) => {
+  feed.addEventListener(
+    "touchend",
+    (event) => {
 
-    observer.observe(video);
+      if (!event.changedTouches.length) return;
 
-  });
+
+      const endY =
+        event.changedTouches[0].clientY;
+
+
+      const endX =
+        event.changedTouches[0].clientX;
+
+
+      const differenceY =
+        startY - endY;
+
+
+      const differenceX =
+        startX - endX;
+
+
+      // Horizontal swipe বাদ
+      if (
+        Math.abs(differenceX) >
+        Math.abs(differenceY)
+      ) {
+
+        return;
+
+      }
+
+
+      // UP
+      if (differenceY > 60) {
+
+        goToVideo(
+          currentVideoIndex + 1
+        );
+
+      }
+
+
+      // DOWN
+      else if (differenceY < -60) {
+
+        goToVideo(
+          currentVideoIndex - 1
+        );
+
+      }
+
+    },
+    { passive: true }
+  );
+
+}
+
+
+// ======================================================
+// SCROLL
+// ======================================================
+
+function setupScroll() {
+
+  const feed =
+    document.getElementById("video-feed") ||
+    document.querySelector(".video-feed");
+
+
+  if (!feed) return;
+
+
+  let timer = null;
+
+
+  feed.addEventListener(
+    "scroll",
+    () => {
+
+      clearTimeout(timer);
+
+
+      timer = setTimeout(() => {
+
+        let closest = 0;
+        let smallest = Infinity;
+
+
+        videoItems.forEach(
+          (item, index) => {
+
+            const rect =
+              item.getBoundingClientRect();
+
+
+            const distance =
+              Math.abs(rect.top);
+
+
+            if (
+              distance <
+              smallest
+            ) {
+
+              smallest = distance;
+              closest = index;
+
+            }
+
+          }
+        );
+
+
+        currentVideoIndex =
+          closest;
+
+
+        playCurrentVideo();
+
+      }, 150);
+
+    },
+    { passive: true }
+  );
 
 }
 
@@ -531,94 +482,110 @@ function setupVideoObserver() {
 // LIKE
 // ======================================================
 
-function setupLikeButtons() {
+function setupLike() {
 
-  const likeButtons = document.querySelectorAll(
-    ".actions button:nth-child(1), .like-btn, [data-action='like']"
-  );
-
-
-  likeButtons.forEach((button, index) => {
-
-    const storageKey = `wwc_like_${index}`;
-
-    const countKey = `wwc_like_count_${index}`;
-
-
-    let liked =
-      localStorage.getItem(storageKey) === "true";
-
-
-    let count =
-      parseInt(
-        localStorage.getItem(countKey) || "0"
-      );
-
-
-    updateLikeButton(
-      button,
-      liked,
-      count
+  const buttons =
+    document.querySelectorAll(
+      ".like-btn, [data-action='like']"
     );
 
 
-    button.addEventListener("click", (event) => {
+  buttons.forEach(
+    (button, index) => {
 
-      event.preventDefault();
-      event.stopPropagation();
-
-
-      liked = !liked;
+      const likeKey =
+        "wwc_like_" + index;
 
 
-      if (liked) {
-
-        count++;
-
-      } else {
-
-        count = Math.max(0, count - 1);
-
-      }
+      const countKey =
+        "wwc_like_count_" + index;
 
 
-      localStorage.setItem(
-        storageKey,
-        liked
-      );
+      let liked =
+        localStorage.getItem(
+          likeKey
+        ) === "true";
 
 
-      localStorage.setItem(
-        countKey,
-        count
-      );
+      let count =
+        parseInt(
+          localStorage.getItem(
+            countKey
+          ) || "0",
+          10
+        );
 
 
-      updateLikeButton(
+      updateLike(
         button,
         liked,
         count
       );
 
-    });
 
-  });
+      button.addEventListener(
+        "click",
+        (event) => {
+
+          event.preventDefault();
+          event.stopPropagation();
+
+
+          liked =
+            !liked;
+
+
+          if (liked) {
+
+            count++;
+
+          } else {
+
+            count =
+              Math.max(
+                0,
+                count - 1
+              );
+
+          }
+
+
+          localStorage.setItem(
+            likeKey,
+            liked
+          );
+
+
+          localStorage.setItem(
+            countKey,
+            count
+          );
+
+
+          updateLike(
+            button,
+            liked,
+            count
+          );
+
+        }
+      );
+
+    }
+  );
 
 }
 
 
 // ======================================================
-// UPDATE LIKE BUTTON
+// LIKE UPDATE
 // ======================================================
 
-function updateLikeButton(
+function updateLike(
   button,
   liked,
   count
 ) {
-
-  if (!button) return;
-
 
   button.classList.toggle(
     "liked",
@@ -626,37 +593,26 @@ function updateLikeButton(
   );
 
 
-  button.style.transform =
-    liked
-      ? "scale(1.15)"
-      : "scale(1)";
-
-
-  const countSpan =
-    button.querySelector(
-      ".like-count"
-    );
-
-
-  if (countSpan) {
-
-    countSpan.textContent = count;
-
-  }
-
-
-  // count না থাকলে text-এর মধ্যে count যোগ
   const countElement =
-    button.parentElement?.querySelector(
+    button.querySelector(
       ".like-count"
     );
 
 
   if (countElement) {
 
-    countElement.textContent = count;
+    countElement.textContent =
+      count;
 
   }
+
+
+  button.setAttribute(
+    "aria-pressed",
+    liked
+      ? "true"
+      : "false"
+  );
 
 }
 
@@ -665,142 +621,133 @@ function updateLikeButton(
 // COMMENT
 // ======================================================
 
-function setupCommentButtons() {
+function setupComment() {
 
-  const commentButtons = document.querySelectorAll(
-    ".actions button:nth-child(2), .comment-btn, [data-action='comment']"
-  );
-
-
-  commentButtons.forEach((button, index) => {
-
-    button.addEventListener("click", async (event) => {
-
-      event.preventDefault();
-      event.stopPropagation();
+  const buttons =
+    document.querySelectorAll(
+      ".comment-btn, [data-action='comment']"
+    );
 
 
-      const comment =
-        prompt("আপনার মন্তব্য লিখুন:");
+  buttons.forEach(
+    (button) => {
+
+      button.addEventListener(
+        "click",
+        (event) => {
+
+          event.preventDefault();
+          event.stopPropagation();
 
 
-      if (!comment || !comment.trim()) {
-
-        return;
-
-      }
-
-
-      const cleanComment =
-        comment.trim();
+          const text =
+            prompt(
+              "আপনার মন্তব্য লিখুন:"
+            );
 
 
-      const item =
-        button.closest(".video-item");
+          if (
+            !text ||
+            !text.trim()
+          ) {
+
+            return;
+
+          }
 
 
-      if (!item) return;
+          const item =
+            button.closest(
+              ".video-item"
+            );
 
 
-      let commentBox =
-        item.querySelector(".wwc-comments");
+          if (!item) return;
 
 
-      if (!commentBox) {
-
-        commentBox =
-          document.createElement("div");
-
-        commentBox.className =
-          "wwc-comments";
+          let box =
+            item.querySelector(
+              ".wwc-comments"
+            );
 
 
-        commentBox.style.position =
-          "absolute";
+          if (!box) {
 
-        commentBox.style.bottom =
-          "90px";
-
-        commentBox.style.left =
-          "15px";
-
-        commentBox.style.right =
-          "15px";
-
-        commentBox.style.maxHeight =
-          "150px";
-
-        commentBox.style.overflowY =
-          "auto";
-
-        commentBox.style.background =
-          "rgba(0,0,0,.75)";
-
-        commentBox.style.color =
-          "#fff";
-
-        commentBox.style.padding =
-          "10px";
-
-        commentBox.style.borderRadius =
-          "10px";
-
-        commentBox.style.zIndex =
-          "1000";
+            box =
+              document.createElement(
+                "div"
+              );
 
 
-        item.appendChild(
-          commentBox
-        );
-
-      }
+            box.className =
+              "wwc-comments";
 
 
-      const newComment =
-        document.createElement("div");
+            box.style.position =
+              "absolute";
 
 
-      newComment.textContent =
-        "💬 " + cleanComment;
+            box.style.left =
+              "15px";
 
 
-      newComment.style.marginBottom =
-        "6px";
+            box.style.right =
+              "15px";
 
 
-      commentBox.appendChild(
-        newComment
+            box.style.bottom =
+              "100px";
+
+
+            box.style.background =
+              "rgba(0,0,0,.85)";
+
+
+            box.style.color =
+              "#fff";
+
+
+            box.style.padding =
+              "10px";
+
+
+            box.style.borderRadius =
+              "10px";
+
+
+            box.style.zIndex =
+              "9999";
+
+
+            item.appendChild(box);
+
+          }
+
+
+          const comment =
+            document.createElement(
+              "div"
+            );
+
+
+          comment.textContent =
+            "💬 " +
+            text.trim();
+
+
+          comment.style.marginBottom =
+            "6px";
+
+
+          box.appendChild(
+            comment
+          );
+
+        }
       );
 
-
-      // Firestore save
-      try {
-
-        await addDoc(
-          collection(db, "comments"),
-          {
-            videoIndex: index,
-            comment: cleanComment,
-            user:
-              currentUser?.email ||
-              "guest",
-            createdAt:
-              serverTimestamp()
-          }
-        );
-
-      } catch (error) {
-
-        console.log(
-          "Comment Firestore save failed:",
-          error
-        );
-
-      }
-
-    });
-
-  });
+    }
+  );
 
 }
 
@@ -809,86 +756,73 @@ function setupCommentButtons() {
 // SHARE
 // ======================================================
 
-function setupShareButtons() {
+function setupShare() {
 
-  const shareButtons = document.querySelectorAll(
-    ".actions button:nth-child(3), .share-btn, [data-action='share']"
-  );
-
-
-  shareButtons.forEach((button) => {
-
-    button.addEventListener(
-      "click",
-      async (event) => {
-
-        event.preventDefault();
-        event.stopPropagation();
+  const buttons =
+    document.querySelectorAll(
+      ".share-btn, [data-action='share']"
+    );
 
 
-        const shareData = {
+  buttons.forEach(
+    (button) => {
 
-          title:
-            "WWC Video",
+      button.addEventListener(
+        "click",
+        async (event) => {
 
-          text:
-            "WWC-Core এ ভিডিও দেখুন ❤️",
-
-          url:
-            window.location.href
-
-        };
+          event.preventDefault();
+          event.stopPropagation();
 
 
-        // Android / Browser Share
-        if (
-          navigator.share
-        ) {
+          const url =
+            window.location.href;
+
 
           try {
 
-            await navigator.share(
-              shareData
-            );
+            if (
+              navigator.share
+            ) {
+
+              await navigator.share({
+                title:
+                  "World Wide Connect",
+
+                text:
+                  "এই ভিডিওটি দেখুন ❤️",
+
+                url: url
+
+              });
+
+            } else {
+
+              await navigator.clipboard.writeText(
+                url
+              );
+
+
+              alert(
+                "লিংক কপি হয়েছে ✅"
+              );
+
+            }
 
           } catch (error) {
 
             console.log(
-              "Share cancelled"
+              "Share cancelled:",
+              error
             );
 
           }
 
-          return;
-
         }
+      );
 
-
-        // Clipboard
-        try {
-
-          await navigator.clipboard.writeText(
-            window.location.href
-          );
-
-
-          alert(
-            "লিংক কপি হয়েছে ✅"
-          );
-
-        } catch (error) {
-
-          prompt(
-            "এই লিংকটি কপি করুন:",
-            window.location.href
-          );
-
-        }
-
-      }
-    );
-
-  });
+    }
+  );
 
 }
 
@@ -897,102 +831,84 @@ function setupShareButtons() {
 // FOLLOW
 // ======================================================
 
-function setupFollowButtons() {
+function setupFollow() {
 
-  const followButtons =
+  const buttons =
     document.querySelectorAll(
-      ".follow-btn, .follow-btn, [data-action='follow']"
+      ".follow-btn, [data-action='follow']"
     );
 
 
-  followButtons.forEach((button, index) => {
+  buttons.forEach(
+    (button, index) => {
 
-    const username =
-      button.dataset.user ||
-      button.dataset.username ||
-      `user_${index}`;
-
-
-    const storageKey =
-      `wwc_follow_${username}`;
+      const key =
+        "wwc_follow_" +
+        index;
 
 
-    let following =
-      localStorage.getItem(
-        storageKey
-      ) === "true";
+      let following =
+        localStorage.getItem(
+          key
+        ) === "true";
 
 
-    updateFollowButton(
-      button,
-      following
-    );
+      updateFollow(
+        button,
+        following
+      );
 
 
-    button.addEventListener(
-      "click",
-      (event) => {
+      button.addEventListener(
+        "click",
+        (event) => {
 
-        event.preventDefault();
-        event.stopPropagation();
-
-
-        following =
-          !following;
+          event.preventDefault();
+          event.stopPropagation();
 
 
-        localStorage.setItem(
-          storageKey,
-          following
-        );
+          following =
+            !following;
 
 
-        updateFollowButton(
-          button,
-          following
-        );
+          localStorage.setItem(
+            key,
+            following
+          );
 
-      }
-    );
 
-  });
+          updateFollow(
+            button,
+            following
+          );
+
+        }
+      );
+
+    }
+  );
 
 }
 
 
 // ======================================================
-// UPDATE FOLLOW BUTTON
+// FOLLOW UPDATE
 // ======================================================
 
-function updateFollowButton(
+function updateFollow(
   button,
   following
 ) {
-
-  if (!button) return;
-
 
   if (following) {
 
     button.textContent =
       "Following ✓";
 
-    button.style.background =
-      "#444";
-
-    button.style.color =
-      "#fff";
-
   } else {
 
     button.textContent =
       "Follow";
-
-    button.style.background =
-      "";
-
-    button.style.color =
-      "";
 
   }
 
@@ -1003,7 +919,7 @@ function updateFollowButton(
 // ACTION BUTTON PROTECTION
 // ======================================================
 
-function setupActionButtons() {
+function setupActionProtection() {
 
   const buttons =
     document.querySelectorAll(
@@ -1011,80 +927,28 @@ function setupActionButtons() {
     );
 
 
-  buttons.forEach((button) => {
+  buttons.forEach(
+    (button) => {
 
-    button.addEventListener(
-      "click",
-      (event) => {
+      button.addEventListener(
+        "click",
+        (event) => {
 
-        event.stopPropagation();
+          event.stopPropagation();
 
-      }
-    );
+        }
+      );
 
-  });
+    }
+  );
 
 }
 
 
 // ======================================================
-// PREVENT VIDEO DRAG
-// ======================================================
-
-videos.forEach((video) => {
-
-  video.addEventListener(
-    "dragstart",
-    (event) => {
-
-      event.preventDefault();
-
-    }
-  );
-
-});
-
-
-// ======================================================
-// PAGE VISIBILITY
-// ======================================================
-
-document.addEventListener(
-  "visibilitychange",
-  () => {
-
-    if (
-      document.hidden
-    ) {
-
-      videos.forEach(
-        (video) => video.pause()
-      );
-
-    } else {
-
-      if (
-        videos[currentVideoIndex]
-      ) {
-
-        videos[
-          currentVideoIndex
-        ]
-          .play()
-          .catch(() => {});
-
-      }
-
-    }
-
-  }
-);
-
-
-// ======================================================
-// CONSOLE
+// READY
 // ======================================================
 
 console.log(
-  "WWC-Core app.js loaded successfully ✅"
+  "WWC-Core app.js loaded ✅"
 );
