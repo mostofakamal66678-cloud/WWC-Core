@@ -89,14 +89,13 @@ body {
   top: auto !important;
   right: 15px !important;
   left: auto !important;
+  width: 70px !important;
   z-index: 20 !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
   gap: 8px !important;
 }
-
-  
 
 .video-item .profile-photo {
   width: 45px !important;
