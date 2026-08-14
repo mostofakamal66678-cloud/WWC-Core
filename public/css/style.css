@@ -1,13 +1,22 @@
-/* WWC-Core Styles */
+/* =========================================
+   WORLD WIDE CONNECT
+   CLEAN VIDEO FEED CSS
+   ========================================= */
+
+
+/* RESET */
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
+
+
+/* PAGE */
 
 html,
 body {
-  margin: 0;
-  padding: 0;
   width: 100%;
   height: 100%;
   background: #000;
@@ -16,164 +25,493 @@ body {
   overflow: hidden;
 }
 
-/* =========================
-   VIDEO FEED
-   ========================= */
 
-#video-feed,
-.video-feed {
+/* =========================================
+   VIDEO FEED
+   ========================================= */
+
+#video-feed {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  background: #000;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
   overflow-y: auto;
   overflow-x: hidden;
+
   scroll-snap-type: y mandatory;
+
+  background: #000;
+
   -webkit-overflow-scrolling: touch;
 }
 
-/* =========================
+
+/* =========================================
    VIDEO ITEM
-   ========================= */
+   ========================================= */
 
 .video-item {
   position: relative;
-  width: 100vw;
+
+  width: 100%;
   height: 100vh;
+  height: 100dvh;
+
   min-height: 100vh;
-  margin: 0;
-  padding: 0;
+
   background: #000;
+
   overflow: hidden;
+
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
 
-/* =========================
+
+/* =========================================
    VIDEO
-   ========================= */
+   ========================================= */
 
-.video-item .feed-video,
-.video-item video {
+.feed-video {
   position: absolute;
-  top: 0;
-  left: 0;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
   display: block;
-  width: 100vw;
-  height: 100vh;
-  max-width: none;
-  max-height: none;
-  margin: 0;
-  padding: 0;
-  object-fit: cover;
+
+  object-fit: contain;
+
   background: #000;
+
+  z-index: 1;
 }
 
-/* =========================
-   PROFILE / FOLLOW
-   ========================= */
 
-.video-item > div[style*="position:absolute"] {
-  position: absolute !important;
-  top: 20px !important;
-  left: 15px !important;
-  z-index: 20 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  gap: 6px !important;
+/* =========================================
+   PROFILE
+   ========================================= */
+
+.profile-area {
+  position: absolute;
+
+  top: 25px;
+  left: 15px;
+
+  z-index: 20;
+
+  width: 150px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 8px;
+
+  text-align: center;
 }
 
-.video-item .profile-photo {
-  width: 50px !important;
-  height: 50px !important;
-  border: 2px solid #1877f2 !important;
-  border-radius: 50% !important;
-  object-fit: cover !important;
-  background: #555 !important;
+
+/* PROFILE IMAGE */
+
+.profile-photo {
+  width: 55px;
+  height: 55px;
+
+  border-radius: 50%;
+
+  object-fit: cover;
+
+  border: 2px solid #1877f2;
+
+  background: #555;
 }
 
-.video-item .profile-name {
-  font-size: 14px !important;
+
+/* USERNAME */
+
+.username {
+  font-size: 15px;
+
   font-weight: bold;
+
   color: #fff;
-  text-shadow: 0 1px 3px #000;
+
+  text-shadow:
+    0 1px 3px #000;
+
   white-space: nowrap;
 }
 
-.video-item .follow-btn {
-  width: 70px !important;
-  height: 50px !important;
-  min-width: 70px !important;
-  min-height: 50px !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: none !important;
-  border-radius: 25px !important;
-  background: #1877f2 !important;
-  color: #fff !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
+
+/* =========================================
+   FOLLOW BUTTON
+   ========================================= */
+
+.follow-btn {
+  width: 80px;
+  min-width: 80px;
+
+  height: 38px;
+  min-height: 38px;
+
+  border: none;
+
+  border-radius: 20px;
+
+  background: #1877f2;
+
+  color: #fff;
+
+  font-size: 14px;
+
+  font-weight: bold;
+
   cursor: pointer;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  text-align: center;
-  line-height: 16px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  transition: 0.2s;
 }
 
-/* =========================
-   LIKE / COMMENT / SHARE
-   ========================= */
 
-.video-item .actions {
-  position: absolute !important;
-  right: 15px !important;
-  bottom: 120px !important;
-  z-index: 30 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  gap: 12px !important;
-  pointer-events: auto !important;
+.follow-btn.following {
+  background: #555;
 }
 
-.video-item .actions button {
-  width: 50px !important;
-  height: 50px !important;
-  min-width: 50px !important;
-  min-height: 50px !important;
-  padding: 0 !important;
-  border: none !important;
-  border-radius: 50% !important;
-  background: rgba(0, 0, 0, 0.55) !important;
-  color: #fff !important;
-  font-size: 24px !important;
-  cursor: pointer !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+
+.follow-btn:active {
+  transform: scale(0.92);
 }
 
-.video-item .actions button:active {
+
+/* =========================================
+   ACTION BUTTONS
+   ========================================= */
+
+.actions {
+  position: absolute;
+
+  right: 15px;
+  bottom: 120px;
+
+  z-index: 30;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 14px;
+
+  pointer-events: auto;
+}
+
+
+/* ACTION BUTTON */
+
+.action-btn {
+  width: 52px;
+  height: 52px;
+
+  min-width: 52px;
+  min-height: 52px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: rgba(0, 0, 0, 0.55);
+
+  color: #fff;
+
+  font-size: 24px;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+
+  gap: 1px;
+
+  transition: 0.15s;
+}
+
+
+/* LIKE COUNT */
+
+.like-count {
+  font-size: 11px;
+
+  line-height: 12px;
+
+  color: #fff;
+}
+
+
+/* ACTIVE */
+
+.action-btn:active {
   transform: scale(0.9);
 }
 
-/* =========================
-   LOGIN / LOGOUT / UPLOAD
-   ========================= */
 
-.auth-section {
-  position: fixed !important;
-  left: 50% !important;
-  bottom: 20px !important;
-  top: auto !important;
-  transform: translateX(-50%) !important;
-  z-index: 999999 !important;
+/* LIKED */
 
-  width: auto !important;
-  
+.like-btn.liked {
+  background: rgba(255, 0, 60, 0.75);
+}
+
+
+/* =========================================
+   LOGIN / LOGOUT / UPLOAD BAR
+   ========================================= */
+
+.auth-bar {
+  position: fixed;
+
+  left: 50%;
+  bottom: 15px;
+
+  transform: translateX(-50%);
+
+  z-index: 1000;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  width: max-content;
+
+  max-width: calc(100% - 20px);
+
+  padding: 5px;
+
+  background: rgba(0, 0, 0, 0.35);
+
+  border-radius: 12px;
+}
+
+
+/* AUTH BUTTON */
+
+.auth-btn {
+  border: none;
+
+  border-radius: 10px;
+
+  background: #1877f2;
+
+  color: #fff;
+
+  padding: 10px 14px;
+
+  min-height: 50px;
+
+  font-size: 17px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  transition: 0.2s;
+}
+
+
+.auth-btn:active {
+  transform: scale(0.94);
+}
+
+
+/* =========================================
+   COMMENT BOX
+   ========================================= */
+
+.comment-box {
+  position: fixed;
+
+  left: 50%;
+  bottom: 85px;
+
+  transform: translateX(-50%);
+
+  width: min(90%, 400px);
+
+  padding: 15px;
+
+  background: rgba(20, 20, 20, 0.97);
+
+  border-radius: 15px;
+
+  z-index: 2000;
+
+  display: none;
+}
+
+
+.comment-box.show {
+  display: block;
+}
+
+
+.comment-title {
+  font-size: 18px;
+
+  font-weight: bold;
+
+  margin-bottom: 10px;
+}
+
+
+.comment-box textarea {
+  width: 100%;
+
+  min-height: 80px;
+
+  resize: none;
+
+  border: none;
+
+  outline: none;
+
+  border-radius: 8px;
+
+  padding: 10px;
+
+  font-size: 15px;
+}
+
+
+.comment-buttons {
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 8px;
+
+  margin-top: 10px;
+}
+
+
+.comment-buttons button {
+  border: none;
+
+  border-radius: 8px;
+
+  padding: 9px 15px;
+
+  cursor: pointer;
+}
+
+
+#commentSend {
+  background: #1877f2;
+
+  color: white;
+}
+
+
+#commentCancel {
+  background: #555;
+
+  color: white;
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 600px) {
+
+  .profile-area {
+    top: 20px;
+    left: 12px;
+  }
+
+
+  .actions {
+    right: 10px;
+    bottom: 110px;
+  }
+
+
+  .action-btn {
+    width: 48px;
+    height: 48px;
+
+    min-width: 48px;
+    min-height: 48px;
+
+    font-size: 22px;
+  }
+
+
+  .auth-bar {
+    bottom: 12px;
+
+    gap: 7px;
+  }
+
+
+  .auth-btn {
+    min-height: 48px;
+
+    padding: 8px 10px;
+
+    font-size: 16px;
+  }
+
+}
+
+
+/* =========================================
+   SMALL MOBILE
+   ========================================= */
+
+@media (max-width: 380px) {
+
+  .auth-bar {
+    gap: 4px;
+  }
+
+
+  .auth-btn {
+    padding: 7px 8px;
+
+    font-size: 14px;
+  }
+
+}
+
+
+/* =========================================
+   SCROLLBAR
+   ========================================= */
+
+#video-feed::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+#video-feed {
+  scrollbar-width: none;
+}
