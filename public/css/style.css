@@ -1,5 +1,4 @@
 /* WWC-Core Styles */
-
 * {
   box-sizing: border-box;
 }
@@ -49,15 +48,16 @@ body {
 
 /* Like / Comment / Share */
 
-.actions {
-  position: absolute;
-  right: 15px;
-  bottom: 100px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  z-index: 9999;
-  pointer-events: auto;
+.video-item .actions {
+  position: fixed !important;
+  right: 15px !important;
+  bottom: 120px !important;
+  z-index: 999999 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 15px !important;
+  pointer-events: auto !important;
 }
 
 .actions button {
