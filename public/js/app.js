@@ -41,38 +41,32 @@ document.addEventListener("DOMContentLoaded", function () {
        PLAY VIDEO
     ======================================== */
 
-    function playVideo(video) {
+    function playVideo(video, withSound = false) {
 
-        if (!video) return;
+    if (!video) return;
 
-        pauseAllVideos(video);
+    pauseAllVideos(video);
 
-        currentVideo = video;
+    currentVideo = video;
 
-        video.playsInline = true;
+    video.playsInline = true;
 
-        /*
-        Autoplay compatibility.
-        Browser autoplay normally requires muted.
-        User can tap the video to enable sound.
-        */
-        video.muted = true;
+    /*
+     * withSound = true হলে ট্যাপ করার পর sound চালু হবে।
+     * autoplay হলে muted থাকবে।
+     */
+    video.muted = !withSound;
 
-        const promise = video.play();
+    const promise = video.play();
 
-        if (promise && typeof promise.catch === "function") {
-
-            promise.catch(function (error) {
-
-                console.log("Autoplay blocked:", error);
-
-            });
-
-        }
-
+    if (promise && typeof promise.catch === "function") {
+        promise.catch(function (error) {
+            console.log("Video play blocked:", error);
+        });
+    }
     }
 
-
+    
     /* ========================================
        VIDEO CLICK
     ======================================== */
@@ -87,9 +81,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (video.paused) {
 
-                playVideo(video);
+    playVideo(video, true);
 
-            } else {
+} else {
+
 
                 video.pause();
 
@@ -238,49 +233,39 @@ document.addEventListener("DOMContentLoaded", function () {
     /* ========================================
        SCROLL TO VIDEO
     ======================================== */
+function scrollToVideo(index) {
 
-    function scrollToVideo(index) {
+    const items = getVideoItems();
 
-        const items = getVideoItems();
+    if (!items.length) return;
 
-        if (!items.length) return;
+    if (index < 0) {
+        index = 0;
+    }
 
-        if (index < 0) {
+    if (index >= items.length) {
+        index = items.length - 1;
+    }
 
-            index = 0;
+    const item = items[index];
 
-        }
+    item.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
 
-        if (index >= items.length) {
+    const video = item.querySelector(".feed-video");
 
-            index = items.length - 1;
+    if (video) {
 
-        }
+        setTimeout(function () {
 
-        const item = items[index];
+            playVideo(video);
 
-        item.scrollIntoView({
-
-            behavior: "smooth",
-            block: "start"
-
-        });
-
-
-        const video =
-            item.querySelector(".feed-video");
-
-        if (video) {
-
-            setTimeout(function () {
-
-                playVideo(video);
-
-            }, 350);
-
-        }
+        }, 350);
 
     }
+}
 
 
     /* ========================================
