@@ -83,20 +83,7 @@ body {
   position: relative;
 }
 
-.video-item > div:first-of-type {
-  position: absolute !important;
-  bottom: 305px !important;
-  top: auto !important;
-  right: 15px !important;
-  left: auto !important;
-  width: 50px !important;
-  background: transparent !important;
-  z-index: 20 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  gap: 8px !important;
-}
+
 
 .video-item .profile-photo {
   width: 50px !important;
