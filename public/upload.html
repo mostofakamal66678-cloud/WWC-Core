@@ -134,19 +134,17 @@ const firebaseConfig = {
 };
 
 
-    const app = getApps().length
-      ? getApps()[0]
-      : initializeApp(firebaseConfig);
+  
+  const app = getApps().length
+  ? getApps()[0]
+  : initializeApp(firebaseConfig);
 
-    const auth = getAuth(app);
+const auth = getAuth(app);
 
-// Keep login session
-try {
-  await setPersistence(auth, browserLocalPersistence);
-  await auth.authStateReady();
-} catch (error) {
-  console.error("Auth initialization error:", error);
-}
+// Login session ধরে রাখবে
+await setPersistence(auth, browserLocalPersistence);
+
+await auth.authStateReady();
 
 const storage = getStorage(app);
 
@@ -160,30 +158,39 @@ const status = document.getElementById("status");
 const userStatus = document.getElementById("userStatus");
 const progressBar = document.getElementById("progressBar");
 
-  let currentUser = null;  
+let currentUser = auth.currentUser;
 
-// =========================
-// 🔐 LOGIN CHECK
-// =========================
+// ========================
+// LOGIN CHECK
+// ========================
 
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, (user) => {
+
   currentUser = user;
 
   if (user) {
+
     userStatus.textContent =
       "✅ Login করা আছে: " + (user.email || user.uid);
 
     uploadBtn.disabled = false;
-    status.textContent = "ভিডিও Upload করার জন্য প্রস্তুত";
+
+    status.textContent =
+      "🎥 Video Upload করার জন্য প্রস্তুত";
+
   } else {
-    userStatus.textContent = "❌ আগে Login করুন";
+
+    userStatus.textContent =
+      "❌ আগে Login করুন";
+
     uploadBtn.disabled = true;
 
     status.innerHTML =
-      'ভিডিও Upload করতে <a href="./login.html">Login</a> করুন';
+      '⚠️ Video Upload করতে <a href="./login.html">Login</a> করুন';
+
   }
+
 });
-  
     uploadBtn.addEventListener("click", async () => {
 
       if (!currentUser) {
