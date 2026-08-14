@@ -90,7 +90,7 @@ body {
   right: 15px !important;
   left: auto !important;
   width: 70px !important;
-  background: #1877f2 !important;
+  background: transparent !important;
   z-index: 20 !important;
   display: flex !important;
   flex-direction: column !important;
@@ -99,8 +99,11 @@ body {
 }
 
 .video-item .profile-photo {
-  width: 45px !important;
-  height: 45px !important;
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 50% !important;
+  border: 2px solid #1877f2 !important;
+  object-fit: cover;
 }
 
 .video-item .profile-name {
@@ -108,18 +111,23 @@ body {
 }
 
 .video-item .follow-btn {
-background: #1877f2 !important;
+  background: #1877f2 !important;
   border: none !important;
   color: #fff !important;
-  font-size: 16px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
   cursor: pointer;
-  padding: 8px 12px !important;
-  min-width: 50px;
-  min-height: 50px;
-  border-radius: 6px !important;
+  padding: 4px !important;
+  width: 50px !important;
+  height: 50px !important;
+  min-width: 50px !important;
+  min-height: 50px !important;
+  border-radius: 50% !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  text-align: center !important;
+  line-height: 12px !important;
   margin: 0 !important;
 }
 
