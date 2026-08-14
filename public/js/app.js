@@ -71,27 +71,30 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===============================
 
   function playVideo(index) {
+  if (!videos.length) return;
 
-    if (!videos.length) return;
+  if (index < 0) index = 0;
+  if (index >= videos.length) index = videos.length - 1;
 
-    if (index < 0) index = 0;
-    if (index >= videos.length) index = 0;
+  current = index;
 
-    current = index;
+  videos.forEach((video, i) => {
+    video.pause();
 
-    videos.forEach((video, i) => {
+    if (i === current) {
+      video.style.display = "block";
+      video.muted = true;
 
-      if (i === current) {
-        video.style.display = "block";
-        video.muted = true;
+      video.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
 
-        video.play().catch(() => {});
-      } else {
-        video.pause();
-      }
-
-    });
-
+      video.play().catch(() => {});
+    } else {
+      video.style.display = "block";
+    }
+  });
   }
 
 
