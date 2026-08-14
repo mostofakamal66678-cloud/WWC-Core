@@ -77,53 +77,55 @@ body {
 .feed-video {
   position: absolute;
 
-  inset: 0;
-
-  width: 100%;
-  height: 100%;
-
-  display: block;
-
-  object-fit: contain;
-
-  background: #000;
-
-  z-index: 1;
+.video-item > div[style*="position:absolute"] {
+  position: absolute !important;
+  top: 10px !important;
+  left: 15px !important;
+  z-index: 20 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 6px !important;
 }
 
+.video-item .profile-photo {
+  width: 50px !important;
+  height: 50px !important;
+  border: 2px solid #1877f2 !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  background: #555 !important;
+}
 
-/* =========================================
-   PROFILE
-   ========================================= */
+.video-item .profile-name {
+  font-size: 14px !important;
+  font-weight: bold !important;
+  color: #fff !important;
+  text-shadow: 0 1px 3px #000 !important;
+  white-space: nowrap;
+}
 
-.profile-area {
-  position: absolute;
-
-  top: 25px;
-  left: 15px;
-
-  z-index: 20;
-
-  width: 150px;
-
-  display: flex;
-  flex-direction: column;
-
-  align-items: center;
-
-  gap: 8px;
-
+.video-item .follow-btn {
+  width: 70px !important;
+  height: 50px !important;
+  min-width: 70px !important;
+  min-height: 50px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 25px !important;
+  background: #1877f2 !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  cursor: pointer;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   text-align: center;
+  line-height: 16px;
 }
 
-
-/* PROFILE IMAGE */
-
-.profile-photo {
-  width: 55px;
-  height: 55px;
-
-  border-radius: 50%;
 
   object-fit: cover;
 
@@ -198,22 +200,15 @@ body {
    ========================================= */
 
 .actions {
-  position: absolute;
-
-  right: 15px;
-  bottom: 120px;
-
-  z-index: 30;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  gap: 14px;
-
-  pointer-events: auto;
+  position: absolute !important;
+  right: 15px !important;
+  bottom: 210px !important;
+  z-index: 30 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 12px !important;
+  pointer-events: auto !important;
 }
 
 
