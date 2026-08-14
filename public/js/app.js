@@ -132,25 +132,28 @@ document.addEventListener("DOMContentLoaded", () => {
 let touchStartY = 0;
 let touchEndY = 0;
 
-document.addEventListener("touchstart", (e) => {
-  touchStartY = e.changedTouches[0].screenY;
+const feed = document.getElementById("video-feed");
+
+feed.addEventListener("touchstart", (e) => {
+  touchStartY = e.touches[0].clientY;
 }, { passive: true });
 
-document.addEventListener("touchend", (e) => {
-  touchEndY = e.changedTouches[0].screenY;
+feed.addEventListener("touchend", (e) => {
+  touchEndY = e.changedTouches[0].clientY;
 
   const swipeDistance = touchStartY - touchEndY;
 
   // ⬆️ উপরে Swipe = পরের ভিডিও
-  if (swipeDistance > 50) {
+  if (swipeDistance > 60) {
     playVideo(current + 1);
   }
 
   // ⬇️ নিচে Swipe = আগের ভিডিও
-  if (swipeDistance < -50) {
+  if (swipeDistance < -60) {
     playVideo(current - 1);
   }
 });
+
   videos.forEach((video) => {
 
     video.addEventListener("click", () => {
