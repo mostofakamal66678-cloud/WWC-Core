@@ -253,20 +253,13 @@ function scrollToVideo(index) {
         behavior: "smooth",
         block: "start"
     });
+const video = item.querySelector(".feed-video");
 
-    const video = item.querySelector(".feed-video");
-
-    if (video) {
-        setTimeout(function () {
-    playVideo(video);
-
-    0);
-
-    
-    
-    
-
-
+if (video) {
+    setTimeout(function () {
+        playVideo(video);
+    }, 500);
+}
 
     /* ========================================
        NEXT VIDEO
