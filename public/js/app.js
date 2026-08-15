@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
 
         {
-            threshold: [0.60]
+            threshold: [0.50]
         }
 
     );
@@ -257,15 +257,15 @@ function scrollToVideo(index) {
     const video = item.querySelector(".feed-video");
 
     if (video) {
-
         setTimeout(function () {
+    playVideo(video);
 
-            playVideo(video);
+    0);
 
-        }, 350);
+    
+    
+    
 
-    }
-}
 
 
     /* ========================================
