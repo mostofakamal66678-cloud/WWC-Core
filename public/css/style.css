@@ -587,8 +587,11 @@ body {
     display: flex !important;
     position: absolute !important;
 
-    top: calc(100vh - 384px) !important;
-    left: 15px !important;
+    top: auto !important;
+left: auto !important;
+right: 15px !important;
+bottom: 380px !important;
+    
 
     width: 100px !important;
     height: auto !important;
