@@ -862,3 +862,52 @@ body {
 
     pointer-events: auto !important;
 }
+/* PROFILE + FOLLOW ALIGNMENT */
+.video-item .profile-area {
+    position: absolute !important;
+    top: calc(100vh - 264px) !important;
+    left: auto !important;
+    right: 15px !important;
+
+    width: 80px !important;
+    height: auto !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    gap: 8px !important;
+    z-index: 9999 !important;
+}
+
+/* PROFILE PHOTO */
+.video-item .profile-area .profile-photo {
+    width: 55px !important;
+    height: 55px !important;
+    object-fit: cover !important;
+    border-radius: 50% !important;
+}
+
+/* USERNAME */
+.video-item .profile-area .username {
+    width: 100% !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+}
+
+/* FOLLOW BUTTON */
+.video-item .profile-area .follow-btn {
+    width: 80px !important;
+    height: 38px !important;
+    min-width: 80px !important;
+    min-height: 38px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    text-align: center !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
