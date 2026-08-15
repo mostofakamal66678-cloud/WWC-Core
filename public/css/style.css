@@ -655,3 +655,110 @@ body {
 
     z-index: 10000 !important;
 }
+/* ========================================
+   WWC - PROFILE + ACTION BUTTON POSITION
+   ======================================== */
+
+/* Profile + Username + Follow */
+.video-item .profile-area {
+    position: absolute !important;
+    top: 90px !important;
+    left: 15px !important;
+
+    z-index: 9999 !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 8px !important;
+
+    width: 100px !important;
+    height: auto !important;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* Profile Photo */
+.video-item .profile-area .profile-photo {
+    width: 55px !important;
+    height: 55px !important;
+
+    display: block !important;
+
+    object-fit: cover !important;
+    border-radius: 50% !important;
+}
+
+/* Username */
+.video-item .profile-area .username,
+.video-item .profile-area .profile-name {
+    color: #fff !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+
+    white-space: nowrap !important;
+}
+
+/* Follow */
+.video-item .profile-area .follow-btn {
+    width: 80px !important;
+    height: 38px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border: none !important;
+    border-radius: 20px !important;
+
+    background: #1877f2 !important;
+    color: #fff !important;
+
+    font-size: 14px !important;
+    font-weight: bold !important;
+
+    z-index: 10000 !important;
+}
+
+/* Like / Comment / Share */
+.video-item .actions {
+    position: absolute !important;
+
+    right: 15px !important;
+    bottom: 150px !important;
+
+    z-index: 9998 !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+
+    gap: 12px !important;
+
+    pointer-events: auto !important;
+}
+
+/* Action Buttons */
+.video-item .actions .action-btn {
+    width: 52px !important;
+    height: 52px !important;
+
+    min-width: 52px !important;
+    min-height: 52px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    border: none !important;
+    border-radius: 50% !important;
+
+    background: rgba(0, 0, 0, 0.55) !important;
+    color: #fff !important;
+
+    font-size: 24px !important;
+}
