@@ -908,48 +908,101 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    /* ========================================
-       UPLOAD VIDEO
-    ======================================== */
+/* =====================================
+   UPLOAD VIDEO
+===================================== */
 
-    const uploadButton =
-        $("#uploadBtn");
+const uploadButton = $("#uploadBtn");
 
-    if (uploadButton) {
+if (uploadButton) {
 
-        uploadButton.addEventListener(
-            "click",
-            event => {
+    uploadButton.addEventListener("click", event => {
 
-                event.preventDefault();
-                event.stopPropagation();
+        event.preventDefault();
+        event.stopPropagation();
 
-                /*
-                Use existing hidden file input
-                if index.html already has one.
-                */
+        const fileInput =
+            $("#videoUpload") ||
+            $("#videoInput") ||
+            $('input[type="file"][accept="video/*"]') ||
+            $('input[type="file"][accept="video"]');
 
-                let fileInput =
-                    $("#videoUpload") ||
-                    $("#videoInput") ||
-                    $('input[type="file"][accept*="video"]');
+        if (!fileInput) {
 
-                if (!fileInput) {
+            alert("Video upload input is not available.");
 
-                    alert(
-                        "Video upload input is not available yet."
-                    );
+            return;
+        }
 
-                    return;
+        fileInput.click();
+    });
+}
 
-                }
 
-                fileInput.click();
+/* =====================================
+   VIDEO FILE SELECT
+===================================== */
 
-            }
+const videoFileInput =
+    $("#videoUpload") ||
+    $("#videoInput") ||
+    $('input[type="file"][accept="video/*"]') ||
+    $('input[type="file"][accept="video"]');
+
+if (videoFileInput) {
+
+    videoFileInput.addEventListener("change", async event => {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const file = event.target.files?.[0];
+
+        if (!file) {
+            return;
+        }
+
+        if (!file.type.startsWith("video/")) {
+
+            alert("Please select a video file.");
+
+            videoFileInput.value = "";
+
+            return;
+        }
+
+        const maxSize = 100 * 1024 * 1024;
+
+        if (file.size > maxSize) {
+
+            alert("Video size must be 100 MB or less.");
+
+            videoFileInput.value = "";
+
+            return;
+        }
+
+        alert(
+            "Video selected successfully.\n\n" +
+            "File: " + file.name
         );
 
-    }
+        console.log(
+            "WWC-Core Video Selected:",
+            file.name,
+            file.size,
+            file.type
+        );
+
+        /*
+         * Firebase Storage upload will be connected here.
+         *
+         * Do NOT remove this section.
+         */
+
+        videoFileInput.value = "";
+    });
+            }
 
 
     /* ========================================
