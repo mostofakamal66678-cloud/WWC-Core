@@ -374,50 +374,34 @@
     >
       👤 Profile
     </button>
+    
+<button
+    id="loginBtn"
+    class="profile-menu-btn"
+    type="button"
+>
+    🔐 Login / Register
+</button>
 
-
-    <script>
-document.addEventListener("DOMContentLoaded", function () {
-
-  const loginBtn = document.getElementById("loginBtn");
-
-  if (loginBtn) {
-    loginBtn.onclick = function () {
-      window.location.href = "./login.html";
-    };
-  }
-
-});
-    </script>
-
-
-    <button
-      id="logoutBtn"
-      class="profile-menu-btn logout-menu-btn"
-      type="button"
-    >
-      🚪 Logout
-    </button>
+<button
+    id="logoutBtn"
+    class="profile-menu-btn logout-menu-btn"
+    type="button"
+>
+    🚪 Logout
+</button>
 
   </div>
-
-
-  <!-- =========================================
-       BOTTOM NAVIGATION
-       ========================================= -->
-
-  <nav class="wwc-bottom-nav">
-
+<nav class="wwc-bottom-nav">
+<button
+    class="wwc-nav-btn active"
+    type="button"
+>
+    <span>🏠</span>
+    <span>Home</span>
+</button>
     <button
-      class="wwc-nav-btn active"
-      type="button"
-    >
-      <span>🏠</span>
-      <span>Home</span>
-    </button>
 
-
-    <button
       class="wwc-nav-btn"
       type="button"
     >
