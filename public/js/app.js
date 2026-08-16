@@ -842,29 +842,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-    /* ========================================
-       PROFILE MENU LOGIN / REGISTER
-    ======================================== */
-
-    const profileMenuLogin =
-        $("#profileBtnMenu");
-
-    if (profileMenuLogin) {
-
-        profileMenuLogin.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-                window.location.href =
-                    "./profile.html";
-
-            }
-        );
-
-    }
+    
 
 
     /* ========================================
