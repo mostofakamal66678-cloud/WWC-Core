@@ -376,13 +376,19 @@
     </button>
 
 
-    <button
-      id="loginBtn"
-      class="profile-menu-btn"
-      type="button"
-    >
-      🔐 Login / Register
-    </button>
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const loginBtn = document.getElementById("loginBtn");
+
+  if (loginBtn) {
+    loginBtn.onclick = function () {
+      window.location.href = "./login.html";
+    };
+  }
+
+});
+    </script>
 
 
     <button
