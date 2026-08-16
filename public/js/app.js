@@ -43,30 +43,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function playVideo(video, withSound = false) {
 
-    if (!video) return;
+        if (!video) return;
 
-    pauseAllVideos(video);
+        pauseAllVideos(video);
 
-    currentVideo = video;
+        currentVideo = video;
 
-    video.playsInline = true;
+        video.playsInline = true;
 
-    /*
-     * withSound = true হলে ট্যাপ করার পর sound চালু হবে।
-     * autoplay হলে muted থাকবে।
-     */
-    video.muted = !withSound;
+        video.muted = !withSound;
 
-    const promise = video.play();
+        const promise = video.play();
 
-    if (promise && typeof promise.catch === "function") {
-        promise.catch(function (error) {
-            console.log("Video play blocked:", error);
-        });
+        if (promise && typeof promise.catch === "function") {
+
+            promise.catch(function (error) {
+
+                console.log(
+                    "Video play blocked:",
+                    error
+                );
+
+            });
+
+        }
+
     }
-    }
 
-    
+
     /* ========================================
        VIDEO CLICK
     ======================================== */
@@ -75,76 +79,95 @@ document.addEventListener("DOMContentLoaded", function () {
 
         video.playsInline = true;
 
-        video.addEventListener("click", function (event) {
+        video.addEventListener(
+            "click",
+            function (event) {
 
-            event.stopPropagation();
+                event.stopPropagation();
 
-            if (video.paused) {
+                if (video.paused) {
 
-    playVideo(video, true);
+                    playVideo(video, true);
 
-} else {
+                } else {
 
+                    video.pause();
 
-                video.pause();
-
-            }
-
-        });
-
-
-        /* Double tap / double click */
-
-        video.addEventListener("dblclick", function (event) {
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            const videoItem = video.closest(".video-item");
-
-            if (!videoItem) return;
-
-            const likeButton =
-                videoItem.querySelector(".like-btn");
-
-            if (likeButton) {
-
-                likeButton.click();
+                }
 
             }
+        );
 
-        });
 
+        /* ====================================
+           DOUBLE TAP LIKE
+        ==================================== */
 
-        /* Video ended */
+        video.addEventListener(
+            "dblclick",
+            function (event) {
 
-        video.addEventListener("ended", function () {
+                event.preventDefault();
+                event.stopPropagation();
 
-            const index = getCurrentVideoIndex();
+                const videoItem =
+                    video.closest(".video-item");
 
-            if (index < videos.length - 1) {
+                if (!videoItem) return;
 
-                scrollToVideo(index + 1);
+                const likeButton =
+                    videoItem.querySelector(".like-btn");
 
-            } else {
+                if (likeButton) {
 
-                scrollToVideo(0);
+                    likeButton.click();
+
+                }
 
             }
+        );
 
-        });
+
+        /* ====================================
+           VIDEO ENDED
+        ==================================== */
+
+        video.addEventListener(
+            "ended",
+            function () {
+
+                const index =
+                    getCurrentVideoIndex();
+
+                if (index < videos.length - 1) {
+
+                    scrollToVideo(index + 1);
+
+                } else {
+
+                    scrollToVideo(0);
+
+                }
+
+            }
+        );
 
 
-        /* Video error */
+        /* ====================================
+           VIDEO ERROR
+        ==================================== */
 
-        video.addEventListener("error", function () {
+        video.addEventListener(
+            "error",
+            function () {
 
-            console.log(
-                "Video load error:",
-                video.currentSrc
-            );
+                console.log(
+                    "Video load error:",
+                    video.currentSrc
+                );
 
-        });
+            }
+        );
 
     });
 
@@ -153,36 +176,37 @@ document.addEventListener("DOMContentLoaded", function () {
        AUTO PLAY WHEN VIDEO IS VISIBLE
     ======================================== */
 
-    const videoObserver = new IntersectionObserver(
+    const videoObserver =
+        new IntersectionObserver(
 
-        function (entries) {
+            function (entries) {
 
-            entries.forEach(function (entry) {
+                entries.forEach(function (entry) {
 
-                const video = entry.target;
+                    const video = entry.target;
 
-                if (
-                    entry.isIntersecting &&
-                    entry.intersectionRatio >= 0.60
-                ) {
+                    if (
+                        entry.isIntersecting &&
+                        entry.intersectionRatio >= 0.60
+                    ) {
 
-                    playVideo(video);
+                        playVideo(video);
 
-                } else {
+                    } else {
 
-                    video.pause();
+                        video.pause();
 
-                }
+                    }
 
-            });
+                });
 
-        },
+            },
 
-        {
-            threshold: [0.50]
-        }
+            {
+                threshold: [0.50, 0.60]
+            }
 
-    );
+        );
 
 
     videos.forEach(function (video) {
@@ -233,41 +257,52 @@ document.addEventListener("DOMContentLoaded", function () {
     /* ========================================
        SCROLL TO VIDEO
     ======================================== */
-function scrollToVideo(index) {
 
-    const items = getVideoItems();
+    function scrollToVideo(index) {
 
-    if (!items.length) return;
+        const items = getVideoItems();
 
-    if (index < 0) {
-        index = 0;
+        if (!items.length) return;
+
+        if (index < 0) {
+            index = 0;
+        }
+
+        if (index >= items.length) {
+            index = items.length - 1;
+        }
+
+        const item = items[index];
+
+        item.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+        const video =
+            item.querySelector(".feed-video");
+
+        if (video) {
+
+            setTimeout(function () {
+
+                playVideo(video);
+
+            }, 500);
+
+        }
+
     }
 
-    if (index >= items.length) {
-        index = items.length - 1;
-    }
 
-    const item = items[index];
-
-    item.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-    });
-const video = item.querySelector(".feed-video");
-
-if (video) {
-    setTimeout(function () {
-        playVideo(video);
-    }, 500);
-}
-}
     /* ========================================
        NEXT VIDEO
     ======================================== */
 
     function goToNextVideo() {
 
-        const index = getCurrentVideoIndex();
+        const index =
+            getCurrentVideoIndex();
 
         if (index < videos.length - 1) {
 
@@ -284,7 +319,8 @@ if (video) {
 
     function goToPreviousVideo() {
 
-        const index = getCurrentVideoIndex();
+        const index =
+            getCurrentVideoIndex();
 
         if (index > 0) {
 
@@ -303,9 +339,7 @@ if (video) {
     let touchEndY = 0;
 
     document.addEventListener(
-
         "touchstart",
-
         function (event) {
 
             if (
@@ -319,18 +353,14 @@ if (video) {
                 event.touches[0].clientY;
 
         },
-
         {
             passive: true
         }
-
     );
 
 
     document.addEventListener(
-
         "touchend",
-
         function (event) {
 
             if (
@@ -347,7 +377,7 @@ if (video) {
                 touchStartY - touchEndY;
 
 
-            /* Swipe UP */
+            /* SWIPE UP */
 
             if (distance > 70) {
 
@@ -356,7 +386,7 @@ if (video) {
             }
 
 
-            /* Swipe DOWN */
+            /* SWIPE DOWN */
 
             if (distance < -70) {
 
@@ -365,17 +395,15 @@ if (video) {
             }
 
         },
-
         {
             passive: true
         }
-
     );
 
 
     /* ========================================
        DESKTOP KEYBOARD
-       ======================================== */
+    ======================================== */
 
     document.addEventListener(
         "keydown",
@@ -388,7 +416,6 @@ if (video) {
                 goToNextVideo();
 
             }
-
 
             if (event.key === "ArrowUp") {
 
@@ -419,18 +446,15 @@ if (video) {
                 event.preventDefault();
                 event.stopPropagation();
 
-
                 const videoItem =
                     button.closest(".video-item");
 
                 if (!videoItem) return;
 
-
                 const countElement =
                     videoItem.querySelector(".like-count");
 
                 if (!countElement) return;
-
 
                 let count =
                     parseInt(
@@ -449,18 +473,22 @@ if (video) {
                         count = 0;
                     }
 
-                    button.classList.remove("liked");
+                    button.classList.remove(
+                        "liked"
+                    );
 
                 } else {
 
                     count++;
 
-                    button.classList.add("liked");
+                    button.classList.add(
+                        "liked"
+                    );
 
                 }
 
-
-                countElement.textContent = count;
+                countElement.textContent =
+                    count;
 
             }
         );
@@ -485,20 +513,27 @@ if (video) {
                 event.preventDefault();
                 event.stopPropagation();
 
-
                 if (
-                    button.classList.contains("following")
+                    button.classList.contains(
+                        "following"
+                    )
                 ) {
 
-                    button.classList.remove("following");
+                    button.classList.remove(
+                        "following"
+                    );
 
-                    button.textContent = "Follow";
+                    button.textContent =
+                        "Follow";
 
                 } else {
 
-                    button.classList.add("following");
+                    button.classList.add(
+                        "following"
+                    );
 
-                    button.textContent = "Following";
+                    button.textContent =
+                        "Following";
 
                 }
 
@@ -522,7 +557,6 @@ if (video) {
 
         element.style.cursor = "pointer";
 
-
         element.addEventListener(
             "click",
             function (event) {
@@ -530,26 +564,24 @@ if (video) {
                 event.preventDefault();
                 event.stopPropagation();
 
-
                 const profile =
                     element.closest(".video-item");
 
                 if (!profile) return;
-
 
                 const usernameElement =
                     profile.querySelector(
                         ".profile-name, .username"
                     );
 
-
                 const username =
                     usernameElement
                         ? usernameElement.textContent.trim()
                         : "WWC User";
 
-
-                alert("Profile: " + username);
+                alert(
+                    "Profile: " + username
+                );
 
             }
         );
@@ -574,10 +606,10 @@ if (video) {
                 event.preventDefault();
                 event.stopPropagation();
 
-
                 const shareData = {
 
-                    title: "World Wide Connect",
+                    title:
+                        "World Wide Connect",
 
                     text:
                         "Check this video on World Wide Connect",
@@ -592,7 +624,8 @@ if (video) {
 
                     if (
                         navigator.share &&
-                        typeof navigator.share === "function"
+                        typeof navigator.share ===
+                        "function"
                     ) {
 
                         await navigator.share(
@@ -601,14 +634,19 @@ if (video) {
 
                     } else if (
                         navigator.clipboard &&
-                        typeof navigator.clipboard.writeText === "function"
+                        typeof navigator.clipboard
+                            .writeText ===
+                            "function"
                     ) {
 
-                        await navigator.clipboard.writeText(
-                            window.location.href
-                        );
+                        await navigator.clipboard
+                            .writeText(
+                                window.location.href
+                            );
 
-                        alert("Video link copied!");
+                        alert(
+                            "Video link copied!"
+                        );
 
                     } else {
 
@@ -641,22 +679,17 @@ if (video) {
     const commentButtons =
         document.querySelectorAll(".comment-btn");
 
-
     const commentBox =
         document.getElementById("commentBox");
-
 
     const commentInput =
         document.getElementById("commentInput");
 
-
     const commentCancel =
         document.getElementById("commentCancel");
 
-
     const commentSend =
         document.getElementById("commentSend");
-
 
     let activeCommentVideo = null;
 
@@ -670,16 +703,14 @@ if (video) {
                 event.preventDefault();
                 event.stopPropagation();
 
-
                 activeCommentVideo =
                     button.closest(".video-item");
 
-
                 if (!commentBox) return;
 
-
-                commentBox.classList.add("show");
-
+                commentBox.classList.add(
+                    "show"
+                );
 
                 if (commentInput) {
 
@@ -710,14 +741,15 @@ if (video) {
             function (event) {
 
                 event.preventDefault();
-
+                event.stopPropagation();
 
                 if (commentBox) {
 
-                    commentBox.classList.remove("show");
+                    commentBox.classList.remove(
+                        "show"
+                    );
 
                 }
-
 
                 if (commentInput) {
 
@@ -742,10 +774,9 @@ if (video) {
             function (event) {
 
                 event.preventDefault();
-
+                event.stopPropagation();
 
                 if (!commentInput) return;
-
 
                 const text =
                     commentInput.value.trim();
@@ -753,16 +784,14 @@ if (video) {
 
                 if (!text) {
 
-                    alert("Please write a comment.");
+                    alert(
+                        "Please write a comment."
+                    );
 
                     return;
 
                 }
 
-
-                /*
-                Add comment to the current video UI
-                */
 
                 if (activeCommentVideo) {
 
@@ -775,11 +804,12 @@ if (video) {
                     if (!commentList) {
 
                         commentList =
-                            document.createElement("div");
+                            document.createElement(
+                                "div"
+                            );
 
                         commentList.className =
                             "comment-list";
-
 
                         activeCommentVideo.appendChild(
                             commentList
@@ -789,15 +819,15 @@ if (video) {
 
 
                     const comment =
-                        document.createElement("div");
+                        document.createElement(
+                            "div"
+                        );
 
                     comment.className =
                         "comment-item";
 
-
                     comment.textContent =
                         text;
-
 
                     commentList.appendChild(
                         comment
@@ -811,7 +841,9 @@ if (video) {
 
                 if (commentBox) {
 
-                    commentBox.classList.remove("show");
+                    commentBox.classList.remove(
+                        "show"
+                    );
 
                 }
 
@@ -822,11 +854,41 @@ if (video) {
 
 
     /* ========================================
-       LOGIN
+       PROFILE MENU - PROFILE BUTTON
+    ======================================== */
+
+    const profileBtnMenu =
+        document.getElementById(
+            "profileBtnMenu"
+        );
+
+
+    if (profileBtnMenu) {
+
+        profileBtnMenu.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                window.location.href =
+                    "./profile.html";
+
+            }
+        );
+
+    }
+
+
+    /* ========================================
+       LOGIN / REGISTER
     ======================================== */
 
     const loginBtn =
-        document.getElementById("loginBtn");
+        document.getElementById(
+            "loginBtn"
+        );
 
 
     if (loginBtn) {
@@ -838,9 +900,8 @@ if (video) {
                 event.preventDefault();
                 event.stopPropagation();
 
-
                 window.location.href =
-                    "./login.html";
+                    "./auth.html";
 
             }
         );
@@ -849,11 +910,13 @@ if (video) {
 
 
     /* ========================================
-       REGISTER
+       REGISTER BUTTON
     ======================================== */
 
     const registerBtn =
-        document.getElementById("registerBtn");
+        document.getElementById(
+            "registerBtn"
+        );
 
 
     if (registerBtn) {
@@ -865,9 +928,8 @@ if (video) {
                 event.preventDefault();
                 event.stopPropagation();
 
-
                 window.location.href =
-                    "./register.html";
+                    "./auth.html";
 
             }
         );
@@ -880,7 +942,9 @@ if (video) {
     ======================================== */
 
     const logoutBtn =
-        document.getElementById("logoutBtn");
+        document.getElementById(
+            "logoutBtn"
+        );
 
 
     if (logoutBtn) {
@@ -892,31 +956,33 @@ if (video) {
                 event.preventDefault();
                 event.stopPropagation();
 
-
                 const confirmLogout =
                     confirm(
                         "Do you want to logout?"
                     );
 
 
-                if (!confirmLogout) return;
+                if (!confirmLogout) {
+                    return;
+                }
 
 
                 localStorage.removeItem(
                     "wwc_user"
                 );
 
-
                 localStorage.removeItem(
                     "wwc_logged_in"
                 );
 
 
-                alert("Logged out.");
+                alert(
+                    "Logged out."
+                );
 
 
                 window.location.href =
-                    "./login.html";
+                    "./auth.html";
 
             }
         );
@@ -929,127 +995,4 @@ if (video) {
     ======================================== */
 
     const uploadBtn =
-        document.getElementById("uploadBtn");
-
-
-    if (uploadBtn) {
-
-        uploadBtn.addEventListener(
-            "click",
-            function (event) {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-
-                window.location.href =
-                    "./upload.html";
-
-            }
-        );
-
-    }
-
-
-    /* ========================================
-       INITIAL VIDEO
-    ======================================== */
-
-    if (videos.length > 0) {
-
-        videos.forEach(function (video) {
-
-            video.pause();
-
-            video.playsInline = true;
-
-        });
-
-
-        setTimeout(function () {
-
-            const firstVideo =
-                videos[0];
-
-
-            if (firstVideo) {
-
-                playVideo(firstVideo);
-
-            }
-
-        }, 500);
-
-    }
-
-
-    /* ========================================
-       FIX VIDEO SOUND AFTER USER TAP
-    ======================================== */
-
-    document.addEventListener(
-        "click",
-        function () {
-
-            if (!currentVideo) return;
-
-
-            /*
-            User interaction allows sound.
-            */
-
-            currentVideo.muted = false;
-
-        },
-        {
-            once: true
-        }
-    );
-
-
-    /* ========================================
-       DEBUG
-    ======================================== */
-
-    console.log(
-        "Videos:",
-        videos.length
-    );
-
-
-    console.log(
-        "Likes:",
-        likeButtons.length
-    );
-
-
-    console.log(
-        "Comments:",
-        commentButtons.length
-    );
-
-
-    console.log(
-        "Follows:",
-        followButtons.length
-    );
-
-
-    console.log(
-        "Shares:",
-        shareButtons.length
-    );
-
-
-    console.log(
-        "Upload button:",
-        !!uploadBtn
-    );
-
-
-    console.log(
-        "Logout button:",
-        !!logoutBtn
-    );
-
-});
+        
