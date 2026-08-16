@@ -11,36 +11,48 @@
 
 <body>
 
-  <!-- TOP / AUTH BUTTONS -->
-  <div class="auth-bar">
+  <!-- =========================================
+       TOP BAR
+       ========================================= -->
 
-    <button id="loginBtn" class="auth-btn">
-      Login / Register
+  <header class="wwc-top-bar">
+
+    <div class="wwc-top-tabs">
+
+      <button class="wwc-top-tab">
+        Following
+      </button>
+
+      <button class="wwc-top-tab active">
+        For You
+      </button>
+
+    </div>
+
+    <button class="wwc-search-btn" type="button">
+      🔍
     </button>
 
-    <button id="logoutBtn" class="auth-btn">
-      🚪 Logout
-    </button>
-
-    <button id="uploadBtn" class="auth-btn">
-      ⬆️ Upload Video
-    </button>
-
-  </div>
+  </header>
 
 
-  <!-- VIDEO FEED -->
+  <!-- =========================================
+       VIDEO FEED
+       ========================================= -->
+
   <main id="video-feed">
 
 
-    <!-- VIDEO 1 -->
+    <!-- =====================================
+         VIDEO 1
+         ===================================== -->
+
     <section class="video-item">
 
       <video
         class="feed-video"
         autoplay
         muted
-        
         playsinline
         preload="metadata"
       >
@@ -50,7 +62,9 @@
         >
       </video>
 
+
       <!-- PROFILE -->
+
       <div class="profile-area">
 
         <img
@@ -63,31 +77,63 @@
           @wwc_user
         </div>
 
-        <button class="follow-btn">
+        <button
+          class="follow-btn"
+          type="button"
+        >
           Follow
         </button>
 
       </div>
 
 
-      <!-- ACTIONS -->
+      <!-- RIGHT ACTIONS -->
+
       <div class="actions">
 
-        <button class="action-btn like-btn">
+        <button
+          class="action-btn like-btn"
+          type="button"
+        >
           ❤️
           <span class="like-count">0</span>
         </button>
 
-        <button class="action-btn comment-btn">
+        <button
+          class="action-btn comment-btn"
+          type="button"
+        >
           💬
         </button>
 
-        <button class="action-btn share-btn">
+        <button
+          class="action-btn save-btn"
+          type="button"
+        >
+          🔖
+        </button>
+
+        <button
+          class="action-btn share-btn"
+          type="button"
+        >
           ↗️
         </button>
-        <button class="action-btn save-btn">
-    🔖
-        </button>
+
+      </div>
+
+
+      <!-- VIDEO INFORMATION -->
+
+      <div class="video-info">
+
+        <div class="username">
+          @wwc_user
+        </div>
+
+        <div class="video-caption">
+          Welcome to World Wide Connect 🌎
+        </div>
 
       </div>
 
@@ -95,14 +141,16 @@
 
 
 
-    <!-- VIDEO 2 -->
+    <!-- =====================================
+         VIDEO 2
+         ===================================== -->
+
     <section class="video-item">
 
       <video
         class="feed-video"
         autoplay
         muted
-        
         playsinline
         preload="metadata"
       >
@@ -112,7 +160,9 @@
         >
       </video>
 
+
       <!-- PROFILE -->
+
       <div class="profile-area">
 
         <img
@@ -125,45 +175,80 @@
           @wwc_user_2
         </div>
 
-        <button class="follow-btn">
+        <button
+          class="follow-btn"
+          type="button"
+        >
           Follow
         </button>
 
       </div>
 
 
-      <!-- ACTIONS -->
+      <!-- RIGHT ACTIONS -->
+
       <div class="actions">
 
-        <button class="action-btn like-btn">
+        <button
+          class="action-btn like-btn"
+          type="button"
+        >
           ❤️
           <span class="like-count">0</span>
         </button>
 
-        <button class="action-btn comment-btn">
+        <button
+          class="action-btn comment-btn"
+          type="button"
+        >
           💬
         </button>
 
-        <button class="action-btn share-btn">
+        <button
+          class="action-btn save-btn"
+          type="button"
+        >
+          🔖
+        </button>
+
+        <button
+          class="action-btn share-btn"
+          type="button"
+        >
           ↗️
         </button>
-<button class="action-btn save-btn">
-    🔖
-</button>
+
+      </div>
+
+
+      <!-- VIDEO INFORMATION -->
+
+      <div class="video-info">
+
+        <div class="username">
+          @wwc_user_2
+        </div>
+
+        <div class="video-caption">
+          Share your world with everyone 🌎
+        </div>
+
       </div>
 
     </section>
 
 
 
-    <!-- VIDEO 3 -->
+    <!-- =====================================
+         VIDEO 3
+         ===================================== -->
+
     <section class="video-item">
 
       <video
         class="feed-video"
         autoplay
         muted
-        
         playsinline
         preload="metadata"
       >
@@ -173,7 +258,9 @@
         >
       </video>
 
+
       <!-- PROFILE -->
+
       <div class="profile-area">
 
         <img
@@ -186,28 +273,63 @@
           @wwc_user_3
         </div>
 
-        <button class="follow-btn">
+        <button
+          class="follow-btn"
+          type="button"
+        >
           Follow
         </button>
 
       </div>
 
 
-      <!-- ACTIONS -->
+      <!-- RIGHT ACTIONS -->
+
       <div class="actions">
 
-        <button class="action-btn like-btn">
+        <button
+          class="action-btn like-btn"
+          type="button"
+        >
           ❤️
           <span class="like-count">0</span>
         </button>
 
-        <button class="action-btn comment-btn">
+        <button
+          class="action-btn comment-btn"
+          type="button"
+        >
           💬
         </button>
 
-        <button class="action-btn share-btn">
+        <button
+          class="action-btn save-btn"
+          type="button"
+        >
+          🔖
+        </button>
+
+        <button
+          class="action-btn share-btn"
+          type="button"
+        >
           ↗️
         </button>
+
+      </div>
+
+
+      <!-- VIDEO INFORMATION -->
+
+      <div class="video-info">
+
+        <div class="username">
+          @wwc_user_3
+        </div>
+
+        <div class="video-caption">
+          Connect with the world 🌍
+        </div>
 
       </div>
 
@@ -216,25 +338,120 @@
   </main>
 
 
-  <!-- COMMENT BOX -->
-  <div id="commentBox" class="comment-box">
+  <!-- =========================================
+       BOTTOM NAVIGATION
+       ========================================= -->
+
+  <nav class="wwc-bottom-nav">
+
+    <button
+      class="wwc-nav-btn active"
+      type="button"
+    >
+      <span>🏠</span>
+      <span>Home</span>
+    </button>
+
+
+    <button
+      class="wwc-nav-btn"
+      type="button"
+    >
+      <span>👥</span>
+      <span>Friends</span>
+    </button>
+
+
+    <button
+      id="uploadBtn"
+      class="wwc-create-btn"
+      type="button"
+      aria-label="Upload Video"
+    >
+      +
+    </button>
+
+
+    <button
+      class="wwc-nav-btn"
+      type="button"
+    >
+      <span>💬</span>
+      <span>Inbox</span>
+    </button>
+
+
+    <button
+      class="wwc-nav-btn"
+      type="button"
+    >
+      <span>👤</span>
+      <span>Profile</span>
+    </button>
+
+  </nav>
+
+
+  <!-- =========================================
+       LOGIN / LOGOUT
+       ========================================= -->
+
+  <div class="auth-bar">
+
+    <button
+      id="loginBtn"
+      class="auth-btn"
+      type="button"
+    >
+      Login / Register
+    </button>
+
+
+    <button
+      id="logoutBtn"
+      class="auth-btn"
+      type="button"
+    >
+      🚪 Logout
+    </button>
+
+  </div>
+
+
+  <!-- =========================================
+       COMMENT BOX
+       ========================================= -->
+
+  <div
+    id="commentBox"
+    class="comment-box"
+  >
 
     <div class="comment-title">
       Comments
     </div>
+
 
     <textarea
       id="commentInput"
       placeholder="Write a comment..."
     ></textarea>
 
+
     <div class="comment-buttons">
 
-      <button id="commentCancel">
+      <button
+        id="commentCancel"
+        type="button"
+      >
         Cancel
       </button>
 
-      <button id="commentSend">
+
+      <button
+        id="commentSend"
+        type="button"
+      >
         Send
       </button>
 
@@ -243,8 +460,11 @@
   </div>
 
 
-  <!-- JAVASCRIPT -->
+  <!-- =========================================
+       JAVASCRIPT
+       ========================================= -->
+
   <script src="./js/app.js"></script>
 
 </body>
-</html>
+        </html>
