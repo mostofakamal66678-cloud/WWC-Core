@@ -5,30 +5,43 @@ APP.JS
 ========================================
 */
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
 
     console.log("WWC-Core started successfully");
+
+    /* ========================================
+       BASIC HELPERS
+    ======================================== */
+
+    const $ = (selector, parent = document) =>
+        parent.querySelector(selector);
+
+    const $$ = (selector, parent = document) =>
+        Array.from(parent.querySelectorAll(selector));
+
+    const getVideoItem = (element) =>
+        element ? element.closest(".video-item") : null;
+
 
     /* ========================================
        VIDEO FEED
     ======================================== */
 
-    const videos = Array.from(
-        document.querySelectorAll(".feed-video")
-    );
-
     let currentVideo = null;
 
+    function getVideos() {
+        return $$(".feed-video");
+    }
 
-    /* ========================================
-       PAUSE ALL VIDEOS
-    ======================================== */
+    function getVideoItems() {
+        return $$(".video-item");
+    }
 
-    function pauseAllVideos(exceptVideo = null) {
+    function pauseAllVideos(except = null) {
 
-        videos.forEach(function (video) {
+        getVideos().forEach(video => {
 
-            if (video !== exceptVideo) {
+            if (video !== except) {
                 video.pause();
             }
 
@@ -36,12 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
-
-    /* ========================================
-       PLAY VIDEO
-    ======================================== */
-
-    function playVideo(video, withSound = false) {
+    function playVideo(video, sound = false) {
 
         if (!video) return;
 
@@ -50,20 +58,21 @@ document.addEventListener("DOMContentLoaded", function () {
         currentVideo = video;
 
         video.playsInline = true;
+        video.setAttribute("playsinline", "");
 
-        video.muted = !withSound;
+        /*
+        Mobile browsers normally allow autoplay
+        only when muted.
+        */
+
+        video.muted = !sound;
 
         const promise = video.play();
 
-        if (promise && typeof promise.catch === "function") {
+        if (promise && promise.catch) {
 
-            promise.catch(function (error) {
-
-                console.log(
-                    "Video play blocked:",
-                    error
-                );
-
+            promise.catch(error => {
+                console.log("Video play blocked:", error);
             });
 
         }
@@ -75,113 +84,63 @@ document.addEventListener("DOMContentLoaded", function () {
        VIDEO CLICK
     ======================================== */
 
-    videos.forEach(function (video) {
+    document.addEventListener("click", event => {
 
-        video.playsInline = true;
+        const video = event.target.closest(".feed-video");
 
-        video.addEventListener(
-            "click",
-            function (event) {
+        if (!video) return;
 
-                event.stopPropagation();
+        event.preventDefault();
+        event.stopPropagation();
 
-                if (video.paused) {
+        if (video.paused) {
 
-                    playVideo(video, true);
+            playVideo(video, true);
 
-                } else {
+        } else {
 
-                    video.pause();
+            video.pause();
 
-                }
-
-            }
-        );
-
-
-        /* ====================================
-           DOUBLE TAP LIKE
-        ==================================== */
-
-        video.addEventListener(
-            "dblclick",
-            function (event) {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-                const videoItem =
-                    video.closest(".video-item");
-
-                if (!videoItem) return;
-
-                const likeButton =
-                    videoItem.querySelector(".like-btn");
-
-                if (likeButton) {
-
-                    likeButton.click();
-
-                }
-
-            }
-        );
-
-
-        /* ====================================
-           VIDEO ENDED
-        ==================================== */
-
-        video.addEventListener(
-            "ended",
-            function () {
-
-                const index =
-                    getCurrentVideoIndex();
-
-                if (index < videos.length - 1) {
-
-                    scrollToVideo(index + 1);
-
-                } else {
-
-                    scrollToVideo(0);
-
-                }
-
-            }
-        );
-
-
-        /* ====================================
-           VIDEO ERROR
-        ==================================== */
-
-        video.addEventListener(
-            "error",
-            function () {
-
-                console.log(
-                    "Video load error:",
-                    video.currentSrc
-                );
-
-            }
-        );
+        }
 
     });
 
 
     /* ========================================
-       AUTO PLAY WHEN VIDEO IS VISIBLE
+       VIDEO DOUBLE TAP LIKE
     ======================================== */
 
-    const videoObserver =
-        new IntersectionObserver(
+    document.addEventListener("dblclick", event => {
 
-            function (entries) {
+        const video = event.target.closest(".feed-video");
 
-                entries.forEach(function (entry) {
+        if (!video) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const item = getVideoItem(video);
+
+        const likeButton =
+            item ? $(".like-btn", item) : null;
+
+        if (likeButton) {
+            likeButton.click();
+        }
+
+    });
+
+
+    /* ========================================
+       VIDEO OBSERVER
+    ======================================== */
+
+    if ("IntersectionObserver" in window) {
+
+        const observer = new IntersectionObserver(
+            entries => {
+
+                entries.forEach(entry => {
 
                     const video = entry.target;
 
@@ -190,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         entry.intersectionRatio >= 0.60
                     ) {
 
-                        playVideo(video);
+                        playVideo(video, false);
 
                     } else {
 
@@ -201,57 +160,45 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
 
             },
-
             {
-                threshold: [0.50, 0.60]
+                threshold: [0.60]
             }
-
         );
 
-
-    videos.forEach(function (video) {
-
-        videoObserver.observe(video);
-
-    });
-
-
-    /* ========================================
-       GET VIDEO ITEMS
-    ======================================== */
-
-    function getVideoItems() {
-
-        return Array.from(
-            document.querySelectorAll(".video-item")
-        );
+        getVideos().forEach(video => {
+            observer.observe(video);
+        });
 
     }
 
 
     /* ========================================
-       GET CURRENT VIDEO INDEX
+       VIDEO ENDED
     ======================================== */
 
-    function getCurrentVideoIndex() {
+    document.addEventListener("ended", event => {
+
+        if (!event.target.classList.contains("feed-video")) {
+            return;
+        }
 
         const items = getVideoItems();
 
-        if (!items.length) return 0;
+        const item = getVideoItem(event.target);
 
-        if (!currentVideo) return 0;
+        const index = items.indexOf(item);
 
-        const currentItem =
-            currentVideo.closest(".video-item");
+        if (index >= 0 && index < items.length - 1) {
 
-        if (!currentItem) return 0;
+            scrollToVideo(index + 1);
 
-        const index =
-            items.indexOf(currentItem);
+        } else if (items.length > 0) {
 
-        return index >= 0 ? index : 0;
+            scrollToVideo(0);
 
-    }
+        }
+
+    }, true);
 
 
     /* ========================================
@@ -264,13 +211,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!items.length) return;
 
-        if (index < 0) {
-            index = 0;
-        }
-
-        if (index >= items.length) {
-            index = items.length - 1;
-        }
+        index = Math.max(
+            0,
+            Math.min(index, items.length - 1)
+        );
 
         const item = items[index];
 
@@ -279,15 +223,12 @@ document.addEventListener("DOMContentLoaded", function () {
             block: "start"
         });
 
-        const video =
-            item.querySelector(".feed-video");
+        const video = $(".feed-video", item);
 
         if (video) {
 
-            setTimeout(function () {
-
-                playVideo(video);
-
+            setTimeout(() => {
+                playVideo(video, false);
             }, 500);
 
         }
@@ -295,37 +236,36 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    /* ========================================
-       NEXT VIDEO
-    ======================================== */
+    function getCurrentVideoIndex() {
 
-    function goToNextVideo() {
+        const items = getVideoItems();
 
-        const index =
-            getCurrentVideoIndex();
+        if (!currentVideo) return 0;
 
-        if (index < videos.length - 1) {
+        const item = getVideoItem(currentVideo);
 
-            scrollToVideo(index + 1);
+        const index = items.indexOf(item);
 
-        }
+        return index >= 0 ? index : 0;
 
     }
 
 
-    /* ========================================
-       PREVIOUS VIDEO
-    ======================================== */
+    function nextVideo() {
 
-    function goToPreviousVideo() {
+        const index = getCurrentVideoIndex();
 
-        const index =
-            getCurrentVideoIndex();
+        scrollToVideo(index + 1);
+
+    }
+
+
+    function previousVideo() {
+
+        const index = getCurrentVideoIndex();
 
         if (index > 0) {
-
             scrollToVideo(index - 1);
-
         }
 
     }
@@ -336,162 +276,159 @@ document.addEventListener("DOMContentLoaded", function () {
     ======================================== */
 
     let touchStartY = 0;
-    let touchEndY = 0;
+    let touchStartX = 0;
 
     document.addEventListener(
         "touchstart",
-        function (event) {
+        event => {
+
+            const target = event.target;
 
             if (
-                !event.touches ||
-                !event.touches.length
+                target.closest("button") ||
+                target.closest("input") ||
+                target.closest("textarea") ||
+                target.closest(".comment-box")
             ) {
                 return;
             }
 
+            if (!event.touches.length) return;
+
             touchStartY =
                 event.touches[0].clientY;
 
+            touchStartX =
+                event.touches[0].clientX;
+
         },
-        {
-            passive: true
-        }
+        { passive: true }
     );
 
 
     document.addEventListener(
         "touchend",
-        function (event) {
+        event => {
+
+            if (!event.changedTouches.length) return;
+
+            const touch = event.changedTouches[0];
+
+            const endY = touch.clientY;
+            const endX = touch.clientX;
+
+            const distanceY =
+                touchStartY - endY;
+
+            const distanceX =
+                touchStartX - endX;
+
+            /*
+            Ignore mostly horizontal movement.
+            */
+
+            if (Math.abs(distanceY) < 70) return;
 
             if (
-                !event.changedTouches ||
-                !event.changedTouches.length
+                Math.abs(distanceX) >
+                Math.abs(distanceY)
             ) {
                 return;
             }
 
-            touchEndY =
-                event.changedTouches[0].clientY;
+            if (distanceY > 70) {
 
-            const distance =
-                touchStartY - touchEndY;
+                nextVideo();
 
+            } else if (distanceY < -70) {
 
-            /* SWIPE UP */
-
-            if (distance > 70) {
-
-                goToNextVideo();
-
-            }
-
-
-            /* SWIPE DOWN */
-
-            if (distance < -70) {
-
-                goToPreviousVideo();
+                previousVideo();
 
             }
 
         },
-        {
-            passive: true
-        }
+        { passive: true }
     );
 
 
     /* ========================================
-       DESKTOP KEYBOARD
+       KEYBOARD
     ======================================== */
 
-    document.addEventListener(
-        "keydown",
-        function (event) {
+    document.addEventListener("keydown", event => {
 
-            if (event.key === "ArrowDown") {
+        if (event.key === "ArrowDown") {
 
-                event.preventDefault();
-
-                goToNextVideo();
-
-            }
-
-            if (event.key === "ArrowUp") {
-
-                event.preventDefault();
-
-                goToPreviousVideo();
-
-            }
+            event.preventDefault();
+            nextVideo();
 
         }
-    );
+
+        if (event.key === "ArrowUp") {
+
+            event.preventDefault();
+            previousVideo();
+
+        }
+
+    });
 
 
     /* ========================================
        LIKE
     ======================================== */
 
-    const likeButtons =
-        document.querySelectorAll(".like-btn");
+    document.addEventListener("click", event => {
 
+        const button =
+            event.target.closest(".like-btn");
 
-    likeButtons.forEach(function (button) {
+        if (!button) return;
 
-        button.addEventListener(
-            "click",
-            function (event) {
+        event.preventDefault();
+        event.stopPropagation();
 
-                event.preventDefault();
-                event.stopPropagation();
+        const item = getVideoItem(button);
 
-                const videoItem =
-                    button.closest(".video-item");
+        if (!item) return;
 
-                if (!videoItem) return;
+        const countElement =
+            $(".like-count", item);
 
-                const countElement =
-                    videoItem.querySelector(".like-count");
+        let count = countElement
+            ? parseInt(countElement.textContent, 10) || 0
+            : 0;
 
-                if (!countElement) return;
+        const liked =
+            button.classList.contains("liked");
 
-                let count =
-                    parseInt(
-                        countElement.textContent,
-                        10
-                    ) || 0;
+        if (liked) {
 
+            count = Math.max(0, count - 1);
 
-                if (
-                    button.classList.contains("liked")
-                ) {
+            button.classList.remove("liked");
 
-                    count--;
+            button.setAttribute(
+                "aria-pressed",
+                "false"
+            );
 
-                    if (count < 0) {
-                        count = 0;
-                    }
+        } else {
 
-                    button.classList.remove(
-                        "liked"
-                    );
+            count++;
 
-                } else {
+            button.classList.add("liked");
 
-                    count++;
+            button.setAttribute(
+                "aria-pressed",
+                "true"
+            );
 
-                    button.classList.add(
-                        "liked"
-                    );
+        }
 
-                }
-
-                countElement.textContent =
-                    count;
-
-            }
-        );
+        if (countElement) {
+            countElement.textContent = count;
+        }
 
     });
 
@@ -500,90 +437,77 @@ document.addEventListener("DOMContentLoaded", function () {
        FOLLOW
     ======================================== */
 
-    const followButtons =
-        document.querySelectorAll(".follow-btn");
+    document.addEventListener("click", event => {
 
+        const button =
+            event.target.closest(".follow-btn");
 
-    followButtons.forEach(function (button) {
+        if (!button) return;
 
-        button.addEventListener(
-            "click",
-            function (event) {
+        event.preventDefault();
+        event.stopPropagation();
 
-                event.preventDefault();
-                event.stopPropagation();
+        const following =
+            button.classList.toggle("following");
 
-                if (
-                    button.classList.contains(
-                        "following"
-                    )
-                ) {
+        button.textContent =
+            following ? "Following" : "Follow";
 
-                    button.classList.remove(
-                        "following"
-                    );
-
-                    button.textContent =
-                        "Follow";
-
-                } else {
-
-                    button.classList.add(
-                        "following"
-                    );
-
-                    button.textContent =
-                        "Following";
-
-                }
-
-            }
+        button.setAttribute(
+            "aria-pressed",
+            following ? "true" : "false"
         );
 
     });
 
 
     /* ========================================
-       PROFILE CLICK
+       SAVE
     ======================================== */
 
-    const profileButtons =
-        document.querySelectorAll(
-            ".profile-photo, .profile-name, .username"
+    document.addEventListener("click", event => {
+
+        const button =
+            event.target.closest(".save-btn");
+
+        if (!button) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        const item = getVideoItem(button);
+
+        const saved =
+            button.classList.toggle("saved");
+
+        button.setAttribute(
+            "aria-pressed",
+            saved ? "true" : "false"
         );
 
+        const countElement =
+            item ? $(".save-count", item) : null;
 
-    profileButtons.forEach(function (element) {
+        if (countElement) {
 
-        element.style.cursor = "pointer";
+            let count =
+                parseInt(
+                    countElement.textContent,
+                    10
+                ) || 0;
 
-        element.addEventListener(
-            "click",
-            function (event) {
+            count = saved
+                ? count + 1
+                : Math.max(0, count - 1);
 
-                event.preventDefault();
-                event.stopPropagation();
+            countElement.textContent = count;
 
-                const profile =
-                    element.closest(".video-item");
+        }
 
-                if (!profile) return;
-
-                const usernameElement =
-                    profile.querySelector(
-                        ".profile-name, .username"
-                    );
-
-                const username =
-                    usernameElement
-                        ? usernameElement.textContent.trim()
-                        : "WWC User";
-
-                alert(
-                    "Profile: " + username
-                );
-
-            }
+        alert(
+            saved
+                ? "Video saved!"
+                : "Video removed from saved!"
         );
 
     });
@@ -593,139 +517,136 @@ document.addEventListener("DOMContentLoaded", function () {
        SHARE
     ======================================== */
 
-    const shareButtons =
-        document.querySelectorAll(".share-btn");
+    document.addEventListener("click", async event => {
 
+        const button =
+            event.target.closest(".share-btn");
 
-    shareButtons.forEach(function (button) {
+        if (!button) return;
 
-        button.addEventListener(
-            "click",
-            async function (event) {
+        event.preventDefault();
+        event.stopPropagation();
 
-                event.preventDefault();
-                event.stopPropagation();
+        const item = getVideoItem(button);
 
-                const shareData = {
+        let shareUrl =
+            window.location.href;
 
-                    title:
-                        "World Wide Connect",
+        if (item && item.dataset.videoId) {
 
-                    text:
-                        "Check this video on World Wide Connect",
+            shareUrl =
+                window.location.origin +
+                window.location.pathname +
+                "?video=" +
+                encodeURIComponent(
+                    item.dataset.videoId
+                );
 
-                    url:
-                        window.location.href
+        }
 
-                };
+        const shareData = {
 
+            title:
+                "World Wide Connect",
 
-                try {
+            text:
+                "Check this video on World Wide Connect",
 
-                    if (
-                        navigator.share &&
-                        typeof navigator.share ===
-                        "function"
-                    ) {
+            url:
+                shareUrl
 
-                        await navigator.share(
-                            shareData
-                        );
+        };
 
-                    } else if (
-                        navigator.clipboard &&
-                        typeof navigator.clipboard
-                            .writeText ===
-                            "function"
-                    ) {
+        try {
 
-                        await navigator.clipboard
-                            .writeText(
-                                window.location.href
-                            );
+            if (
+                navigator.share &&
+                typeof navigator.share === "function"
+            ) {
 
-                        alert(
-                            "Video link copied!"
-                        );
+                await navigator.share(shareData);
 
-                    } else {
+            } else if (
+                navigator.clipboard &&
+                navigator.clipboard.writeText
+            ) {
 
-                        prompt(
-                            "Copy this video link:",
-                            window.location.href
-                        );
+                await navigator.clipboard.writeText(
+                    shareUrl
+                );
 
-                    }
+                alert("Video link copied!");
 
-                } catch (error) {
+            } else {
 
-                    console.log(
-                        "Share cancelled or failed:",
-                        error
-                    );
-
-                }
+                window.prompt(
+                    "Copy this video link:",
+                    shareUrl
+                );
 
             }
-        );
+
+        } catch (error) {
+
+            /*
+            User cancelled share.
+            No error message needed.
+            */
+
+            console.log(
+                "Share cancelled:",
+                error
+            );
+
+        }
 
     });
 
 
     /* ========================================
-       COMMENT
+       COMMENTS
     ======================================== */
-
-    const commentButtons =
-        document.querySelectorAll(".comment-btn");
-
-    const commentBox =
-        document.getElementById("commentBox");
-
-    const commentInput =
-        document.getElementById("commentInput");
-
-    const commentCancel =
-        document.getElementById("commentCancel");
-
-    const commentSend =
-        document.getElementById("commentSend");
 
     let activeCommentVideo = null;
 
+    document.addEventListener("click", event => {
 
-    commentButtons.forEach(function (button) {
+        const button =
+            event.target.closest(".comment-btn");
 
-        button.addEventListener(
-            "click",
-            function (event) {
+        if (!button) return;
 
-                event.preventDefault();
-                event.stopPropagation();
+        event.preventDefault();
+        event.stopPropagation();
 
-                activeCommentVideo =
-                    button.closest(".video-item");
+        activeCommentVideo =
+            getVideoItem(button);
 
-                if (!commentBox) return;
+        const commentBox =
+            $("#commentBox");
 
-                commentBox.classList.add(
-                    "show"
-                );
+        const commentInput =
+            $("#commentInput");
 
-                if (commentInput) {
+        if (!commentBox) {
 
-                    commentInput.value = "";
+            alert("Comment box not found.");
 
-                    setTimeout(function () {
+            return;
 
-                        commentInput.focus();
+        }
 
-                    }, 100);
+        commentBox.classList.add("show");
 
-                }
+        if (commentInput) {
 
-            }
-        );
+            commentInput.value = "";
+
+            setTimeout(() => {
+                commentInput.focus();
+            }, 100);
+
+        }
 
     });
 
@@ -734,140 +655,204 @@ document.addEventListener("DOMContentLoaded", function () {
        COMMENT CANCEL
     ======================================== */
 
-    if (commentCancel) {
+    document.addEventListener("click", event => {
 
-        commentCancel.addEventListener(
-            "click",
-            function (event) {
+        const button =
+            event.target.closest("#commentCancel");
 
-                event.preventDefault();
-                event.stopPropagation();
+        if (!button) return;
 
-                if (commentBox) {
+        event.preventDefault();
+        event.stopPropagation();
 
-                    commentBox.classList.remove(
-                        "show"
-                    );
+        const box = $("#commentBox");
+        const input = $("#commentInput");
 
-                }
+        if (box) {
+            box.classList.remove("show");
+        }
 
-                if (commentInput) {
+        if (input) {
+            input.value = "";
+        }
 
-                    commentInput.value = "";
+        activeCommentVideo = null;
 
-                }
-
-            }
-        );
-
-    }
+    });
 
 
     /* ========================================
        COMMENT SEND
     ======================================== */
 
-    if (commentSend) {
+    document.addEventListener("click", event => {
 
-        commentSend.addEventListener(
-            "click",
-            function (event) {
+        const button =
+            event.target.closest("#commentSend");
 
-                event.preventDefault();
-                event.stopPropagation();
+        if (!button) return;
 
-                if (!commentInput) return;
+        event.preventDefault();
+        event.stopPropagation();
 
-                const text =
-                    commentInput.value.trim();
+        const input =
+            $("#commentInput");
 
+        const box =
+            $("#commentBox");
 
-                if (!text) {
+        if (!input) return;
 
-                    alert(
-                        "Please write a comment."
-                    );
+        const text =
+            input.value.trim();
 
-                    return;
+        if (!text) {
 
-                }
+            alert("Please write a comment.");
 
+            return;
 
-                if (activeCommentVideo) {
+        }
 
-                    let commentList =
-                        activeCommentVideo.querySelector(
-                            ".comment-list"
-                        );
+        if (activeCommentVideo) {
 
+            let list =
+                $(".comment-list", activeCommentVideo);
 
-                    if (!commentList) {
+            if (!list) {
 
-                        commentList =
-                            document.createElement(
-                                "div"
-                            );
+                list =
+                    document.createElement("div");
 
-                        commentList.className =
-                            "comment-list";
+                list.className =
+                    "comment-list";
 
-                        activeCommentVideo.appendChild(
-                            commentList
-                        );
-
-                    }
-
-
-                    const comment =
-                        document.createElement(
-                            "div"
-                        );
-
-                    comment.className =
-                        "comment-item";
-
-                    comment.textContent =
-                        text;
-
-                    commentList.appendChild(
-                        comment
-                    );
-
-                }
-
-
-                commentInput.value = "";
-
-
-                if (commentBox) {
-
-                    commentBox.classList.remove(
-                        "show"
-                    );
-
-                }
+                activeCommentVideo.appendChild(list);
 
             }
-        );
 
-    }
+            const comment =
+                document.createElement("div");
+
+            comment.className =
+                "comment-item";
+
+            comment.textContent =
+                text;
+
+            list.appendChild(comment);
+
+        }
+
+        input.value = "";
+
+        if (box) {
+            box.classList.remove("show");
+        }
+
+        activeCommentVideo = null;
+
+    });
 
 
     /* ========================================
-       PROFILE MENU - PROFILE BUTTON
+       PROFILE PHOTO / USERNAME
     ======================================== */
 
-    const profileBtnMenu =
-        document.getElementById(
-            "profileBtnMenu"
-        );
+    document.addEventListener("click", event => {
+
+        const element =
+            event.target.closest(
+                ".profile-photo, .profile-name, .username"
+            );
+
+        if (!element) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        window.location.href =
+            "./profile.html";
+
+    });
 
 
-    if (profileBtnMenu) {
+    /* ========================================
+       BOTTOM PROFILE BUTTON
+    ======================================== */
 
-        profileBtnMenu.addEventListener(
+    const profileButtons = [
+        $("#profileBtn"),
+        $("#profileBtnMenu")
+    ].filter(Boolean);
+
+    profileButtons.forEach(button => {
+
+        button.addEventListener("click", event => {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            /*
+            If a profile menu exists, open it.
+            Otherwise go directly to profile page.
+            */
+
+            const profileMenu =
+                $("#profileMenu");
+
+            if (profileMenu) {
+
+                profileMenu.classList.toggle("show");
+
+            } else {
+
+                window.location.href =
+                    "./profile.html";
+
+            }
+
+        });
+
+    });
+
+
+    /* ========================================
+       LOGIN / REGISTER
+    ======================================== */
+
+    const loginButtons = [
+        $("#loginBtn"),
+        $("#registerBtn")
+    ].filter(Boolean);
+
+    loginButtons.forEach(button => {
+
+        button.addEventListener("click", event => {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            window.location.href =
+                "./auth.html";
+
+        });
+
+    });
+
+
+    /* ========================================
+       PROFILE MENU LOGIN / REGISTER
+    ======================================== */
+
+    const profileMenuLogin =
+        $("#profileBtnMenu");
+
+    if (profileMenuLogin) {
+
+        profileMenuLogin.addEventListener(
             "click",
-            function (event) {
+            event => {
 
                 event.preventDefault();
                 event.stopPropagation();
@@ -882,90 +867,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* ========================================
-       LOGIN / REGISTER
-    ======================================== */
-
-    const loginBtn =
-        document.getElementById(
-            "loginBtn"
-        );
-
-
-    if (loginBtn) {
-
-        loginBtn.addEventListener(
-            "click",
-            function (event) {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-                window.location.href =
-                    "./auth.html";
-
-            }
-        );
-
-    }
-
-
-    /* ========================================
-       REGISTER BUTTON
-    ======================================== */
-
-    const registerBtn =
-        document.getElementById(
-            "registerBtn"
-        );
-
-
-    if (registerBtn) {
-
-        registerBtn.addEventListener(
-            "click",
-            function (event) {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-                window.location.href =
-                    "./auth.html";
-
-            }
-        );
-
-    }
-
-
-    /* ========================================
        LOGOUT
     ======================================== */
 
     const logoutBtn =
-        document.getElementById(
-            "logoutBtn"
-        );
-
+        $("#logoutBtn");
 
     if (logoutBtn) {
 
         logoutBtn.addEventListener(
             "click",
-            function (event) {
+            event => {
 
                 event.preventDefault();
                 event.stopPropagation();
 
-                const confirmLogout =
-                    confirm(
+                const ok =
+                    window.confirm(
                         "Do you want to logout?"
                     );
 
-
-                if (!confirmLogout) {
-                    return;
-                }
-
+                if (!ok) return;
 
                 localStorage.removeItem(
                     "wwc_user"
@@ -975,11 +897,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     "wwc_logged_in"
                 );
 
-
-                alert(
-                    "Logged out."
-                );
-
+                alert("Logged out.");
 
                 window.location.href =
                     "./auth.html";
@@ -994,5 +912,208 @@ document.addEventListener("DOMContentLoaded", function () {
        UPLOAD VIDEO
     ======================================== */
 
-    const uploadBtn =
-        
+    const uploadButton =
+        $("#uploadBtn");
+
+    if (uploadButton) {
+
+        uploadButton.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                /*
+                Use existing hidden file input
+                if index.html already has one.
+                */
+
+                let fileInput =
+                    $("#videoUpload") ||
+                    $("#videoInput") ||
+                    $('input[type="file"][accept*="video"]');
+
+                if (!fileInput) {
+
+                    alert(
+                        "Video upload input is not available yet."
+                    );
+
+                    return;
+
+                }
+
+                fileInput.click();
+
+            }
+        );
+
+    }
+
+
+    /* ========================================
+       HOME BUTTON
+    ======================================== */
+
+    const homeButtons =
+        $$(".wwc-nav-btn").filter(button => {
+
+            const text =
+                button.textContent
+                    .trim()
+                    .toLowerCase();
+
+            return text.includes("home");
+
+        });
+
+    homeButtons.forEach(button => {
+
+        button.addEventListener("click", event => {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        });
+
+    });
+
+
+    /* ========================================
+       FRIENDS BUTTON
+    ======================================== */
+
+    const friendsButtons =
+        $$(".wwc-nav-btn").filter(button => {
+
+            const text =
+                button.textContent
+                    .trim()
+                    .toLowerCase();
+
+            return text.includes("friends");
+
+        });
+
+    friendsButtons.forEach(button => {
+
+           button.addEventListener("click", event => {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            alert(
+                "Friends section is ready for connection."
+            );
+
+        });
+
+    });
+
+
+    /* ========================================
+       INBOX BUTTON
+    ======================================== */
+
+    const inboxButtons =
+        $$(".wwc-nav-btn").filter(button => {
+
+            const text =
+                button.textContent
+                    .trim()
+                    .toLowerCase();
+
+            return text.includes("inbox");
+
+        });
+
+
+    inboxButtons.forEach(button => {
+
+        button.addEventListener("click", event => {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            alert(
+                "Inbox is ready."
+            );
+
+        });
+
+    });
+
+
+    /* ========================================
+       INITIAL VIDEO
+    ======================================== */
+
+    const firstVideo =
+        getVideos()[0];
+
+    if (firstVideo) {
+
+        firstVideo.playsInline = true;
+
+        firstVideo.setAttribute(
+            "playsinline",
+            ""
+        );
+
+        firstVideo.muted = true;
+
+        firstVideo.play().catch(() => {
+
+            console.log(
+                "Initial autoplay waiting for user."
+            );
+
+        });
+
+        currentVideo = firstVideo;
+
+    }
+
+
+    /* ========================================
+       CLOSE COMMENT BOX
+    ======================================== */
+
+    document.addEventListener("click", event => {
+
+        const box =
+            document.getElementById("commentBox");
+
+        if (!box) return;
+
+        if (!box.classList.contains("show")) {
+            return;
+        }
+
+        if (
+            event.target.closest("#commentBox") ||
+            event.target.closest(".comment-btn")
+        ) {
+            return;
+        }
+
+        box.classList.remove("show");
+
+    });
+
+
+    /* ========================================
+       STARTUP MESSAGE
+    ======================================== */
+
+    console.log(
+        "WWC-Core: All button handlers loaded."
+    );
+
+});
