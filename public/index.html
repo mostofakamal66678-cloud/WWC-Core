@@ -19,17 +19,21 @@
 
     <div class="wwc-top-tabs">
 
-      <button class="wwc-top-tab">
+      <button class="wwc-top-tab" type="button">
         Following
       </button>
 
-      <button class="wwc-top-tab active">
+      <button class="wwc-top-tab active" type="button">
         For You
       </button>
 
     </div>
 
-    <button class="wwc-search-btn" type="button">
+    <button
+      class="wwc-search-btn"
+      type="button"
+      aria-label="Search"
+    >
       🔍
     </button>
 
@@ -339,6 +343,60 @@
 
 
   <!-- =========================================
+       PROFILE MENU
+       ========================================= -->
+
+  <div
+    id="profileMenu"
+    class="profile-menu"
+    aria-hidden="true"
+  >
+
+    <div class="profile-menu-header">
+      <div class="profile-menu-title">
+        👤 My Profile
+      </div>
+
+      <button
+        id="profileMenuClose"
+        class="profile-menu-close"
+        type="button"
+      >
+        ✕
+      </button>
+    </div>
+
+
+    <button
+      id="profileBtnMenu"
+      class="profile-menu-btn"
+      type="button"
+    >
+      👤 Profile
+    </button>
+
+
+    <button
+      id="loginBtn"
+      class="profile-menu-btn"
+      type="button"
+    >
+      🔐 Login / Register
+    </button>
+
+
+    <button
+      id="logoutBtn"
+      class="profile-menu-btn logout-menu-btn"
+      type="button"
+    >
+      🚪 Logout
+    </button>
+
+  </div>
+
+
+  <!-- =========================================
        BOTTOM NAVIGATION
        ========================================= -->
 
@@ -381,7 +439,10 @@
     </button>
 
 
+    <!-- PROFILE -->
+
     <button
+      id="profileBtn"
       class="wwc-nav-btn"
       type="button"
     >
@@ -390,32 +451,6 @@
     </button>
 
   </nav>
-
-
-  <!-- =========================================
-       LOGIN / LOGOUT
-       ========================================= -->
-
-  <div class="auth-bar">
-
-    <button
-      id="loginBtn"
-      class="auth-btn"
-      type="button"
-    >
-      Login / Register
-    </button>
-
-
-    <button
-      id="logoutBtn"
-      class="auth-btn"
-      type="button"
-    >
-      🚪 Logout
-    </button>
-
-  </div>
 
 
   <!-- =========================================
@@ -466,5 +501,77 @@
 
   <script src="./js/app.js"></script>
 
+
+  <!-- PROFILE MENU CONTROL -->
+
+  <script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+      const profileBtn = document.getElementById("profileBtn");
+      const profileMenu = document.getElementById("profileMenu");
+      const profileMenuClose = document.getElementById("profileMenuClose");
+
+      if (profileBtn && profileMenu) {
+
+        profileBtn.addEventListener("click", function () {
+
+          profileMenu.classList.toggle("show");
+
+          profileMenu.setAttribute(
+            "aria-hidden",
+            profileMenu.classList.contains("show")
+              ? "false"
+              : "true"
+          );
+
+        });
+
+      }
+
+
+      if (profileMenuClose && profileMenu) {
+
+        profileMenuClose.addEventListener("click", function () {
+
+          profileMenu.classList.remove("show");
+
+          profileMenu.setAttribute(
+            "aria-hidden",
+            "true"
+          );
+
+        });
+
+      }
+
+
+      document.addEventListener("click", function (event) {
+
+        if (!profileMenu || !profileBtn) {
+          return;
+        }
+
+        if (
+          profileMenu.classList.contains("show") &&
+          !profileMenu.contains(event.target) &&
+          !profileBtn.contains(event.target)
+        ) {
+
+          profileMenu.classList.remove("show");
+
+          profileMenu.setAttribute(
+            "aria-hidden",
+            "true"
+          );
+
+        }
+
+      });
+
+    });
+
+  </script>
+
 </body>
-        </html>
+</html>
