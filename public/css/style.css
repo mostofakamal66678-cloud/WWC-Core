@@ -1,435 +1,653 @@
 /* =========================================
    WORLD WIDE CONNECT
-   CLEAN VIDEO FEED CSS
+   TIKTOK STYLE VIDEO FEED
    ========================================= */
 
-
 /* RESET */
-
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
-
 
 /* PAGE */
-
 html,
 body {
-  width: 100%;
-  height: 100%;
-  background: #000;
-  color: #fff;
-  font-family: Arial, sans-serif;
-  overflow: hidden;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
 }
-
 
 /* =========================================
    VIDEO FEED
    ========================================= */
 
 #video-feed {
-  position: fixed;
-  inset: 0;
+    position: fixed;
+    inset: 0;
 
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 
-  overflow-y: auto;
-  overflow-x: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 
-  scroll-snap-type: y mandatory;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
 
-  background: #000;
+    background: #000;
 
-  -webkit-overflow-scrolling: touch;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
 }
 
+#video-feed::-webkit-scrollbar {
+    display: none;
+}
 
 /* =========================================
    VIDEO ITEM
    ========================================= */
 
 .video-item {
-  position: relative;
+    position: relative;
 
-  width: 100%;
-  height: 100vh;
-  height: 100dvh;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
 
-  min-height: 100vh;
+    min-height: 100vh;
 
-  background: #000;
+    overflow: hidden;
 
-  overflow: hidden;
+    background: #000;
 
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
 }
-
 
 /* =========================================
    VIDEO
    ========================================= */
 
 .feed-video {
-  position: absolute;
+    position: absolute;
 
-.video-item > div[style*="position:absolute"] {
-  position: absolute !important;
-  top: 10px !important;
-  left: 15px !important;
-  z-index: 20 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  gap: 6px !important;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    border: none;
+
+    background: #000;
+
+    z-index: 1;
 }
 
-.video-item .profile-photo {
-  width: 50px !important;
-  height: 50px !important;
-  border: 2px solid #1877f2 !important;
-  border-radius: 50% !important;
-  object-fit: cover !important;
-  background: #555 !important;
+/* =========================================
+   TOP BAR
+   ========================================= */
+
+.wwc-top-bar {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 64px;
+
+    z-index: 500;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 15px;
+
+    background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.65),
+        rgba(0,0,0,0)
+    );
+
+    pointer-events: none;
 }
 
-.video-item .profile-name {
-  font-size: 14px !important;
-  font-weight: bold !important;
-  color: #fff !important;
-  text-shadow: 0 1px 3px #000 !important;
-  white-space: nowrap;
+.wwc-top-tabs {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 24px;
 }
 
-.video-item .follow-btn {
-  width: 70px !important;
-  height: 50px !important;
-  min-width: 70px !important;
-  min-height: 50px !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: none !important;
-  border-radius: 25px !important;
-  background: #1877f2 !important;
-  color: #fff !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-  cursor: pointer;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  text-align: center;
-  line-height: 16px;
+.wwc-top-tab {
+    border: none;
+
+    background: transparent;
+
+    color: rgba(255,255,255,0.7);
+
+    font-size: 16px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    pointer-events: auto;
 }
 
-
-  object-fit: cover;
-
-  border: 2px solid #1877f2;
-
-  background: #555;
+.wwc-top-tab.active {
+    color: #fff;
+    font-weight: 700;
 }
 
+.wwc-search-btn {
+    position: absolute;
+
+    right: 15px;
+    top: 12px;
+
+    width: 42px;
+    height: 42px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(0,0,0,0.45);
+
+    color: #fff;
+
+    font-size: 21px;
+
+    cursor: pointer;
+
+    pointer-events: auto;
+}
+
+/* =========================================
+   PROFILE AREA
+   ========================================= */
+
+.video-item .profile-area {
+    position: absolute !important;
+
+    right: 15px !important;
+    bottom: 360px !important;
+
+    left: auto !important;
+    top: auto !important;
+
+    width: 70px !important;
+
+    display: flex !important;
+
+    flex-direction: column !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    gap: 7px !important;
+
+    z-index: 50 !important;
+
+    visibility: visible !important;
+    opacity: 1 !important;
+
+    pointer-events: auto !important;
+}
+
+/* PROFILE PHOTO */
+
+.video-item .profile-area .profile-photo {
+    width: 54px !important;
+    height: 54px !important;
+
+    border: 2px solid #fff !important;
+
+    border-radius: 50% !important;
+
+    object-fit: cover !important;
+
+    background: #444 !important;
+
+    display: block !important;
+}
 
 /* USERNAME */
 
-.username {
-  font-size: 15px;
+.video-item .profile-area .username,
+.video-item .profile-area .profile-name {
+    width: 100% !important;
 
-  font-weight: bold;
+    color: #fff !important;
 
-  color: #fff;
+    font-size: 12px !important;
+    font-weight: 700 !important;
 
-  text-shadow:
-    0 1px 3px #000;
+    text-align: center !important;
 
-  white-space: nowrap;
+    white-space: nowrap !important;
+
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+
+    text-shadow: 0 1px 4px #000 !important;
 }
 
+/* FOLLOW */
+
+.video-item .profile-area .follow-btn {
+    width: 68px !important;
+    height: 32px !important;
+
+    min-width: 68px !important;
+    min-height: 32px !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+
+    border: none !important;
+
+    border-radius: 18px !important;
+
+    background: #fe2c55 !important;
+
+    color: #fff !important;
+
+    font-size: 12px !important;
+    font-weight: 700 !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    text-align: center !important;
+
+    cursor: pointer;
+
+    z-index: 51 !important;
+}
+
+.video-item .profile-area .follow-btn.following {
+    background: rgba(255,255,255,0.2) !important;
+
+    border: 1px solid rgba(255,255,255,0.7) !important;
+}
 
 /* =========================================
-   FOLLOW BUTTON
+   RIGHT ACTION BAR
    ========================================= */
 
-.follow-btn {
-  width: 80px;
-  min-width: 80px;
+.video-item .actions {
+    position: absolute !important;
 
-  height: 38px;
-  min-height: 38px;
+    right: 15px !important;
+    bottom: 105px !important;
 
-  border: none;
+    top: auto !important;
+    left: auto !important;
 
-  border-radius: 20px;
+    width: 58px !important;
 
-  background: #1877f2;
+    display: flex !important;
 
-  color: #fff;
+    flex-direction: column !important;
 
-  font-size: 14px;
+    align-items: center !important;
+    justify-content: flex-end !important;
 
-  font-weight: bold;
+    gap: 14px !important;
 
-  cursor: pointer;
+    z-index: 60 !important;
 
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  transition: 0.2s;
+    pointer-events: auto !important;
 }
-
-
-.follow-btn.following {
-  background: #555;
-}
-
-
-.follow-btn:active {
-  transform: scale(0.92);
-}
-
-
-/* =========================================
-   ACTION BUTTONS
-   ========================================= */
-
-.actions {
-  position: absolute !important;
-  right: 15px !important;
-  bottom: 210px !important;
-  z-index: 30 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  gap: 12px !important;
-  pointer-events: auto !important;
-}
-
 
 /* ACTION BUTTON */
 
-.action-btn {
-  width: 52px;
-  height: 52px;
+.video-item .actions .action-btn {
+    width: 50px !important;
+    height: 50px !important;
 
-  min-width: 52px;
-  min-height: 52px;
+    min-width: 50px !important;
+    min-height: 50px !important;
 
-  border: none;
+    padding: 0 !important;
 
-  border-radius: 50%;
+    border: none !important;
 
-  background: rgba(0, 0, 0, 0.55);
+    border-radius: 50% !important;
 
-  color: #fff;
+    background: rgba(0,0,0,0.35) !important;
 
-  font-size: 24px;
+    color: #fff !important;
 
-  cursor: pointer;
+    font-size: 25px !important;
 
-  display: flex;
+    display: flex !important;
 
-  align-items: center;
-  justify-content: center;
+    flex-direction: column !important;
 
-  flex-direction: column;
+    align-items: center !important;
+    justify-content: center !important;
 
-  gap: 1px;
+    gap: 1px !important;
 
-  transition: 0.15s;
+    cursor: pointer;
+
+    transition: transform 0.15s ease;
 }
 
+.video-item .actions .action-btn:active {
+    transform: scale(0.88);
+}
+
+/* LIKE */
+
+.video-item .actions .like-btn.liked {
+    background: rgba(254,44,85,0.8) !important;
+}
 
 /* LIKE COUNT */
 
 .like-count {
-  font-size: 11px;
+    display: block;
 
-  line-height: 12px;
+    color: #fff;
 
-  color: #fff;
+    font-size: 11px;
+
+    line-height: 12px;
+
+    font-weight: 600;
+
+    text-shadow: 0 1px 3px #000;
 }
-
-
-/* ACTIVE */
-
-.action-btn:active {
-  transform: scale(0.9);
-}
-
-
-/* LIKED */
-
-.like-btn.liked {
-  background: rgba(255, 0, 60, 0.75);
-}
-
 
 /* =========================================
-   LOGIN / LOGOUT / UPLOAD BAR
+   VIDEO INFORMATION
+   ========================================= */
+
+.video-info {
+    position: absolute;
+
+    left: 15px;
+    right: 85px;
+
+    bottom: 105px;
+
+    z-index: 40;
+
+    pointer-events: none;
+
+    text-shadow: 0 1px 4px #000;
+}
+
+.video-info .username,
+.video-item > .username {
+    color: #fff;
+
+    font-size: 16px;
+
+    font-weight: 700;
+
+    margin-bottom: 7px;
+}
+
+.video-caption {
+    color: #fff;
+
+    font-size: 14px;
+
+    line-height: 20px;
+
+    max-width: 90%;
+}
+
+/* =========================================
+   BOTTOM NAVIGATION
+   ========================================= */
+
+.wwc-bottom-nav {
+    position: fixed;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+
+    height: 64px;
+
+    z-index: 1000;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-around;
+
+    padding: 5px 8px;
+
+    background: rgba(0,0,0,0.9);
+
+    border-top: 1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(10px);
+
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* NAV BUTTON */
+
+.wwc-nav-btn {
+    width: 58px;
+    height: 54px;
+
+    border: none;
+
+    background: transparent;
+
+    color: rgba(255,255,255,0.75);
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 3px;
+
+    font-size: 11px;
+
+    cursor: pointer;
+}
+
+.wwc-nav-btn span:first-child {
+    font-size: 22px;
+
+    line-height: 23px;
+}
+
+.wwc-nav-btn.active {
+    color: #fff;
+}
+
+/* CREATE BUTTON */
+
+.wwc-create-btn {
+    width: 52px;
+    height: 38px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: #fff;
+
+    color: #000;
+
+    font-size: 28px;
+
+    line-height: 28px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+/* =========================================
+   AUTH BAR
    ========================================= */
 
 .auth-bar {
-  position: fixed;
+    position: fixed;
 
-  left: 50%;
-  bottom: 15px;
+    left: 50%;
 
-  transform: translateX(-50%);
+    bottom: 75px;
 
-  z-index: 1000;
+    transform: translateX(-50%);
 
-  display: flex;
+    z-index: 900;
 
-  align-items: center;
-  justify-content: center;
+    display: flex;
 
-  gap: 10px;
+    align-items: center;
+    justify-content: center;
 
-  width: max-content;
+    gap: 8px;
 
-  max-width: calc(100% - 20px);
+    width: max-content;
 
-  padding: 5px;
+    max-width: calc(100% - 20px);
 
-  background: rgba(0, 0, 0, 0.35);
+    padding: 5px;
 
-  border-radius: 12px;
+    background: rgba(0,0,0,0.45);
+
+    border-radius: 12px;
 }
-
-
-/* AUTH BUTTON */
 
 .auth-btn {
-  border: none;
+    border: none;
 
-  border-radius: 10px;
+    border-radius: 10px;
 
-  background: #1877f2;
+    background: #fe2c55;
 
-  color: #fff;
+    color: #fff;
 
-  padding: 10px 14px;
+    padding: 8px 12px;
 
-  min-height: 50px;
+    min-height: 40px;
 
-  font-size: 17px;
+    font-size: 14px;
 
-  font-weight: bold;
+    font-weight: 700;
 
-  cursor: pointer;
-
-  white-space: nowrap;
-
-  transition: 0.2s;
+    cursor: pointer;
 }
-
-
-.auth-btn:active {
-  transform: scale(0.94);
-}
-
 
 /* =========================================
    COMMENT BOX
    ========================================= */
 
 .comment-box {
-  position: fixed;
+    position: fixed;
 
-  left: 50%;
-  bottom: 85px;
+    left: 50%;
+    bottom: 70px;
 
-  transform: translateX(-50%);
+    transform: translateX(-50%);
 
-  width: min(90%, 400px);
+    width: min(92%, 420px);
 
-  padding: 15px;
+    padding: 15px;
 
-  background: rgba(20, 20, 20, 0.97);
+    background: rgba(20,20,20,0.98);
 
-  border-radius: 15px;
+    border-radius: 16px;
 
-  z-index: 2000;
+    z-index: 2000;
 
-  display: none;
+    display: none;
 }
-
 
 .comment-box.show {
-  display: block;
+    display: block;
 }
-
 
 .comment-title {
-  font-size: 18px;
+    font-size: 18px;
 
-  font-weight: bold;
+    font-weight: bold;
 
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 }
-
 
 .comment-box textarea {
-  width: 100%;
+    width: 100%;
 
-  min-height: 80px;
+    min-height: 80px;
 
-  resize: none;
+    resize: none;
 
-  border: none;
+    border: none;
 
-  outline: none;
+    outline: none;
 
-  border-radius: 8px;
+    border-radius: 8px;
 
-  padding: 10px;
+    padding: 10px;
 
-  font-size: 15px;
+    font-size: 15px;
 }
-
 
 .comment-buttons {
-  display: flex;
+    display: flex;
 
-  justify-content: flex-end;
+    justify-content: flex-end;
 
-  gap: 8px;
+    gap: 8px;
 
-  margin-top: 10px;
+    margin-top: 10px;
 }
-
 
 .comment-buttons button {
-  border: none;
+    border: none;
 
-  border-radius: 8px;
+    border-radius: 8px;
 
-  padding: 9px 15px;
+    padding: 9px 15px;
 
-  cursor: pointer;
+    cursor: pointer;
 }
-
 
 #commentSend {
-  background: #1877f2;
+    background: #fe2c55;
 
-  color: white;
+    color: #fff;
 }
-
 
 #commentCancel {
-  background: #555;
+    background: #555;
 
-  color: white;
+    color: #fff;
 }
-
 
 /* =========================================
    MOBILE
@@ -437,46 +655,113 @@ body {
 
 @media (max-width: 600px) {
 
-  .profile-area {
-    top: 130px;
-    left: 12px;
-  }
+    .wwc-top-bar {
+        height: 58px;
+    }
 
+    .wwc-top-tabs {
+        gap: 18px;
+    }
 
-  .actions {
-    right: 10px;
-    bottom: 110px;
-  }
+    .wwc-top-tab {
+        font-size: 15px;
+    }
 
+    .wwc-search-btn {
+        right: 10px;
+        top: 9px;
 
-  .action-btn {
-    width: 48px;
-    height: 48px;
+        width: 40px;
+        height: 40px;
+    }
 
-    min-width: 48px;
-    min-height: 48px;
+    .video-item .profile-area {
+        right: 10px !important;
 
-    font-size: 22px;
-  }
+        bottom: 335px !important;
 
+        width: 65px !important;
 
-  .auth-bar {
-    bottom: 12px;
+        gap: 6px !important;
+    }
 
-    gap: 7px;
-  }
+    .video-item .profile-area .profile-photo {
+        width: 50px !important;
+        height: 50px !important;
+    }
 
+    .video-item .profile-area .follow-btn {
+        width: 64px !important;
+        height: 30px !important;
 
-  .auth-btn {
-    min-height: 48px;
+        min-width: 64px !important;
+        min-height: 30px !important;
 
-    padding: 8px 10px;
+        font-size: 11px !important;
+    }
 
-    font-size: 16px;
-  }
+    .video-item .actions {
+        right: 10px !important;
 
+        bottom: 78px !important;
+
+        width: 55px !important;
+
+        gap: 10px !important;
+    }
+
+    .video-item .actions .action-btn {
+        width: 48px !important;
+        height: 48px !important;
+
+        min-width: 48px !important;
+        min-height: 48px !important;
+
+        font-size: 23px !important;
+    }
+
+    .video-info {
+        left: 12px;
+
+        right: 75px;
+
+        bottom: 78px;
+    }
+
+    .video-caption {
+        font-size: 13px;
+
+        line-height: 18px;
+    }
+
+    .wwc-bottom-nav {
+        height: 62px;
+    }
+
+    .wwc-nav-btn {
+        width: 54px;
+
+        height: 54px;
+
+        font-size: 10px;
+    }
+
+    .wwc-nav-btn span:first-child {
+        font-size: 21px;
+    }
+
+    .wwc-create-btn {
+        width: 50px;
+
+        height: 36px;
+
+        font-size: 26px;
+    }
+
+    .auth-bar {
+        bottom: 68px;
+    }
 }
-
 
 /* =========================================
    SMALL MOBILE
@@ -484,432 +769,29 @@ body {
 
 @media (max-width: 380px) {
 
-  .auth-bar {
-    gap: 4px;
-  }
+    .video-item .profile-area {
+        right: 7px !important;
 
+        bottom: 325px !important;
+    }
 
-  .auth-btn {
-    padding: 7px 8px;
+    .video-item .actions {
+        right: 7px !important;
 
-    font-size: 14px;
-  }
+        gap: 8px !important;
+    }
 
-}
+    .video-item .actions .action-btn {
+        width: 45px !important;
+        height: 45px !important;
 
+        min-width: 45px !important;
+        min-height: 45px !important;
 
-/* =========================================
-   SCROLLBAR
-   ========================================= */
+        font-size: 21px !important;
+    }
 
-#video-feed::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-}
-
-#video-feed {
-  scrollbar-width: none;
-}
-/* =========================================
-   FIX PROFILE + FOLLOW + ACTIONS
-========================================= */
-
-.video-item {
-    position: relative !important;
-}
-
-.video-item .profile-area {
-    position: absolute !important;
-    top: 20px !important;
-    left: 15px !important;
-    z-index: 100 !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 8px !important;
-
-    width: auto !important;
-    height: auto !important;
-}
-
-.video-item .profile-photo {
-    width: 50px !important;
-    height: 50px !important;
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-.video-item .username {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    color: #fff !important;
-}
-
-.video-item .follow-btn {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-
-    width: 80px !important;
-    height: 38px !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    background: #1877f2 !important;
-    color: #fff !important;
-
-    border: none !important;
-    border-radius: 20px !important;
-
-    position: relative !important;
-    z-index: 101 !important;
-}
-
-/* ACTION BUTTONS */
-.video-item .actions {
-    position: absolute !important;
-    right: 15px !important;
-    bottom: 100px !important;
-    z-index: 100 !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 12px !important;
-}
-/* ===== FORCE PROFILE + FOLLOW VISIBLE ===== */
-
-.video-item .profile-area {
-    display: flex !important;
-    position: absolute !important;
-
-    top: 70px !important;
-left: auto !important;
-right: 15px !important;
-bottom: auto !important;
-    
-    width: 100px !important;
-    height: auto !important;
-
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    gap: 8px !important;
-
-    z-index: 9999 !important;
-
-    visibility: visible !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-}
-
-.video-item .profile-area .profile-photo {
-    display: block !important;
-
-    width: 55px !important;
-    height: 55px !important;
-
-    visibility: visible !important;
-    opacity: 1 !important;
-
-    object-fit: cover !important;
-    border-radius: 50% !important;
-}
-
-.video-item .profile-area .username {
-    display: block !important;
-
-    color: white !important;
-    font-size: 14px !important;
-    font-weight: bold !important;
-
-    visibility: visible !important;
-    opacity: 1 !important;
-
-    white-space: nowrap !important;
-}
-
-.video-item .profile-area .follow-btn {
-    display: flex !important;
-
-    width: 80px !important;
-    height: 38px !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    background: #1877f2 !important;
-    color: white !important;
-
-    border: 0 !important;
-    border-radius: 20px !important;
-
-    font-size: 14px !important;
-    font-weight: bold !important;
-
-    visibility: visible !important;
-    opacity: 1 !important;
-
-    z-index: 10000 !important;
-}
-/* ========================================
-   WWC - PROFILE + ACTION BUTTON POSITION
-   ======================================== */
-
-/* Profile + Username + Follow */
-.video-item .profile-area {
-    position: absolute !important;
-    top: 90px !important;
-    left: 15px !important;
-
-    z-index: 9999 !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    gap: 8px !important;
-
-    width: 100px !important;
-    height: auto !important;
-
-    visibility: visible !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-}
-
-/* Profile Photo */
-.video-item .profile-area .profile-photo {
-    width: 55px !important;
-    height: 55px !important;
-
-    display: block !important;
-
-    object-fit: cover !important;
-    border-radius: 50% !important;
-}
-
-/* Username */
-.video-item .profile-area .username,
-.video-item .profile-area .profile-name {
-    color: #fff !important;
-    font-size: 14px !important;
-    font-weight: bold !important;
-
-    white-space: nowrap !important;
-}
-
-/* Follow */
-.video-item .profile-area .follow-btn {
-    width: 80px !important;
-    height: 38px !important;
-
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    border: none !important;
-    border-radius: 20px !important;
-
-    background: #1877f2 !important;
-    color: #fff !important;
-
-    font-size: 14px !important;
-    font-weight: bold !important;
-
-    z-index: 10000 !important;
-}
-
-/* Like / Comment / Share */
-.video-item .actions {
-    position: absolute !important;
-
-    right: 15px !important;
-    bottom: 150px !important;
-
-    z-index: 9998 !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-
-    gap: 12px !important;
-
-    pointer-events: auto !important;
-}
-
-/* Action Buttons */
-.video-item .actions .action-btn {
-    width: 52px !important;
-    height: 52px !important;
-
-    min-width: 52px !important;
-    min-height: 52px !important;
-
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    border: none !important;
-    border-radius: 50% !important;
-
-    background: rgba(0, 0, 0, 0.55) !important;
-    color: #fff !important;
-
-    font-size: 24px !important;
-}
-/* ========================================
-   PROFILE + FOLLOW ABOVE LIKE BUTTONS
-   ======================================== */
-
-.video-item .profile-area {
-    position: absolute !important;
-
-    top: auto !important;
-    left: auto !important;
-
-    right: 15px !important;
-    bottom: 430px !important;
-
-    width: 100px !important;
-    height: auto !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    gap: 8px !important;
-
-    z-index: 99999 !important;
-
-    visibility: visible !important;
-    opacity: 1 !important;
-    pointer-events: auto !important;
-}
-
-
-/* PROFILE PHOTO */
-.video-item .profile-area .profile-photo {
-    width: 55px !important;
-    height: 55px !important;
-
-    display: block !important;
-
-    border-radius: 50% !important;
-    object-fit: cover !important;
-}
-
-
-/* USERNAME */
-.video-item .profile-area .username,
-.video-item .profile-area .profile-name {
-    color: #fff !important;
-
-    font-size: 14px !important;
-    font-weight: bold !important;
-
-    white-space: nowrap !important;
-
-    text-align: center !important;
-}
-
-
-/* FOLLOW */
-.video-item .profile-area .follow-btn {
-    width: 80px !important;
-    height: 38px !important;
-
-    display: flex !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    border: none !important;
-    border-radius: 20px !important;
-
-    background: #1877f2 !important;
-    color: #fff !important;
-
-    font-size: 14px !important;
-    font-weight: bold !important;
-
-    z-index: 100000 !important;
-}
-
-
-/* LIKE / COMMENT / SHARE */
-.video-item .actions {
-    position: absolute !important;
-
-    top: auto !important;
-    right: 15px !important;
-    bottom: 150px !important;
-
-    display: flex !important;
-
-    flex-direction: column !important;
-    align-items: center !important;
-
-    gap: 12px !important;
-
-    z-index: 99998 !important;
-
-    pointer-events: auto !important;
-}
-/* PROFILE + FOLLOW ALIGNMENT */
-.video-item .profile-area {
-    position: absolute !important;
-    top: calc(100vh - 264px) !important;
-    left: auto !important;
-    right: 15px !important;
-
-    width: 80px !important;
-    height: auto !important;
-
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-
-    gap: 8px !important;
-    z-index: 9999 !important;
-}
-
-/* PROFILE PHOTO */
-.video-item .profile-area .profile-photo {
-    width: 55px !important;
-    height: 55px !important;
-    object-fit: cover !important;
-    border-radius: 50% !important;
-}
-
-/* USERNAME */
-.video-item .profile-area .username {
-    width: 100% !important;
-    text-align: center !important;
-    white-space: nowrap !important;
-}
-
-/* FOLLOW BUTTON */
-.video-item .profile-area .follow-btn {
-    width: 80px !important;
-    height: 38px !important;
-    min-width: 80px !important;
-    min-height: 38px !important;
-
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-
-    text-align: center !important;
-    padding: 0 !important;
-    margin: 0 !important;
-}
+    .video-info {
+        right: 68px;
+    }
+   }
