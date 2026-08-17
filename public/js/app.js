@@ -1149,3 +1149,33 @@ if (videoFileInput) {
     );
 
 });
+/* ========================================
+   PROFILE MENU BUTTONS
+======================================== */
+
+const profileMenuButton = $("#profileBtnMenu");
+
+if (profileMenuButton) {
+    profileMenuButton.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        window.location.href = "./profile.html";
+    });
+}
+
+
+/* ========================================
+   LOGIN / REGISTER
+======================================== */
+
+const loginButton = $("#loginBtn");
+
+if (loginButton) {
+    loginButton.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        window.location.href = "./auth.html";
+    });
+}
