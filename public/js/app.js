@@ -1029,3 +1029,224 @@ document.addEventListener("DOMContentLoaded", () => {
                 event.stopPropagation();
 
    
+        });
+
+    }
+
+    /* ========================================
+       PROFILE MENU CLOSE
+       ======================================== */
+
+    if (profileClose && profileMenu) {
+
+        profileClose.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                closeProfileMenu();
+
+            }
+        );
+
+    }
+
+
+    /* ========================================
+       PROFILE MENU BUTTON
+       ======================================== */
+
+    if (profileBtnMenu) {
+
+        profileBtnMenu.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                window.location.href =
+                    "./profile.html";
+
+            }
+        );
+
+    }
+
+
+    /* ========================================
+       LOGIN / REGISTER
+       ======================================== */
+
+    if (loginBtn) {
+
+        loginBtn.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                window.location.href =
+                    "./auth.html";
+
+            }
+        );
+
+    }
+
+
+    /* ========================================
+       LOGOUT
+       ======================================== */
+
+    const logoutButton =
+        $("#logoutBtn");
+
+    if (logoutButton) {
+
+        logoutButton.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                const confirmLogout =
+                    window.confirm(
+                        "Do you want to logout?"
+                    );
+
+                if (!confirmLogout) {
+                    return;
+                }
+
+                localStorage.removeItem(
+                    "wwc_user"
+                );
+
+                localStorage.removeItem(
+                    "wwc_logged_in"
+                );
+
+                window.location.href =
+                    "./auth.html";
+
+            }
+        );
+
+    }
+
+
+    /* ========================================
+       UPLOAD BUTTON
+       ======================================== */
+
+    const uploadBtn =
+        $("#uploadBtn");
+
+    if (uploadBtn) {
+
+        uploadBtn.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                const input =
+                    $("#videoUpload") ||
+                    $("#videoInput") ||
+                    document.querySelector(
+                        'input[type="file"][accept*="video"]'
+                    );
+
+                if (!input) {
+
+                    alert(
+                        "Video upload input is not available."
+                    );
+
+                    return;
+
+                }
+
+                input.click();
+
+            }
+        );
+
+    }
+
+
+    /* ========================================
+       HOME BUTTON
+       ======================================== */
+
+    const homeButtons =
+        $$(".wwc-nav-btn");
+
+    homeButtons.forEach(button => {
+
+        const text =
+            button.textContent
+                .trim()
+                .toLowerCase();
+
+        if (!text.includes("home")) {
+            return;
+        }
+
+        button.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                window.location.href =
+                    "./index.html";
+
+            }
+        );
+
+    });
+
+
+    /* ========================================
+       CLOSE PROFILE MENU OUTSIDE
+       ======================================== */
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            if (!profileMenu) {
+                return;
+            }
+
+            if (
+                profileMenu.classList.contains("show") &&
+                !profileMenu.contains(event.target) &&
+                !profileBtn?.contains(event.target)
+            ) {
+
+                closeProfileMenu();
+
+            }
+
+        }
+    );
+
+
+    /* ========================================
+       STARTUP
+       ======================================== */
+
+    console.log(
+        "WWC-Core: App initialized successfully."
+    );
+
+});
