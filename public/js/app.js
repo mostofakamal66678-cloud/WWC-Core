@@ -1,398 +1,1050 @@
+/*
+====================================================
+WORLD WIDE CONNECT
+NEW APP.JS
+Main Feed + Following + For You + Search
+Like + Comment + Save + Share + Follow
+Home + Friends + Upload + Inbox + Profile
+====================================================
+*/
+
 document.addEventListener("DOMContentLoaded", () => {
 
-  console.log("WWC-Core started");
+    "use strict";
 
-  const $ = (s, p = document) => p.querySelector(s);
-  const $$ = (s, p = document) => [...p.querySelectorAll(s)];
-
-  const videos = () => $$(".feed-video");
-  const items = () => $$(".video-item");
-
-  let currentVideo = null;
-  let activeCommentVideo = null;
+    console.log("WWC-Core NEW APP STARTED");
 
 
-  /* VIDEO PLAY */
+    /* =================================================
+       HELPERS
+    ================================================= */
 
-  function pauseAll(except = null) {
-    videos().forEach(v => {
-      if (v !== except) v.pause();
-    });
-  }
+    const $ = (selector, parent = document) =>
+        parent.querySelector(selector);
 
-  function playVideo(video, sound = false) {
-    if (!video) return;
+    const $$ = (selector, parent = document) =>
+        Array.from(parent.querySelectorAll(selector));
 
-    pauseAll(video);
+    const getItems = () =>
+        $$(".video-item");
 
-    currentVideo = video;
-    video.muted = !sound;
-    video.playsInline = true;
+    const getVideos = () =>
+        $$(".feed-video");
 
-    const p = video.play();
+    const getItem = element =>
+        element ? element.closest(".video-item") : null;
 
-    if (p) {
-      p.catch(err => {
-        console.log("Video play blocked", err);
-      });
+
+    /* =================================================
+       APP STATE
+    ================================================= */
+
+    let currentVideo = null;
+
+    let currentFeed = "for-you";
+
+    let activeCommentItem = null;
+
+    const followedUsers =
+        JSON.parse(
+            localStorage.getItem("wwc_following") || "[]"
+        );
+
+    const savedVideos =
+        JSON.parse(
+            localStorage.getItem("wwc_saved") || "[]"
+        );
+
+
+    /* =================================================
+       SAVE LOCAL DATA
+    ================================================= */
+
+    function saveFollowing() {
+
+        localStorage.setItem(
+            "wwc_following",
+            JSON.stringify(followedUsers)
+        );
+
     }
-  }
 
 
-  /* AUTO PLAY */
+    function saveSavedVideos() {
 
-  if ("IntersectionObserver" in window) {
+        localStorage.setItem(
+            "wwc_saved",
+            JSON.stringify(savedVideos)
+        );
 
-    const observer = new IntersectionObserver(
-      entries => {
+    }
 
-        entries.forEach(entry => {
 
-          const video = entry.target;
+    /* =================================================
+       VIDEO CONTROL
+    ================================================= */
 
-          if (
-            entry.isIntersecting &&
-            entry.intersectionRatio >= 0.6
-          ) {
-            playVideo(video, false);
-          } else {
-            video.pause();
-          }
+    function pauseAllVideos(except = null) {
+
+        getVideos().forEach(video => {
+
+            if (video !== except) {
+
+                video.pause();
+
+            }
 
         });
 
-      },
-      { threshold: [0.6] }
-    );
-
-    videos().forEach(video => observer.observe(video));
-  }
-
-
-  /* VIDEO CLICK */
-
-  document.addEventListener("click", e => {
-
-    const video = e.target.closest(".feed-video");
-
-    if (!video) return;
-
-    if (video.paused) {
-      playVideo(video, true);
-    } else {
-      video.pause();
     }
 
-  });
-  
 
+    function playVideo(video, sound = false) {
 
-  /* VIDEO END */
+        if (!video) return;
 
-  document.addEventListener("ended", e => {
+        pauseAllVideos(video);
 
-    if (!e.target.classList.contains("feed-video")) {
-      return;
-    }
+        currentVideo = video;
 
-    const list = items();
-    const current = e.target.closest(".video-item");
-    const index = list.indexOf(current);
+        video.playsInline = true;
 
-    const next =
-      index >= 0 && index < list.length - 1
-        ? index + 1
-        : 0;
+        video.setAttribute(
+            "playsinline",
+            ""
+        );
 
-    scrollToVideo(next);
+        video.muted = !sound;
 
-  }, true);
+        const promise = video.play();
 
+        if (promise && promise.catch) {
 
-  function scrollToVideo(index) {
+            promise.catch(error => {
 
-    const list = items();
+                console.log(
+                    "Video autoplay blocked:",
+                    error
+                );
 
-    if (!list.length) return;
-
-    index = Math.max(
-      0,
-      Math.min(index, list.length - 1)
-    );
-
-    list[index].scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-
-    const video = $(".feed-video", list[index]);
-
-    if (video) {
-      setTimeout(() => {
-        playVideo(video, false);
-      }, 500);
-    }
-
-  }
-
-
-  function currentIndex() {
-
-    if (!currentVideo) return 0;
-
-    const current =
-      currentVideo.closest(".video-item");
-
-    const index = items().indexOf(current);
-
-    return index >= 0 ? index : 0;
-  }
-
-
-  function nextVideo() {
-    scrollToVideo(currentIndex() + 1);
-  }
-
-
-  function previousVideo() {
-    const index = currentIndex();
-
-    if (index > 0) {
-      scrollToVideo(index - 1);
-    }
-  }
-      /* SWIPE */
-
-  let startY = 0;
-
-  document.addEventListener("touchstart", e => {
-
-    if (!e.touches.length) return;
-
-    startY = e.touches[0].clientY;
-
-  }, { passive: true });
-
-
-  document.addEventListener("touchend", e => {
-
-    if (!e.changedTouches.length) return;
-
-    const endY = e.changedTouches[0].clientY;
-
-    const distance = startY - endY;
-
-    if (Math.abs(distance) < 70) return;
-
-    if (distance > 0) {
-      nextVideo();
-    } else {
-      previousVideo();
-    }
-
-  }, { passive: true });
-
-
-  /* KEYBOARD */
-
-  document.addEventListener("keydown", e => {
-
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      nextVideo();
-    }
-
-    if (e.key === "ArrowUp") {
-      e.preventDefault();
-      previousVideo();
-    }
-
-  });
-
-
-  /* LIKE */
-
-  document.addEventListener("click", e => {
-
-    const button = e.target.closest(".like-btn");
-
-    if (!button) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    const item = button.closest(".video-item");
-
-    if (!item) return;
-
-    const count = $(".like-count", item);
-
-    let number = count
-      ? parseInt(count.textContent, 10) || 0
-      : 0;
-
-    const liked =
-      button.classList.contains("liked");
-
-    if (liked) {
-
-      number = Math.max(0, number - 1);
-
-      button.classList.remove("liked");
-
-      button.setAttribute(
-        "aria-pressed",
-        "false"
-      );
-
-    } else {
-
-      number++;
-
-      button.classList.add("liked");
-
-      button.setAttribute(
-        "aria-pressed",
-        "true"
-      );
-
-    }
-
-    if (count) {
-      count.textContent = number;
-    }
-
-  });
-
-
-  /* FOLLOW */
-
-  document.addEventListener("click", e => {
-
-    const button = e.target.closest(".follow-btn");
-
-    if (!button) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    const following =
-      button.classList.toggle("following");
-
-    button.textContent =
-      following ? "Following" : "Follow";
-
-    button.setAttribute(
-      "aria-pressed",
-      following ? "true" : "false"
-    );
-
-  });
-    /* ========================================
-   SAVE BUTTON
-   ======================================== */
-
-document.addEventListener("click", e => {
-
-    const button = e.target.closest(".save-btn");
-
-    if (!button) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    button.classList.toggle("saved");
-
-    button.textContent =
-        button.classList.contains("saved")
-            ? "🔖✓"
-            : "🔖";
-});
-
-
-/* ========================================
-   SHARE BUTTON
-   ======================================== */
-
-document.addEventListener("click", async e => {
-
-    const button = e.target.closest(".share-btn");
-
-    if (!button) return;
-
-    e.preventDefault();
-    e.stopPropagation();
-
-    const videoItem =
-        button.closest(".video-item");
-
-    let shareText =
-        "Check out this video on World Wide Connect 🌎";
-
-    if (navigator.share) {
-
-        try {
-
-            await navigator.share({
-                title: "World Wide Connect",
-                text: shareText,
-                url: window.location.href
             });
 
-        } catch (error) {
-
-            console.log("Share cancelled");
-
         }
 
-    } else {
+    }
 
-        try {
 
-            await navigator.clipboard.writeText(
-                window.location.href
+    /* =================================================
+       INTERSECTION OBSERVER
+    ================================================= */
+
+    if ("IntersectionObserver" in window) {
+
+        const observer =
+            new IntersectionObserver(
+                entries => {
+
+                    entries.forEach(entry => {
+
+                        const video =
+                            entry.target;
+
+                        if (
+                            entry.isIntersecting &&
+                            entry.intersectionRatio >= 0.60
+                        ) {
+
+                            playVideo(
+                                video,
+                                false
+                            );
+
+                        } else {
+
+                            video.pause();
+
+                        }
+
+                    });
+
+                },
+                {
+                    threshold: [0.60]
+                }
             );
 
-            alert("Link copied successfully!");
+        getVideos().forEach(video => {
 
-        } catch (error) {
+            observer.observe(video);
 
-            alert("Share link: " + window.location.href);
+        });
+
+    }
+
+
+    /* =================================================
+       VIDEO CLICK
+    ================================================= */
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const video =
+                event.target.closest(".feed-video");
+
+            if (!video) return;
+
+            if (video.paused) {
+
+                playVideo(
+                    video,
+                    true
+                );
+
+            } else {
+
+                video.pause();
+
+            }
+
+        }
+    );
+
+
+    /* =================================================
+       VIDEO END
+    ================================================= */
+
+    document.addEventListener(
+        "ended",
+        event => {
+
+            const video =
+                event.target;
+
+            if (
+                !video.classList.contains(
+                    "feed-video"
+                )
+            ) {
+
+                return;
+
+            }
+
+            const list =
+                getItems();
+
+            const item =
+                getItem(video);
+
+            const index =
+                list.indexOf(item);
+
+            if (
+                index >= 0 &&
+                index < list.length - 1
+            ) {
+
+                scrollToVideo(
+                    index + 1
+                );
+
+            } else if (list.length) {
+
+                scrollToVideo(0);
+
+            }
+
+        },
+        true
+    );
+
+
+    /* =================================================
+       SCROLL TO VIDEO
+    ================================================= */
+
+    function scrollToVideo(index) {
+
+        const list =
+            getItems();
+
+        if (!list.length) return;
+
+        index = Math.max(
+            0,
+            Math.min(
+                index,
+                list.length - 1
+            )
+        );
+
+        const item =
+            list[index];
+
+        item.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+
+        const video =
+            $(".feed-video", item);
+
+        if (video) {
+
+            setTimeout(() => {
+
+                playVideo(
+                    video,
+                    false
+                );
+
+            }, 500);
 
         }
 
     }
 
-});
+
+    function currentVideoIndex() {
+
+        if (!currentVideo) {
+
+            return 0;
+
+        }
+
+        const item =
+            getItem(currentVideo);
+
+        const index =
+            getItems().indexOf(item);
+
+        return index >= 0
+            ? index
+            : 0;
+
+    }
 
 
-/* ========================================
-   COMMENT BUTTON
-   ======================================== */
+    function nextVideo() {
 
-let activeCommentBox = null;
+        const index =
+            currentVideoIndex();
 
-document.addEventListener("click", e => {
+        const list =
+            getItems();
 
-    const button =
-        e.target.closest(".comment-btn");
+        if (!list.length) return;
+
+        scrollToVideo(
+            index < list.length - 1
+                ? index + 1
+                : 0
+        );
+
+    }
+
+
+    function previousVideo() {
+
+        const index =
+            currentVideoIndex();
+
+        if (index > 0) {
+
+            scrollToVideo(
+                index - 1
+            );
+
+        }
+
+    }
+
+
+    /* =================================================
+       TOUCH SWIPE
+    ================================================= */
+
+    let touchStartY = 0;
+    let touchStartX = 0;
+
+    document.addEventListener(
+        "touchstart",
+        event => {
+
+            if (!event.touches.length) return;
+
+            const target =
+                event.target;
+
+            if (
+                target.closest("button") ||
+                target.closest("textarea") ||
+                target.closest("input") ||
+                target.closest(".comment-box")
+            ) {
+
+                return;
+
+            }
+
+            touchStartY =
+                event.touches[0].clientY;
+
+            touchStartX =
+                event.touches[0].clientX;
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    document.addEventListener(
+        "touchend",
+        event => {
+
+            if (
+                !event.changedTouches.length
+            ) {
+
+                return;
+
+            }
+
+            const touch =
+                event.changedTouches[0];
+
+            const distanceY =
+                touchStartY -
+                touch.clientY;
+
+            const distanceX =
+                touchStartX -
+                touch.clientX;
+
+            if (
+                Math.abs(distanceY) < 70
+            ) {
+
+                return;
+
+            }
+
+            if (
+                Math.abs(distanceX) >
+                Math.abs(distanceY)
+            ) {
+
+                return;
+
+            }
+
+            if (distanceY > 0) {
+
+                nextVideo();
+
+            } else {
+
+                previousVideo();
+
+            }
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    /* =================================================
+       KEYBOARD
+    ================================================= */
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.target.tagName ===
+                "TEXTAREA"
+            ) {
+
+                return;
+
+            }
+
+            if (
+                event.key ===
+                "ArrowDown"
+            ) {
+
+                event.preventDefault();
+
+                nextVideo();
+
+            }
+
+            if (
+                event.key ===
+                "ArrowUp"
+            ) {
+
+                event.preventDefault();
+
+                previousVideo();
+
+            }
+
+        }
+    );
+
+
+    /* =================================================
+       LIKE
+    ================================================= */
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const button =
+                event.target.closest(
+                    ".like-btn"
+                );
+
+            if (!button) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const item =
+                getItem(button);
+
+            if (!item) return;
+
+            const count =
+                $(".like-count", item);
+
+            let number =
+                count
+                    ? parseInt(
+                        count.textContent,
+                        10
+                    ) || 0
+                    : 0;
+
+            const liked =
+                button.classList.contains(
+                    "liked"
+                );
+
+            if (liked) {
+
+                number =
+                    Math.max(
+                        0,
+                        number - 1
+                    );
+
+                button.classList.remove(
+                    "liked"
+                );
+
+                button.setAttribute(
+                    "aria-pressed",
+                    "false"
+                );
+
+            } else {
+
+                number++;
+
+                button.classList.add(
+                    "liked"
+                );
+
+                button.setAttribute(
+                    "aria-pressed",
+                    "true"
+                );
+
+            }
+
+            if (count) {
+
+                count.textContent =
+                    number;
+
+            }
+
+        }
+    );
+
+
+    /* =================================================
+       DOUBLE TAP LIKE
+    ================================================= */
+
+    document.addEventListener(
+        "dblclick",
+        event => {
+
+            const video =
+                event.target.closest(
+                    ".feed-video"
+                );
+
+            if (!video) return;
+
+            const item =
+                getItem(video);
+
+            const button =
+                item
+                    ? $(".like-btn", item)
+                    : null;
+
+            if (
+                button &&
+                !button.classList.contains(
+                    "liked"
+                )
+            ) {
+
+                button.click();
+
+            }
+
+        }
+    );
+
+
+    /* =================================================
+       FOLLOW
+    ================================================= */
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const button =
+                event.target.closest(
+                    ".follow-btn"
+                );
+
+            if (!button) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const item =
+                getItem(button);
+
+            if (!item) return;
+
+            const usernameElement =
+                $(".username", item);
+
+            const username =
+                usernameElement
+                    ? usernameElement.textContent.trim()
+                    : "unknown";
+
+            const index =
+                followedUsers.indexOf(
+                    username
+                );
+
+            if (index >= 0) {
+
+                followedUsers.splice(
+                    index,
+                    1
+                );
+
+                button.classList.remove(
+                    "following"
+                );
+
+                button.textContent =
+                    "Follow";
+
+                button.setAttribute(
+                    "aria-pressed",
+                    "false"
+                );
+
+            } else {
+
+                followedUsers.push(
+                    username
+                );
+
+                button.classList.add(
+                    "following"
+                );
+
+                button.textContent =
+                    "Following";
+
+                button.setAttribute(
+                    "aria-pressed",
+                    "true"
+                );
+
+            }
+
+            saveFollowing();
+
+        }
+    );
+
+
+    /* =================================================
+       RESTORE FOLLOW STATE
+    ================================================= */
+
+    function restoreFollowState() {
+
+        $$(".video-item").forEach(item => {
+
+            const button =
+                $(".follow-btn", item);
+
+            const usernameElement =
+                $(".username", item);
+
+            if (
+                !button ||
+                !usernameElement
+            ) {
+
+                return;
+
+            }
+
+            const username =
+                usernameElement.textContent.trim();
+
+            if (
+                followedUsers.includes(
+                    username
+                )
+            ) {
+
+                button.classList.add(
+                    "following"
+                );
+
+                button.textContent =
+                    "Following";
+
+                button.setAttribute(
+                    "aria-pressed",
+                    "true"
+                );
+
+            }
+
+        });
+
+    }
+
+
+    restoreFollowState();
+
+
+    /* =================================================
+       SAVE
+    ================================================= */
+
+    document.addEventListener(
+        "click",
+        event => {
+
+            const button =
+                event.target.closest(
+                    ".save-btn"
+                );
+
+            if (!button) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const item =
+                getItem(button);
+
+            if (!item) return;
+
+            const videoId =
+                item.dataset.videoId;
+
+            const count =
+                $(".save-count", item);
+
+            let number =
+                count
+                    ? parseInt(
+                        count.textContent,
+                        10
+                    ) || 0
+                    : 0;
+
+            const saved =
+                button.classList.contains(
+                    "saved"
+                );
+
+            if (saved) {
+
+                button.classList.remove(
+                    "saved"
+                );
+
+                button.setAttribute(
+                    "aria-pressed",
+                    "false"
+                );
+
+                if (videoId) {
+
+                    const index =
+                        savedVideos.indexOf(
+                            videoId
+                        );
+
+                    if (index >= 0) {
+
+                        savedVideos.splice(
+                            index,
+                            1
+                        );
+
+                    }
+
+                }
+
+                number =
+                    Math.max(
+                        0,
+                        number - 1
+                    );
+
+            } else {
+
+                button.classList.add(
+                    "saved"
+                );
+
+                button.setAttribute(
+                    "aria-pressed",
+                    "true"
+                );
+
+                if (
+                    videoId &&
+                    !savedVideos.includes(
+                        videoId
+                    )
+                ) {
+
+                    savedVideos.push(
+                        videoId
+                    );
+
+                }
+
+                number++;
+
+            }
+
+            if (count) {
+
+                count.textContent =
+                    number;
+
+            }
+
+            saveSavedVideos();
+
+        }
+    );
+
+
+    /* =================================================
+       RESTORE SAVED
+    ================================================= */
+
+    function restoreSavedState() {
+
+        $$(".video-item").forEach(item => {
+
+            const videoId =
+                item.dataset.videoId;
+
+            const button =
+                $(".save-btn", item);
+
+            if (
+                !videoId ||
+                !button
+            ) {
+
+                return;
+
+            }
+
+            if (
+                savedVideos.includes(
+                    videoId
+                )
+            ) {
+
+                button.classList.add(
+                    "saved"
+                );
+
+                button.setAttribute(
+                    "aria-pressed",
+                    "true"
+                );
+
+            }
+
+        });
+
+    }
+
+
+    restoreSavedState();
+
+
+    /* =================================================
+       SHARE
+    ================================================= */
+
+    document.addEventListener(
+        "click",
+        async event => {
+
+            const button =
+                event.target.closest(
+                    ".share-btn"
+                );
+
+            if (!button) return;
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            const item =
+                getItem(button);
+
+            let shareUrl =
+                window.location.href;
+
+            if (
+                item &&
+                item.dataset.videoId
+            ) {
+
+                shareUrl =
+                    window.location.origin +
+                    window.location.pathname +
+                    "?video=" +
+                    encodeURIComponent(
+                        item.dataset.videoId
+                    );
+
+            }
+
+            const shareData = {
+
+                title:
+                    "World Wide Connect",
+
+                text:
+                    "Check this video on World Wide Connect 🌎",
+
+                url:
+                    shareUrl
+
+            };
+
+            try {
+
+                if (
+                    navigator.share
+                ) {
+
+                    await navigator.share(
+                        shareData
+                    );
+
+                } else if (
+                    navigator.clipboard &&
+                    navigator.clipboard.writeText
+                ) {
+
+                    await navigator.clipboard.writeText(
+                        shareUrl
+                    );
+
+                    alert(
+                        "Video link copied!"
+                    );
+
+                } else {
+
+                    window.prompt(
+                        "Copy video link:",
+                        shareUrl
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.log(
+                    "Share cancelled"
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =================================================
+       COMMENTS
+    ================================================= */
+
+  document.addEventListener("click", e => {
+
+    const button = e.target.closest(".comment-btn");
 
     if (!button) return;
 
     e.preventDefault();
     e.stopPropagation();
 
-    const box =
-        $("#commentBox");
+    const box = document.getElementById("commentBox");
 
     if (!box) return;
 
-    activeCommentBox = button.closest(".video-item");
+    activeCommentVideo =
+        button.closest(".video-item");
 
     box.classList.add("show");
 
     const input =
-        $("#commentInput");
+        document.getElementById("commentInput");
 
     if (input) {
 
@@ -401,365 +1053,909 @@ document.addEventListener("click", e => {
         setTimeout(() => {
             input.focus();
         }, 100);
-
     }
 
 });
 
 
-/* ========================================
+/* =========================================
    COMMENT CANCEL
-   ======================================== */
+========================================= */
 
-const commentCancel =
-    $("#commentCancel");
+const wwcCommentCancel =
+    document.getElementById("commentCancel");
 
-if (commentCancel) {
+if (wwcCommentCancel) {
 
-    commentCancel.addEventListener(
-        "click",
-        e => {
+    wwcCommentCancel.addEventListener("click", e => {
 
-            e.preventDefault();
-            e.stopPropagation();
+        e.preventDefault();
+        e.stopPropagation();
 
-            const box =
-                $("#commentBox");
+        const box =
+            document.getElementById("commentBox");
 
-            if (box) {
-                box.classList.remove("show");
-            }
-
-            activeCommentBox = null;
-
+        if (box) {
+            box.classList.remove("show");
         }
-    );
 
+        activeCommentVideo = null;
+
+    });
 }
 
 
-/* ========================================
+/* =========================================
    COMMENT SEND
-   ======================================== */
+========================================= */
 
-const commentSend =
-    $("#commentSend");
+const wwcCommentSend =
+    document.getElementById("commentSend");
 
-if (commentSend) {
+if (wwcCommentSend) {
 
-    commentSend.addEventListener(
-        "click",
-        e => {
+    wwcCommentSend.addEventListener("click", e => {
 
-            e.preventDefault();
-            e.stopPropagation();
+        e.preventDefault();
+        e.stopPropagation();
 
-            const input =
-                $("#commentInput");
+        const input =
+            document.getElementById("commentInput");
 
-            if (!input) return;
+        const box =
+            document.getElementById("commentBox");
 
-            const text =
-                input.value.trim();
+        if (!input || !box) return;
 
-            if (!text) {
+        const text =
+            input.value.trim();
 
-                alert("Please write a comment.");
+        if (!text) {
 
-                return;
-            }
+            alert("Please write a comment.");
 
-            console.log(
-                "Comment:",
-                text
-            );
+            input.focus();
 
-            alert("Comment added!");
-
-            input.value = "";
-
-            const box =
-                $("#commentBox");
-
-            if (box) {
-                box.classList.remove("show");
-            }
-
-            activeCommentBox = null;
-
+            return;
         }
-    );
 
+        if (activeCommentVideo) {
+
+            let comments =
+                activeCommentVideo.querySelector(
+                    ".comment-list"
+                );
+
+            if (!comments) {
+
+                comments =
+                    document.createElement("div");
+
+                comments.className =
+                    "comment-list";
+
+                comments.style.cssText = `
+                    margin-top:10px;
+                    max-height:180px;
+                    overflow-y:auto;
+                    color:#fff;
+                    font-size:13px;
+                `;
+
+                activeCommentVideo.appendChild(comments);
+            }
+
+            const comment =
+                document.createElement("div");
+
+            comment.style.cssText = `
+                padding:8px 0;
+                border-bottom:1px solid rgba(255,255,255,0.10);
+            `;
+
+            comment.textContent =
+                "@wwc_user: " + text;
+
+            comments.appendChild(comment);
+        }
+
+        input.value = "";
+
+        box.classList.remove("show");
+
+        activeCommentVideo = null;
+
+    });
 }
 
 
-/* ========================================
-   UPLOAD VIDEO BUTTON
-   ======================================== */
+/* =========================================
+   FOLLOWING / FOR YOU
+========================================= */
 
-const uploadBtn =
-    $("#uploadBtn");
+const wwcTopTabs =
+    document.querySelectorAll(".wwc-top-tab");
 
-const videoUpload =
-    $("#videoUpload");
+wwcTopTabs.forEach((tab, index) => {
 
-if (uploadBtn && videoUpload) {
+    tab.addEventListener("click", e => {
 
-    uploadBtn.addEventListener(
-        "click",
-        e => {
+        e.preventDefault();
+        e.stopPropagation();
 
-            e.preventDefault();
-            e.stopPropagation();
+        wwcTopTabs.forEach(t => {
+            t.classList.remove("active");
+        });
 
-            videoUpload.click();
+        tab.classList.add("active");
+
+        if (index === 0) {
+
+            showFollowingFeed();
+
+        } else {
+
+            showForYouFeed();
 
         }
-    );
 
+    });
+
+});
+
+
+function showForYouFeed() {
+
+    const list =
+        document.querySelectorAll(".video-item");
+
+    list.forEach(item => {
+
+        item.style.display = "block";
+
+    });
+
+    const feed =
+        document.getElementById("video-feed");
+
+    if (feed) {
+
+        feed.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+    setTimeout(() => {
+
+        const first =
+            document.querySelector(".video-item .feed-video");
+
+        if (first) {
+            playVideo(first, false);
+        }
+
+    }, 400);
 }
 
 
-/* ========================================
-   VIDEO UPLOAD PREVIEW
-   ======================================== */
+function showFollowingFeed() {
 
-if (videoUpload) {
+    const list =
+        document.querySelectorAll(".video-item");
 
-    videoUpload.addEventListener(
-        "change",
-        e => {
+    let found = false;
 
-            const file =
-                e.target.files[0];
+    list.forEach(item => {
 
-            if (!file) return;
+        const follow =
+            item.querySelector(".follow-btn");
 
-            if (!file.type.startsWith("video/")) {
+        if (
+            follow &&
+            follow.classList.contains("following")
+        ) {
 
-                alert("Please select a video file.");
+            item.style.display = "block";
 
-                videoUpload.value = "";
+            found = true;
 
-                return;
-            }
+        } else {
 
-            console.log(
-                "Selected video:",
-                file.name
-            );
+            item.style.display = "none";
+
+        }
+
+    });
+
+
+    const feed =
+        document.getElementById("video-feed");
+
+    if (feed) {
+
+        feed.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+
+    if (!found) {
+
+        setTimeout(() => {
 
             alert(
-                "Video selected: " +
-                file.name
+                "You are not following anyone yet."
             );
 
-        }
-    );
+        }, 300);
 
-}
+        const activeTab =
+            document.querySelector(".wwc-top-tab.active");
 
+        if (activeTab) {
 
-/* ========================================
-   INBOX BUTTON
-   ======================================== */
-
-const inboxBtn =
-    $("#inboxBtn");
-
-if (inboxBtn) {
-
-    inboxBtn.addEventListener(
-        "click",
-        e => {
-
-            e.preventDefault();
-            e.stopPropagation();
-
-            window.location.href =
-                "./inbox.html";
+            activeTab.classList.remove("active");
 
         }
-    );
 
-}
+        if (wwcTopTabs[1]) {
 
+            wwcTopTabs[1].classList.add("active");
 
-/* ========================================
-   PROFILE BUTTON
-   ======================================== */
+        }
 
-const profileBtn =
-    $("#profileBtn");
+        showForYouFeed();
 
-if (profileBtn) {
+    } else {
 
-    profileBtn.addEventListener(
-        "click",
-        e => {
+        setTimeout(() => {
 
-            e.preventDefault();
-            e.stopPropagation();
+            const first =
+                document.querySelector(
+                    '.video-item[style*="display: block"] .feed-video'
+                );
 
-            const menu =
-                $("#profileMenu");
+            if (first) {
 
-            if (menu) {
-
-                menu.classList.toggle("show");
-
-            } else {
-
-                window.location.href =
-                    "./profile.html";
+                playVideo(first, false);
 
             }
 
-        }
-    );
+        }, 400);
+
+    }
 
 }
 
 
-/* ========================================
-   PROFILE MENU
-   ======================================== */
+/* =========================================
+   SEARCH BUTTON
+========================================= */
 
-const profileBtnMenu =
-    $("#profileBtnMenu");
+const wwcSearchBtn =
+    document.getElementById("searchBtn");
 
-if (profileBtnMenu) {
+if (wwcSearchBtn) {
 
-    profileBtnMenu.addEventListener(
-        "click",
-        e => {
+    wwcSearchBtn.addEventListener("click", e => {
 
-            e.preventDefault();
-            e.stopPropagation();
+        e.preventDefault();
+        e.stopPropagation();
+
+        openWWCSearch();
+
+    });
+
+}
+
+
+function openWWCSearch() {
+
+    let searchBox =
+        document.getElementById("wwcSearchBox");
+
+    if (searchBox) {
+
+        searchBox.classList.add("show");
+
+        const input =
+            searchBox.querySelector("input");
+
+        if (input) input.focus();
+
+        return;
+    }
+
+
+    searchBox =
+        document.createElement("div");
+
+    searchBox.id =
+        "wwcSearchBox";
+
+    searchBox.style.cssText = `
+        position:fixed;
+        top:60px;
+        left:50%;
+        transform:translateX(-50%);
+        width:calc(100% - 24px);
+        max-width:420px;
+        padding:12px;
+        background:rgba(20,20,20,0.98);
+        border:1px solid rgba(255,255,255,0.12);
+        border-radius:14px;
+        z-index:5000;
+        box-shadow:0 10px 30px rgba(0,0,0,.5);
+    `;
+
+
+    searchBox.innerHTML = `
+
+        <div style="
+            display:flex;
+            gap:8px;
+            align-items:center;
+        ">
+
+            <input
+                id="wwcSearchInput"
+                type="search"
+                placeholder="Search username or video..."
+                autocomplete="off"
+                style="
+                    flex:1;
+                    height:44px;
+                    border:none;
+                    outline:none;
+                    border-radius:10px;
+                    padding:0 12px;
+                    font-size:15px;
+                    background:#fff;
+                    color:#000;
+                "
+            >
+
+            <button
+                id="wwcSearchClose"
+                type="button"
+                style="
+                    width:44px;
+                    height:44px;
+                    border:none;
+                    border-radius:10px;
+                    background:#444;
+                    color:#fff;
+                    font-size:18px;
+                "
+            >
+                ✕
+            </button>
+
+        </div>
+
+        <div
+            id="wwcSearchResults"
+            style="
+                margin-top:10px;
+                max-height:220px;
+                overflow-y:auto;
+            "
+        ></div>
+    `;
+
+
+    document.body.appendChild(searchBox);
+
+
+    const input =
+        document.getElementById("wwcSearchInput");
+
+    const close =
+        document.getElementById("wwcSearchClose");
+
+    if (input) {
+
+        input.addEventListener("input", () => {
+
+            searchWWCVideos(
+                input.value.trim()
+            );
+
+        });
+
+        setTimeout(() => {
+            input.focus();
+        }, 100);
+    }
+
+
+    if (close) {
+
+        close.addEventListener("click", () => {
+
+            searchBox.remove();
+
+            showForYouFeed();
+
+        });
+
+    }
+
+}
+
+
+function searchWWCVideos(query) {
+
+    const results =
+        document.getElementById("wwcSearchResults");
+
+    if (!results) return;
+
+    const list =
+        document.querySelectorAll(".video-item");
+
+
+    if (!query) {
+
+        results.innerHTML = `
+            <div style="
+                color:#aaa;
+                padding:12px;
+                text-align:center;
+            ">
+                Type something to search
+            </div>
+        `;
+
+        return;
+    }
+
+
+    const q =
+        query.toLowerCase();
+
+    let found = 0;
+
+    list.forEach(item => {
+
+        const username =
+            (
+                item.querySelector(".username")
+                ?.textContent || ""
+            ).toLowerCase();
+
+        const caption =
+            (
+                item.querySelector(".video-caption")
+                ?.textContent || ""
+            ).toLowerCase();
+
+        const match =
+            username.includes(q) ||
+            caption.includes(q);
+
+
+        if (match) {
+
+            item.style.display = "block";
+
+            found++;
+
+        } else {
+
+            item.style.display = "none";
+
+        }
+
+    });
+
+
+    if (found === 0) {
+
+        results.innerHTML = `
+            <div style="
+                color:#aaa;
+                padding:12px;
+                text-align:center;
+            ">
+                No videos found
+            </div>
+        `;
+
+    } else {
+
+        results.innerHTML = `
+            <div style="
+                color:#aaa;
+                padding:8px;
+            ">
+                ${found} video found
+            </div>
+        `;
+
+    }
+
+}
+
+
+/* =========================================
+   HOME BUTTON
+========================================= */
+
+const wwcHomeBtn =
+    document.getElementById("homeBtn");
+
+if (wwcHomeBtn) {
+
+    wwcHomeBtn.addEventListener("click", e => {
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        document.querySelectorAll(
+            ".wwc-nav-btn"
+        ).forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        wwcHomeBtn.classList.add("active");
+
+        showForYouFeed();
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    });
+
+}
+
+
+/* =========================================
+   FRIENDS BUTTON
+========================================= */
+
+const wwcFriendsBtn =
+    document.getElementById("friendsBtn");
+
+if (wwcFriendsBtn) {
+
+    wwcFriendsBtn.addEventListener("click", e => {
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        document.querySelectorAll(
+            ".wwc-nav-btn"
+        ).forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        wwcFriendsBtn.classList.add("active");
+
+        window.location.href =
+            "./friends.html";
+
+    });
+
+}
+
+
+/* =========================================
+   UPLOAD BUTTON
+========================================= */
+
+const wwcUploadBtn =
+    document.getElementById("uploadBtn");
+
+const wwcVideoUpload =
+    document.getElementById("videoUpload");
+
+if (wwcUploadBtn && wwcVideoUpload) {
+
+    wwcUploadBtn.addEventListener("click", e => {
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        wwcVideoUpload.click();
+
+    });
+
+
+    wwcVideoUpload.addEventListener("change", e => {
+
+        const file =
+            e.target.files[0];
+
+        if (!file) return;
+
+        if (!file.type.startsWith("video/")) {
+
+            alert("Please select a video file.");
+
+            wwcVideoUpload.value = "";
+
+            return;
+        }
+
+
+        alert(
+            "Video selected: " +
+            file.name
+        );
+
+        console.log(
+            "WWC upload selected:",
+            file
+        );
+
+    });
+
+}
+
+
+/* =========================================
+   INBOX BUTTON
+========================================= */
+
+const wwcInboxBtn =
+    document.getElementById("inboxBtn");
+
+if (wwcInboxBtn) {
+
+    wwcInboxBtn.addEventListener("click", e => {
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        document.querySelectorAll(
+            ".wwc-nav-btn"
+        ).forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        wwcInboxBtn.classList.add("active");
+
+        window.location.href =
+            "./inbox.html";
+
+    });
+
+}
+
+
+/* =========================================
+   PROFILE BUTTON
+========================================= */
+
+const wwcProfileBtn =
+    document.getElementById("profileBtn");
+
+const wwcProfileMenu =
+    document.getElementById("profileMenu");
+
+if (wwcProfileBtn) {
+
+    wwcProfileBtn.addEventListener("click", e => {
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        document.querySelectorAll(
+            ".wwc-nav-btn"
+        ).forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        wwcProfileBtn.classList.add("active");
+
+
+        if (wwcProfileMenu) {
+
+            wwcProfileMenu.classList.toggle("show");
+
+            wwcProfileMenu.setAttribute(
+                "aria-hidden",
+                wwcProfileMenu.classList.contains("show")
+                    ? "false"
+                    : "true"
+            );
+
+        } else {
 
             window.location.href =
                 "./profile.html";
 
         }
-    );
+
+    });
 
 }
 
 
-/* ========================================
-   LOGIN BUTTON
-   ======================================== */
+/* =========================================
+   PROFILE MENU CLOSE
+========================================= */
 
-const loginBtn =
-    $("#loginBtn");
+const wwcProfileClose =
+    document.getElementById("profileMenuClose");
 
-if (loginBtn) {
+if (wwcProfileClose) {
 
-    loginBtn.addEventListener(
-        "click",
-        e => {
+    wwcProfileClose.addEventListener("click", e => {
 
-            e.preventDefault();
-            e.stopPropagation();
+        e.preventDefault();
+        e.stopPropagation();
 
-            window.location.href =
-                "./auth.html";
+        if (wwcProfileMenu) {
 
-        }
-    );
+            wwcProfileMenu.classList.remove("show");
 
-}
-
-
-/* ========================================
-   LOGOUT BUTTON
-   ======================================== */
-
-const logoutBtn =
-    $("#logoutBtn");
-
-if (logoutBtn) {
-
-    logoutBtn.addEventListener(
-        "click",
-        e => {
-
-            e.preventDefault();
-            e.stopPropagation();
-
-            console.log(
-                "Logout button clicked"
+            wwcProfileMenu.setAttribute(
+                "aria-hidden",
+                "true"
             );
 
-            window.location.href =
-                "./auth.html";
-
         }
-    );
+
+    });
 
 }
 
 
-/* ========================================
-   CLOSE PROFILE MENU
-   ======================================== */
+/* =========================================
+   PROFILE MENU → PROFILE
+========================================= */
 
-const profileMenuClose =
-    $("#profileMenuClose");
+const wwcProfileMenuBtn =
+    document.getElementById("profileBtnMenu");
 
-if (profileMenuClose) {
+if (wwcProfileMenuBtn) {
 
-    profileMenuClose.addEventListener(
-        "click",
-        e => {
+    wwcProfileMenuBtn.addEventListener("click", e => {
 
-            e.preventDefault();
-            e.stopPropagation();
+        e.preventDefault();
+        e.stopPropagation();
 
-            const menu =
-                $("#profileMenu");
+        window.location.href =
+            "./profile.html";
 
-            if (menu) {
-                menu.classList.remove("show");
-            }
-
-        }
-    );
+    });
 
 }
 
 
-/* ========================================
-   CLOSE MENU WHEN CLICKING OUTSIDE
-   ======================================== */
+/* =========================================
+   LOGIN / REGISTER
+========================================= */
+
+const wwcLoginBtn =
+    document.getElementById("loginBtn");
+
+if (wwcLoginBtn) {
+
+    wwcLoginBtn.addEventListener("click", e => {
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        window.location.href =
+            "./auth.html";
+
+    });
+
+}
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+const wwcLogoutBtn =
+    document.getElementById("logoutBtn");
+
+if (wwcLogoutBtn) {
+
+    wwcLogoutBtn.addEventListener("click", e => {
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        /*
+         * Firebase logout থাকলে পরে এখানে
+         * signOut(auth) যোগ করা যাবে।
+         */
+
+        window.location.href =
+            "./auth.html";
+
+    });
+
+}
+
+
+/* =========================================
+   CLOSE PROFILE MENU OUTSIDE
+========================================= */
 
 document.addEventListener("click", e => {
 
-    const menu =
-        $("#profileMenu");
-
-    const button =
-        $("#profileBtn");
-
-    if (!menu || !button) return;
+    if (!wwcProfileMenu || !wwcProfileBtn) {
+        return;
+    }
 
     if (
-        menu.classList.contains("show") &&
-        !menu.contains(e.target) &&
-        !button.contains(e.target)
+        wwcProfileMenu.classList.contains("show") &&
+        !wwcProfileMenu.contains(e.target) &&
+        !wwcProfileBtn.contains(e.target)
     ) {
 
-        menu.classList.remove("show");
+        wwcProfileMenu.classList.remove("show");
+
+        wwcProfileMenu.setAttribute(
+            "aria-hidden",
+            "true"
+        );
 
     }
 
 });
 
 
-/* ========================================
-   STARTUP
-   ======================================== */
+/* =========================================
+   ESCAPE KEY
+========================================= */
+
+document.addEventListener("keydown", e => {
+
+    if (e.key !== "Escape") return;
+
+
+    const search =
+        document.getElementById("wwcSearchBox");
+
+    if (search) {
+        search.remove();
+    }
+
+
+    if (wwcProfileMenu) {
+
+        wwcProfileMenu.classList.remove("show");
+
+        wwcProfileMenu.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+    }
+
+
+    const commentBox =
+        document.getElementById("commentBox");
+
+    if (commentBox) {
+        commentBox.classList.remove("show");
+    }
+
+});
+
+
+/* =========================================
+   INITIAL FEED
+========================================= */
+
+showForYouFeed();
+
 
 console.log(
-    "WWC-Core: App initialized successfully."
+    "WWC-Core: New app.js navigation system ready."
 );
+
+});
