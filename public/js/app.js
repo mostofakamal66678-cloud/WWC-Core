@@ -1148,34 +1148,50 @@ if (videoFileInput) {
         "WWC-Core: All button handlers loaded."
     );
 
-});
-/* ========================================
-   PROFILE MENU BUTTONS
-======================================== */
+/* PROFILE MENU */
 
-const profileMenuButton = $("#profileBtnMenu");
+const profileBtn = document.getElementById("profileBtn");
+const profileMenu = document.getElementById("profileMenu");
+const profileClose = document.getElementById("profileMenuClose");
 
-if (profileMenuButton) {
-    profileMenuButton.addEventListener("click", event => {
-        event.preventDefault();
-        event.stopPropagation();
+if (profileBtn && profileMenu) {
+    profileBtn.addEventListener("click", e => {
+        e.preventDefault();
+        e.stopPropagation();
+        profileMenu.classList.toggle("show");
+    });
+}
 
+if (profileClose && profileMenu) {
+    profileClose.addEventListener("click", e => {
+        e.preventDefault();
+        e.stopPropagation();
+        profileMenu.classList.remove("show");
+    });
+}
+
+const profileBtnMenu =
+    document.getElementById("profileBtnMenu");
+
+if (profileBtnMenu) {
+    profileBtnMenu.addEventListener("click", e => {
+        e.preventDefault();
+        e.stopPropagation();
         window.location.href = "./profile.html";
     });
 }
 
+/* LOGIN */
 
-/* ========================================
-   LOGIN / REGISTER
-======================================== */
+const loginBtn =
+    document.getElementById("loginBtn");
 
-const loginButton = $("#loginBtn");
-
-if (loginButton) {
-    loginButton.addEventListener("click", event => {
-        event.preventDefault();
-        event.stopPropagation();
-
+if (loginBtn) {
+    loginBtn.addEventListener("click", e => {
+        e.preventDefault();
+        e.stopPropagation();
         window.location.href = "./auth.html";
     });
 }
+
+});
