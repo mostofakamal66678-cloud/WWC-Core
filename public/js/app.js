@@ -84,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
   });
+  
 
 
   /* VIDEO END */
