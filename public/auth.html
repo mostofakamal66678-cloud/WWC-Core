@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>World wide connect - Register / Login</title>
 
   <style>
@@ -81,17 +82,17 @@
 
   <div class="auth-box">
 
-    <h1>World wide connect</h1>
+    <h1>🌍 World wide connect</h1>
 
     <div class="subtitle">
       Register / Login করুন
     </div>
 
-    <button id="googleBtn">
+    <button type="button" id="googleBtn">
       Continue with Google
     </button>
 
-    <button id="emailBtn">
+    <button type="button" id="emailBtn">
       Email / Password
     </button>
 
@@ -103,76 +104,131 @@
 
   </div>
 
-
   <script type="module">
 
-    /* =========================================
-       Firebase
-       ========================================= */
+    import {
+      getApps,
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
-    import { initializeApp }
-      from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-
-    
-  import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup
-} from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
-      
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      signInWithPopup,
+      setPersistence,
+      browserLocalPersistence
+    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
 
-    /* =========================================
-       আপনার Firebase Config এখানে বসাবেন
-       ========================================= */
+    // ================================
+    // FIREBASE CONFIG
+    // ================================
 
-  const firebaseConfig = {
-  apiKey: "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
-  authDomain: "world-wide-connect-62c87.firebaseapp.com",
-  projectId: "world-wide-connect-62c87",
-  storageBucket: "world-wide-connect-62c87.firebasestorage.app",
-  messagingSenderId: "93178453668",
-  appId: "1:93178453668:web:2184630caa8e61f7445031",
-  measurementId: "G-PKFJ5NEMGQ"
-};
-  const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+    const firebaseConfig = {
+      apiKey: "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
+      authDomain: "world-wide-connect-62c87.firebaseapp.com",
+      projectId: "world-wide-connect-62c87",
+      storageBucket: "world-wide-connect-62c87.firebasestorage.app",
+      messagingSenderId: "93178453668",
+      appId: "1:93178453668:web:2184630caa8e61f7445031",
+      measurementId: "G-PKFJ5NEMGQ"
+    };
 
-const googleBtn = document.getElementById("googleBtn");
-const emailBtn = document.getElementById("emailBtn");
-const message = document.getElementById("message");    
-emailBtn.addEventListener("click", () => {
-  window.location.href = "./login.html";
-});
-googleBtn.addEventListener("click", async () => {
 
-  
-  message.textContent = "Google Sign-In শুরু হচ্ছে...";
+    // ================================
+    // FIREBASE START
+    // ================================
 
-  try {
-    const result = await signInWithPopup(auth, provider);
-    const user = result.user;
+    const app = getApps().length
+      ? getApps()[0]
+      : initializeApp(firebaseConfig);
 
-    message.textContent =
-      "স্বাগতম, " + (user.displayName || user.email) + "!";
+    const auth = getAuth(app);
 
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 500);
+    const provider = new GoogleAuthProvider();
 
-  } catch (error) {
-    console.error(error);
-    message.textContent =
-      "Google Login ব্যর্থ হয়েছে: " + error.message;
-  }
+    const googleBtn = document.getElementById("googleBtn");
+    const emailBtn = document.getElementById("emailBtn");
+    const message = document.getElementById("message");
 
-});
-  
 
-</script>
-  
-    
+    // ================================
+    // AUTH PERSISTENCE
+    // ================================
+
+    await setPersistence(
+      auth,
+      browserLocalPersistence
+    );
+
+
+    // ================================
+    // EMAIL / PASSWORD PAGE
+    // ================================
+
+    emailBtn.addEventListener("click", () => {
+
+      window.location.href = "./login.html";
+
+    });
+
+
+    // ================================
+    // GOOGLE LOGIN
+    // ================================
+
+    googleBtn.addEventListener("click", async () => {
+
+      googleBtn.disabled = true;
+
+      message.textContent =
+        "Google Sign-In শুরু হচ্ছে...";
+
+      try {
+
+        await signInWithPopup(
+          auth,
+          provider
+        );
+
+        message.textContent =
+          "✅ Google Login সফল হয়েছে!";
+
+        setTimeout(() => {
+
+          window.location.href = "./index.html";
+
+        }, 700);
+
+      } catch (error) {
+
+        console.error(
+          "Google Login Error:",
+          error
+        );
+
+        googleBtn.disabled = false;
+
+        if (
+          error.code ===
+          "auth/popup-closed-by-user"
+        ) {
+
+          message.textContent =
+            "⚠️ Google Login বন্ধ করা হয়েছে।";
+
+        } else {
+
+          message.textContent =
+            "❌ Google Login ব্যর্থ হয়েছে। আবার চেষ্টা করুন।";
+
+        }
+
+      }
+
+    });
+
+  </script>
 
 </body>
 </html>
