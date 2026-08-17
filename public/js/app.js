@@ -1960,8 +1960,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
 
                 }
+               
 
+const caption = prompt(
+    "ভিডিওর ক্যাপশন লিখুন:",
+    "My new video 🌎"
+);
 
+if (caption === null) {
+    videoUpload.value = "";
+    return;
+}
                 const videoURL =
                     URL.createObjectURL(
                         file
