@@ -2087,9 +2087,9 @@ if (caption === null) {
                             @wwc_user
                         </div>
 
-                        <div class="video-caption">
-                            My new video 🌎
-                        </div>
+                     <div class="video-caption">
+    ${caption}
+</div>
 
                     </div>
 
