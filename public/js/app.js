@@ -1744,4 +1744,253 @@ document.addEventListener("DOMContentLoaded", () => {
 
             }
    
-   
+       <!-- VIDEO 3 -->
+
+    <section class="video-item" data-video-id="video3">
+
+      <video
+        class="feed-video"
+        autoplay
+        muted
+        playsinline
+        preload="metadata"
+      >
+        <source
+          src="./videos/video3.mp4"
+          type="video/mp4"
+        >
+      </video>
+
+      <div class="profile-area">
+
+        <img
+          class="profile-photo"
+          src="./images/profile.png"
+          alt="Profile"
+        >
+
+        <div class="username">
+          @wwc_user_3
+        </div>
+
+        <button
+          class="follow-btn"
+          type="button"
+        >
+          Follow
+        </button>
+
+      </div>
+
+      <div class="actions">
+
+        <button
+          class="action-btn like-btn"
+          type="button"
+          aria-pressed="false"
+        >
+          ❤️
+          <span class="like-count">0</span>
+        </button>
+
+        <button
+          class="action-btn comment-btn"
+          type="button"
+        >
+          💬
+        </button>
+
+        <button
+          class="action-btn save-btn"
+          type="button"
+          aria-pressed="false"
+        >
+          🔖
+          <span class="save-count">0</span>
+        </button>
+
+        <button
+          class="action-btn share-btn"
+          type="button"
+        >
+          ↗️
+        </button>
+
+      </div>
+
+      <div class="video-info">
+
+        <div class="username">
+          @wwc_user_3
+        </div>
+
+        <div class="video-caption">
+          Connect with the world 🌍
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+  <!-- ================================
+       PROFILE MENU
+  ================================= -->
+
+  <div
+    id="profileMenu"
+    class="profile-menu"
+    aria-hidden="true"
+  >
+
+    <div class="profile-menu-header">
+
+      <div class="profile-menu-title">
+        👤 My Profile
+      </div>
+
+      <button
+        id="profileMenuClose"
+        class="profile-menu-close"
+        type="button"
+      >
+        ✕
+      </button>
+
+    </div>
+
+    <button
+      id="profileBtnMenu"
+      class="profile-menu-btn"
+      type="button"
+    >
+      👤 Profile
+    </button>
+
+    <button
+      id="loginBtn"
+      class="profile-menu-btn"
+      type="button"
+    >
+      🔐 Login / Register
+    </button>
+
+    <button
+      id="logoutBtn"
+      class="profile-menu-btn logout-menu-btn"
+      type="button"
+    >
+      🚪 Logout
+    </button>
+
+  </div>
+
+
+  <!-- ================================
+       BOTTOM NAVIGATION
+  ================================= -->
+
+  <nav class="wwc-bottom-nav">
+
+    <button
+      class="wwc-nav-btn active"
+      id="homeBtn"
+      type="button"
+    >
+      <span>🏠</span>
+      <span>Home</span>
+    </button>
+
+    <button
+      class="wwc-nav-btn"
+      id="friendsBtn"
+      type="button"
+    >
+      <span>👥</span>
+      <span>Friends</span>
+    </button>
+
+    <button
+      id="uploadBtn"
+      class="wwc-create-btn"
+      type="button"
+      aria-label="Upload Video"
+    >
+      +
+    </button>
+
+    <button
+      class="wwc-nav-btn"
+      id="inboxBtn"
+      type="button"
+    >
+      <span>💬</span>
+      <span>Inbox</span>
+    </button>
+
+    <button
+      id="profileBtn"
+      class="wwc-nav-btn"
+      type="button"
+    >
+      <span>👤</span>
+      <span>Profile</span>
+    </button>
+
+  </nav>
+  <!-- HIDDEN VIDEO INPUT -->
+
+  <input
+    id="videoUpload"
+    type="file"
+    accept="video/*"
+    hidden
+  >
+
+
+  <!-- ================================
+       COMMENT BOX
+  ================================= -->
+
+  <div
+    id="commentBox"
+    class="comment-box"
+  >
+
+    <div class="comment-title">
+      Comments
+    </div>
+
+    <textarea
+      id="commentInput"
+      placeholder="Write a comment..."
+    ></textarea>
+
+    <div class="comment-buttons">
+
+      <button
+        id="commentCancel"
+        type="button"
+      >
+        Cancel
+      </button>
+
+      <button
+        id="commentSend"
+        type="button"
+      >
+        Send
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- ================================
+       JAVASCRIPT
+  ================================= -->
+
+  <script src="./js/app.js"></script>
+
+</body>
+</html>
