@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>WWC Profile</title>
 
   <style>
@@ -18,39 +19,82 @@
     }
 
     .profile-header {
-      padding: 25px 20px;
+      padding: 55px 20px 25px;
       text-align: center;
       border-bottom: 1px solid #333;
     }
 
+    .back-btn {
+      position: fixed;
+      left: 15px;
+      top: 15px;
+      z-index: 20;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      border: none;
+      background: #222;
+      color: #fff;
+      font-size: 25px;
+      cursor: pointer;
+    }
+
+    .profile-photo-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
     .profile-photo {
-      width: 100px;
-      height: 100px;
+      width: 110px;
+      height: 110px;
       border-radius: 50%;
       object-fit: cover;
-      background: #555;
+      background: #333;
+      border: 3px solid #fff;
+    }
+
+    .camera-btn {
+      position: absolute;
+      right: 0;
+      bottom: 3px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 2px solid #000;
+      background: #fff;
+      color: #000;
+      font-size: 18px;
+      cursor: pointer;
     }
 
     .username {
-      font-size: 24px;
+      font-size: 25px;
       margin: 12px 0 5px;
     }
 
     .handle {
       color: #aaa;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
+    }
+
+    .email {
+      color: #777;
+      font-size: 13px;
+      margin-bottom: 12px;
+      word-break: break-all;
     }
 
     .bio {
       color: #ddd;
       margin: 10px auto 20px;
-      max-width: 400px;
+      max-width: 420px;
+      line-height: 1.5;
     }
 
     .stats {
       display: flex;
       justify-content: center;
-      gap: 35px;
+      gap: 38px;
       margin: 20px 0;
     }
 
@@ -68,25 +112,127 @@
       font-size: 13px;
     }
 
-    .follow-btn {
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    .main-btn {
       border: none;
       background: #fff;
       color: #000;
-      padding: 10px 30px;
-      border-radius: 5px;
-      font-size: 16px;
+      padding: 11px 24px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: bold;
       cursor: pointer;
     }
 
-    .back-btn {
-      position: absolute;
-      left: 15px;
-      top: 15px;
+    .logout-btn {
+      background: #d9363e;
+      color: #fff;
+    }
+
+    .edit-box {
+      display: none;
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #181818;
+      border-radius: 15px;
+      text-align: left;
+      border: 1px solid #333;
+    }
+
+    .edit-box.show {
+      display: block;
+    }
+
+    .edit-title {
+      text-align: center;
+      font-size: 21px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 7px;
+      color: #ddd;
+      font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #444;
+      border-radius: 8px;
+      background: #111;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .form-group textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: #777;
+    }
+
+    .photo-input {
+      display: none;
+    }
+
+    .photo-note {
+      color: #888;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .save-btn {
+      width: 100%;
+      border: none;
+      background: #4f46e5;
+      color: #fff;
+      padding: 13px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+
+    .cancel-btn {
+      width: 100%;
+      border: 1px solid #555;
       background: transparent;
       color: #fff;
-      border: none;
-      font-size: 25px;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 15px;
       cursor: pointer;
+      margin-top: 10px;
+    }
+
+    #message {
+      text-align: center;
+      margin-top: 15px;
+      min-height: 22px;
+      color: #aaa;
+      font-size: 14px;
     }
 
     .videos-title {
@@ -107,6 +253,22 @@
       object-fit: cover;
       background: #111;
     }
+
+    .loading {
+      text-align: center;
+      padding: 50px 20px;
+      color: #aaa;
+    }
+
+    @media (max-width: 500px) {
+      .video-grid video {
+        height: 150px;
+      }
+
+      .stats {
+        gap: 25px;
+      }
+    }
   </style>
 </head>
 
@@ -114,103 +276,872 @@
 
   <button class="back-btn" onclick="history.back()">←</button>
 
-  <section class="profile-header">
-
-    <img
-      class="profile-photo"
-      src="./images/profile.png"
-      alt="Profile"
-    >
-
-    <h1 class="username">গোলাম মোস্তফা</h1>
-
-    <div class="handle">@wwc_user</div>
-
-    <div class="bio">
-      Welcome to my WWC profile 🌍
-    </div>
-
-    <div class="stats">
-      <div class="stat">
-        <strong id="followers">0</strong>
-        <span>Followers</span>
-      </div>
-
-      <div class="stat">
-        <strong>0</strong>
-        <span>Following</span>
-      </div>
-
-      <div class="stat">
-        <strong>0</strong>
-        <span>Likes</span>
-      </div>
-    </div>
-
-    <button class="follow-btn" id="followBtn">
-      Follow
-    </button>
-
-  </section>
-
-  <div class="videos-title">
-    🎬 Videos
+  <div id="loading" class="loading">
+    Profile লোড হচ্ছে...
   </div>
 
-  <section class="video-grid">
+  <main id="profileContent" style="display:none;">
 
-    <video controls muted playsinline>
-      <source src="./videos/video1.mp4" type="video/mp4">
-    </video>
+    <section class="profile-header">
 
-    <video controls muted playsinline>
-      <source src="./videos/video2.mp4" type="video/mp4">
-    </video>
+      <div class="profile-photo-wrap">
 
-    <video controls muted playsinline>
-      <source src="./videos/video3.mp4" type="video/mp4">
-    </video>
+        <img
+          id="profilePhoto"
+          class="profile-photo"
+          src="./images/profile.png"
+          alt="Profile"
+        >
 
-  </section>
+        <button
+          type="button"
+          class="camera-btn"
+          id="cameraBtn"
+        >
+          📷
+        </button>
+
+      </div>
+
+      <input
+        type="file"
+        id="photoInput"
+        class="photo-input"
+        accept="image/*"
+      >
+
+      <h1 id="profileName" class="username">
+        গোলাম মোস্তফা
+      </h1>
+
+      <div id="profileHandle" class="handle">
+        @wwc_user
+      </div>
+
+      <div id="profileEmail" class="email"></div>
+
+      <div id="profileBio" class="bio">
+        Welcome to my WWC profile 🌍
+      </div>
+
+      <div class="stats">
+
+        <div class="stat">
+          <strong id="followers">0</strong>
+          <span>Followers</span>
+        </div>
+
+        <div class="stat">
+          <strong id="followingCount">0</strong>
+          <span>Following</span>
+        </div>
+
+        <div class="stat">
+          <strong id="likesCount">0</strong>
+          <span>Likes</span>
+        </div>
+
+      </div>
+
+      <div class="buttons">
+
+        <button
+          type="button"
+          class="main-btn"
+          id="followBtn"
+        >
+          Follow
+        </button>
+
+        <button
+          type="button"
+          class="main-btn"
+          id="editBtn"
+        >
+          ✏️ Edit Profile
+        </button>
+
+        <button
+          type="button"
+          class="main-btn logout-btn"
+          id="logoutBtn"
+        >
+          🚪 Logout
+        </button>
+
+      </div>
+
+      <div id="message"></div>
+
+    </section>
+
+
+    <!-- EDIT PROFILE -->
+
+    <section id="editBox" class="edit-box">
+
+      <div class="edit-title">
+        ✏️ Edit Profile
+      </div>
+
+      <div class="form-group">
+
+        <label>নাম</label>
+
+        <input
+          type="text"
+          id="nameInput"
+          placeholder="আপনার নাম"
+          maxlength="50"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Username</label>
+
+        <input
+          type="text"
+          id="usernameInput"
+          placeholder="wwc_user"
+          maxlength="30"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>জন্মতারিখ</label>
+
+        <input
+          type="date"
+          id="dobInput"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>বয়স</label>
+
+        <input
+          type="text"
+          id="ageInput"
+          readonly
+          placeholder="জন্মতারিখ দিলে বয়স দেখা যাবে"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Bio</label>
+
+        <textarea
+          id="bioInput"
+          placeholder="নিজের সম্পর্কে লিখুন..."
+          maxlength="160"
+        ></textarea>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Gender</label>
+
+        <select id="genderInput">
+
+          <option value="">
+            নির্বাচন করুন
+          </option>
+
+          <option value="Male">
+            Male
+          </option>
+
+          <option value="Female">
+            Female
+          </option>
+
+          <option value="Other">
+            Other
+          </option>
+
+          <option value="Prefer not to say">
+            Prefer not to say
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Country</label>
+
+        <input
+          type="text"
+          id="countryInput"
+          placeholder="Bangladesh"
+          maxlength="50"
+        >
+
+      </div>
+
+
+      <div class="form-group">
+
+        <label>Profile Photo</label>
+
+        <input
+          type="file"
+          id="editPhotoInput"
+          accept="image/*"
+        >
+
+        <div class="photo-note">
+          ছবি ছোট করে Firebase Firestore-এ সংরক্ষণ করা হবে।
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="save-btn"
+        id="saveBtn"
+      >
+        💾 Save Changes
+      </button>
+
+
+      <button
+        type="button"
+        class="cancel-btn"
+        id="cancelBtn"
+      >
+        Cancel
+      </button>
+
+    </section>
+
+
+    <!-- VIDEOS -->
+
+    <div class="videos-title">
+      🎬 Videos
+    </div>
+
+    <section class="video-grid">
+
+      <video controls muted playsinline>
+        <source
+          src="./videos/video1.mp4"
+          type="video/mp4"
+        >
+      </video>
+
+      <video controls muted playsinline>
+        <source
+          src="./videos/video2.mp4"
+          type="video/mp4"
+        >
+      </video>
+
+      <video controls muted playsinline>
+        <source
+          src="./videos/video3.mp4"
+          type="video/mp4"
+        >
+      </video>
+
+    </section>
+
+  </main>
+
+
+  <script type="module">
+
+    import {
+      getApps,
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      updateDoc
+    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+
+    // ==========================================
+    // FIREBASE CONFIG
+    // ==========================================
+
+    const firebaseConfig = {
+
+      apiKey:
+        "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
+
+      authDomain:
+        "world-wide-connect-62c87.firebaseapp.com",
+
+      projectId:
+        "world-wide-connect-62c87",
+
+      storageBucket:
+        "world-wide-connect-62c87.firebasestorage.app",
+
+      messagingSenderId:
+        "93178453668",
+
+      appId:
+        "1:93178453668:web:2184630caa8e61f7445031",
+
+      measurementId:
+        "G-PKFJ5NEMGQ"
+    };
+
+
+    // ==========================================
+    // FIREBASE START
+    // ==========================================
+
+    const app = getApps().length
+      ? getApps()[0]
+      : initializeApp(firebaseConfig);
+
+
+    const auth = getAuth(app);
+
+    const db = getFirestore(app);
+
+
+    // ==========================================
+    // ELEMENTS
+    // ==========================================
+
+    const loading =
+      document.getElementById("loading");
+
+    const profileContent =
+      document.getElementById("profileContent");
+
+    const profilePhoto =
+      document.getElementById("profilePhoto");
+
+    const profileName =
+      document.getElementById("profileName");
+
+    const profileHandle =
+      document.getElementById("profileHandle");
+
+    const profileEmail =
+      document.getElementById("profileEmail");
+
+    const profileBio =
+      document.getElementById("profileBio");
+
+    const followers =
+      document.getElementById("followers");
+
+    const followingCount =
+      document.getElementById("followingCount");
+
+    const likesCount =
+      document.getElementById("likesCount");
+
+    const followBtn =
+      document.getElementById("followBtn");
+
+    const editBtn =
+      document.getElementById("editBtn");
+
+    const logoutBtn =
+      document.getElementById("logoutBtn");
+
+    const editBox =
+      document.getElementById("editBox");
+
+    const saveBtn =
+      document.getElementById("saveBtn");
+
+    const cancelBtn =
+      document.getElementById("cancelBtn");
+
+    const message =
+      document.getElementById("message");
+
+    const photoInput =
+      document.getElementById("photoInput");
+
+    const editPhotoInput =
+      document.getElementById("editPhotoInput");
+
+    const cameraBtn =
+      document.getElementById("cameraBtn");
+
+    const nameInput =
+      document.getElementById("nameInput");
+
+    const usernameInput =
+      document.getElementById("usernameInput");
+
+    const dobInput =
+      document.getElementById("dobInput");
+
+    const ageInput =
+      document.getElementById("ageInput");
+
+    const bioInput =
+      document.getElementById("bioInput");
+
+    const genderInput =
+      document.getElementById("genderInput");
+
+    const countryInput =
+      document.getElementById("countryInput");
+
+
+    // ==========================================
+    // DEFAULT PROFILE PHOTO
+    // ==========================================
+
+    const defaultPhoto =
+      "./images/profile.png";
+
+
+    // ==========================================
+    // CURRENT USER
+    // ==========================================
+
+    let currentUser = null;
+
+    let currentProfile = {};
+
+    let selectedPhotoData = "";
+
+
+    // ==========================================
+    // AGE CALCULATOR
+    // ==========================================
+
+    function calculateAge(dateString) {
+
+      if (!dateString) {
+        return "";
+      }
+
+      const birthDate =
+        new Date(dateString);
+
+      if (isNaN(birthDate.getTime())) {
+        return "";
+      }
+
+      const today =
+        new Date();
+
+      let age =
+        today.getFullYear()
+        - birthDate.getFullYear();
+
+      const monthDifference =
+        today.getMonth()
+        - birthDate.getMonth();
+
+      if (
+        monthDifference < 0 ||
+        (
+          monthDifference === 0 &&
+          today.getDate() < birthDate.getDate()
+        )
+      ) {
+
+        age--;
+
+      }
+
+      if (age < 0) {
+        return "";
+      }
+
+      return age;
+
+    }
+
+
+    dobInput.addEventListener(
+      "change",
+      () => {
+
+        ageInput.value =
+          calculateAge(
+            dobInput.value
+          );
+
+      }
+    );
+
+
+    // ==========================================
+    // COMPRESS PHOTO
+    // ==========================================
+
+    function compressPhoto(file) {
+
+      return new Promise(
+        (resolve, reject) => {
+
+          if (!file) {
+            resolve("");
+            return;
+          }
+
+          if (!file.type.startsWith("image/")) {
+
+            reject(
+              new Error(
+                "শুধু ছবি নির্বাচন করুন।"
+              )
+            );
+
+            return;
+          }
+
+          const reader =
+            new FileReader();
+
+          reader.onload = event => {
+
+            const img =
+              new Image();
+
+            img.onload = () => {
+
+              const maxSize = 400;
+
+              let width =
+                img.width;
+
+              let height =
+                img.height;
+
+
+              if (width > height) {
+
+                if (width > maxSize) {
+
+                  height =
+                    height * maxSize / width;
+
+                  width =
+                    maxSize;
+
+                }
+
+              } else {
+
+                if (height > maxSize) {
+
+                  width =
+                    width * maxSize / height;
+
+                  height =
+                    maxSize;
+
+                }
+
+              }
+
+
+              const canvas =
+                document.createElement("canvas");
+
+              canvas.width =
+                width;
+
+              canvas.height =
+                height;
+
+
+              const ctx =
+                canvas.getContext("2d");
+
+              ctx.drawImage(
+                img,
+                0,
+                0,
+                width,
+                height
+              );
+
+
+              const compressed =
+                canvas.toDataURL(
+                  "image/jpeg",
+                  0.75
+                );
+
+
+              resolve(compressed);
+
+            };
+
+
+            img.onerror = () => {
+
+              reject(
+                new Error(
+                  "ছবি পড়া যায়নি।"
+                )
+              );
+
+            };
+
+
+            img.src =
+              event.target.result;
+
+          };
+
+
+          reader.onerror = () => {
+
+            reject(
+              new Error(
+                "ছবি লোড করা যায়নি।"
+              )
+            );
+
+          };
+
+
+          reader.readAsDataURL(file);
+
+        }
+      );
+
+    }
+
+
+    // ==========================================
+    // SHOW MESSAGE
+    // ==========================================
+
+    function showMessage(
+      text,
+      success = false
+    ) {
+
+      message.textContent =
+        text;
+
+      message.style.color =
+        success
+          ? "#4ade80"
+          : "#aaa";
+
+    }
+
+
+    // ==========================================
+    // LOAD PROFILE
+    // ==========================================
+
+    async function loadProfile(user) {
+
+      currentUser =
+        user;
+
+
+      const userRef =
+        doc(
+          db,
+          "users",
+          user.uid
+        );
+
+
+      try {
+
+        const snapshot =
+          await getDoc(userRef);
+
+
+        if (snapshot.exists()) {
+
+          currentProfile =
+            snapshot.data();
+
+        } else {
+
+          currentProfile = {
+
+            name:
+              user.displayName
+              || "WWC User",
+
+            username:
+              "wwc_user",
+
+            bio:
+              "Welcome to my WWC profile 🌍",
+
+            dob:
+              "",
+
+            age:
+              "",
+
+            gender:
+              "",
+
+            country:
+              "Bangladesh",
+
+            photoURL:
+              user.photoURL
+              || defaultPhoto,
+
+            email:
+              user.email
+              || "",
+
+            followers:
+              0,
+
+            following:
+              0,
+
+            likes:
+              0
+
+          };
+
+
+          await setDoc(
+            userRef,
+            currentProfile
+          );
+
+        }
+
+
+        renderProfile();
+
+        fillEditForm();
+
+        loading.style.display =
+          "none";
+
+        profileContent.style.display =
+          "block";
+
+      } catch (error) {
+
+        console.error(
+          "Profile Load Error:",
+          error
+        );
+
+        loading.textContent =
+          "❌ Profile লোড করা যায়নি।";
+
+      }
+
+    }
+
+
+    // ==========================================
+    // RENDER PROFILE
+    // ==========================================
+
+    function renderProfile() {
+
+      profileName.textContent =
+        currentProfile.name
+        || currentUser.displayName
+        || "WWC User";
+
+
+      let username =
+        currentProfile.username
+        || "wwc_user";
+
+
+      username =
+        username.replace(
+          /^@/,
+          ""
+        );
+
+
+      profileHandle.textContent =
+        "@" + username;
+
+
+      profileEmail.textContent =
+        currentUser.email
+        || currentProfile.email
+        || "";
+
+
+      profileBio.textContent =
+        currentProfile.bio
+        || "Welcome to my WWC profile 🌍";
+
+
+      profilePhoto.src =
+        currentProfile.photoURL
+        || currentUser.photoURL
+        || defaultPhoto;
+
+
+      followers.textContent =
+        currentProfile.followers || 0;
+
+
+      followingCount.textContent =
+        currentProfile.following || 0;
+
+
+      likesCount.textContent =
+        currentProfile.likes || 0;
+
+
+      updateFollowButton();
+
+    }
+
+
+    // ==========================================
+    // FILL EDIT FORM
+    // ==========================================
+
+    function fillEditForm() {
+
+      nameInput.value =
+        currentProfile.name
+        || currentUser.displayName
+        || "";
+
 
   
-<script>
-const followBtn = document.getElementById("followBtn");
-const followers = document.getElementById("followers");
-
-let following = localStorage.getItem("wwc-following") === "true";
-let followerCount =
-  Number(localStorage.getItem("wwc-followers") || 0);
-
-function updateFollow() {
-  if (following) {
-    followBtn.textContent = "Following";
-    followers.textContent = followerCount;
-  } else {
-    followBtn.textContent = "Follow";
-    followers.textContent = followerCount;
-  }
-}
-
-followBtn.addEventListener("click", () => {
-  if (following) {
-    following = false;
-
-    if (followerCount > 0) {
-      followerCount--;
-    }
-  } else {
-    following = true;
-    followerCount++;
-  }
-
-  localStorage.setItem("wwc-following", following);
-  localStorage.setItem("wwc-followers", followerCount);
-
-  updateFollow();
-});
-
-updateFollow();
-  </script>
-</body>
-  </html>,
