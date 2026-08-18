@@ -2,15 +2,19 @@
    WORLD WIDE CONNECT
    WWC-CORE
    APP.JS
-   PART 1 / 5
-   Firebase + Authentication + Video Feed
+   PART 1 / 3
+
+   Firebase
+   Authentication
+   User Profile
+   Login / Logout
+   Navigation
    ========================================================= */
 
 "use strict";
 
-
 /* =========================================================
-   FIREBASE IMPORTS
+   FIREBASE IMPORT
    ========================================================= */
 
 import {
@@ -54,7 +58,7 @@ const firebaseConfig = {
         "93178453668",
 
     appId:
-        "1:93178453668:web:2184630caa8e61f7445031",
+        "1:93178453668:web:2184630caae8e61f7445031",
 
     measurementId:
         "G-PKFJ5NEMGQ"
@@ -78,48 +82,44 @@ const db =
 
 
 /* =========================================================
-   GLOBAL VARIABLES
+   GLOBAL USER
    ========================================================= */
 
 let currentUser = null;
 
 
 /* =========================================================
-   DOM READY
+   START WWC
    ========================================================= */
 
 document.addEventListener(
     "DOMContentLoaded",
     () => {
 
-        initializeWWC();
+        startWWC();
 
     }
 );
 
 
 /* =========================================================
-   MAIN INITIALIZATION
+   MAIN START
    ========================================================= */
 
-function initializeWWC() {
+function startWWC() {
 
     console.log(
         "🌍 WWC-Core starting..."
     );
 
-
     setupAuthentication();
-
-    setupVideoFeed();
 
     setupNavigation();
 
-    setupBasicButtons();
-
+    setupLogout();
 
     console.log(
-        "✅ WWC-Core initialized"
+        "✅ WWC-Core ready"
     );
 
 }
@@ -137,32 +137,25 @@ function setupAuthentication() {
 
             currentUser = user;
 
-
             if (user) {
 
                 console.log(
-                    "✅ User logged in:",
+                    "✅ Login:",
                     user.email || user.uid
                 );
 
-
-                await createUserProfileIfNeeded(
-                    user
-                );
-
+                await createProfile(user);
 
                 updateLoginUI(
                     true,
                     user
                 );
 
-
             } else {
 
                 console.log(
-                    "ℹ️ No user logged in"
+                    "ℹ️ User not logged in"
                 );
-
 
                 updateLoginUI(
                     false,
@@ -181,9 +174,7 @@ function setupAuthentication() {
    CREATE USER PROFILE
    ========================================================= */
 
-async function createUserProfileIfNeeded(
-    user
-) {
+async function createProfile(user) {
 
     try {
 
@@ -194,12 +185,10 @@ async function createUserProfileIfNeeded(
                 user.uid
             );
 
-
         const snapshot =
             await getDoc(
                 userRef
             );
-
 
         if (!snapshot.exists()) {
 
@@ -247,15 +236,13 @@ async function createUserProfileIfNeeded(
 
             };
 
-
             await setDoc(
                 userRef,
                 profile
             );
 
-
             console.log(
-                "✅ New WWC profile created"
+                "✅ New profile created"
             );
 
         }
@@ -263,7 +250,7 @@ async function createUserProfileIfNeeded(
     } catch (error) {
 
         console.error(
-            "❌ Profile creation error:",
+            "❌ Profile error:",
             error
         );
 
@@ -286,12 +273,13 @@ function updateLoginUI(
             ".login-btn, #loginBtn"
         );
 
-
     const logoutButtons =
         document.querySelectorAll(
             ".logout-btn, #logoutBtn"
         );
 
+
+    /* LOGIN BUTTON */
 
     loginButtons.forEach(
         button => {
@@ -305,6 +293,8 @@ function updateLoginUI(
     );
 
 
+    /* LOGOUT BUTTON */
+
     logoutButtons.forEach(
         button => {
 
@@ -317,13 +307,14 @@ function updateLoginUI(
     );
 
 
-    const userNameElements =
+    /* USER NAME */
+
+    const userNames =
         document.querySelectorAll(
             ".current-user-name"
         );
 
-
-    userNameElements.forEach(
+    userNames.forEach(
         element => {
 
             element.textContent =
@@ -353,15 +344,12 @@ async function logoutUser() {
             auth
         );
 
-
         console.log(
             "✅ Logout successful"
         );
 
-
         window.location.href =
             "./auth.html";
-
 
     } catch (error) {
 
@@ -370,7 +358,6 @@ async function logoutUser() {
             error
         );
 
-
         alert(
             "Logout করা যায়নি। আবার চেষ্টা করুন।"
         );
@@ -378,6 +365,199 @@ async function logoutUser() {
     }
 
 }
+
+
+/* =========================================================
+   LOGOUT BUTTON
+   ========================================================= */
+
+function setupLogout() {
+
+    const buttons =
+        document.querySelectorAll(
+            "#logoutBtn, .logout-btn, .logout-menu-btn"
+        );
+
+    buttons.forEach(
+        button => {
+
+            if (
+                button.dataset.wwcReady ===
+                "true"
+            ) {
+
+                return;
+
+            }
+
+            button.dataset.wwcReady =
+                "true";
+
+            button.addEventListener(
+                "click",
+                event => {
+
+                    event.preventDefault();
+
+                    logoutUser();
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+function setupNavigation() {
+
+
+    /* HOME */
+
+    const homeButtons =
+        document.querySelectorAll(
+            "#homeBtn, .home-btn"
+        );
+
+    homeButtons.forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    window.location.href =
+                        "./index.html";
+
+                }
+            );
+
+        }
+    );
+
+
+    /* PROFILE */
+
+    const profileButtons =
+        document.querySelectorAll(
+            "#profileBtn, .profile-btn"
+        );
+
+    profileButtons.forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    if (!currentUser) {
+
+                        window.location.href =
+                            "./auth.html";
+
+                        return;
+
+                    }
+
+                    window.location.href =
+                        "./profile.html";
+
+                }
+            );
+
+        }
+    );
+
+
+    /* UPLOAD */
+
+    const uploadButtons =
+        document.querySelectorAll(
+            "#uploadBtn, .upload-btn, #createBtn"
+        );
+
+    uploadButtons.forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    if (!currentUser) {
+
+                        window.location.href =
+                            "./auth.html";
+
+                        return;
+
+                    }
+
+                    window.location.href =
+                        "./upload.html";
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   GLOBAL WWC
+   ========================================================= */
+
+window.WWC = {
+
+    getCurrentUser: () => {
+
+        return currentUser;
+
+    },
+
+    logout: () => {
+
+        return logoutUser();
+
+    },
+
+    getAuth: () => {
+
+        return auth;
+
+    },
+
+    getFirestore: () => {
+
+        return db;
+
+    }
+
+};
+
+
+/* =========================================================
+   END PART 1 / 3
+   ========================================================= */
+/* =========================================================
+   WORLD WIDE CONNECT
+   WWC-CORE
+   APP.JS
+   PART 2 / 3
+
+   Video Feed
+   Auto Play
+   Like
+   Comment
+   Save
+   Share
+   ========================================================= */
 
 
 /* =========================================================
@@ -391,39 +571,35 @@ function setupVideoFeed() {
             "video-feed"
         );
 
-
     if (!feed) {
 
         console.log(
-            "ℹ️ #video-feed পাওয়া যায়নি"
+            "ℹ️ Video feed পাওয়া যায়নি"
         );
 
         return;
 
     }
-
 
     const videos =
         Array.from(
             feed.querySelectorAll(
-                ".feed-video"
+                "video, .feed-video"
             )
         );
-
 
     if (!videos.length) {
 
         console.log(
-            "ℹ️ কোনো ভিডিও পাওয়া যায়নি"
+            "ℹ️ কোনো ভিডিও নেই"
         );
 
         return;
 
     }
 
-
     console.log(
-        "🎬 Videos found:",
+        "🎬 Videos:",
         videos.length
     );
 
@@ -441,20 +617,22 @@ function setupVideoFeed() {
                 "metadata"
             );
 
+            video.muted = true;
+
 
             video.addEventListener(
                 "play",
                 () => {
 
                     videos.forEach(
-                        otherVideo => {
+                        other => {
 
                             if (
-                                otherVideo !== video &&
-                                !otherVideo.paused
+                                other !== video &&
+                                !other.paused
                             ) {
 
-                                otherVideo.pause();
+                                other.pause();
 
                             }
 
@@ -476,7 +654,7 @@ function setupVideoFeed() {
 
 
 /* =========================================================
-   VIDEO OBSERVER
+   VIDEO AUTO PLAY OBSERVER
    ========================================================= */
 
 function setupVideoObserver(
@@ -500,14 +678,14 @@ function setupVideoObserver(
                         ) {
 
                             videos.forEach(
-                                otherVideo => {
+                                other => {
 
                                     if (
-                                        otherVideo !== video &&
-                                        !otherVideo.paused
+                                        other !== video &&
+                                        !other.paused
                                     ) {
 
-                                        otherVideo.pause();
+                                        other.pause();
 
                                     }
 
@@ -515,22 +693,21 @@ function setupVideoObserver(
                             );
 
 
-                            const playPromise =
+                            const play =
                                 video.play();
 
 
                             if (
-                                playPromise &&
-                                typeof playPromise.catch ===
+                                play &&
+                                typeof play.catch ===
                                 "function"
                             ) {
 
-                                playPromise.catch(
-                                    error => {
+                                play.catch(
+                                    () => {
 
                                         console.log(
-                                            "Autoplay blocked:",
-                                            error.message
+                                            "Autoplay blocked"
                                         );
 
                                     }
@@ -579,223 +756,63 @@ function setupVideoObserver(
 
 
 /* =========================================================
-   NAVIGATION
+   LOCAL STORAGE
    ========================================================= */
 
-function setupNavigation() {
-
-    const homeButtons =
-        document.querySelectorAll(
-            "#homeBtn, .home-btn"
-        );
-
-
-    homeButtons.forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    window.location.href =
-                        "./index.html";
-
-                }
-            );
-
-        }
-    );
-
-
-    const profileButtons =
-        document.querySelectorAll(
-            "#profileBtn, .profile-btn"
-        );
-
-
-    profileButtons.forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    if (!currentUser) {
-
-                        window.location.href =
-                            "./auth.html";
-
-                        return;
-
-                    }
-
-
-                    window.location.href =
-                        "./profile.html";
-
-                }
-            );
-
-        }
-    );
-
-
-    const uploadButtons =
-        document.querySelectorAll(
-            "#uploadBtn, .upload-btn, #createBtn"
-        );
-
-
-    uploadButtons.forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    if (!currentUser) {
-
-                        window.location.href =
-                            "./auth.html";
-
-                        return;
-
-                    }
-
-
-                    window.location.href =
-                        "./upload.html";
-
-                }
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   BASIC BUTTONS
-   ========================================================= */
-
-function setupBasicButtons() {
-
-    const logoutButtons =
-        document.querySelectorAll(
-            "#logoutBtn, .logout-btn, .logout-menu-btn"
-        );
-
-
-    logoutButtons.forEach(
-        button => {
-
-            if (
-                button.dataset.wwcLogoutReady ===
-                "true"
-            ) {
-
-                return;
-
-            }
-
-
-            button.dataset.wwcLogoutReady =
-                "true";
-
-
-            button.addEventListener(
-                "click",
-                event => {
-
-                    event.preventDefault();
-
-                    logoutUser();
-
-                }
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   GLOBAL ACCESS
-   ========================================================= */
-
-window.WWC = {
-
-    getCurrentUser: () =>
-        currentUser,
-
-    logout: logoutUser,
-
-    getAuth: () =>
-        auth,
-
-    getFirestore: () =>
-        db
-
-};
-
-
-/* =========================================================
-   END OF PART 1 / 5
-   ========================================================= */
-/* =========================================================
-   WORLD WIDE CONNECT
-   WWC-CORE
-   APP.JS
-   PART 2 / 5
-   LIKE + COMMENT + SAVE
-   ========================================================= */
-
-
-/* =========================================================
-   STORAGE HELPERS
-   ========================================================= */
-
-function wwcGetStorage(key, fallback) {
+function wwcGetStorage(
+    key,
+    fallback
+) {
 
     try {
 
         const value =
-            localStorage.getItem(key);
+            localStorage.getItem(
+                key
+            );
 
         if (value === null) {
+
             return fallback;
+
         }
 
-        return JSON.parse(value);
+        return JSON.parse(
+            value
+        );
 
     } catch (error) {
 
         console.error(
-            "WWC Storage Read Error:",
+            "Storage Read Error:",
             error
         );
 
         return fallback;
+
     }
 
 }
 
 
-function wwcSetStorage(key, value) {
+function wwcSetStorage(
+    key,
+    value
+) {
 
     try {
 
         localStorage.setItem(
             key,
-            JSON.stringify(value)
+            JSON.stringify(
+                value
+            )
         );
 
     } catch (error) {
 
         console.error(
-            "WWC Storage Save Error:",
+            "Storage Save Error:",
             error
         );
 
@@ -808,58 +825,61 @@ function wwcSetStorage(key, value) {
    VIDEO ID
    ========================================================= */
 
-function wwcGetVideoId(videoItem) {
+function getWWCVideoId(
+    item
+) {
 
-    if (!videoItem) {
+    if (!item) {
+
         return "";
+
     }
 
 
-    if (!videoItem.dataset.videoId) {
+    if (
+        item.dataset.videoId
+    ) {
 
-        const video =
-            videoItem.querySelector(
-                ".feed-video"
+        return item.dataset.videoId;
+
+    }
+
+
+    const video =
+        item.querySelector(
+            "video"
+        );
+
+
+    if (
+        video &&
+        video.src
+    ) {
+
+        item.dataset.videoId =
+            "video-" +
+            btoa(
+                video.src
+            )
+            .replace(
+                /[^a-zA-Z0-9]/g,
+                ""
+            )
+            .slice(
+                0,
+                30
             );
 
+    } else {
 
-        if (
-            video &&
-            video.currentSrc
-        ) {
-
-            videoItem.dataset.videoId =
-                "video-" +
-                btoa(
-                    video.currentSrc
-                )
-                .replace(
-                    /[^a-zA-Z0-9]/g,
-                    ""
-                )
-                .slice(
-                    0,
-                    30
-                );
-
-        } else {
-
-            videoItem.dataset.videoId =
-                "video-" +
-                Array.from(
-                    videoItem.parentElement
-                    ? videoItem.parentElement.children
-                    : []
-                ).indexOf(
-                    videoItem
-                );
-
-        }
+        item.dataset.videoId =
+            "video-" +
+            Date.now();
 
     }
 
 
-    return videoItem.dataset.videoId;
+    return item.dataset.videoId;
 
 }
 
@@ -868,34 +888,29 @@ function wwcGetVideoId(videoItem) {
    LIKE
    ========================================================= */
 
-function wwcInitializeLike(button) {
+function setupLikeButtons() {
 
-    if (!button) {
-        return;
-    }
-
-
-    if (
-        button.dataset.wwcLikeReady ===
-        "true"
-    ) {
-
-        return;
-
-    }
+    const buttons =
+        document.querySelectorAll(
+            ".like-btn, #likeBtn"
+        );
 
 
-    button.dataset.wwcLikeReady =
-        "true";
+    buttons.forEach(
+        button => {
+
+            if (
+                button.dataset.wwcLikeReady ===
+                "true"
+            ) {
+
+                return;
+
+            }
 
 
-    button.addEventListener(
-        "click",
-        event => {
-
-            event.preventDefault();
-
-            event.stopPropagation();
+            button.dataset.wwcLikeReady =
+                "true";
 
 
             const item =
@@ -905,119 +920,144 @@ function wwcInitializeLike(button) {
 
 
             if (!item) {
+
                 return;
+
             }
 
 
             const videoId =
-                wwcGetVideoId(
+                getWWCVideoId(
                     item
                 );
 
 
-            const likes =
-                wwcGetStorage(
-                    "wwc_likes",
-                    {}
-                );
+            loadLikeState(
+                button,
+                videoId
+            );
 
 
-            const likedVideos =
-                wwcGetStorage(
-                    "wwc_liked_videos",
-                    []
-                );
+            button.addEventListener(
+                "click",
+                event => {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
 
 
-            const alreadyLiked =
-                likedVideos.includes(
-                    videoId
-                );
+                    const likes =
+                        wwcGetStorage(
+                            "wwc_likes",
+                            {}
+                        );
 
 
-            let count =
-                Number(
-                    likes[videoId] || 0
-                );
+                    const liked =
+                        wwcGetStorage(
+                            "wwc_liked_videos",
+                            []
+                        );
 
 
-            if (alreadyLiked) {
+                    let count =
+                        Number(
+                            likes[videoId] ||
+                            0
+                        );
 
-                count =
-                    Math.max(
-                        0,
-                        count - 1
+
+                    const isLiked =
+                        liked.includes(
+                            videoId
+                        );
+
+
+                    if (isLiked) {
+
+                        count =
+                            Math.max(
+                                0,
+                                count - 1
+                            );
+
+
+                        const index =
+                            liked.indexOf(
+                                videoId
+                            );
+
+
+                        if (
+                            index !== -1
+                        ) {
+
+                            liked.splice(
+                                index,
+                                1
+                            );
+
+                        }
+
+                    } else {
+
+                        count++;
+
+                        liked.push(
+                            videoId
+                        );
+
+                    }
+
+
+                    likes[videoId] =
+                        count;
+
+
+                    wwcSetStorage(
+                        "wwc_likes",
+                        likes
                     );
 
 
-                const index =
-                    likedVideos.indexOf(
-                        videoId
+                    wwcSetStorage(
+                        "wwc_liked_videos",
+                        liked
                     );
 
 
-                if (index !== -1) {
-
-                    likedVideos.splice(
-                        index,
-                        1
+                    button.classList.toggle(
+                        "liked",
+                        !isLiked
                     );
+
+
+                    button.setAttribute(
+                        "aria-pressed",
+                        String(
+                            !isLiked
+                        )
+                    );
+
+
+                    const countElement =
+                        button.querySelector(
+                            ".like-count"
+                        );
+
+
+                    if (
+                        countElement
+                    ) {
+
+                        countElement.textContent =
+                            count;
+
+                    }
 
                 }
-
-            } else {
-
-                count++;
-
-                likedVideos.push(
-                    videoId
-                );
-
-            }
-
-
-            likes[videoId] =
-                count;
-
-
-            wwcSetStorage(
-                "wwc_likes",
-                likes
             );
-
-
-            wwcSetStorage(
-                "wwc_liked_videos",
-                likedVideos
-            );
-
-
-            button.classList.toggle(
-                "liked",
-                !alreadyLiked
-            );
-
-
-            button.setAttribute(
-                "aria-pressed",
-                String(
-                    !alreadyLiked
-                )
-            );
-
-
-            const countElement =
-                button.querySelector(
-                    ".like-count"
-                );
-
-
-            if (countElement) {
-
-                countElement.textContent =
-                    count;
-
-            }
 
         }
     );
@@ -1029,29 +1069,10 @@ function wwcInitializeLike(button) {
    LOAD LIKE STATE
    ========================================================= */
 
-function wwcLoadLikeState(button) {
-
-    if (!button) {
-        return;
-    }
-
-
-    const item =
-        button.closest(
-            ".video-item"
-        );
-
-
-    if (!item) {
-        return;
-    }
-
-
-    const videoId =
-        wwcGetVideoId(
-            item
-        );
-
+function loadLikeState(
+    button,
+    videoId
+) {
 
     const likes =
         wwcGetStorage(
@@ -1060,7 +1081,7 @@ function wwcLoadLikeState(button) {
         );
 
 
-    const likedVideos =
+    const liked =
         wwcGetStorage(
             "wwc_liked_videos",
             []
@@ -1069,12 +1090,13 @@ function wwcLoadLikeState(button) {
 
     const count =
         Number(
-            likes[videoId] || 0
+            likes[videoId] ||
+            0
         );
 
 
-    const liked =
-        likedVideos.includes(
+    const isLiked =
+        liked.includes(
             videoId
         );
 
@@ -1085,7 +1107,9 @@ function wwcLoadLikeState(button) {
         );
 
 
-    if (countElement) {
+    if (
+        countElement
+    ) {
 
         countElement.textContent =
             count;
@@ -1095,14 +1119,14 @@ function wwcLoadLikeState(button) {
 
     button.classList.toggle(
         "liked",
-        liked
+        isLiked
     );
 
 
     button.setAttribute(
         "aria-pressed",
         String(
-            liked
+            isLiked
         )
     );
 
@@ -1110,37 +1134,32 @@ function wwcLoadLikeState(button) {
 
 
 /* =========================================================
-   SAVE
+   SAVE VIDEO
    ========================================================= */
 
-function wwcInitializeSave(button) {
+function setupSaveButtons() {
 
-    if (!button) {
-        return;
-    }
-
-
-    if (
-        button.dataset.wwcSaveReady ===
-        "true"
-    ) {
-
-        return;
-
-    }
+    const buttons =
+        document.querySelectorAll(
+            ".save-btn, #saveBtn"
+        );
 
 
-    button.dataset.wwcSaveReady =
-        "true";
+    buttons.forEach(
+        button => {
+
+            if (
+                button.dataset.wwcSaveReady ===
+                "true"
+            ) {
+
+                return;
+
+            }
 
 
-    button.addEventListener(
-        "click",
-        event => {
-
-            event.preventDefault();
-
-            event.stopPropagation();
+            button.dataset.wwcSaveReady =
+                "true";
 
 
             const item =
@@ -1150,86 +1169,89 @@ function wwcInitializeSave(button) {
 
 
             if (!item) {
+
                 return;
+
             }
 
 
             const videoId =
-                wwcGetVideoId(
+                getWWCVideoId(
                     item
                 );
 
 
-            const savedVideos =
-                wwcGetStorage(
-                    "wwc_saved_videos",
-                    []
-                );
-
-
-            const index =
-                savedVideos.indexOf(
-                    videoId
-                );
-
-
-            let saved = false;
-
-
-            if (index === -1) {
-
-                savedVideos.push(
-                    videoId
-                );
-
-                saved = true;
-
-            } else {
-
-                savedVideos.splice(
-                    index,
-                    1
-                );
-
-                saved = false;
-
-            }
-
-
-            wwcSetStorage(
-                "wwc_saved_videos",
-                savedVideos
+            loadSaveState(
+                button,
+                videoId
             );
 
 
-            button.classList.toggle(
-                "saved",
-                saved
+            button.addEventListener(
+                "click",
+                event => {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+
+                    const saved =
+                        wwcGetStorage(
+                            "wwc_saved_videos",
+                            []
+                        );
+
+
+                    const index =
+                        saved.indexOf(
+                            videoId
+                        );
+
+
+                    if (
+                        index !== -1
+                    ) {
+
+                        saved.splice(
+                            index,
+                            1
+                        );
+
+                        button.classList.remove(
+                            "saved"
+                        );
+
+                        button.setAttribute(
+                            "aria-pressed",
+                            "false"
+                        );
+
+                    } else {
+
+                        saved.push(
+                            videoId
+                        );
+
+                        button.classList.add(
+                            "saved"
+                        );
+
+                        button.setAttribute(
+                            "aria-pressed",
+                            "true"
+                        );
+
+                    }
+
+
+                    wwcSetStorage(
+                        "wwc_saved_videos",
+                        saved
+                    );
+
+                }
             );
-
-
-            button.setAttribute(
-                "aria-pressed",
-                String(
-                    saved
-                )
-            );
-
-
-            const countElement =
-                button.querySelector(
-                    ".save-count"
-                );
-
-
-            if (countElement) {
-
-                countElement.textContent =
-                    saved
-                        ? "1"
-                        : "0";
-
-            }
 
         }
     );
@@ -1241,734 +1263,34 @@ function wwcInitializeSave(button) {
    LOAD SAVE STATE
    ========================================================= */
 
-function wwcLoadSaveState(button) {
+function loadSaveState(
+    button,
+    videoId
+) {
 
-    if (!button) {
-        return;
-    }
-
-
-    const item =
-        button.closest(
-            ".video-item"
-        );
-
-
-    if (!item) {
-        return;
-    }
-
-
-    const videoId =
-        wwcGetVideoId(
-            item
-        );
-
-
-    const savedVideos =
+    const saved =
         wwcGetStorage(
             "wwc_saved_videos",
             []
         );
 
 
-    const saved =
-        savedVideos.includes(
+    const isSaved =
+        saved.includes(
             videoId
         );
 
 
     button.classList.toggle(
         "saved",
-        saved
+        isSaved
     );
 
 
     button.setAttribute(
         "aria-pressed",
         String(
-            saved
-        )
-    );
-
-
-    const countElement =
-        button.querySelector(
-            ".save-count"
-        );
-
-
-    if (countElement) {
-
-        countElement.textContent =
-            saved
-                ? "1"
-                : "0";
-
-    }
-
-}
-
-
-/* =========================================================
-   COMMENT SYSTEM
-   ========================================================= */
-
-let wwcActiveCommentItem =
-    null;
-
-
-function wwcGetCommentElements() {
-
-    return {
-
-        box:
-            document.getElementById(
-                "commentBox"
-            ),
-
-        input:
-            document.getElementById(
-                "commentInput"
-            ),
-
-        send:
-            document.getElementById(
-                "commentSend"
-            ),
-
-        cancel:
-            document.getElementById(
-                "commentCancel"
-            )
-
-    };
-
-}
-
-
-/* =========================================================
-   OPEN COMMENT BOX
-   ========================================================= */
-
-function wwcOpenCommentBox(item) {
-
-    const elements =
-        wwcGetCommentElements();
-
-
-    if (
-        !elements.box ||
-        !item
-    ) {
-
-        return;
-
-    }
-
-
-    wwcActiveCommentItem =
-        item;
-
-
-    elements.box.classList.add(
-        "show"
-    );
-
-
-    if (elements.input) {
-
-        elements.input.value =
-            "";
-
-
-        setTimeout(
-            () => {
-
-                elements.input.focus();
-
-            },
-            100
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   CLOSE COMMENT BOX
-   ========================================================= */
-
-function wwcCloseCommentBox() {
-
-    const elements =
-        wwcGetCommentElements();
-
-
-    if (!elements.box) {
-        return;
-    }
-
-
-    elements.box.classList.remove(
-        "show"
-    );
-
-
-    wwcActiveCommentItem =
-        null;
-
-
-    if (elements.input) {
-
-        elements.input.value =
-            "";
-
-    }
-
-}
-
-
-/* =========================================================
-   COMMENT BUTTON
-   ========================================================= */
-
-function wwcInitializeComment(button) {
-
-    if (!button) {
-        return;
-    }
-
-
-    if (
-        button.dataset.wwcCommentReady ===
-        "true"
-    ) {
-
-        return;
-
-    }
-
-
-    button.dataset.wwcCommentReady =
-        "true";
-
-
-    button.addEventListener(
-        "click",
-        event => {
-
-            event.preventDefault();
-
-            event.stopPropagation();
-
-
-            const item =
-                button.closest(
-                    ".video-item"
-                );
-
-
-            if (!item) {
-                return;
-            }
-
-
-            wwcOpenCommentBox(
-                item
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   SEND COMMENT
-   ========================================================= */
-
-function wwcSendComment() {
-
-    const elements =
-        wwcGetCommentElements();
-
-
-    if (
-        !wwcActiveCommentItem ||
-        !elements.input
-    ) {
-
-        return;
-
-    }
-
-
-    const text =
-        elements.input.value.trim();
-
-
-    if (!text) {
-
-        alert(
-            "কমেন্ট লিখুন।"
-        );
-
-        return;
-
-    }
-
-
-    const videoId =
-        wwcGetVideoId(
-            wwcActiveCommentItem
-        );
-
-
-    const storageKey =
-        "wwc_comments_" +
-        videoId;
-
-
-    const comments =
-        wwcGetStorage(
-            storageKey,
-            []
-        );
-
-
-    comments.push({
-
-        text:
-            text,
-
-        time:
-            new Date()
-                .toISOString(),
-
-        user:
-            window.WWC &&
-            window.WWC.getCurrentUser
-                ? (
-                    window.WWC
-                        .getCurrentUser()
-                        ?.email ||
-                    "WWC User"
-                )
-                : "WWC User"
-
-    });
-
-
-    wwcSetStorage(
-        storageKey,
-        comments
-    );
-
-
-    elements.input.value =
-        "";
-
-
-    wwcCloseCommentBox();
-
-
-    alert(
-        "✅ Comment added successfully."
-    );
-
-}
-
-
-/* =========================================================
-   COMMENT CANCEL
-   ========================================================= */
-
-function wwcInitializeCommentBox() {
-
-    const elements =
-        wwcGetCommentElements();
-
-
-    if (elements.cancel) {
-
-        elements.cancel.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-
-                wwcCloseCommentBox();
-
-            }
-        );
-
-    }
-
-
-    if (elements.send) {
-
-        elements.send.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-
-                wwcSendComment();
-
-            }
-        );
-
-    }
-
-}
-
-
-/* =========================================================
-   INITIALIZE VIDEO ACTIONS
-   ========================================================= */
-
-function wwcInitializeVideoActions() {
-
-    const feed =
-        document.getElementById(
-            "video-feed"
-        );
-
-
-    if (!feed) {
-
-        console.log(
-            "ℹ️ Video feed not found"
-        );
-
-        return;
-
-    }
-
-
-    const items =
-        Array.from(
-            feed.querySelectorAll(
-                ".video-item"
-            )
-        );
-
-
-    items.forEach(
-        item => {
-
-            wwcGetVideoId(
-                item
-            );
-
-
-            const likeButton =
-                item.querySelector(
-                    ".like-btn"
-                );
-
-
-            const saveButton =
-                item.querySelector(
-                    ".save-btn"
-                );
-
-
-            const commentButton =
-                item.querySelector(
-                    ".comment-btn"
-                );
-
-
-            if (likeButton) {
-
-                wwcInitializeLike(
-                    likeButton
-                );
-
-                wwcLoadLikeState(
-                    likeButton
-                );
-
-            }
-
-
-            if (saveButton) {
-
-                wwcInitializeSave(
-                    saveButton
-                );
-
-                wwcLoadSaveState(
-                    saveButton
-                );
-
-            }
-
-
-            if (commentButton) {
-
-                wwcInitializeComment(
-                    commentButton
-                );
-
-            }
-
-        }
-    );
-
-
-    wwcInitializeCommentBox();
-
-
-    console.log(
-        "✅ Like / Comment / Save ready"
-    );
-
-}
-
-
-/* =========================================================
-   RUN PART 2
-   ========================================================= */
-
-if (
-    document.readyState ===
-    "loading"
-) {
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        wwcInitializeVideoActions,
-        {
-            once: true
-        }
-    );
-
-} else {
-
-    wwcInitializeVideoActions();
-
-}
-
-
-/* =========================================================
-   END OF PART 2 / 5
-   ========================================================= */
-/* =========================================================
-   WORLD WIDE CONNECT
-   WWC-CORE
-   APP.JS
-   PART 3 / 5
-   FOLLOW + SHARE + VIDEO CONTROLS
-   ========================================================= */
-
-
-/* =========================================================
-   FOLLOW SYSTEM
-   ========================================================= */
-
-function wwcInitializeFollow(button) {
-
-    if (!button) {
-        return;
-    }
-
-
-    if (
-        button.dataset.wwcFollowReady ===
-        "true"
-    ) {
-
-        return;
-
-    }
-
-
-    button.dataset.wwcFollowReady =
-        "true";
-
-
-    button.addEventListener(
-        "click",
-        event => {
-
-            event.preventDefault();
-
-            event.stopPropagation();
-
-
-            const item =
-                button.closest(
-                    ".video-item"
-                );
-
-
-            if (!item) {
-                return;
-            }
-
-
-            const usernameElement =
-                item.querySelector(
-                    ".username"
-                );
-
-
-            let username =
-                usernameElement
-                    ?.textContent
-                    ?.trim()
-                || "@wwc_user";
-
-
-            username =
-                username.replace(
-                    /^@/,
-                    ""
-                );
-
-
-            const following =
-                wwcGetStorage(
-                    "wwc_following",
-                    []
-                );
-
-
-            const index =
-                following.indexOf(
-                    username
-                );
-
-
-            let isFollowing;
-
-
-            if (index === -1) {
-
-                following.push(
-                    username
-                );
-
-                isFollowing = true;
-
-            } else {
-
-                following.splice(
-                    index,
-                    1
-                );
-
-                isFollowing = false;
-
-            }
-
-
-            wwcSetStorage(
-                "wwc_following",
-                following
-            );
-
-
-            button.textContent =
-                isFollowing
-                    ? "Following"
-                    : "Follow";
-
-
-            button.classList.toggle(
-                "following",
-                isFollowing
-            );
-
-
-            button.setAttribute(
-                "aria-pressed",
-                String(
-                    isFollowing
-                )
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   LOAD FOLLOW STATE
-   ========================================================= */
-
-function wwcLoadFollowState(button) {
-
-    if (!button) {
-        return;
-    }
-
-
-    const item =
-        button.closest(
-            ".video-item"
-        );
-
-
-    if (!item) {
-        return;
-    }
-
-
-    const usernameElement =
-        item.querySelector(
-            ".username"
-        );
-
-
-    let username =
-        usernameElement
-            ?.textContent
-            ?.trim()
-        || "@wwc_user";
-
-
-    username =
-        username.replace(
-            /^@/,
-            ""
-        );
-
-
-    const following =
-        wwcGetStorage(
-            "wwc_following",
-            []
-        );
-
-
-    const isFollowing =
-        following.includes(
-            username
-        );
-
-
-    button.textContent =
-        isFollowing
-            ? "Following"
-            : "Follow";
-
-
-    button.classList.toggle(
-        "following",
-        isFollowing
-    );
-
-
-    button.setAttribute(
-        "aria-pressed",
-        String(
-            isFollowing
+            isSaved
         )
     );
 
@@ -1976,142 +1298,126 @@ function wwcLoadFollowState(button) {
 
 
 /* =========================================================
-   SHARE SYSTEM
+   COMMENT
    ========================================================= */
 
-function wwcInitializeShare(button) {
+function setupCommentButtons() {
 
-    if (!button) {
-        return;
-    }
-
-
-    if (
-        button.dataset.wwcShareReady ===
-        "true"
-    ) {
-
-        return;
-
-    }
+    const buttons =
+        document.querySelectorAll(
+            ".comment-btn, #commentBtn"
+        );
 
 
-    button.dataset.wwcShareReady =
-        "true";
+    buttons.forEach(
+        button => {
 
+            if (
+                button.dataset.wwcCommentReady ===
+                "true"
+            ) {
 
-    button.addEventListener(
-        "click",
-        async event => {
-
-            event.preventDefault();
-
-            event.stopPropagation();
-
-
-            const item =
-                button.closest(
-                    ".video-item"
-                );
-
-
-            if (!item) {
                 return;
-            }
-
-
-            const video =
-                item.querySelector(
-                    ".feed-video"
-                );
-
-
-            const videoURL =
-                video?.currentSrc ||
-                video?.src ||
-                window.location.href;
-
-
-            const shareData = {
-
-                title:
-                    "World wide connect",
-
-                text:
-                    "Check out this video on WWC-Core 🌍",
-
-                url:
-                    videoURL
-
-            };
-
-
-            try {
-
-                if (
-                    navigator.share
-                ) {
-
-                    await navigator.share(
-                        shareData
-                    );
-
-
-                    console.log(
-                        "✅ Video shared"
-                    );
-
-                } else {
-
-                    await wwcCopyToClipboard(
-                        videoURL
-                    );
-
-
-                    alert(
-                        "✅ Video link copied!"
-                    );
-
-                }
-
-            } catch (error) {
-
-                if (
-                    error.name ===
-                    "AbortError"
-                ) {
-
-                    return;
-
-                }
-
-
-                console.error(
-                    "Share error:",
-                    error
-                );
-
-
-                try {
-
-                    await wwcCopyToClipboard(
-                        videoURL
-                    );
-
-
-                    alert(
-                        "✅ Video link copied!"
-                    );
-
-                } catch {
-
-                    alert(
-                        "❌ Share করা যায়নি।"
-                    );
-
-                }
 
             }
+
+
+            button.dataset.wwcCommentReady =
+                "true";
+
+
+            button.addEventListener(
+                "click",
+                event => {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
+
+
+                    const item =
+                        button.closest(
+                            ".video-item"
+                        );
+
+
+                    if (!item) {
+
+                        return;
+
+                    }
+
+
+                    const videoId =
+                        getWWCVideoId(
+                            item
+                        );
+
+
+                    const text =
+                        prompt(
+                            "আপনার Comment লিখুন:"
+                        );
+
+
+                    if (
+                        !text ||
+                        !text.trim()
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const comments =
+                        wwcGetStorage(
+                            "wwc_comments",
+                            {}
+                        );
+
+
+                    if (
+                        !comments[videoId]
+                    ) {
+
+                        comments[videoId] =
+                            [];
+
+                    }
+
+
+                    comments[videoId].push({
+
+                        text:
+                            text.trim(),
+
+                        user:
+                            currentUser
+                                ? (
+                                    currentUser.email ||
+                                    "WWC User"
+                                )
+                                : "Guest",
+
+                        time:
+                            new Date().toISOString()
+
+                    });
+
+
+                    wwcSetStorage(
+                        "wwc_comments",
+                        comments
+                    );
+
+
+                    alert(
+                        "✅ Comment যোগ হয়েছে"
+                    );
+
+                }
+            );
 
         }
     );
@@ -2120,193 +1426,110 @@ function wwcInitializeShare(button) {
 
 
 /* =========================================================
-   COPY TO CLIPBOARD
+   SHARE
    ========================================================= */
 
-async function wwcCopyToClipboard(
-    text
-) {
+function setupShareButtons() {
 
-    if (
-        navigator.clipboard &&
-        window.isSecureContext
-    ) {
-
-        await navigator.clipboard.writeText(
-            text
-        );
-
-        return;
-
-    }
-
-
-    const textarea =
-        document.createElement(
-            "textarea"
+    const buttons =
+        document.querySelectorAll(
+            ".share-btn, #shareBtn"
         );
 
 
-    textarea.value =
-        text;
+    buttons.forEach(
+        button => {
+
+            if (
+                button.dataset.wwcShareReady ===
+                "true"
+            ) {
+
+                return;
+
+            }
 
 
-    textarea.style.position =
-        "fixed";
-
-    textarea.style.left =
-        "-9999px";
+            button.dataset.wwcShareReady =
+                "true";
 
 
-    document.body.appendChild(
-        textarea
-    );
+            button.addEventListener(
+                "click",
+                async event => {
+
+                    event.preventDefault();
+
+                    event.stopPropagation();
 
 
-    textarea.select();
+                    const item =
+                        button.closest(
+                            ".video-item"
+                        );
 
 
-    const successful =
-        document.execCommand(
-            "copy"
-        );
+                    let url =
+                        window.location.href;
 
 
-    document.body.removeChild(
-        textarea
-    );
+                    if (item) {
+
+                        const video =
+                            item.querySelector(
+                                "video"
+                            );
 
 
-    if (!successful) {
+                        if (
+                            video &&
+                            video.currentSrc
+                        ) {
 
-        throw new Error(
-            "Clipboard copy failed"
-        );
+                            url =
+                                video.currentSrc;
 
-    }
+                        }
 
-}
-
-
-/* =========================================================
-   VIDEO PLAY / PAUSE
-   ========================================================= */
-
-function wwcInitializeVideoControls(
-    video
-) {
-
-    if (!video) {
-        return;
-    }
+                    }
 
 
-    if (
-        video.dataset.wwcControlsReady ===
-        "true"
-    ) {
+                    try {
 
-        return;
+                        if (
+                            navigator.share
+                        ) {
 
-    }
+                            await navigator.share({
 
+                                title:
+                                    "WWC Video",
 
-    video.dataset.wwcControlsReady =
-        "true";
+                                text:
+                                    "World Wide Connect",
 
+                                url:
+                                    url
 
-    video.setAttribute(
-        "playsinline",
-        ""
-    );
+                            });
 
+                        } else {
 
-    video.addEventListener(
-        "click",
-        event => {
+                            await navigator.clipboard.writeText(
+                                url
+                            );
 
-            event.preventDefault();
-
-            event.stopPropagation();
-
-
-            if (video.paused) {
-
-                const promise =
-                    video.play();
-
-
-                if (
-                    promise &&
-                    typeof promise.catch ===
-                    "function"
-                ) {
-
-                    promise.catch(
-                        error => {
-
-                            console.log(
-                                "Play blocked:",
-                                error.message
+                            alert(
+                                "✅ Video link copy হয়েছে"
                             );
 
                         }
-                    );
 
-                }
+                    } catch (error) {
 
-            } else {
-
-                video.pause();
-
-            }
-
-        }
-    );
-
-
-    video.addEventListener(
-        "dblclick",
-        event => {
-
-            event.preventDefault();
-
-            event.stopPropagation();
-
-        }
-    );
-
-
-    video.addEventListener(
-        "play",
-        () => {
-
-            const item =
-                video.closest(
-                    ".video-item"
-                );
-
-
-            if (!item) {
-                return;
-            }
-
-
-            const allVideos =
-                document.querySelectorAll(
-                    ".feed-video"
-                );
-
-
-            allVideos.forEach(
-                otherVideo => {
-
-                    if (
-                        otherVideo !== video &&
-                        !otherVideo.paused
-                    ) {
-
-                        otherVideo.pause();
+                        console.log(
+                            "Share cancelled"
+                        );
 
                     }
 
@@ -2320,206 +1543,869 @@ function wwcInitializeVideoControls(
 
 
 /* =========================================================
-   SOUND / MUTE
+   PART 2 INITIALIZE
    ========================================================= */
 
-function wwcCreateSoundButton(
-    item,
-    video
-) {
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    if (
-        !item ||
-        !video
-    ) {
+        setupVideoFeed();
 
-        return;
+        setupLikeButtons();
 
-    }
+        setupSaveButtons();
 
+        setupCommentButtons();
 
-    if (
-        item.querySelector(
-            ".wwc-sound-btn"
-        )
-    ) {
+        setupShareButtons();
 
-        return;
-
-    }
-
-
-    const button =
-        document.createElement(
-            "button"
+        console.log(
+            "✅ WWC Part 2 loaded"
         );
 
-
-    button.type =
-        "button";
-
-
-    button.className =
-        "wwc-sound-btn";
+    }
+);
 
 
-    button.setAttribute(
-        "aria-label",
-        video.muted
-            ? "Unmute"
-            : "Mute"
-    );
+/* =========================================================
+   END PART 2 / 3
+   ========================================================= */
+/* =========================================================
+   WORLD WIDE CONNECT
+   WWC-CORE
+   APP.JS
+   PART 3 / 3
+
+   Follow
+   Search
+   Notifications
+   Video Controls
+   Extra Buttons
+   ========================================================= */
 
 
-    button.textContent =
-        video.muted
-            ? "🔇"
-            : "🔊";
+/* =========================================================
+   FOLLOW SYSTEM
+   ========================================================= */
+
+function setupFollowButtons() {
+
+    const buttons =
+        document.querySelectorAll(
+            ".follow-btn, #followBtn"
+        );
+
+    buttons.forEach(
+        button => {
+
+            if (
+                button.dataset.wwcFollowReady ===
+                "true"
+            ) {
+                return;
+            }
+
+            button.dataset.wwcFollowReady =
+                "true";
 
 
-    button.style.position =
-        "absolute";
+            const targetId =
+                button.dataset.userId ||
+                button.dataset.uid ||
+                "";
 
 
-    button.style.left =
-        "15px";
+            if (!targetId) {
+                return;
+            }
 
 
-    button.style.top =
-        "75px";
+            const key =
+                "wwc_following";
 
 
-    button.style.width =
-        "46px";
+            let following =
+                wwcGetStorage(
+                    key,
+                    []
+                );
 
 
-    button.style.height =
-        "46px";
-
-
-    button.style.border =
-        "0";
-
-
-    button.style.borderRadius =
-        "50%";
-
-
-    button.style.background =
-        "rgba(0,0,0,.45)";
-
-
-    button.style.color =
-        "#fff";
-
-
-    button.style.fontSize =
-        "20px";
-
-
-    button.style.zIndex =
-        "100";
-
-
-    button.style.cursor =
-        "pointer";
-
-
-    button.addEventListener(
-        "click",
-        event => {
-
-            event.preventDefault();
-
-            event.stopPropagation();
-
-
-            video.muted =
-                !video.muted;
-
-
-            button.textContent =
-                video.muted
-                    ? "🔇"
-                    : "🔊";
-
-
-            button.setAttribute(
-                "aria-label",
-                video.muted
-                    ? "Unmute"
-                    : "Mute"
+            updateFollowButton(
+                button,
+                following.includes(
+                    targetId
+                )
             );
 
 
-            try {
+            button.addEventListener(
+                "click",
+                event => {
 
-                localStorage.setItem(
-                    "wwc_video_muted",
-                    String(
-                        video.muted
-                    )
-                );
+                    event.preventDefault();
+                    event.stopPropagation();
 
-            } catch {
 
-                // Ignore storage errors
+                    following =
+                        wwcGetStorage(
+                            key,
+                            []
+                        );
 
-            }
+
+                    const index =
+                        following.indexOf(
+                            targetId
+                        );
+
+
+                    let isFollowing;
+
+
+                    if (index !== -1) {
+
+                        following.splice(
+                            index,
+                            1
+                        );
+
+                        isFollowing = false;
+
+                    } else {
+
+                        following.push(
+                            targetId
+                        );
+
+                        isFollowing = true;
+
+                    }
+
+
+                    wwcSetStorage(
+                        key,
+                        following
+                    );
+
+
+                    updateFollowButton(
+                        button,
+                        isFollowing
+                    );
+
+
+                    showWWCMessage(
+                        isFollowing
+                            ? "✅ Follow করা হয়েছে"
+                            : "ℹ️ Unfollow করা হয়েছে"
+                    );
+
+                }
+            );
 
         }
-    );
-
-
-    item.appendChild(
-        button
     );
 
 }
 
 
 /* =========================================================
-   RESTORE MUTE STATE
+   FOLLOW BUTTON UI
    ========================================================= */
 
-function wwcRestoreMuteState(
-    video
+function updateFollowButton(
+    button,
+    following
 ) {
 
-    if (!video) {
+    if (!button) {
         return;
     }
 
 
-    try {
+    button.textContent =
+        following
+            ? "Following"
+            : "Follow";
 
-        const saved =
-            localStorage.getItem(
-                "wwc_video_muted"
+
+    button.classList.toggle(
+        "following",
+        following
+    );
+
+
+    button.setAttribute(
+        "aria-pressed",
+        String(
+            following
+        )
+    );
+
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+function setupSearch() {
+
+    const searchInput =
+        document.querySelector(
+            "#searchInput, .search-input"
+        );
+
+
+    const searchButton =
+        document.querySelector(
+            "#searchBtn, .search-btn"
+        );
+
+
+    if (!searchInput) {
+        return;
+    }
+
+
+    function performSearch() {
+
+        const query =
+            searchInput.value
+                .trim()
+                .toLowerCase();
+
+
+        if (!query) {
+
+            showWWCMessage(
+                "⚠️ কিছু লিখে Search করুন"
             );
 
-
-        if (
-            saved ===
-            "false"
-        ) {
-
-            video.muted =
-                false;
-
-        } else {
-
-            video.muted =
-                true;
+            return;
 
         }
 
-    } catch {
 
-        video.muted =
-            true;
+        const items =
+            document.querySelectorAll(
+                ".video-item, .user-item, .search-item"
+            );
+
+
+        let found = 0;
+
+
+        items.forEach(
+            item => {
+
+                const text =
+                    item.textContent
+                        .toLowerCase();
+
+
+                if (
+                    text.includes(
+                        query
+                    )
+                ) {
+
+                    item.style.display =
+                        "";
+
+                    found++;
+
+                } else {
+
+                    item.style.display =
+                        "none";
+
+                }
+
+            }
+        );
+
+
+        if (!found) {
+
+            showWWCMessage(
+                "❌ কিছু পাওয়া যায়নি"
+            );
+
+        } else {
+
+            showWWCMessage(
+                "🔎 " +
+                found +
+                " টি ফলাফল পাওয়া গেছে"
+            );
+
+        }
 
     }
+
+
+    if (searchButton) {
+
+        searchButton.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+
+                performSearch();
+
+            }
+        );
+
+    }
+
+
+    searchInput.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key ===
+                "Enter"
+            ) {
+
+                event.preventDefault();
+
+                performSearch();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CLEAR SEARCH
+   ========================================================= */
+
+function setupSearchClear() {
+
+    const clearButton =
+        document.querySelector(
+            "#clearSearch, .clear-search"
+        );
+
+
+    if (!clearButton) {
+        return;
+    }
+
+
+    clearButton.addEventListener(
+        "click",
+        () => {
+
+            const input =
+                document.querySelector(
+                    "#searchInput, .search-input"
+                );
+
+
+            if (input) {
+
+                input.value =
+                    "";
+
+            }
+
+
+            const items =
+                document.querySelectorAll(
+                    ".video-item, .user-item, .search-item"
+                );
+
+
+            items.forEach(
+                item => {
+
+                    item.style.display =
+                        "";
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   NOTIFICATION SYSTEM
+   ========================================================= */
+
+function addWWCNotification(
+    text
+) {
+
+    const notifications =
+        wwcGetStorage(
+            "wwc_notifications",
+            []
+        );
+
+
+    notifications.unshift({
+
+        text:
+            text,
+
+        time:
+            new Date().toISOString(),
+
+        read:
+            false
+
+    });
+
+
+    if (
+        notifications.length >
+        50
+    ) {
+
+        notifications.pop();
+
+    }
+
+
+    wwcSetStorage(
+        "wwc_notifications",
+        notifications
+    );
+
+
+    updateNotificationCount();
+
+}
+
+
+/* =========================================================
+   NOTIFICATION COUNT
+   ========================================================= */
+
+function updateNotificationCount() {
+
+    const notifications =
+        wwcGetStorage(
+            "wwc_notifications",
+            []
+        );
+
+
+    const unread =
+        notifications.filter(
+            item =>
+                !item.read
+        ).length;
+
+
+    const counters =
+        document.querySelectorAll(
+            ".notification-count, #notificationCount"
+        );
+
+
+    counters.forEach(
+        counter => {
+
+            counter.textContent =
+                unread;
+
+            counter.style.display =
+                unread > 0
+                    ? ""
+                    : "none";
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SHOW NOTIFICATIONS
+   ========================================================= */
+
+function setupNotifications() {
+
+    const buttons =
+        document.querySelectorAll(
+            "#notificationBtn, .notification-btn"
+        );
+
+
+    updateNotificationCount();
+
+
+    buttons.forEach(
+        button => {
+
+            if (
+                button.dataset.wwcNotificationReady ===
+                "true"
+            ) {
+
+                return;
+
+            }
+
+
+            button.dataset.wwcNotificationReady =
+                "true";
+
+
+            button.addEventListener(
+                "click",
+                event => {
+
+                    event.preventDefault();
+
+
+                    const notifications =
+                        wwcGetStorage(
+                            "wwc_notifications",
+                            []
+                        );
+
+
+                    if (
+                        !notifications.length
+                    ) {
+
+                        showWWCMessage(
+                            "🔔 কোনো Notification নেই"
+                        );
+
+                        return;
+
+                    }
+
+
+                    const unread =
+                        notifications.filter(
+                            item =>
+                                !item.read
+                        ).length;
+
+
+                    showWWCMessage(
+                        "🔔 " +
+                        notifications.length +
+                        " টি Notification আছে (" +
+                        unread +
+                        " টি নতুন)"
+                    );
+
+
+                    notifications.forEach(
+                        item => {
+
+                            item.read =
+                                true;
+
+                        }
+                    );
+
+
+                    wwcSetStorage(
+                        "wwc_notifications",
+                        notifications
+                    );
+
+
+                    updateNotificationCount();
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   VIDEO MUTE BUTTON
+   ========================================================= */
+
+function setupMuteButtons() {
+
+    const buttons =
+        document.querySelectorAll(
+            ".mute-btn, #muteBtn"
+        );
+
+
+    buttons.forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                event => {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+
+                    const item =
+                        button.closest(
+                            ".video-item"
+                        );
+
+
+                    const video =
+                        item
+                            ? item.querySelector(
+                                "video"
+                              )
+                            : null;
+
+
+                    if (!video) {
+                        return;
+                    }
+
+
+                    video.muted =
+                        !video.muted;
+
+
+                    button.textContent =
+                        video.muted
+                            ? "🔇"
+                            : "🔊";
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   VIDEO PLAY / PAUSE BUTTON
+   ========================================================= */
+
+function setupPlayButtons() {
+
+    const buttons =
+        document.querySelectorAll(
+            ".play-btn, #playBtn"
+        );
+
+
+    buttons.forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                event => {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+
+                    const item =
+                        button.closest(
+                            ".video-item"
+                        );
+
+
+                    const video =
+                        item
+                            ? item.querySelector(
+                                "video"
+                              )
+                            : null;
+
+
+                    if (!video) {
+                        return;
+                    }
+
+
+                    if (
+                        video.paused
+                    ) {
+
+                        video.play();
+
+                        button.textContent =
+                            "⏸️";
+
+                    } else {
+
+                        video.pause();
+
+                        button.textContent =
+                            "▶️";
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   PROFILE BUTTONS
+   ========================================================= */
+
+function setupProfileLinks() {
+
+    const buttons =
+        document.querySelectorAll(
+            ".user-profile-btn, .view-profile-btn"
+        );
+
+
+    buttons.forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                event => {
+
+                    event.preventDefault();
+
+
+                    const uid =
+                        button.dataset.userId ||
+                        button.dataset.uid;
+
+
+                    if (!uid) {
+
+                        window.location.href =
+                            "./profile.html";
+
+                        return;
+
+                    }
+
+
+                    window.location.href =
+                        "./profile.html?uid=" +
+                        encodeURIComponent(
+                            uid
+                        );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   GLOBAL MESSAGE
+   ========================================================= */
+
+function showWWCMessage(
+    text
+) {
+
+    let message =
+        document.getElementById(
+            "wwcMessage"
+        );
+
+
+    if (!message) {
+
+        message =
+            document.createElement(
+                "div"
+            );
+
+
+        message.id =
+            "wwcMessage";
+
+
+        message.style.position =
+            "fixed";
+
+        message.style.left =
+            "50%";
+
+        message.style.bottom =
+            "25px";
+
+        message.style.transform =
+            "translateX(-50%)";
+
+        message.style.zIndex =
+            "99999";
+
+        message.style.padding =
+            "12px 18px";
+
+        message.style.borderRadius =
+            "10px";
+
+        message.style.background =
+            "#222";
+
+        message.style.color =
+            "#fff";
+
+        message.style.fontSize =
+            "14px";
+
+        message.style.boxShadow =
+            "0 5px 20px rgba(0,0,0,.4)";
+
+
+        document.body.appendChild(
+            message
+        );
+
+    }
+
+
+    message.textContent =
+        text;
+
+
+    message.style.display =
+        "block";
+
+
+    clearTimeout(
+        window.wwcMessageTimer
+    );
+
+
+    window.wwcMessageTimer =
+        setTimeout(
+            () => {
+
+                message.style.display =
+                    "none";
+
+            },
+            2500
+        );
 
 }
 
@@ -2528,1492 +2414,41 @@ function wwcRestoreMuteState(
    INITIALIZE PART 3
    ========================================================= */
 
-function wwcInitializePart3() {
+document.addEventListener(
+    "DOMContentLoaded",
+    () => {
 
-    const feed =
-        document.getElementById(
-            "video-feed"
-        );
+        setupFollowButtons();
 
+        setupSearch();
 
-    if (!feed) {
+        setupSearchClear();
+
+        setupNotifications();
+
+        setupMuteButtons();
+
+        setupPlayButtons();
+
+        setupProfileLinks();
 
         console.log(
-            "ℹ️ Video feed not found for Part 3"
+            "✅ WWC Part 3 loaded"
         );
-
-        return;
 
     }
-
-
-    const items =
-        Array.from(
-            feed.querySelectorAll(
-                ".video-item"
-            )
-        );
-
-
-    items.forEach(
-        item => {
-
-            const followButton =
-                item.querySelector(
-                    ".follow-btn"
-                );
-
-
-            const shareButton =
-                item.querySelector(
-                    ".share-btn"
-                );
-
-
-            const video =
-                item.querySelector(
-                    ".feed-video"
-                );
-
-
-            if (followButton) {
-
-                wwcInitializeFollow(
-                    followButton
-                );
-
-                wwcLoadFollowState(
-                    followButton
-                );
-
-            }
-
-
-            if (shareButton) {
-
-                wwcInitializeShare(
-                    shareButton
-                );
-
-            }
-
-
-            if (video) {
-
-                wwcRestoreMuteState(
-                    video
-                );
-
-
-                wwcInitializeVideoControls(
-                    video
-                );
-
-
-                wwcCreateSoundButton(
-                    item,
-                    video
-                );
-
-            }
-
-        }
-    );
-
-
-    console.log(
-        "✅ Follow / Share / Video controls ready"
-    );
-
-}
+);
 
 
 /* =========================================================
-   RUN PART 3
+   FINAL WWC START
    ========================================================= */
 
-if (
-    document.readyState ===
-    "loading"
-) {
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        wwcInitializePart3,
-        {
-            once: true
-        }
-    );
-
-} else {
-
-    wwcInitializePart3();
-
-}
+console.log(
+    "🌍 WWC-Core APP.JS loaded successfully"
+);
 
 
 /* =========================================================
-   END OF PART 3 / 5
+   END PART 3 / 3
    ========================================================= */
-
-/* =========================================================
-   WORLD WIDE CONNECT
-   WWC-CORE
-   NEW APP.JS
-   PART 4 / 5
-   ========================================================= */
-
-
-/* =====================================================
-   VIDEO PLAY / PAUSE
-   ===================================================== */
-
-function initializeVideo(video) {
-
-    if (!video) {
-        return;
-    }
-
-    if (video.dataset.wwcReady === "video") {
-        return;
-    }
-
-    video.dataset.wwcReady = "video";
-
-    video.setAttribute("playsinline", "");
-    video.setAttribute("webkit-playsinline", "");
-
-    video.addEventListener("click", event => {
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        if (video.paused) {
-
-            video.play().catch(error => {
-
-                console.log(
-                    "Video play blocked:",
-                    error
-                );
-
-            });
-
-        } else {
-
-            video.pause();
-
-        }
-
-    });
-
-}
-
-
-/* =====================================================
-   AUTOPLAY ACTIVE VIDEO
-   ===================================================== */
-
-function playActiveVideo(item) {
-
-    if (!item) {
-        return;
-    }
-
-    const videos =
-        $$("video", item);
-
-    videos.forEach(video => {
-
-        video.muted = true;
-
-        video.play().catch(() => {});
-
-    });
-
-}
-
-
-/* =====================================================
-   PAUSE OTHER VIDEOS
-   ===================================================== */
-
-function pauseOtherVideos(activeItem) {
-
-    $$(".video-item").forEach(item => {
-
-        if (item === activeItem) {
-            return;
-        }
-
-        $$("video", item).forEach(video => {
-
-            video.pause();
-
-        });
-
-    });
-
-}
-
-
-/* =====================================================
-   VIDEO INTERSECTION OBSERVER
-   ===================================================== */
-
-let videoObserver = null;
-
-
-function initializeVideoObserver() {
-
-    if (!videoFeed) {
-        return;
-    }
-
-    if (videoObserver) {
-
-        videoObserver.disconnect();
-
-    }
-
-
-    videoObserver =
-        new IntersectionObserver(
-
-            entries => {
-
-                entries.forEach(entry => {
-
-                    const item =
-                        entry.target;
-
-
-                    if (entry.isIntersecting) {
-
-                        pauseOtherVideos(
-                            item
-                        );
-
-                        playActiveVideo(
-                            item
-                        );
-
-                    } else {
-
-                        $$(
-                            "video",
-                            item
-                        ).forEach(video => {
-
-                            video.pause();
-
-                        });
-
-                    }
-
-                });
-
-            },
-
-            {
-                threshold: 0.65
-            }
-
-        );
-
-
-    $$(".video-item").forEach(item => {
-
-        videoObserver.observe(item);
-
-    });
-
-}
-
-
-/* =====================================================
-   INITIALIZE VIDEO ITEMS
-   ===================================================== */
-
-function initializeVideoItems() {
-
-    if (!videoFeed) {
-        return;
-    }
-
-
-    const items =
-        $$(".video-item", videoFeed);
-
-
-    items.forEach(item => {
-
-        getVideoId(item);
-
-
-        const likeButton =
-            $(".like-btn", item);
-
-        const saveButton =
-            $(".save-btn", item);
-
-        const followButton =
-            $(".follow-btn", item);
-
-        const commentButton =
-            $(".comment-btn", item);
-
-        const video =
-            $(".feed-video", item);
-
-
-        if (likeButton) {
-
-            initializeLike(
-                likeButton
-            );
-
-            loadLikeState(
-                likeButton
-            );
-
-        }
-
-
-        if (saveButton) {
-
-            initializeSave(
-                saveButton
-            );
-
-            loadSaveState(
-                saveButton
-            );
-
-        }
-
-
-        if (followButton) {
-
-            initializeFollow(
-                followButton
-            );
-
-            loadFollowState(
-                followButton
-            );
-
-        }
-
-
-        if (commentButton) {
-
-            initializeComment(
-                commentButton
-            );
-
-        }
-
-
-        if (video) {
-
-            initializeVideo(
-                video
-            );
-
-        }
-
-    });
-
-
-    initializeVideoObserver();
-
-}
-
-
-/* =====================================================
-   SHARE
-   ===================================================== */
-
-function initializeShare(button) {
-
-    if (!button) {
-        return;
-    }
-
-    if (button.dataset.wwcReady === "share") {
-        return;
-    }
-
-    button.dataset.wwcReady = "share";
-
-
-    button.addEventListener(
-        "click",
-        async event => {
-
-            event.preventDefault();
-            event.stopPropagation();
-
-
-            const item =
-                button.closest(
-                    ".video-item"
-                );
-
-
-            if (!item) {
-                return;
-            }
-
-
-            const video =
-                $(".feed-video", item);
-
-
-            const videoId =
-                getVideoId(item);
-
-
-            const shareUrl =
-                window.location.origin +
-                window.location.pathname +
-                "#video=" +
-                encodeURIComponent(
-                    videoId
-                );
-
-
-            try {
-
-                if (
-                    navigator.share
-                ) {
-
-                    await navigator.share({
-
-                        title:
-                            "World wide connect",
-
-                        text:
-                            "WWC Video",
-
-                        url:
-                            shareUrl
-
-                    });
-
-                } else if (
-                    navigator.clipboard
-                ) {
-
-                    await navigator.clipboard.writeText(
-                        shareUrl
-                    );
-
-
-                    alert(
-                        "✅ Video link copied!"
-                    );
-
-                } else {
-
-                    prompt(
-                        "এই লিংকটি Copy করুন:",
-                        shareUrl
-                    );
-
-                }
-
-            } catch (error) {
-
-                console.log(
-                    "Share cancelled:",
-                    error
-                );
-
-            }
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   SEARCH
-   ===================================================== */
-
-const searchButton =
-    $(".wwc-search-btn");
-
-
-function createSearchBox() {
-
-    if (
-        document.getElementById(
-            "wwcSearchBox"
-        )
-    ) {
-
-        return;
-
-    }
-
-
-    const box =
-        document.createElement(
-            "div"
-        );
-
-
-    box.id =
-        "wwcSearchBox";
-
-
-    box.innerHTML = `
-
-        <div style="
-            position:fixed;
-            top:65px;
-            left:50%;
-            transform:translateX(-50%);
-            width:min(92%,420px);
-            z-index:5000;
-            background:#181818;
-            padding:12px;
-            border-radius:14px;
-            box-shadow:0 10px 30px rgba(0,0,0,.6);
-        ">
-
-            <input
-                id="wwcSearchInput"
-                type="search"
-                placeholder="Search..."
-                style="
-                    width:100%;
-                    padding:13px;
-                    border:0;
-                    outline:none;
-                    border-radius:9px;
-                    background:#292929;
-                    color:#fff;
-                    font-size:16px;
-                "
-            >
-
-        </div>
-
-    `;
-
-
-    document.body.appendChild(box);
-
-
-    const input =
-        document.getElementById(
-            "wwcSearchInput"
-        );
-
-
-    if (input) {
-
-        input.focus();
-
-
-        input.addEventListener(
-            "input",
-            () => {
-
-                const search =
-                    input.value
-                        .trim()
-                        .toLowerCase();
-
-
-                $$(".video-item").forEach(
-                    item => {
-
-                        const username =
-                            $(".username", item)
-                                ?.textContent
-                                ?.toLowerCase()
-                            || "";
-
-
-                        const caption =
-                            $(".video-caption", item)
-                                ?.textContent
-                                ?.toLowerCase()
-                            || "";
-
-
-                        const match =
-                            !search ||
-                            username.includes(
-                                search
-                            ) ||
-                            caption.includes(
-                                search
-                            );
-
-
-                        item.style.display =
-                            match
-                                ? ""
-                                : "none";
-
-                    }
-                );
-
-            }
-        );
-
-    }
-
-}
-
-
-if (searchButton) {
-
-    searchButton.addEventListener(
-        "click",
-        event => {
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            createSearchBox();
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   CLOSE SEARCH
-   ===================================================== */
-
-document.addEventListener(
-    "click",
-    event => {
-
-        const searchBox =
-            document.getElementById(
-                "wwcSearchBox"
-            );
-
-
-        if (
-            !searchBox ||
-            !searchBox.contains(
-                event.target
-            )
-        ) {
-
-            if (
-                searchButton &&
-                searchButton.contains(
-                    event.target
-                )
-            ) {
-
-                return;
-
-            }
-
-
-            searchBox?.remove();
-
-
-            $$(".video-item").forEach(
-                item => {
-
-                    item.style.display =
-                        "";
-
-                }
-            );
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   PROFILE MENU
-   ===================================================== */
-
-const profileMenu =
-    $("#profileMenu");
-
-
-const profileNavButton =
-    document.querySelector(
-        '[data-nav="profile"]'
-    );
-
-
-function openProfileMenu() {
-
-    if (!profileMenu) {
-        return;
-    }
-
-    profileMenu.classList.add(
-        "show"
-    );
-
-}
-
-
-function closeProfileMenu() {
-
-    if (!profileMenu) {
-        return;
-    }
-
-    profileMenu.classList.remove(
-        "show"
-    );
-
-}
-
-
-if (profileNavButton) {
-
-    profileNavButton.addEventListener(
-        "click",
-        event => {
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            profileMenu?.classList.toggle(
-                "show"
-            );
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   PROFILE MENU CLOSE
-   ===================================================== */
-
-const profileMenuClose =
-    $(".profile-menu-close");
-
-
-if (profileMenuClose) {
-
-    profileMenuClose.addEventListener(
-        "click",
-        event => {
-
-            event.preventDefault();
-
-            closeProfileMenu();
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   PROFILE MENU OUTSIDE CLICK
-   ===================================================== */
-
-document.addEventListener(
-    "click",
-    event => {
-
-        if (!profileMenu) {
-            return;
-        }
-
-
-        if (
-            profileMenu.classList.contains(
-                "show"
-            ) &&
-            !profileMenu.contains(
-                event.target
-            ) &&
-            !profileNavButton?.contains(
-                event.target
-            )
-        ) {
-
-            closeProfileMenu();
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   HOME BUTTON
-   ===================================================== */
-
-const homeButtons =
-    $$('[data-nav="home"]');
-
-
-homeButtons.forEach(button => {
-
-    button.addEventListener(
-        "click",
-        event => {
-
-            event.preventDefault();
-
-            closeProfileMenu();
-
-            if (videoFeed) {
-
-                videoFeed.scrollTo({
-
-                    top: 0,
-
-                    behavior: "smooth"
-
-                });
-
-            }
-
-        }
-    );
-
-});
-
-
-/* =====================================================
-   UPLOAD BUTTON
-   ===================================================== */
-
-const createButton =
-    $(".wwc-create-btn");
-
-
-if (createButton) {
-
-    createButton.addEventListener(
-        "click",
-        event => {
-
-            event.preventDefault();
-
-            window.location.href =
-                "./upload.html";
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   END OF PART 4
-   ===================================================== */
-/* =========================================================
-   WORLD WIDE CONNECT
-   WWC-CORE
-   NEW APP.JS
-   PART 5 / 5
-   FINAL
-   ========================================================= */
-
-
-/* =====================================================
-   PROFILE MENU BUTTONS
-   ===================================================== */
-
-const profileButtons =
-    $$(".profile-menu-btn");
-
-
-profileButtons.forEach(button => {
-
-    button.addEventListener(
-        "click",
-        event => {
-
-            event.preventDefault();
-            event.stopPropagation();
-
-
-            const action =
-                button.dataset.action
-                || button.getAttribute(
-                    "data-action"
-                );
-
-
-            /* =========================================
-               PROFILE
-               ========================================= */
-
-            if (
-                action === "profile" ||
-                button.id === "profileMenuBtn"
-            ) {
-
-                window.location.href =
-                    "./profile.html";
-
-                return;
-
-            }
-
-
-            /* =========================================
-               LOGIN
-               ========================================= */
-
-            if (
-                action === "login" ||
-                button.id === "loginMenuBtn"
-            ) {
-
-                window.location.href =
-                    "./auth.html";
-
-                return;
-
-            }
-
-
-            /* =========================================
-               UPLOAD
-               ========================================= */
-
-            if (
-                action === "upload" ||
-                button.id === "uploadMenuBtn"
-            ) {
-
-                window.location.href =
-                    "./upload.html";
-
-                return;
-
-            }
-
-
-            /* =========================================
-               LOGOUT
-               ========================================= */
-
-            if (
-                action === "logout" ||
-                button.id === "logoutMenuBtn"
-            ) {
-
-                logoutUser();
-
-                return;
-
-            }
-
-        }
-    );
-
-});
-
-
-/* =====================================================
-   LOGOUT
-   ===================================================== */
-
-async function logoutUser() {
-
-    const confirmed =
-        confirm(
-            "আপনি কি Logout করতে চান?"
-        );
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    try {
-
-        /*
-         * Firebase থাকলে Firebase logout
-         * করার চেষ্টা করবে।
-         */
-
-        if (
-            window.firebase &&
-            window.firebase.auth
-        ) {
-
-            await window.firebase
-                .auth()
-                .signOut();
-
-        }
-
-
-    } catch (error) {
-
-        console.log(
-            "Firebase logout:",
-            error
-        );
-
-    }
-
-
-    /*
-     * Local WWC session data পরিষ্কার।
-     * Like / Save / Follow রাখা হবে।
-     */
-
-    try {
-
-        localStorage.removeItem(
-            "wwc_user"
-        );
-
-    } catch (error) {
-
-        console.log(error);
-
-    }
-
-
-    window.location.href =
-        "./auth.html";
-
-}
-
-
-/* =====================================================
-   LOGIN / AUTH BUTTON
-   ===================================================== */
-
-const authButtons =
-    $$(
-        '[data-action="login"], [data-action="auth"]'
-    );
-
-
-authButtons.forEach(button => {
-
-    button.addEventListener(
-        "click",
-        event => {
-
-            event.preventDefault();
-
-            window.location.href =
-                "./auth.html";
-
-        }
-    );
-
-});
-
-
-/* =====================================================
-   COMMENT BOX ESCAPE
-   ===================================================== */
-
-document.addEventListener(
-    "keydown",
-    event => {
-
-        if (
-            event.key === "Escape"
-        ) {
-
-            closeCommentBox();
-
-            closeProfileMenu();
-
-            const searchBox =
-                document.getElementById(
-                    "wwcSearchBox"
-                );
-
-
-            if (searchBox) {
-
-                searchBox.remove();
-
-            }
-
-
-            $$(".video-item").forEach(
-                item => {
-
-                    item.style.display =
-                        "";
-
-                }
-            );
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   SHARE BUTTONS
-   ===================================================== */
-
-const shareButtons =
-    $$(".share-btn");
-
-
-shareButtons.forEach(button => {
-
-    initializeShare(
-        button
-    );
-
-});
-
-
-/* =====================================================
-   INITIALIZE EXISTING VIDEO FEED
-   ===================================================== */
-
-initializeVideoItems();
-
-
-/* =====================================================
-   WATCH FOR NEW VIDEO ITEMS
-   ===================================================== */
-
-if (videoFeed) {
-
-    const feedObserver =
-        new MutationObserver(
-            mutations => {
-
-                let hasNewItems =
-                    false;
-
-
-                mutations.forEach(
-                    mutation => {
-
-                        mutation.addedNodes
-                            .forEach(node => {
-
-                                if (
-                                    node.nodeType ===
-                                    Node.ELEMENT_NODE
-                                ) {
-
-                                    if (
-                                        node.matches?.(
-                                            ".video-item"
-                                        ) ||
-                                        node.querySelector?.(
-                                            ".video-item"
-                                        )
-                                    ) {
-
-                                        hasNewItems =
-                                            true;
-
-                                    }
-
-                                }
-
-                            });
-
-                    }
-                );
-
-
-                if (hasNewItems) {
-
-                    initializeVideoItems();
-
-                    $$(".share-btn").forEach(
-                        button => {
-
-                            initializeShare(
-                                button
-                            );
-
-                        }
-                    );
-
-                }
-
-            }
-        );
-
-
-    feedObserver.observe(
-        videoFeed,
-        {
-            childList: true,
-            subtree: true
-        }
-    );
-
-}
-
-
-/* =====================================================
-   LOAD VIDEO FROM URL HASH
-   ===================================================== */
-
-function openVideoFromHash() {
-
-    const hash =
-        window.location.hash;
-
-
-    if (
-        !hash.startsWith(
-            "#video="
-        )
-    ) {
-
-        return;
-
-    }
-
-
-    const videoId =
-        decodeURIComponent(
-            hash.substring(
-                "#video=".length
-            )
-        );
-
-
-    const item =
-        $(
-            `.video-item[data-video-id="${CSS.escape(videoId)}"]`
-        );
-
-
-    if (!item) {
-
-        return;
-
-    }
-
-
-    setTimeout(
-        () => {
-
-            item.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-
-
-            setTimeout(
-                () => {
-
-                    playActiveVideo(
-                        item
-                    );
-
-                },
-                500
-            );
-
-        },
-        300
-    );
-
-}
-
-
-openVideoFromHash();
-
-
-/* =====================================================
-   HASH CHANGE
-   ===================================================== */
-
-window.addEventListener(
-    "hashchange",
-    () => {
-
-        openVideoFromHash();
-
-    }
-);
-
-
-/* =====================================================
-   PAGE VISIBILITY
-   ===================================================== */
-
-document.addEventListener(
-    "visibilitychange",
-    () => {
-
-        if (
-            document.hidden
-        ) {
-
-            $$(".feed-video").forEach(
-                video => {
-
-                    video.pause();
-
-                }
-            );
-
-        } else {
-
-            const visibleItem =
-                $$(".video-item")
-                    .find(item => {
-
-                        const rect =
-                            item.getBoundingClientRect();
-
-
-                        return (
-                            rect.top >= -100 &&
-                            rect.top <=
-                            window.innerHeight * 0.5
-                        );
-
-                    });
-
-
-            if (visibleItem) {
-
-                playActiveVideo(
-                    visibleItem
-                );
-
-            }
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   RESIZE SAFETY
-   ===================================================== */
-
-window.addEventListener(
-    "resize",
-    () => {
-
-        const activeItem =
-            $$(".video-item")
-                .find(item => {
-
-                    const rect =
-                        item.getBoundingClientRect();
-
-
-                    return (
-                        rect.top >= -50 &&
-                        rect.top <=
-                        window.innerHeight * 0.5
-                    );
-
-                });
-
-
-        if (activeItem) {
-
-            playActiveVideo(
-                activeItem
-            );
-
-        }
-
-    }
-);
-
-
-/* =====================================================
-   PREVENT DOUBLE TOUCH ACTION
-   ===================================================== */
-
-$$(
-    "button"
-).forEach(button => {
-
-    button.addEventListener(
-        "touchstart",
-        event => {
-
-            event.stopPropagation();
-
-        },
-        {
-            passive: true
-        }
-    );
-
-});
-
-
-/* =====================================================
-   FINAL READY MESSAGE
-   ===================================================== */
-
-console.log(
-    "🌍 WWC-Core App.js loaded successfully."
-);
-
-console.log(
-    "🎬 Video feed ready."
-);
-
-console.log(
-    "❤️ Like ready."
-);
-
-console.log(
-    "💬 Comment ready."
-);
-
-console.log(
-    "↗️ Share ready."
-);
-
-console.log(
-    "🔖 Save ready."
-);
-
-console.log(
-    "👤 Follow ready."
-);
-
-console.log(
-    "📤 Upload navigation ready."
-);
-
-console.log(
-    "👤 Profile navigation ready."
-);
-
-
-/* =====================================================
-   END OF APP.JS
-   PART 5 / 5
-   ===================================================== */
-
-});
