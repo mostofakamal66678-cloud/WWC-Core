@@ -1,12 +1,7 @@
 /* =========================================
    WORLD WIDE CONNECT
+   WWC-CORE
    TIKTOK STYLE VIDEO FEED
-   PROFILE MENU
-   ========================================= */
-
-
-/* =========================================
-   RESET
    ========================================= */
 
 * {
@@ -15,96 +10,57 @@
     padding: 0;
 }
 
-
-/* =========================================
-   PAGE
-   ========================================= */
-
 html,
 body {
     width: 100%;
     height: 100%;
-
     background: #000;
     color: #fff;
-
     font-family: Arial, sans-serif;
-
     overflow: hidden;
 }
 
-
-/* =========================================
-   VIDEO FEED
-   ========================================= */
+button {
+    font-family: inherit;
+}
 
 #video-feed {
     position: fixed;
-
     inset: 0;
-
     width: 100%;
     height: 100%;
-
     overflow-y: auto;
     overflow-x: hidden;
-
     scroll-snap-type: y mandatory;
     scroll-behavior: smooth;
-
     background: #000;
-
-    -webkit-overflow-scrolling: touch;
-
     scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
 }
 
 #video-feed::-webkit-scrollbar {
     display: none;
 }
 
-
-/* =========================================
-   VIDEO ITEM
-   ========================================= */
-
 .video-item {
     position: relative;
-
     width: 100%;
-
     height: 100vh;
     height: 100dvh;
-
     min-height: 100vh;
-
     overflow: hidden;
-
     background: #000;
-
     scroll-snap-align: start;
     scroll-snap-stop: always;
 }
 
-
-/* =========================================
-   VIDEO
-   ========================================= */
-
 .feed-video {
     position: absolute;
-
     inset: 0;
-
     width: 100%;
     height: 100%;
-
     object-fit: cover;
-
-    border: none;
-
     background: #000;
-
     z-index: 1;
 }
 
@@ -115,344 +71,188 @@ body {
 
 .wwc-top-bar {
     position: fixed;
-
     top: 0;
     left: 0;
-
     width: 100%;
     height: 64px;
-
     z-index: 500;
-
     display: flex;
-
     align-items: center;
     justify-content: center;
-
-    padding: 10px 15px;
-
     background: linear-gradient(
         to bottom,
-        rgba(0,0,0,0.70),
+        rgba(0,0,0,.75),
         rgba(0,0,0,0)
     );
-
     pointer-events: none;
 }
 
-
 .wwc-top-tabs {
     display: flex;
-
     align-items: center;
-    justify-content: center;
-
     gap: 24px;
 }
 
-
 .wwc-top-tab {
-    border: none;
-
+    border: 0;
     background: transparent;
-
-    color: rgba(255,255,255,0.70);
-
+    color: rgba(255,255,255,.65);
     font-size: 16px;
-
     font-weight: 600;
-
     cursor: pointer;
-
     pointer-events: auto;
 }
-
 
 .wwc-top-tab.active {
     color: #fff;
-
     font-weight: 700;
 }
 
-
 .wwc-search-btn {
     position: absolute;
-
     right: 15px;
-    top: 12px;
-
+    top: 11px;
     width: 42px;
     height: 42px;
-
-    border: none;
-
+    border: 0;
     border-radius: 50%;
-
-    background: rgba(0,0,0,0.45);
-
+    background: rgba(0,0,0,.45);
     color: #fff;
-
     font-size: 21px;
-
     cursor: pointer;
-
     pointer-events: auto;
 }
 
 
 /* =========================================
-   PROFILE AREA ON VIDEO
+   PROFILE AREA
    ========================================= */
 
 .video-item .profile-area {
-    position: absolute !important;
-
-    right: 15px !important;
-    bottom: 360px !important;
-
-    left: auto !important;
-    top: auto !important;
-
-    width: 70px !important;
-
-    display: flex !important;
-
-    flex-direction: column !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    gap: 7px !important;
-
-    z-index: 50 !important;
-
-    visibility: visible !important;
-    opacity: 1 !important;
-
-    pointer-events: auto !important;
+    position: absolute;
+    right: 15px;
+    bottom: 350px;
+    width: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    z-index: 50;
 }
 
-
-/* PROFILE PHOTO */
-
-.video-item .profile-area .profile-photo {
-    width: 54px !important;
-    height: 54px !important;
-
-    border: 2px solid #fff !important;
-
-    border-radius: 50% !important;
-
-    object-fit: cover !important;
-
-    background: #444 !important;
-
-    display: block !important;
+.video-item .profile-photo {
+    width: 54px;
+    height: 54px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #444;
 }
 
-
-/* USERNAME */
-
-.video-item .profile-area .username,
-.video-item .profile-area .profile-name {
-    width: 100% !important;
-
-    color: #fff !important;
-
-    font-size: 12px !important;
-
-    font-weight: 700 !important;
-
-    text-align: center !important;
-
-    white-space: nowrap !important;
-
-    overflow: hidden !important;
-
-    text-overflow: ellipsis !important;
-
-    text-shadow: 0 1px 4px #000 !important;
+.video-item .profile-area .username {
+    width: 100%;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 1px 4px #000;
 }
 
-
-/* FOLLOW */
-
-.video-item .profile-area .follow-btn {
-    width: 68px !important;
-    height: 32px !important;
-
-    min-width: 68px !important;
-    min-height: 32px !important;
-
-    padding: 0 !important;
-    margin: 0 !important;
-
-    border: none !important;
-
-    border-radius: 18px !important;
-
-    background: #fe2c55 !important;
-
-    color: #fff !important;
-
-    font-size: 12px !important;
-
-    font-weight: 700 !important;
-
-    display: flex !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    text-align: center !important;
-
+.video-item .follow-btn {
+    width: 68px;
+    height: 32px;
+    border: 0;
+    border-radius: 18px;
+    background: #fe2c55;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
     cursor: pointer;
-
-    z-index: 51 !important;
 }
 
-
-.video-item .profile-area .follow-btn.following {
-    background: rgba(255,255,255,0.20) !important;
-
-    border: 1px solid rgba(255,255,255,0.70) !important;
+.video-item .follow-btn.following {
+    background: rgba(255,255,255,.20);
+    border: 1px solid rgba(255,255,255,.7);
 }
 
 
 /* =========================================
-   RIGHT ACTION BAR
+   RIGHT ACTIONS
    ========================================= */
 
 .video-item .actions {
-    position: absolute !important;
-
-    right: 15px !important;
-    bottom: 105px !important;
-
-    top: auto !important;
-    left: auto !important;
-
-    width: 58px !important;
-
-    display: flex !important;
-
-    flex-direction: column !important;
-
-    align-items: center !important;
-    justify-content: flex-end !important;
-
-    gap: 14px !important;
-
-    z-index: 60 !important;
-
-    pointer-events: auto !important;
+    position: absolute;
+    right: 15px;
+    bottom: 105px;
+    width: 58px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    z-index: 60;
 }
 
-
-/* ACTION BUTTON */
-
-.video-item .actions .action-btn {
-    width: 50px !important;
-    height: 50px !important;
-
-    min-width: 50px !important;
-    min-height: 50px !important;
-
-    padding: 0 !important;
-
-    border: none !important;
-
-    border-radius: 50% !important;
-
-    background: rgba(0,0,0,0.35) !important;
-
-    color: #fff !important;
-
-    font-size: 25px !important;
-
-    display: flex !important;
-
-    flex-direction: column !important;
-
-    align-items: center !important;
-    justify-content: center !important;
-
-    gap: 1px !important;
-
-    cursor: pointer;
-
-    transition: transform 0.15s ease;
-}
-
-
-.video-item .actions .action-btn:active {
-    transform: scale(0.88);
-}
-
-
-/* LIKED */
-
-.video-item .actions .like-btn.liked {
-    background: rgba(254,44,85,0.80) !important;
-}
-
-
-/* LIKE COUNT */
-
-.like-count {
-    display: block;
-
+.video-item .action-btn {
+    width: 50px;
+    height: 50px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(0,0,0,.38);
     color: #fff;
+    font-size: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    cursor: pointer;
+    transition: transform .15s ease;
+}
 
+.video-item .action-btn:active {
+    transform: scale(.88);
+}
+
+.video-item .like-btn.liked {
+    background: rgba(254,44,85,.85);
+}
+
+.like-count,
+.save-count {
+    color: #fff;
     font-size: 11px;
-
     line-height: 12px;
-
     font-weight: 600;
-
     text-shadow: 0 1px 3px #000;
 }
-
-
 /* =========================================
    VIDEO INFORMATION
    ========================================= */
 
 .video-info {
     position: absolute;
-
     left: 15px;
     right: 85px;
-
     bottom: 105px;
-
     z-index: 40;
-
     pointer-events: none;
-
     text-shadow: 0 1px 4px #000;
 }
 
-
-.video-info .username,
-.video-item > .username {
+.video-info .username {
     color: #fff;
-
     font-size: 16px;
-
     font-weight: 700;
-
     margin-bottom: 7px;
 }
 
-
 .video-caption {
     color: #fff;
-
     font-size: 14px;
-
     line-height: 20px;
-
     max-width: 90%;
 }
 
@@ -463,93 +263,69 @@ body {
 
 .wwc-bottom-nav {
     position: fixed;
-
     left: 0;
     right: 0;
     bottom: 0;
-
     width: 100%;
-
     height: 64px;
-
     z-index: 1000;
 
     display: flex;
-
     align-items: center;
     justify-content: space-around;
 
     padding: 5px 8px;
 
-    background: rgba(0,0,0,0.92);
-
-    border-top: 1px solid rgba(255,255,255,0.08);
+    background: rgba(0,0,0,.94);
+    border-top: 1px solid rgba(255,255,255,.08);
 
     backdrop-filter: blur(10px);
-
     -webkit-backdrop-filter: blur(10px);
 }
-
-
-/* NAV BUTTON */
 
 .wwc-nav-btn {
     width: 58px;
     height: 54px;
 
-    border: none;
-
+    border: 0;
     background: transparent;
 
-    color: rgba(255,255,255,0.75);
+    color: rgba(255,255,255,.72);
 
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
     justify-content: center;
 
     gap: 3px;
 
     font-size: 11px;
-
     cursor: pointer;
 }
 
-
 .wwc-nav-btn span:first-child {
     font-size: 22px;
-
     line-height: 23px;
 }
-
 
 .wwc-nav-btn.active {
     color: #fff;
 }
 
-
-/* CREATE BUTTON */
-
 .wwc-create-btn {
     width: 52px;
     height: 38px;
 
-    border: none;
-
+    border: 0;
     border-radius: 10px;
 
     background: #fff;
-
     color: #000;
 
     font-size: 28px;
-
     line-height: 28px;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 
@@ -563,101 +339,77 @@ body {
 
 .profile-menu {
     position: fixed;
-
     left: 50%;
-
     bottom: 72px;
 
-    transform: translateX(-50%) translateY(20px);
-
     width: min(92%, 360px);
-
     max-height: calc(100vh - 110px);
 
     overflow-y: auto;
 
     padding: 16px;
 
-    background: rgba(20,20,20,0.98);
+    background: rgba(20,20,20,.98);
 
-    border: 1px solid rgba(255,255,255,0.12);
-
+    border: 1px solid rgba(255,255,255,.12);
     border-radius: 20px;
 
     box-shadow:
-        0 12px 40px rgba(0,0,0,0.60);
+        0 12px 40px rgba(0,0,0,.60);
 
     z-index: 3000;
 
     opacity: 0;
-
     visibility: hidden;
-
     pointer-events: none;
 
+    transform: translateX(-50%) translateY(20px);
+
     transition:
-        opacity 0.20s ease,
-        transform 0.20s ease,
-        visibility 0.20s ease;
+        opacity .2s ease,
+        transform .2s ease,
+        visibility .2s ease;
 
     scrollbar-width: none;
 }
-
 
 .profile-menu::-webkit-scrollbar {
     display: none;
 }
 
-
-/* PROFILE MENU OPEN */
-
 .profile-menu.show {
     opacity: 1;
-
     visibility: visible;
-
     pointer-events: auto;
 
     transform: translateX(-50%) translateY(0);
 }
 
-
-/* PROFILE MENU HEADER */
-
 .profile-menu-header {
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
 
     padding-bottom: 14px;
-
     margin-bottom: 8px;
 
-    border-bottom: 1px solid rgba(255,255,255,0.10);
+    border-bottom: 1px solid rgba(255,255,255,.10);
 }
-
 
 .profile-menu-title {
     color: #fff;
-
     font-size: 20px;
-
     font-weight: 700;
 }
-
 
 .profile-menu-close {
     width: 36px;
     height: 36px;
 
-    border: none;
-
+    border: 0;
     border-radius: 50%;
 
-    background: rgba(255,255,255,0.10);
-
+    background: rgba(255,255,255,.10);
     color: #fff;
 
     font-size: 17px;
@@ -665,68 +417,36 @@ body {
     cursor: pointer;
 
     display: flex;
-
     align-items: center;
     justify-content: center;
 }
 
-
-.profile-menu-close:active {
-    transform: scale(0.90);
-}
-
-
-/* PROFILE MENU BUTTON */
-
 .profile-menu-btn {
     width: 100%;
-
     min-height: 52px;
 
     margin-top: 8px;
-
     padding: 0 16px;
 
-    border: none;
-
+    border: 0;
     border-radius: 12px;
 
-    background: rgba(255,255,255,0.08);
-
+    background: rgba(255,255,255,.08);
     color: #fff;
 
     font-size: 16px;
-
     font-weight: 600;
 
     text-align: left;
-
     cursor: pointer;
 
     display: flex;
-
     align-items: center;
 }
 
-
-.profile-menu-btn:active {
-    transform: scale(0.98);
-
-    background: rgba(255,255,255,0.14);
-}
-
-
-/* LOGOUT */
-
 .profile-menu-btn.logout-menu-btn {
-    background: rgba(254,44,85,0.15);
-
+    background: rgba(254,44,85,.15);
     color: #ff6684;
-}
-
-
-.profile-menu-btn.logout-menu-btn:active {
-    background: rgba(254,44,85,0.28);
 }
 
 
@@ -736,7 +456,6 @@ body {
 
 .comment-box {
     position: fixed;
-
     left: 50%;
     bottom: 70px;
 
@@ -746,7 +465,7 @@ body {
 
     padding: 15px;
 
-    background: rgba(20,20,20,0.98);
+    background: rgba(20,20,20,.98);
 
     border-radius: 16px;
 
@@ -755,30 +474,23 @@ body {
     display: none;
 }
 
-
 .comment-box.show {
     display: block;
 }
 
-
 .comment-title {
     font-size: 18px;
-
     font-weight: bold;
-
     margin-bottom: 10px;
 }
 
-
 .comment-box textarea {
     width: 100%;
-
     min-height: 80px;
 
     resize: none;
 
-    border: none;
-
+    border: 0;
     outline: none;
 
     border-radius: 8px;
@@ -788,21 +500,16 @@ body {
     font-size: 15px;
 }
 
-
 .comment-buttons {
     display: flex;
-
     justify-content: flex-end;
 
     gap: 8px;
-
     margin-top: 10px;
 }
 
-
 .comment-buttons button {
-    border: none;
-
+    border: 0;
     border-radius: 8px;
 
     padding: 9px 15px;
@@ -810,21 +517,15 @@ body {
     cursor: pointer;
 }
 
-
 #commentSend {
     background: #fe2c55;
-
     color: #fff;
 }
-
 
 #commentCancel {
     background: #555;
-
     color: #fff;
-}
-
-
+   }
 /* =========================================
    MOBILE
    ========================================= */
@@ -835,144 +536,98 @@ body {
         height: 58px;
     }
 
-
     .wwc-top-tabs {
         gap: 18px;
     }
-
 
     .wwc-top-tab {
         font-size: 15px;
     }
 
-
     .wwc-search-btn {
         right: 10px;
         top: 9px;
-
         width: 40px;
         height: 40px;
     }
 
-
     .video-item .profile-area {
-        right: 10px !important;
-
-        bottom: 335px !important;
-
-        width: 65px !important;
-
-        gap: 6px !important;
+        right: 10px;
+        bottom: 335px;
+        width: 65px;
+        gap: 6px;
     }
 
-
-    .video-item .profile-area .profile-photo {
-        width: 50px !important;
-        height: 50px !important;
+    .video-item .profile-photo {
+        width: 50px;
+        height: 50px;
     }
 
-
-    .video-item .profile-area .follow-btn {
-        width: 64px !important;
-        height: 30px !important;
-
-        min-width: 64px !important;
-        min-height: 30px !important;
-
-        font-size: 11px !important;
+    .video-item .follow-btn {
+        width: 64px;
+        height: 30px;
+        font-size: 11px;
     }
-
 
     .video-item .actions {
-        right: 10px !important;
-
-        bottom: 78px !important;
-
-        width: 55px !important;
-
-        gap: 10px !important;
+        right: 10px;
+        bottom: 78px;
+        width: 55px;
+        gap: 10px;
     }
 
-
-    .video-item .actions .action-btn {
-        width: 48px !important;
-        height: 48px !important;
-
-        min-width: 48px !important;
-        min-height: 48px !important;
-
-        font-size: 23px !important;
+    .video-item .action-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 23px;
     }
-
 
     .video-info {
         left: 12px;
-
         right: 75px;
-
         bottom: 78px;
     }
 
-
     .video-caption {
         font-size: 13px;
-
         line-height: 18px;
     }
-
 
     .wwc-bottom-nav {
         height: 62px;
     }
 
-
     .wwc-nav-btn {
         width: 54px;
-
         height: 54px;
-
         font-size: 10px;
     }
-
 
     .wwc-nav-btn span:first-child {
         font-size: 21px;
     }
 
-
     .wwc-create-btn {
         width: 50px;
-
         height: 36px;
-
         font-size: 26px;
     }
 
-
-    /* PROFILE MENU MOBILE */
-
     .profile-menu {
         bottom: 68px;
-
         width: calc(100% - 20px);
-
         border-radius: 18px;
-
         padding: 14px;
     }
-
 
     .profile-menu-title {
         font-size: 18px;
     }
 
-
     .profile-menu-btn {
         min-height: 50px;
-
         font-size: 15px;
     }
-
 }
 
 
@@ -983,39 +638,69 @@ body {
 @media (max-width: 380px) {
 
     .video-item .profile-area {
-        right: 7px !important;
-
-        bottom: 325px !important;
+        right: 7px;
+        bottom: 325px;
     }
-
 
     .video-item .actions {
-        right: 7px !important;
-
-        gap: 8px !important;
+        right: 7px;
+        gap: 8px;
     }
 
-
-    .video-item .actions .action-btn {
-        width: 45px !important;
-        height: 45px !important;
-
-        min-width: 45px !important;
-        min-height: 45px !important;
-
-        font-size: 21px !important;
+    .video-item .action-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 21px;
     }
-
 
     .video-info {
         right: 68px;
     }
 
-
     .profile-menu {
         width: calc(100% - 14px);
-
         bottom: 66px;
     }
+}
 
-   }
+
+/* =========================================
+   UPLOAD INPUT
+   ========================================= */
+
+#videoUpload {
+    display: none;
+}
+
+
+/* =========================================
+   TOUCH / MOBILE SAFETY
+   ========================================= */
+
+button,
+.wwc-nav-btn,
+.wwc-create-btn,
+.action-btn,
+.follow-btn {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+
+/* =========================================
+   VIDEO SAFETY
+   ========================================= */
+
+video {
+    max-width: 100%;
+}
+
+.feed-video {
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+
+/* =========================================
+   END OF STYLE.CSS
+   ========================================= */
