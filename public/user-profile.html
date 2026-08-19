@@ -1,1 +1,1082 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>WWC User Profile</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    .header {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      background: #111;
+      border-bottom: 1px solid #333;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .back-btn {
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 50%;
+      background: #222;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .title {
+      margin-left: 15px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: #aaa;
+    }
+
+    .profile {
+      max-width: 650px;
+      margin: auto;
+      padding-bottom: 80px;
+    }
+
+    .profile-header {
+      text-align: center;
+      padding: 35px 20px 25px;
+      border-bottom: 1px solid #333;
+    }
+
+    .profile-photo {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #333;
+      border: 3px solid #fff;
+    }
+
+    .name {
+      font-size: 25px;
+      margin: 12px 0 5px;
+    }
+
+    .handle {
+      color: #999;
+      margin-bottom: 12px;
+    }
+
+    .bio {
+      color: #ddd;
+      line-height: 1.5;
+      max-width: 450px;
+      margin: 10px auto;
+    }
+
+    .country {
+      color: #999;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin: 22px 0;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 20px;
+    }
+
+    .stat span {
+      color: #999;
+      font-size: 13px;
+    }
+
+    .follow-btn {
+      border: 0;
+      border-radius: 9px;
+      background: #fe2c55;
+      color: #fff;
+      padding: 11px 35px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .follow-btn.following {
+      background: #333;
+      border: 1px solid #777;
+    }
+
+    .follow-btn:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    .message {
+      min-height: 22px;
+      margin-top: 12px;
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    .videos-title {
+      padding: 18px 15px;
+      font-size: 18px;
+      font-weight: bold;
+      border-bottom: 1px solid #333;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .video-card {
+      position: relative;
+      background: #111;
+      aspect-ratio: 9 / 16;
+      overflow: hidden;
+    }
+
+    .video-card video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 50px 20px;
+      color: #888;
+    }
+
+    .error {
+      color: #ff6684;
+      text-align: center;
+      padding: 50px 20px;
+    }
+
+    @media (max-width: 500px) {
+      .stats {
+        gap: 28px;
+      }
+
+      .profile-photo {
+        width: 100px;
+        height: 100px;
+      }
+
+      .name {
+        font-size: 23px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+
+    <button
+      type="button"
+      class="back-btn"
+      id="backBtn"
+    >
+      ←
+    </button>
+
+    <div class="title">
+      👤 User Profile
+    </div>
+
+  </header>
+
+
+  <div
+    id="loading"
+    class="loading"
+  >
+    ⏳ Profile লোড হচ্ছে...
+  </div>
+
+
+  <main
+    id="profile"
+    class="profile"
+    style="display:none;"
+  >
+
+    <section class="profile-header">
+
+      <img
+        id="profilePhoto"
+        class="profile-photo"
+        src="./images/profile.png"
+        alt="Profile"
+      >
+
+
+      <h1
+        id="profileName"
+        class="name"
+      >
+        WWC User
+      </h1>
+
+
+      <div
+        id="profileHandle"
+        class="handle"
+      >
+        @wwc_user
+      </div>
+
+
+      <div
+        id="profileBio"
+        class="bio"
+      >
+        Welcome to WWC 🌍
+      </div>
+
+
+      <div
+        id="profileCountry"
+        class="country"
+      ></div>
+
+
+      <div class="stats">
+
+        <div class="stat">
+          <strong id="followers">
+            0
+          </strong>
+          <span>
+            Followers
+          </span>
+        </div>
+
+
+        <div class="stat">
+          <strong id="following">
+            0
+          </strong>
+          <span>
+            Following
+          </span>
+        </div>
+
+
+        <div class="stat">
+          <strong id="likes">
+            0
+          </strong>
+          <span>
+            Likes
+          </span>
+        </div>
+
+      </div>
+
+
+      <button
+        type="button"
+        id="followBtn"
+        class="follow-btn"
+      >
+        Follow
+      </button>
+
+
+      <div
+        id="message"
+        class="message"
+      ></div>
+
+    </section>
+
+
+    <div class="videos-title">
+      🎬 Videos
+    </div>
+
+
+    <section
+      id="videoGrid"
+      class="video-grid"
+    ></section>
+
+  </main>
+
+
+  <script type="module">
+
+    import {
+      getApps,
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      updateDoc
+    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+
+    // ==========================================
+    // FIREBASE CONFIG
+    // ==========================================
+
+    const firebaseConfig = {
+
+      apiKey:
+        "AIzaSyCgio17aPEfR7d6juqIhn3yiMf65W_tO4",
+
+      authDomain:
+        "world-wide-connect-62c87.firebaseapp.com",
+
+      projectId:
+        "world-wide-connect-62c87",
+
+      storageBucket:
+        "world-wide-connect-62c87.firebasestorage.app",
+
+      messagingSenderId:
+        "93178453668",
+
+      appId:
+        "1:93178453668:web:2184630caa8e61f7445031",
+
+      measurementId:
+        "G-PKFJ5NEMGQ"
+    };
+
+
+    // ==========================================
+    // FIREBASE START
+    // ==========================================
+
+    const app =
+      getApps().length
+        ? getApps()[0]
+        : initializeApp(firebaseConfig);
+
+
+    const auth =
+      getAuth(app);
+
+    const db =
+      getFirestore(app);
+
+
+    // ==========================================
+    // ELEMENTS
+    // ==========================================
+
+    const backBtn =
+      document.getElementById("backBtn");
+
+    const loading =
+      document.getElementById("loading");
+
+    const profile =
+      document.getElementById("profile");
+
+    const profilePhoto =
+      document.getElementById("profilePhoto");
+
+    const profileName =
+      document.getElementById("profileName");
+
+    const profileHandle =
+      document.getElementById("profileHandle");
+
+    const profileBio =
+      document.getElementById("profileBio");
+
+    const profileCountry =
+      document.getElementById("profileCountry");
+
+    const followers =
+      document.getElementById("followers");
+
+    const following =
+      document.getElementById("following");
+
+    const likes =
+      document.getElementById("likes");
+
+    const followBtn =
+      document.getElementById("followBtn");
+
+    const message =
+      document.getElementById("message");
+
+    const videoGrid =
+      document.getElementById("videoGrid");
+
+
+    // ==========================================
+    // VARIABLES
+    // ==========================================
+
+    const params =
+      new URLSearchParams(
+        window.location.search
+      );
+
+
+    const targetUid =
+      params.get("uid");
+
+
+    const defaultPhoto =
+      "./images/profile.png";
+
+
+    let currentUser =
+      null;
+
+    let targetProfile =
+      {};
+
+    let followingIds =
+      [];
+
+
+    // ==========================================
+    // BACK
+    // ==========================================
+
+    backBtn.addEventListener(
+      "click",
+      () => {
+        history.back();
+      }
+    );
+
+
+    // ==========================================
+    // SHOW ERROR
+    // ==========================================
+
+    function showError(text) {
+
+      loading.className =
+        "error";
+
+      loading.textContent =
+        text;
+
+    }
+
+
+    // ==========================================
+    // LOAD TARGET PROFILE
+    // ==========================================
+
+    async function loadProfile() {
+
+      if (!targetUid) {
+
+        showError(
+          "❌ User ID পাওয়া যায়নি।"
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        const userRef =
+          doc(
+            db,
+            "users",
+            targetUid
+          );
+
+
+        const snapshot =
+          await getDoc(
+            userRef
+          );
+
+
+        if (!snapshot.exists()) {
+
+          showError(
+            "❌ এই User Profile পাওয়া যায়নি।"
+          );
+
+          return;
+
+        }
+
+
+        targetProfile =
+          snapshot.data();
+
+
+        renderProfile();
+
+
+      } catch (error) {
+
+        console.error(
+          "Profile error:",
+          error
+        );
+
+
+        showError(
+          "❌ Profile লোড করা যায়নি।"
+        );
+
+      }
+
+    }
+
+
+    // ==========================================
+    // RENDER
+    // ==========================================
+
+    function renderProfile() {
+
+      profileName.textContent =
+        targetProfile.name
+        || targetProfile.displayName
+        || "WWC User";
+
+
+      let username =
+        targetProfile.username
+        || "wwc_user";
+
+
+      username =
+        username.replace(
+          /^@/,
+          ""
+        );
+
+
+      profileHandle.textContent =
+        "@" + username;
+
+
+      profileBio.textContent =
+        targetProfile.bio
+        || "Welcome to WWC 🌍";
+
+
+      if (
+        targetProfile.country
+      ) {
+
+        profileCountry.textContent =
+          "🌍 " +
+          targetProfile.country;
+
+      } else {
+
+        profileCountry.textContent =
+          "";
+
+      }
+
+
+      profilePhoto.src =
+        targetProfile.photoURL
+        || defaultPhoto;
+
+
+      followers.textContent =
+        targetProfile.followers
+        || 0;
+
+
+      following.textContent =
+        targetProfile.following
+        || 0;
+
+
+      likes.textContent =
+        targetProfile.likes
+        || 0;
+
+
+      followingIds =
+        Array.isArray(
+          targetProfile.followerIds
+        )
+          ? targetProfile.followerIds
+          : [];
+
+
+      updateFollowButton();
+
+
+      loading.style.display =
+        "none";
+
+      profile.style.display =
+        "block";
+
+
+      renderVideos();
+
+    }
+
+
+    // ==========================================
+    // FOLLOW BUTTON
+    // ==========================================
+
+    function updateFollowButton() {
+
+      if (
+        !currentUser
+        ||
+        currentUser.uid === targetUid
+      ) {
+
+        followBtn.style.display =
+          "none";
+
+        return;
+
+      }
+
+
+      followBtn.style.display =
+        "inline-block";
+
+
+      const isFollowing =
+        followingIds.includes(
+          currentUser.uid
+        );
+
+
+      if (isFollowing) {
+
+        followBtn.textContent =
+          "Following";
+
+        followBtn.classList.add(
+          "following"
+        );
+
+      } else {
+
+        followBtn.textContent =
+          "Follow";
+
+        followBtn.classList.remove(
+          "following"
+        );
+
+      }
+
+    }
+
+
+    // ==========================================
+    // FOLLOW / UNFOLLOW
+    // ==========================================
+
+    followBtn.addEventListener(
+      "click",
+      async () => {
+
+        if (
+          !currentUser
+          ||
+          !targetUid
+        ) {
+
+          return;
+
+        }
+
+
+        followBtn.disabled =
+          true;
+
+
+        message.textContent =
+          "⏳ পরিবর্তন হচ্ছে...";
+
+
+        try {
+
+          const myRef =
+            doc(
+              db,
+              "users",
+              currentUser.uid
+            );
+
+
+          const targetRef =
+            doc(
+              db,
+              "users",
+              targetUid
+            );
+
+
+          const mySnapshot =
+            await getDoc(
+              myRef
+            );
+
+
+          const targetSnapshot =
+            await getDoc(
+              targetRef
+            );
+
+
+          if (
+            !targetSnapshot.exists()
+          ) {
+
+            throw new Error(
+              "User not found"
+            );
+
+          }
+
+
+          const myData =
+            mySnapshot.exists()
+              ? mySnapshot.data()
+              : {};
+
+
+          const targetData =
+            targetSnapshot.data();
+
+
+          let myFollowingIds =
+            Array.isArray(
+              myData.followingIds
+            )
+              ? [...myData.followingIds]
+              : [];
+
+
+          let targetFollowerIds =
+            Array.isArray(
+              targetData.followerIds
+            )
+              ? [...targetData.followerIds]
+              : [];
+
+
+          const alreadyFollowing =
+            myFollowingIds.includes(
+              targetUid
+            );
+
+
+          if (
+            alreadyFollowing
+          ) {
+
+            myFollowingIds =
+              myFollowingIds.filter(
+                id =>
+                  id !== targetUid
+              );
+
+
+            targetFollowerIds =
+              targetFollowerIds.filter(
+                id =>
+                  id !== currentUser.uid
+              );
+
+          } else {
+
+            myFollowingIds.push(
+              targetUid
+            );
+
+
+            if (
+              !targetFollowerIds.includes(
+                currentUser.uid
+              )
+            ) {
+
+              targetFollowerIds.push(
+                currentUser.uid
+              );
+
+            }
+
+          }
+
+
+          await updateDoc(
+            myRef,
+            {
+
+              followingIds:
+                myFollowingIds,
+
+              following:
+                myFollowingIds.length
+
+            }
+          );
+
+
+          await updateDoc(
+            targetRef,
+            {
+
+              followerIds:
+                targetFollowerIds,
+
+              followers:
+                targetFollowerIds.length
+
+            }
+          );
+
+
+          followingIds =
+            targetFollowerIds;
+
+
+          targetProfile.followers =
+            targetFollowerIds.length;
+
+
+          followers.textContent =
+            targetFollowerIds.length;
+
+
+          updateFollowButton();
+
+
+          message.textContent =
+            alreadyFollowing
+              ? "✅ Unfollow করা হয়েছে।"
+              : "✅ Follow করা হয়েছে।";
+
+
+          message.style.color =
+            "#4ade80";
+
+
+        } catch (error) {
+
+          console.error(
+            "Follow error:",
+            error
+          );
+
+
+          message.textContent =
+            "❌ Follow পরিবর্তন করা যায়নি।";
+
+
+          message.style.color =
+            "#ff6684";
+
+        }
+
+
+        followBtn.disabled =
+          false;
+
+      }
+    );
+
+
+    // ==========================================
+    // VIDEOS
+    // ==========================================
+
+    function renderVideos() {
+
+      videoGrid.innerHTML = "";
+
+
+      /*
+       * এখন User document-এ videos array থাকলে
+       * সেগুলো দেখাবে।
+       *
+       * উদাহরণ:
+       *
+       * videos: [
+       *   "https://....mp4",
+       *   "https://....mp4"
+       * ]
+       */
+
+
+      const videos =
+        Array.isArray(
+          targetProfile.videos
+        )
+          ? targetProfile.videos
+          : [];
+
+
+      if (!videos.length) {
+
+        videoGrid.innerHTML = `
+
+          <div
+            class="empty"
+            style="grid-column:1/-1;"
+          >
+
+            🎬 এই User এখনো কোনো Video Upload করেনি।
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      videos.forEach(
+        (videoUrl) => {
+
+          const card =
+            document.createElement(
+              "div"
+            );
+
+
+          card.className =
+            "video-card";
+
+
+          const video =
+            document.createElement(
+              "video"
+            );
+
+
+          video.src =
+            videoUrl;
+
+
+          video.controls =
+            true;
+
+
+          video.muted =
+            true;
+
+
+          video.playsInline =
+            true;
+
+
+          card.appendChild(
+            video
+          );
+
+
+          videoGrid.appendChild(
+            card
+          );
+
+        }
+      );
+
+    }
+
+
+    // ==========================================
+    // AUTH
+    // ==========================================
+
+    onAuthStateChanged(
+      auth,
+      async (user) => {
+
+        if (!user) {
+
+          showError(
+            "❌ আগে Login করুন।"
+          );
+
+
+          setTimeout(
+            () => {
+
+              window.location.href =
+                "./login.html";
+
+            },
+            1200
+          );
+
+
+          return;
+
+        }
+
+
+        currentUser =
+          user;
+
+
+        await loadProfile();
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
