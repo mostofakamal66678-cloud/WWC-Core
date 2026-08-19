@@ -1559,7 +1559,7 @@ document.addEventListener(
         setupCommentButtons();
 
         setupShareButtons();
-
+setupFollowButtons();
         console.log(
             "✅ WWC Part 2 loaded"
         );
