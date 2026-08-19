@@ -1,1147 +1,931 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>WWC Profile</title>
+<title>WWC Profile</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+<style>
+*{
+  box-sizing:border-box;
+}
 
-    body {
-      margin: 0;
-      background: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
+body{
+  margin:0;
+  background:#000;
+  color:#fff;
+  font-family:Arial,sans-serif;
+}
 
-    .profile-header {
-      padding: 55px 20px 25px;
-      text-align: center;
-      border-bottom: 1px solid #333;
-    }
+.profile-header{
+  padding:55px 20px 25px;
+  text-align:center;
+  border-bottom:1px solid #333;
+}
 
-    .back-btn {
-      position: fixed;
-      left: 15px;
-      top: 15px;
-      z-index: 20;
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      border: none;
-      background: #222;
-      color: #fff;
-      font-size: 25px;
-      cursor: pointer;
-    }
+.back-btn{
+  position:fixed;
+  left:15px;
+  top:15px;
+  z-index:20;
+  width:45px;
+  height:45px;
+  border:0;
+  border-radius:50%;
+  background:#222;
+  color:#fff;
+  font-size:25px;
+}
 
-    .profile-photo-wrap {
-      position: relative;
-      display: inline-block;
-    }
+.profile-photo{
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid #fff;
+  background:#333;
+}
 
-    .profile-photo {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: #333;
-      border: 3px solid #fff;
-    }
+.username{
+  font-size:25px;
+  margin:12px 0 5px;
+}
 
-    .camera-btn {
-      position: absolute;
-      right: 0;
-      bottom: 3px;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      border: 2px solid #000;
-      background: #fff;
-      color: #000;
-      font-size: 18px;
-      cursor: pointer;
-    }
+.handle{
+  color:#aaa;
+  margin-bottom:10px;
+}
 
-    .username {
-      font-size: 25px;
-      margin: 12px 0 5px;
-    }
+.email{
+  color:#777;
+  font-size:13px;
+  word-break:break-all;
+}
 
-    .handle {
-      color: #aaa;
-      margin-bottom: 10px;
-    }
+.bio{
+  color:#ddd;
+  margin:12px auto 20px;
+  max-width:420px;
+  line-height:1.5;
+}
 
-    .email {
-      color: #777;
-      font-size: 13px;
-      margin-bottom: 12px;
-      word-break: break-all;
-    }
+.stats{
+  display:flex;
+  justify-content:center;
+  gap:38px;
+  margin:20px 0;
+}
 
-    .bio {
-      color: #ddd;
-      margin: 10px auto 20px;
-      max-width: 420px;
-      line-height: 1.5;
-    }
+.stat{
+  text-align:center;
+}
 
-    .stats {
-      display: flex;
-      justify-content: center;
-      gap: 38px;
-      margin: 20px 0;
-    }
+.stat strong{
+  display:block;
+  font-size:20px;
+}
 
-    .stat {
-      text-align: center;
-    }
+.stat span{
+  color:#aaa;
+  font-size:13px;
+}
 
-    .stat strong {
-      display: block;
-      font-size: 20px;
-    }
+.buttons{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
 
-    .stat span {
-      color: #aaa;
-      font-size: 13px;
-    }
+.main-btn{
+  border:0;
+  background:#fff;
+  color:#000;
+  padding:11px 20px;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+}
 
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 15px;
-    }
+.logout-btn{
+  background:#d9363e;
+  color:#fff;
+}
 
-    .main-btn {
-      border: none;
-      background: #fff;
-      color: #000;
-      padding: 11px 24px;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+.edit-box{
+  display:none;
+  max-width:500px;
+  margin:20px auto;
+  padding:20px;
+  background:#181818;
+  border-radius:15px;
+  border:1px solid #333;
+}
 
-    .logout-btn {
-      background: #d9363e;
-      color: #fff;
-    }
+.edit-box.show{
+  display:block;
+}
 
-    .edit-box {
-      display: none;
-      max-width: 500px;
-      margin: 20px auto;
-      padding: 20px;
-      background: #181818;
-      border-radius: 15px;
-      text-align: left;
-      border: 1px solid #333;
-    }
+.form-group{
+  margin-bottom:15px;
+}
 
-    .edit-box.show {
-      display: block;
-    }
+.form-group label{
+  display:block;
+  margin-bottom:7px;
+  color:#ddd;
+}
 
-    .edit-title {
-      text-align: center;
-      font-size: 21px;
-      margin-bottom: 20px;
-    }
+.form-group input,
+.form-group textarea,
+.form-group select{
+  width:100%;
+  padding:12px;
+  border:1px solid #444;
+  border-radius:8px;
+  background:#111;
+  color:#fff;
+  font-size:15px;
+}
 
-    .form-group {
-      margin-bottom: 15px;
-    }
+.form-group textarea{
+  min-height:90px;
+  resize:vertical;
+}
 
-    .form-group label {
-      display: block;
-      margin-bottom: 7px;
-      color: #ddd;
-      font-size: 14px;
-    }
+.save-btn,
+.cancel-btn{
+  width:100%;
+  padding:13px;
+  border-radius:8px;
+  font-size:16px;
+  cursor:pointer;
+}
 
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #444;
-      border-radius: 8px;
-      background: #111;
-      color: #fff;
-      font-size: 15px;
-      outline: none;
-    }
+.save-btn{
+  border:0;
+  background:#4f46e5;
+  color:#fff;
+}
 
-    .form-group textarea {
-      min-height: 90px;
-      resize: vertical;
-    }
+.cancel-btn{
+  margin-top:10px;
+  border:1px solid #555;
+  background:transparent;
+  color:#fff;
+}
 
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
-      border-color: #777;
-    }
+#message{
+  min-height:22px;
+  margin-top:15px;
+  text-align:center;
+  color:#aaa;
+}
 
-    .photo-input {
-      display: none;
-    }
+.videos-title{
+  padding:15px;
+  font-size:18px;
+  border-bottom:1px solid #333;
+}
 
-    .photo-note {
-      color: #888;
-      font-size: 12px;
-      margin-top: 5px;
-    }
+.video-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:2px;
+}
 
-    .save-btn {
-      width: 100%;
-      border: none;
-      background: #4f46e5;
-      color: #fff;
-      padding: 13px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 5px;
-    }
+.video-grid video{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+  background:#111;
+}
 
-    .cancel-btn {
-      width: 100%;
-      border: 1px solid #555;
-      background: transparent;
-      color: #fff;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 15px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
+.loading{
+  padding:70px 20px;
+  text-align:center;
+  color:#aaa;
+}
 
-    #message {
-      text-align: center;
-      margin-top: 15px;
-      min-height: 22px;
-      color: #aaa;
-      font-size: 14px;
-    }
+@media(max-width:500px){
+  .video-grid video{
+    height:150px;
+  }
 
-    .videos-title {
-      padding: 15px;
-      font-size: 18px;
-      border-bottom: 1px solid #333;
-    }
-
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2px;
-    }
-
-    .video-grid video {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      background: #111;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 50px 20px;
-      color: #aaa;
-    }
-
-    @media (max-width: 500px) {
-      .video-grid video {
-        height: 150px;
-      }
-
-      .stats {
-        gap: 25px;
-      }
-    }
-  </style>
+  .stats{
+    gap:25px;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <button class="back-btn" onclick="history.back()">←</button>
-
-  <div id="loading" class="loading">
-    Profile লোড হচ্ছে...
-  </div>
+<button class="back-btn" id="backBtn">←</button>
 
-  <main id="profileContent" style="display:none;">
+<div id="loading" class="loading">
+  Profile লোড হচ্ছে...
+</div>
 
-    <section class="profile-header">
+<main id="profileContent" style="display:none;">
 
-      <div class="profile-photo-wrap">
+<section class="profile-header">
 
-        <img
-          id="profilePhoto"
-          class="profile-photo"
-          src="./images/profile.png"
-          alt="Profile"
-        >
+<img
+  id="profilePhoto"
+  class="profile-photo"
+  src="./images/profile.png"
+  alt="Profile"
+>
 
-        <button
-          type="button"
-          class="camera-btn"
-          id="cameraBtn"
-        >
-          📷
-        </button>
+<h1 id="profileName" class="username">
+  WWC User
+</h1>
 
-      </div>
+<div id="profileHandle" class="handle">
+  @wwc_user
+</div>
 
-      <input
-        type="file"
-        id="photoInput"
-        class="photo-input"
-        accept="image/*"
-      >
+<div id="profileEmail" class="email"></div>
 
-      <h1 id="profileName" class="username">
-        গোলাম মোস্তফা
-      </h1>
+<div id="profileBio" class="bio">
+  Welcome to my WWC profile 🌍
+</div>
 
-      <div id="profileHandle" class="handle">
-        @wwc_user
-      </div>
+<div class="stats">
 
-      <div id="profileEmail" class="email"></div>
+<div class="stat">
+<strong id="followers">0</strong>
+<span>Followers</span>
+</div>
 
-      <div id="profileBio" class="bio">
-        Welcome to my WWC profile 🌍
-      </div>
+<div class="stat">
+<strong id="followingCount">0</strong>
+<span>Following</span>
+</div>
 
-      <div class="stats">
+<div class="stat">
+<strong id="likesCount">0</strong>
+<span>Likes</span>
+</div>
 
-        <div class="stat">
-          <strong id="followers">0</strong>
-          <span>Followers</span>
-        </div>
+</div>
 
-        <div class="stat">
-          <strong id="followingCount">0</strong>
-          <span>Following</span>
-        </div>
+<div class="buttons">
 
-        <div class="stat">
-          <strong id="likesCount">0</strong>
-          <span>Likes</span>
-        </div>
+<button id="followBtn" class="main-btn">
+Follow
+</button>
 
-      </div>
+<button id="editBtn" class="main-btn">
+✏️ Edit Profile
+</button>
 
-      <div class="buttons">
+<button id="logoutBtn" class="main-btn logout-btn">
+🚪 Logout
+</button>
 
-        <button
-          type="button"
-          class="main-btn"
-          id="followBtn"
-        >
-          Follow
-        </button>
+</div>
 
-        <button
-          type="button"
-          class="main-btn"
-          id="editBtn"
-        >
-          ✏️ Edit Profile
-        </button>
+<div id="message"></div>
 
-        <button
-          type="button"
-          class="main-btn logout-btn"
-          id="logoutBtn"
-        >
-          🚪 Logout
-        </button>
+</section>
 
-      </div>
 
-      <div id="message"></div>
+<section id="editBox" class="edit-box">
 
-    </section>
+<h2 style="text-align:center;">
+✏️ Edit Profile
+</h2>
 
+<div class="form-group">
+<label>নাম</label>
+<input id="nameInput" type="text" maxlength="50">
+</div>
 
-    <!-- EDIT PROFILE -->
+<div class="form-group">
+<label>Username</label>
+<input id="usernameInput" type="text" maxlength="30">
+</div>
 
-    <section id="editBox" class="edit-box">
+<div class="form-group">
+<label>জন্মতারিখ</label>
+<input id="dobInput" type="date">
+</div>
 
-      <div class="edit-title">
-        ✏️ Edit Profile
-      </div>
+<div class="form-group">
+<label>বয়স</label>
+<input id="ageInput" type="text" readonly>
+</div>
 
-      <div class="form-group">
+<div class="form-group">
+<label>Bio</label>
+<textarea id="bioInput" maxlength="160"></textarea>
+</div>
 
-        <label>নাম</label>
+<div class="form-group">
+<label>Gender</label>
 
-        <input
-          type="text"
-          id="nameInput"
-          placeholder="আপনার নাম"
-          maxlength="50"
-        >
+<select id="genderInput">
+<option value="">নির্বাচন করুন</option>
+<option value="Male">Male</option>
+<option value="Female">Female</option>
+<option value="Other">Other</option>
+<option value="Prefer not to say">
+Prefer not to say
+</option>
+</select>
 
-      </div>
+</div>
 
+<div class="form-group">
+<label>Country</label>
+<input id="countryInput" type="text" maxlength="50">
+</div>
 
-      <div class="form-group">
+<button id="saveBtn" class="save-btn">
+💾 Save Changes
+</button>
 
-        <label>Username</label>
+<button id="cancelBtn" class="cancel-btn">
+Cancel
+</button>
 
-        <input
-          type="text"
-          id="usernameInput"
-          placeholder="wwc_user"
-          maxlength="30"
-        >
+</section>
 
-      </div>
 
+<div class="videos-title">
+🎬 Videos
+</div>
 
-      <div class="form-group">
+<section class="video-grid">
 
-        <label>জন্মতারিখ</label>
+<video controls muted playsinline>
+<source src="./videos/video1.mp4" type="video/mp4">
+</video>
 
-        <input
-          type="date"
-          id="dobInput"
-        >
+<video controls muted playsinline>
+<source src="./videos/video2.mp4" type="video/mp4">
+</video>
 
-      </div>
+<video controls muted playsinline>
+<source src="./videos/video3.mp4" type="video/mp4">
+</video>
 
+</section>
 
-      <div class="form-group">
+</main>
 
-        <label>বয়স</label>
 
-        <input
-          type="text"
-          id="ageInput"
-          readonly
-          placeholder="জন্মতারিখ দিলে বয়স দেখা যাবে"
-        >
+<script type="module">
 
-      </div>
+import {
+  getApps,
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
-      <div class="form-group">
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
-        <label>Bio</label>
 
-        <textarea
-          id="bioInput"
-          placeholder="নিজের সম্পর্কে লিখুন..."
-          maxlength="160"
-        ></textarea>
+const firebaseConfig = {
 
-      </div>
+  apiKey:
+    "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
 
+  authDomain:
+    "world-wide-connect-62c87.firebaseapp.com",
 
-      <div class="form-group">
+  projectId:
+    "world-wide-connect-62c87",
 
-        <label>Gender</label>
+  storageBucket:
+    "world-wide-connect-62c87.firebasestorage.app",
 
-        <select id="genderInput">
+  messagingSenderId:
+    "93178453668",
 
-          <option value="">
-            নির্বাচন করুন
-          </option>
+  appId:
+    "1:93178453668:web:2184630caa8e61f7445031",
 
-          <option value="Male">
-            Male
-          </option>
+  measurementId:
+    "G-PKFJ5NEMGQ"
+};
 
-          <option value="Female">
-            Female
-          </option>
 
-          <option value="Other">
-            Other
-          </option>
+const app = getApps().length
+  ? getApps()[0]
+  : initializeApp(firebaseConfig);
 
-          <option value="Prefer not to say">
-            Prefer not to say
-          </option>
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-        </select>
 
-      </div>
+const loading =
+  document.getElementById("loading");
 
+const profileContent =
+  document.getElementById("profileContent");
 
-      <div class="form-group">
+const profilePhoto =
+  document.getElementById("profilePhoto");
 
-        <label>Country</label>
+const profileName =
+  document.getElementById("profileName");
 
-        <input
-          type="text"
-          id="countryInput"
-          placeholder="Bangladesh"
-          maxlength="50"
-        >
+const profileHandle =
+  document.getElementById("profileHandle");
 
-      </div>
+const profileEmail =
+  document.getElementById("profileEmail");
 
+const profileBio =
+  document.getElementById("profileBio");
 
-      <div class="form-group">
+const followers =
+  document.getElementById("followers");
 
-        <label>Profile Photo</label>
+const followingCount =
+  document.getElementById("followingCount");
 
-        <input
-          type="file"
-          id="editPhotoInput"
-          accept="image/*"
-        >
+const likesCount =
+  document.getElementById("likesCount");
 
-        <div class="photo-note">
-          ছবি ছোট করে Firebase Firestore-এ সংরক্ষণ করা হবে।
-        </div>
+const followBtn =
+  document.getElementById("followBtn");
 
-      </div>
+const editBtn =
+  document.getElementById("editBtn");
 
+const logoutBtn =
+  document.getElementById("logoutBtn");
 
-      <button
-        type="button"
-        class="save-btn"
-        id="saveBtn"
-      >
-        💾 Save Changes
-      </button>
+const editBox =
+  document.getElementById("editBox");
 
+const saveBtn =
+  document.getElementById("saveBtn");
 
-      <button
-        type="button"
-        class="cancel-btn"
-        id="cancelBtn"
-      >
-        Cancel
-      </button>
+const cancelBtn =
+  document.getElementById("cancelBtn");
 
-    </section>
+const message =
+  document.getElementById("message");
 
+const backBtn =
+  document.getElementById("backBtn");
 
-    <!-- VIDEOS -->
+const nameInput =
+  document.getElementById("nameInput");
 
-    <div class="videos-title">
-      🎬 Videos
-    </div>
+const usernameInput =
+  document.getElementById("usernameInput");
 
-    <section class="video-grid">
+const dobInput =
+  document.getElementById("dobInput");
 
-      <video controls muted playsinline>
-        <source
-          src="./videos/video1.mp4"
-          type="video/mp4"
-        >
-      </video>
+const ageInput =
+  document.getElementById("ageInput");
 
-      <video controls muted playsinline>
-        <source
-          src="./videos/video2.mp4"
-          type="video/mp4"
-        >
-      </video>
+const bioInput =
+  document.getElementById("bioInput");
 
-      <video controls muted playsinline>
-        <source
-          src="./videos/video3.mp4"
-          type="video/mp4"
-        >
-      </video>
+const genderInput =
+  document.getElementById("genderInput");
 
-    </section>
+const countryInput =
+  document.getElementById("countryInput");
 
-  </main>
 
+const defaultPhoto =
+  "./images/profile.png";
 
-  <script type="module">
+let currentUser = null;
+let currentProfile = {};
 
-    import {
-      getApps,
-      initializeApp
-    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
+function showMessage(text, success=false){
 
-    import {
-      getAuth,
-      onAuthStateChanged,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+  message.textContent = text;
 
+  message.style.color =
+    success ? "#4ade80" : "#aaa";
+}
 
-    import {
-      getFirestore,
-      doc,
-      getDoc,
-      setDoc,
-      updateDoc
-    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
+function calculateAge(dateString){
 
-    // ==========================================
-    // FIREBASE CONFIG
-    // ==========================================
+  if(!dateString) return "";
 
-    const firebaseConfig = {
+  const birth =
+    new Date(dateString);
 
-      apiKey:
-        "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
+  if(isNaN(birth.getTime()))
+    return "";
 
-      authDomain:
-        "world-wide-connect-62c87.firebaseapp.com",
+  const today =
+    new Date();
 
-      projectId:
-        "world-wide-connect-62c87",
+  let age =
+    today.getFullYear()
+    - birth.getFullYear();
 
-      storageBucket:
-        "world-wide-connect-62c87.firebasestorage.app",
+  const month =
+    today.getMonth()
+    - birth.getMonth();
 
-      messagingSenderId:
-        "93178453668",
+  if(
+    month < 0 ||
+    (
+      month === 0 &&
+      today.getDate() < birth.getDate()
+    )
+  ){
+    age--;
+  }
 
-      appId:
-        "1:93178453668:web:2184630caa8e61f7445031",
+  return age >= 0 ? age : "";
+}
 
-      measurementId:
-        "G-PKFJ5NEMGQ"
-    };
 
+dobInput.addEventListener(
+  "change",
+  () => {
 
-    // ==========================================
-    // FIREBASE START
-    // ==========================================
+    ageInput.value =
+      calculateAge(dobInput.value);
 
-    const app = getApps().length
-      ? getApps()[0]
-      : initializeApp(firebaseConfig);
+  }
+);
 
 
-    const auth = getAuth(app);
+function renderProfile(){
 
-    const db = getFirestore(app);
+  profileName.textContent =
+    currentProfile.name ||
+    currentUser.displayName ||
+    "WWC User";
 
+  let username =
+    currentProfile.username ||
+    "wwc_user";
 
-    // ==========================================
-    // ELEMENTS
-    // ==========================================
+  username =
+    username.replace(/^@/, "");
 
-    const loading =
-      document.getElementById("loading");
+  profileHandle.textContent =
+    "@" + username;
 
-    const profileContent =
-      document.getElementById("profileContent");
+  profileEmail.textContent =
+    currentUser.email ||
+    currentProfile.email ||
+    "";
 
-    const profilePhoto =
-      document.getElementById("profilePhoto");
+  profileBio.textContent =
+    currentProfile.bio ||
+    "Welcome to my WWC profile 🌍";
 
-    const profileName =
-      document.getElementById("profileName");
+  profilePhoto.src =
+    currentProfile.photoURL ||
+    currentUser.photoURL ||
+    defaultPhoto;
 
-    const profileHandle =
-      document.getElementById("profileHandle");
+  followers.textContent =
+    currentProfile.followers || 0;
 
-    const profileEmail =
-      document.getElementById("profileEmail");
+  followingCount.textContent =
+    currentProfile.following || 0;
 
-    const profileBio =
-      document.getElementById("profileBio");
+  likesCount.textContent =
+    currentProfile.likes || 0;
 
-    const followers =
-      document.getElementById("followers");
+}
 
-    const followingCount =
-      document.getElementById("followingCount");
 
-    const likesCount =
-      document.getElementById("likesCount");
+function fillEditForm(){
 
-    const followBtn =
-      document.getElementById("followBtn");
+  nameInput.value =
+    currentProfile.name ||
+    currentUser.displayName ||
+    "";
 
-    const editBtn =
-      document.getElementById("editBtn");
+  usernameInput.value =
+    currentProfile.username ||
+    "wwc_user";
 
-    const logoutBtn =
-      document.getElementById("logoutBtn");
+  dobInput.value =
+    currentProfile.dob || "";
 
-    const editBox =
-      document.getElementById("editBox");
+  ageInput.value =
+    currentProfile.age ||
+    calculateAge(currentProfile.dob);
 
-    const saveBtn =
-      document.getElementById("saveBtn");
+  bioInput.value =
+    currentProfile.bio ||
+    "";
 
-    const cancelBtn =
-      document.getElementById("cancelBtn");
+  genderInput.value =
+    currentProfile.gender ||
+    "";
 
-    const message =
-      document.getElementById("message");
+  countryInput.value =
+    currentProfile.country ||
+    "Bangladesh";
+}
 
-    const photoInput =
-      document.getElementById("photoInput");
 
-    const editPhotoInput =
-      document.getElementById("editPhotoInput");
+async function loadProfile(user){
 
-    const cameraBtn =
-      document.getElementById("cameraBtn");
+  currentUser = user;
 
-    const nameInput =
-      document.getElementById("nameInput");
+  try{
 
-    const usernameInput =
-      document.getElementById("usernameInput");
+    const userRef =
+      doc(db, "users", user.uid);
 
-    const dobInput =
-      document.getElementById("dobInput");
+    const snapshot =
+      await getDoc(userRef);
 
-    const ageInput =
-      document.getElementById("ageInput");
+    if(snapshot.exists()){
 
-    const bioInput =
-      document.getElementById("bioInput");
+      currentProfile =
+        snapshot.data();
 
-    const genderInput =
-      document.getElementById("genderInput");
+    }else{
 
-    const countryInput =
-      document.getElementById("countryInput");
+      currentProfile = {
 
+        name:
+          user.displayName ||
+          "WWC User",
 
-    // ==========================================
-    // DEFAULT PROFILE PHOTO
-    // ==========================================
+        username:
+          "wwc_user",
 
-    const defaultPhoto =
-      "./images/profile.png";
+        email:
+          user.email || "",
 
+        bio:
+          "Welcome to my WWC profile 🌍",
 
-    // ==========================================
-    // CURRENT USER
-    // ==========================================
+        dob:"",
+        age:"",
+        gender:"",
+        country:"Bangladesh",
 
-    let currentUser = null;
+        photoURL:
+          user.photoURL ||
+          defaultPhoto,
 
-    let currentProfile = {};
+        followers:0,
+        following:0,
+        likes:0
+      };
 
-    let selectedPhotoData = "";
-
-
-    // ==========================================
-    // AGE CALCULATOR
-    // ==========================================
-
-    function calculateAge(dateString) {
-
-      if (!dateString) {
-        return "";
-      }
-
-      const birthDate =
-        new Date(dateString);
-
-      if (isNaN(birthDate.getTime())) {
-        return "";
-      }
-
-      const today =
-        new Date();
-
-      let age =
-        today.getFullYear()
-        - birthDate.getFullYear();
-
-      const monthDifference =
-        today.getMonth()
-        - birthDate.getMonth();
-
-      if (
-        monthDifference < 0 ||
-        (
-          monthDifference === 0 &&
-          today.getDate() < birthDate.getDate()
-        )
-      ) {
-
-        age--;
-
-      }
-
-      if (age < 0) {
-        return "";
-      }
-
-      return age;
-
+      await setDoc(
+        userRef,
+        currentProfile
+      );
     }
 
+    renderProfile();
+    fillEditForm();
 
-    dobInput.addEventListener(
-      "change",
-      () => {
+    loading.style.display = "none";
+    profileContent.style.display = "block";
 
-        ageInput.value =
-          calculateAge(
-            dobInput.value
-          );
+  }catch(error){
 
-      }
+    console.error(error);
+
+    loading.innerHTML =
+      "❌ Profile লোড করা যায়নি।<br><br>" +
+      "Firebase Firestore Rules পরীক্ষা করুন।";
+  }
+}
+
+
+onAuthStateChanged(
+  auth,
+  (user) => {
+
+    if(user){
+
+      loadProfile(user);
+
+    }else{
+
+      loading.innerHTML =
+        "❌ Login করা নেই।<br><br>" +
+        "<a href='./login.html' style='color:#00e5ff;'>Login করুন</a>";
+    }
+
+  }
+);
+
+
+editBtn.addEventListener(
+  "click",
+  () => {
+
+    editBox.classList.toggle("show");
+
+  }
+);
+
+
+cancelBtn.addEventListener(
+  "click",
+  () => {
+
+    editBox.classList.remove("show");
+
+    fillEditForm();
+
+  }
+);
+
+
+saveBtn.addEventListener(
+  "click",
+  async () => {
+
+    if(!currentUser) return;
+
+    saveBtn.disabled = true;
+
+    showMessage(
+      "⏳ Profile Save হচ্ছে..."
     );
 
+    try{
 
-    // ==========================================
-    // COMPRESS PHOTO
-    // ==========================================
+      const username =
+        usernameInput.value
+        .trim()
+        .replace(/^@/, "");
 
-    function compressPhoto(file) {
+      const newProfile = {
 
-      return new Promise(
-        (resolve, reject) => {
+        name:
+          nameInput.value.trim()
+          || "WWC User",
 
-          if (!file) {
-            resolve("");
-            return;
-          }
+        username:
+          username
+          || "wwc_user",
 
-          if (!file.type.startsWith("image/")) {
+        dob:
+          dobInput.value,
 
-            reject(
-              new Error(
-                "শুধু ছবি নির্বাচন করুন।"
-              )
-            );
+        age:
+          calculateAge(
+            dobInput.value
+          ),
 
-            return;
-          }
+        bio:
+          bioInput.value.trim(),
 
-          const reader =
-            new FileReader();
+        gender:
+          genderInput.value,
 
-          reader.onload = event => {
+        country:
+          countryInput.value.trim(),
 
-            const img =
-              new Image();
+        email:
+          currentUser.email || "",
 
-            img.onload = () => {
+        photoURL:
+          currentProfile.photoURL ||
+          currentUser.photoURL ||
+          defaultPhoto,
 
-              const maxSize = 400;
+        followers:
+          Number(currentProfile.followers || 0),
 
-              let width =
-                img.width;
+        following:
+          Number(currentProfile.following || 0),
 
-              let height =
-                img.height;
+        likes:
+          Number(currentProfile.likes || 0)
 
-
-              if (width > height) {
-
-                if (width > maxSize) {
-
-                  height =
-                    height * maxSize / width;
-
-                  width =
-                    maxSize;
-
-                }
-
-              } else {
-
-                if (height > maxSize) {
-
-                  width =
-                    width * maxSize / height;
-
-                  height =
-                    maxSize;
-
-                }
-
-              }
-
-
-              const canvas =
-                document.createElement("canvas");
-
-              canvas.width =
-                width;
-
-              canvas.height =
-                height;
-
-
-              const ctx =
-                canvas.getContext("2d");
-
-              ctx.drawImage(
-                img,
-                0,
-                0,
-                width,
-                height
-              );
-
-
-              const compressed =
-                canvas.toDataURL(
-                  "image/jpeg",
-                  0.75
-                );
-
-
-              resolve(compressed);
-
-            };
-
-
-            img.onerror = () => {
-
-              reject(
-                new Error(
-                  "ছবি পড়া যায়নি।"
-                )
-              );
-
-            };
-
-
-            img.src =
-              event.target.result;
-
-          };
-
-
-          reader.onerror = () => {
-
-            reject(
-              new Error(
-                "ছবি লোড করা যায়নি।"
-              )
-            );
-
-          };
-
-
-          reader.readAsDataURL(file);
-
-        }
-      );
-
-    }
-
-
-    // ==========================================
-    // SHOW MESSAGE
-    // ==========================================
-
-    function showMessage(
-      text,
-      success = false
-    ) {
-
-      message.textContent =
-        text;
-
-      message.style.color =
-        success
-          ? "#4ade80"
-          : "#aaa";
-
-    }
-
-
-    // ==========================================
-    // LOAD PROFILE
-    // ==========================================
-
-    async function loadProfile(user) {
-
-      currentUser =
-        user;
+      };
 
 
       const userRef =
         doc(
           db,
           "users",
-          user.uid
+          currentUser.uid
         );
 
+      await setDoc(
+        userRef,
+        newProfile,
+        { merge:true }
+      );
 
-      try {
+      currentProfile = {
+        ...currentProfile,
+        ...newProfile
+      };
 
-        const snapshot =
-          await getDoc(userRef);
+      renderProfile();
+      fillEditForm();
 
+      editBox.classList.remove("show");
 
-        if (snapshot.exists()) {
+      showMessage(
+        "✅ Profile সফলভাবে Save হয়েছে।",
+        true
+      );
 
-          currentProfile =
-            snapshot.data();
+    }catch(error){
 
-        } else {
+      console.error(error);
 
-          currentProfile = {
-
-            name:
-              user.displayName
-              || "WWC User",
-
-            username:
-              "wwc_user",
-
-            bio:
-              "Welcome to my WWC profile 🌍",
-
-            dob:
-              "",
-
-            age:
-              "",
-
-            gender:
-              "",
-
-            country:
-              "Bangladesh",
-
-            photoURL:
-              user.photoURL
-              || defaultPhoto,
-
-            email:
-              user.email
-              || "",
-
-            followers:
-              0,
-
-            following:
-              0,
-
-            likes:
-              0
-
-          };
-
-
-          await setDoc(
-            userRef,
-            currentProfile
-          );
-
-        }
-
-
-        renderProfile();
-
-        fillEditForm();
-
-        loading.style.display =
-          "none";
-
-        profileContent.style.display =
-          "block";
-
-      } catch (error) {
-
-        console.error(
-          "Profile Load Error:",
-          error
-        );
-
-        loading.textContent =
-          "❌ Profile লোড করা যায়নি।";
-
-      }
+      showMessage(
+        "❌ Profile Save করা যায়নি: " +
+        error.message
+      );
 
     }
 
+    saveBtn.disabled = false;
 
-    // ==========================================
-    // RENDER PROFILE
-    // ==========================================
-
-    function renderProfile() {
-
-      profileName.textContent =
-        currentProfile.name
-        || currentUser.displayName
-        || "WWC User";
+  }
+);
 
 
-      let username =
-        currentProfile.username
-        || "wwc_user";
+followBtn.addEventListener(
+  "click",
+  () => {
+
+    if(!currentUser){
+
+      showMessage(
+        "⚠️ আগে Login করুন।"
+      );
+
+      return;
+    }
+
+    showMessage(
+      "ℹ️ নিজের Profile নিজেকে Follow করার দরকার নেই।"
+    );
+
+  }
+);
 
 
-      username =
-        username.replace(
-          /^@/,
-          ""
-        );
+logoutBtn.addEventListener(
+  "click",
+  async () => {
 
+    try{
 
-      profileHandle.textContent =
-        "@" + username;
+      await signOut(auth);
 
+      window.location.href =
+        "./login.html";
 
-      profileEmail.textContent =
-        currentUser.email
-        || currentProfile.email
-        || "";
+    }catch(error){
 
+      console.error(error);
 
-      profileBio.textContent =
-        currentProfile.bio
-        || "Welcome to my WWC profile 🌍";
-
-
-      profilePhoto.src =
-        currentProfile.photoURL
-        || currentUser.photoURL
-        || defaultPhoto;
-
-
-      followers.textContent =
-        currentProfile.followers || 0;
-
-
-      followingCount.textContent =
-        currentProfile.following || 0;
-
-
-      likesCount.textContent =
-        currentProfile.likes || 0;
-
-
-      updateFollowButton();
+      showMessage(
+        "❌ Logout করা যায়নি।"
+      );
 
     }
 
-
-    // ==========================================
-    // FILL EDIT FORM
-    // ==========================================
-
-    function fillEditForm() {
-
-      nameInput.value =
-        currentProfile.name
-        || currentUser.displayName
-        || "";
+  }
+);
 
 
-  
+backBtn.addEventListener(
+  "click",
+  () => {
+
+    window.location.href =
+      "./index.html";
+
+  }
+);
+
+</script>
+
+</body>
+</html>
