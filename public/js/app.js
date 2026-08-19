@@ -1,11 +1,28 @@
 /* =========================================================
    WORLD WIDE CONNECT
    WWC-CORE
-   COMPLETE APP.JS
+   APP.JS — COMPLETE VERSION
+
+   Features:
+   Firebase Authentication
+   User Profile
+   Login / Logout
+   Video Feed
+   Auto Play
+   Like
+   Comment
+   Save
+   Share
+   Follow
+   Search
+   Notifications
+   Play / Pause
+   Mute / Unmute
+   Upload Navigation
+   Title + Caption support
    ========================================================= */
 
 "use strict";
-
 
 /* =========================================================
    FIREBASE IMPORT
@@ -35,27 +52,13 @@ import {
    ========================================================= */
 
 const firebaseConfig = {
-
-    apiKey:
-        "AIzaSyCgio17aPEf7d6juqIhn3yi6Mf65W_tO4",
-
-    authDomain:
-        "world-wide-connect-62c87.firebaseapp.com",
-
-    projectId:
-        "world-wide-connect-62c87",
-
-    storageBucket:
-        "world-wide-connect-62c87.firebasestorage.app",
-
-    messagingSenderId:
-        "93178453668",
-
-    appId:
-        "1:93178453668:web:2184630caae8e61f7445031",
-
-    measurementId:
-        "G-PKFJ5NEMGQ"
+    apiKey: "AIzaSyCgio17aPErF7d6juqIhn3yi6Mf65W_tO4",
+    authDomain: "world-wide-connect-62c87.firebaseapp.com",
+    projectId: "world-wide-connect-62c87",
+    storageBucket: "world-wide-connect-62c87.firebasestorage.app",
+    messagingSenderId: "931784536688",
+    appId: "1:931784536688:web:2184630caae8e61f7445031",
+    measurementId: "G-PKFJ5NEMGQ"
 };
 
 
@@ -68,83 +71,45 @@ const app =
         ? getApps()[0]
         : initializeApp(firebaseConfig);
 
-const auth =
-    getAuth(app);
-
-const db =
-    getFirestore(app);
-
-
-/* =========================================================
-   GLOBAL USER
-   ========================================================= */
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 let currentUser = null;
-
 let currentCommentVideo = null;
 
 
 /* =========================================================
-   DOM READY
+   START
    ========================================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
+document.addEventListener("DOMContentLoaded", () => {
 
-        startWWC();
-
-    }
-);
-
-
-/* =========================================================
-   START WWC
-   ========================================================= */
-
-function startWWC() {
-
-    console.log(
-        "🌍 WWC-Core starting..."
-    );
-
+    console.log("🌍 WWC-Core starting...");
 
     setupAuthentication();
-
     setupNavigation();
-
     setupLogout();
 
     setupVideoFeed();
-
     setupLikeButtons();
-
     setupCommentButtons();
-
     setupSaveButtons();
-
     setupShareButtons();
-
     setupFollowButtons();
 
     setupSearch();
-
     setupSearchClear();
 
     setupNotifications();
-
     setupMuteButtons();
-
     setupPlayButtons();
-
     setupProfileLinks();
 
+    setupCommentBox();
 
-    console.log(
-        "✅ WWC-Core ready"
-    );
+    console.log("✅ WWC-Core ready");
 
-}
+});
 
 
 /* =========================================================
@@ -153,78 +118,53 @@ function startWWC() {
 
 function setupAuthentication() {
 
-    onAuthStateChanged(
-        auth,
-        async (user) => {
+    onAuthStateChanged(auth, async (user) => {
 
-            currentUser = user;
+        currentUser = user;
 
+        if (user) {
 
-            if (user) {
+            console.log(
+                "✅ Login:",
+                user.email || user.uid
+            );
 
-                console.log(
-                    "✅ Login:",
-                    user.email || user.uid
-                );
+            await createProfile(user);
 
+            updateLoginUI(true, user);
 
-                await createProfile(
-                    user
-                );
+        } else {
 
+            console.log(
+                "ℹ️ User not logged in"
+            );
 
-                updateLoginUI(
-                    true,
-                    user
-                );
-
-            } else {
-
-                console.log(
-                    "ℹ️ User not logged in"
-                );
-
-
-                updateLoginUI(
-                    false,
-                    null
-                );
-
-            }
+            updateLoginUI(false, null);
 
         }
-    );
+
+    });
 
 }
 
 
 /* =========================================================
-   CREATE USER PROFILE
+   CREATE PROFILE
    ========================================================= */
 
-async function createProfile(
-    user
-) {
+async function createProfile(user) {
 
     try {
 
         const userRef =
-            doc(
-                db,
-                "users",
-                user.uid
-            );
-
+            doc(db, "users", user.uid);
 
         const snapshot =
-            await getDoc(
-                userRef
-            );
-
+            await getDoc(userRef);
 
         if (!snapshot.exists()) {
 
-            const profile = {
+            await setDoc(userRef, {
 
                 name:
                     user.displayName ||
@@ -242,38 +182,19 @@ async function createProfile(
                 photoURL:
                     user.photoURL || "",
 
-                dob:
-                    "",
+                dob: "",
+                age: "",
+                gender: "",
+                country: "Bangladesh",
 
-                age:
-                    "",
-
-                gender:
-                    "",
-
-                country:
-                    "Bangladesh",
-
-                followers:
-                    0,
-
-                following:
-                    0,
-
-                likes:
-                    0,
+                followers: 0,
+                following: 0,
+                likes: 0,
 
                 createdAt:
                     new Date().toISOString()
 
-            };
-
-
-            await setDoc(
-                userRef,
-                profile
-            );
-
+            });
 
             console.log(
                 "✅ New profile created"
@@ -297,67 +218,49 @@ async function createProfile(
    LOGIN UI
    ========================================================= */
 
-function updateLoginUI(
-    loggedIn,
-    user
-) {
+function updateLoginUI(loggedIn, user) {
 
     const loginButtons =
         document.querySelectorAll(
             ".login-btn, #loginBtn"
         );
 
-
     const logoutButtons =
         document.querySelectorAll(
             ".logout-btn, #logoutBtn, .logout-menu-btn"
         );
 
+    loginButtons.forEach(button => {
 
-    loginButtons.forEach(
-        button => {
+        button.style.display =
+            loggedIn ? "none" : "";
 
-            button.style.display =
-                loggedIn
-                    ? "none"
-                    : "";
+    });
 
-        }
-    );
+    logoutButtons.forEach(button => {
 
+        button.style.display =
+            loggedIn ? "" : "none";
 
-    logoutButtons.forEach(
-        button => {
-
-            button.style.display =
-                loggedIn
-                    ? ""
-                    : "none";
-
-        }
-    );
-
+    });
 
     const userNames =
         document.querySelectorAll(
             ".current-user-name"
         );
 
+    userNames.forEach(element => {
 
-    userNames.forEach(
-        element => {
+        element.textContent =
+            user
+                ? (
+                    user.displayName ||
+                    user.email ||
+                    "WWC User"
+                )
+                : "Guest";
 
-            element.textContent =
-                user
-                    ? (
-                        user.displayName ||
-                        user.email ||
-                        "WWC User"
-                    )
-                    : "Guest";
-
-        }
-    );
+    });
 
 }
 
@@ -370,19 +273,18 @@ async function logoutUser() {
 
     try {
 
-        await signOut(
-            auth
+        await signOut(auth);
+
+        showWWCMessage(
+            "✅ Logout সফল হয়েছে"
         );
 
+        setTimeout(() => {
 
-        console.log(
-            "✅ Logout successful"
-        );
+            window.location.href =
+                "./auth.html";
 
-
-        window.location.href =
-            "./auth.html";
-
+        }, 500);
 
     } catch (error) {
 
@@ -390,7 +292,6 @@ async function logoutUser() {
             "❌ Logout error:",
             error
         );
-
 
         showWWCMessage(
             "❌ Logout করা যায়নি"
@@ -401,10 +302,6 @@ async function logoutUser() {
 }
 
 
-/* =========================================================
-   LOGOUT BUTTON
-   ========================================================= */
-
 function setupLogout() {
 
     const buttons =
@@ -412,37 +309,32 @@ function setupLogout() {
             "#logoutBtn, .logout-btn, .logout-menu-btn"
         );
 
+    buttons.forEach(button => {
 
-    buttons.forEach(
-        button => {
+        if (
+            button.dataset.wwcLogoutReady ===
+            "true"
+        ) {
 
-            if (
-                button.dataset.wwcReady ===
-                "true"
-            ) {
-
-                return;
-
-            }
-
-
-            button.dataset.wwcReady =
-                "true";
-
-
-            button.addEventListener(
-                "click",
-                event => {
-
-                    event.preventDefault();
-
-                    logoutUser();
-
-                }
-            );
+            return;
 
         }
-    );
+
+        button.dataset.wwcLogoutReady =
+            "true";
+
+        button.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+
+                logoutUser();
+
+            }
+        );
+
+    });
 
 }
 
@@ -453,137 +345,94 @@ function setupLogout() {
 
 function setupNavigation() {
 
-
     /* HOME */
 
-    document
-        .querySelectorAll(
-            "#homeBtn, .home-btn"
-        )
-        .forEach(
-            button => {
+    document.querySelectorAll(
+        "#homeBtn, .home-btn"
+    ).forEach(button => {
 
-                button.addEventListener(
-                    "click",
-                    () => {
+        button.addEventListener(
+            "click",
+            () => {
 
-                        window.location.href =
-                            "./index.html";
-
-                    }
-                );
+                window.location.href =
+                    "./index.html";
 
             }
         );
+
+    });
 
 
     /* PROFILE */
 
-    document
-        .querySelectorAll(
-            "#profileBtn, .profile-btn"
-        )
-        .forEach(
-            button => {
+    document.querySelectorAll(
+        "#profileBtn, .profile-btn"
+    ).forEach(button => {
 
-                button.addEventListener(
-                    "click",
-                    () => {
+        button.addEventListener(
+            "click",
+            () => {
 
-                        if (!currentUser) {
+                if (!currentUser) {
 
-                            window.location.href =
-                                "./auth.html";
+                    window.location.href =
+                        "./auth.html";
 
-                            return;
+                    return;
 
-                        }
+                }
 
-
-                        window.location.href =
-                            "./profile.html";
-
-                    }
-                );
+                window.location.href =
+                    "./profile.html";
 
             }
         );
+
+    });
 
 
     /* UPLOAD */
 
-    document
-        .querySelectorAll(
-            "#uploadBtn, .upload-btn, #createBtn"
-        )
-        .forEach(
-            button => {
+    document.querySelectorAll(
+        "#uploadBtn, .upload-btn, #createBtn"
+    ).forEach(button => {
 
-                button.addEventListener(
-                    "click",
-                    () => {
+        button.addEventListener(
+            "click",
+            () => {
 
-                        if (!currentUser) {
+                if (!currentUser) {
 
-                            window.location.href =
-                                "./auth.html";
+                    window.location.href =
+                        "./auth.html";
 
-                            return;
+                    return;
 
-                        }
+                }
 
-
-                        window.location.href =
-                            "./upload.html";
-
-                    }
-                );
+                window.location.href =
+                    "./upload.html";
 
             }
         );
 
-
-    /* FRIENDS */
-
-    const friendsBtn =
-        document.getElementById(
-            "friendsBtn"
-        );
+    });
 
 
-    if (friendsBtn) {
+    /* LOGIN */
 
-        friendsBtn.addEventListener(
+    const loginBtn =
+        document.getElementById("loginBtn");
+
+    if (loginBtn) {
+
+        loginBtn.addEventListener(
             "click",
             () => {
 
-                showWWCMessage(
-                    "👥 Friends feature শীঘ্রই আসছে"
-                );
-
-            }
-        );
-
-    }
-
-
-    /* INBOX */
-
-    const inboxBtn =
-        document.getElementById(
-            "inboxBtn"
-        );
-
-
-    if (inboxBtn) {
-
-        inboxBtn.addEventListener(
-            "click",
-            () => {
-
-                showWWCMessage(
-                    "💬 Inbox feature শীঘ্রই আসছে"
-                );
+                window.location.href =
+                    "./auth.html";
 
             }
         );
@@ -600,45 +449,34 @@ function setupNavigation() {
 function setupVideoFeed() {
 
     const feed =
-        document.getElementById(
-            "video-feed"
-        );
-
+        document.getElementById("video-feed");
 
     if (!feed) {
 
+        console.log(
+            "ℹ️ Video feed নেই"
+        );
+
         return;
 
     }
 
-
-    const items =
+    const videos =
         Array.from(
             feed.querySelectorAll(
-                ".video-item"
+                ".feed-video, video"
             )
         );
 
-
-    const videos =
-        items
-            .map(
-                item =>
-                    item.querySelector(
-                        "video"
-                    )
-            )
-            .filter(
-                Boolean
-            );
-
-
     if (!videos.length) {
+
+        console.log(
+            "ℹ️ কোনো video নেই"
+        );
 
         return;
 
     }
-
 
     console.log(
         "🎬 Videos:",
@@ -646,31 +484,100 @@ function setupVideoFeed() {
     );
 
 
-    videos.forEach(
-        video => {
+    videos.forEach(video => {
 
-            video.setAttribute(
-                "playsinline",
-                ""
-            );
+        video.setAttribute(
+            "playsinline",
+            ""
+        );
 
+        video.setAttribute(
+            "preload",
+            "metadata"
+        );
 
-            video.setAttribute(
-                "preload",
-                "metadata"
-            );
-
-
-            video.muted =
-                true;
+        video.muted = true;
 
 
-            video.addEventListener(
-                "play",
-                () => {
+        video.addEventListener(
+            "play",
+            () => {
 
-                    videos.forEach(
-                        other => {
+                videos.forEach(other => {
+
+                    if (
+                        other !== video &&
+                        !other.paused
+                    ) {
+
+                        other.pause();
+
+                    }
+
+                });
+
+            }
+        );
+
+
+        video.addEventListener(
+            "click",
+            () => {
+
+                if (video.paused) {
+
+                    video.play().catch(() => {});
+
+                } else {
+
+                    video.pause();
+
+                }
+
+            }
+        );
+
+    });
+
+
+    setupVideoObserver(videos);
+
+}
+
+
+/* =========================================================
+   VIDEO OBSERVER
+   ========================================================= */
+
+function setupVideoObserver(videos) {
+
+    if (
+        typeof IntersectionObserver ===
+        "undefined"
+    ) {
+
+        videos[0].play().catch(() => {});
+
+        return;
+
+    }
+
+
+    const observer =
+        new IntersectionObserver(
+            entries => {
+
+                entries.forEach(entry => {
+
+                    const video =
+                        entry.target;
+
+                    if (
+                        entry.isIntersecting &&
+                        entry.intersectionRatio >= 0.65
+                    ) {
+
+                        videos.forEach(other => {
 
                             if (
                                 other !== video &&
@@ -681,77 +588,21 @@ function setupVideoFeed() {
 
                             }
 
-                        }
-                    );
+                        });
 
-                }
-            );
+                        video.play().catch(() => {});
 
-        }
-    );
+                    } else {
 
-
-    const observer =
-        new IntersectionObserver(
-            entries => {
-
-                entries.forEach(
-                    entry => {
-
-                        const video =
-                            entry.target;
-
-
-                        if (
-                            entry.isIntersecting &&
-                            entry.intersectionRatio >= 0.65
-                        ) {
-
-                            videos.forEach(
-                                other => {
-
-                                    if (
-                                        other !== video
-                                    ) {
-
-                                        other.pause();
-
-                                    }
-
-                                }
-                            );
-
-
-                            const promise =
-                                video.play();
-
-
-                            if (
-                                promise &&
-                                typeof promise.catch ===
-                                "function"
-                            ) {
-
-                                promise.catch(
-                                    () => {
-
-                                        console.log(
-                                            "Autoplay blocked"
-                                        );
-
-                                    }
-                                );
-
-                            }
-
-                        } else {
+                        if (!video.paused) {
 
                             video.pause();
 
                         }
 
                     }
-                );
+
+                });
 
             },
             {
@@ -759,34 +610,18 @@ function setupVideoFeed() {
                     0.25,
                     0.50,
                     0.65,
-                    0.80
+                    0.80,
+                    1
                 ]
             }
         );
 
 
-    videos.forEach(
-        video => {
+    videos.forEach(video => {
 
-            observer.observe(
-                video
-            );
+        observer.observe(video);
 
-        }
-    );
-
-
-    /* প্রথম ভিডিও চালানোর চেষ্টা */
-
-    if (videos[0]) {
-
-        videos[0]
-            .play()
-            .catch(
-                () => {}
-            );
-
-    }
+    });
 
 }
 
@@ -795,31 +630,20 @@ function setupVideoFeed() {
    STORAGE
    ========================================================= */
 
-function wwcGetStorage(
-    key,
-    fallback
-) {
+function wwcGetStorage(key, fallback) {
 
     try {
 
         const value =
-            localStorage.getItem(
-                key
-            );
+            localStorage.getItem(key);
 
-
-        if (
-            value === null
-        ) {
+        if (value === null) {
 
             return fallback;
 
         }
 
-
-        return JSON.parse(
-            value
-        );
+        return JSON.parse(value);
 
     } catch (error) {
 
@@ -828,7 +652,6 @@ function wwcGetStorage(
             error
         );
 
-
         return fallback;
 
     }
@@ -836,18 +659,13 @@ function wwcGetStorage(
 }
 
 
-function wwcSetStorage(
-    key,
-    value
-) {
+function wwcSetStorage(key, value) {
 
     try {
 
         localStorage.setItem(
             key,
-            JSON.stringify(
-                value
-            )
+            JSON.stringify(value)
         );
 
     } catch (error) {
@@ -866,9 +684,7 @@ function wwcSetStorage(
    VIDEO ID
    ========================================================= */
 
-function getWWCVideoId(
-    item
-) {
+function getWWCVideoId(item) {
 
     if (!item) {
 
@@ -876,81 +692,48 @@ function getWWCVideoId(
 
     }
 
-
-    if (
-        item.dataset.videoId
-    ) {
+    if (item.dataset.videoId) {
 
         return item.dataset.videoId;
 
     }
 
-
     const video =
-        item.querySelector(
-            "video"
-        );
+        item.querySelector("video");
 
-
-    if (
-        video
-    ) {
+    if (video) {
 
         const source =
-            video.querySelector(
-                "source"
-            );
-
+            video.querySelector("source");
 
         const src =
+            source?.src ||
             video.currentSrc ||
             video.src ||
-            (
-                source
-                    ? source.src
-                    : ""
-            );
-
+            "";
 
         if (src) {
 
-            try {
-
-                item.dataset.videoId =
-                    "video-" +
-                    btoa(src)
-                        .replace(
-                            /[^a-zA-Z0-9]/g,
-                            ""
-                        )
-                        .slice(
-                            0,
-                            30
-                        );
-
-            } catch {
-
-                item.dataset.videoId =
-                    "video-" +
-                    Date.now();
-
-            }
+            item.dataset.videoId =
+                "video-" +
+                btoa(src)
+                    .replace(
+                        /[^a-zA-Z0-9]/g,
+                        ""
+                    )
+                    .slice(0, 30);
 
         }
 
     }
 
-
-    if (
-        !item.dataset.videoId
-    ) {
+    if (!item.dataset.videoId) {
 
         item.dataset.videoId =
             "video-" +
             Date.now();
 
     }
-
 
     return item.dataset.videoId;
 
@@ -963,189 +746,149 @@ function getWWCVideoId(
 
 function setupLikeButtons() {
 
-    document
-        .querySelectorAll(
-            ".like-btn, #likeBtn"
-        )
-        .forEach(
-            button => {
+    document.querySelectorAll(
+        ".like-btn, #likeBtn"
+    ).forEach(button => {
 
-                if (
-                    button.dataset.wwcLikeReady ===
-                    "true"
-                ) {
+        if (
+            button.dataset.wwcLikeReady ===
+            "true"
+        ) {
 
-                    return;
+            return;
 
-                }
+        }
+
+        button.dataset.wwcLikeReady =
+            "true";
+
+        const item =
+            button.closest(".video-item");
+
+        if (!item) {
+
+            return;
+
+        }
+
+        const videoId =
+            getWWCVideoId(item);
+
+        loadLikeState(
+            button,
+            videoId
+        );
 
 
-                button.dataset.wwcLikeReady =
-                    "true";
+        button.addEventListener(
+            "click",
+            event => {
 
+                event.preventDefault();
+                event.stopPropagation();
 
-                const item =
-                    button.closest(
-                        ".video-item"
+                const likes =
+                    wwcGetStorage(
+                        "wwc_likes",
+                        {}
                     );
 
-
-                if (!item) {
-
-                    return;
-
-                }
-
-
-                const videoId =
-                    getWWCVideoId(
-                        item
+                const liked =
+                    wwcGetStorage(
+                        "wwc_liked_videos",
+                        []
                     );
 
+                let count =
+                    Number(
+                        likes[videoId] || 0
+                    );
 
-                loadLikeState(
-                    button,
-                    videoId
-                );
-
-
-                button.addEventListener(
-                    "click",
-                    event => {
-
-                        event.preventDefault();
-
-                        event.stopPropagation();
+                const isLiked =
+                    liked.includes(videoId);
 
 
-                        const likes =
-                            wwcGetStorage(
-                                "wwc_likes",
-                                {}
-                            );
+                if (isLiked) {
 
-
-                        const liked =
-                            wwcGetStorage(
-                                "wwc_liked_videos",
-                                []
-                            );
-
-
-                        let count =
-                            Number(
-                                likes[videoId] ||
-                                0
-                            );
-
-
-                        const isLiked =
-                            liked.includes(
-                                videoId
-                            );
-
-
-                        if (
-                            isLiked
-                        ) {
-
-                            count =
-                                Math.max(
-                                    0,
-                                    count - 1
-                                );
-
-
-                            const index =
-                                liked.indexOf(
-                                    videoId
-                                );
-
-
-                            if (
-                                index !== -1
-                            ) {
-
-                                liked.splice(
-                                    index,
-                                    1
-                                );
-
-                            }
-
-                        } else {
-
-                            count++;
-
-                            liked.push(
-                                videoId
-                            );
-
-
-                            addWWCNotification(
-                                "❤️ আপনি একটি ভিডিও Like করেছেন"
-                            );
-
-                        }
-
-
-                        likes[videoId] =
-                            count;
-
-
-                        wwcSetStorage(
-                            "wwc_likes",
-                            likes
+                    count =
+                        Math.max(
+                            0,
+                            count - 1
                         );
 
-
-                        wwcSetStorage(
-                            "wwc_liked_videos",
-                            liked
+                    const index =
+                        liked.indexOf(
+                            videoId
                         );
 
+                    if (index !== -1) {
 
-                        button.classList.toggle(
-                            "liked",
-                            !isLiked
+                        liked.splice(
+                            index,
+                            1
                         );
-
-
-                        button.setAttribute(
-                            "aria-pressed",
-                            String(
-                                !isLiked
-                            )
-                        );
-
-
-                        const countElement =
-                            button.querySelector(
-                                ".like-count"
-                            );
-
-
-                        if (
-                            countElement
-                        ) {
-
-                            countElement.textContent =
-                                count;
-
-                        }
 
                     }
+
+                } else {
+
+                    count++;
+
+                    liked.push(
+                        videoId
+                    );
+
+                    addWWCNotification(
+                        "❤️ আপনি একটি ভিডিওতে Like দিয়েছেন"
+                    );
+
+                }
+
+
+                likes[videoId] =
+                    count;
+
+                wwcSetStorage(
+                    "wwc_likes",
+                    likes
                 );
+
+                wwcSetStorage(
+                    "wwc_liked_videos",
+                    liked
+                );
+
+
+                button.classList.toggle(
+                    "liked",
+                    !isLiked
+                );
+
+                button.setAttribute(
+                    "aria-pressed",
+                    String(!isLiked)
+                );
+
+
+                const countElement =
+                    button.querySelector(
+                        ".like-count"
+                    );
+
+                if (countElement) {
+
+                    countElement.textContent =
+                        count;
+
+                }
 
             }
         );
 
+    });
+
 }
 
-
-/* =========================================================
-   LOAD LIKE STATE
-   ========================================================= */
 
 function loadLikeState(
     button,
@@ -1158,54 +901,40 @@ function loadLikeState(
             {}
         );
 
-
     const liked =
         wwcGetStorage(
             "wwc_liked_videos",
             []
         );
 
-
     const count =
         Number(
-            likes[videoId] ||
-            0
+            likes[videoId] || 0
         );
-
 
     const isLiked =
-        liked.includes(
-            videoId
-        );
-
+        liked.includes(videoId);
 
     const countElement =
         button.querySelector(
             ".like-count"
         );
 
-
-    if (
-        countElement
-    ) {
+    if (countElement) {
 
         countElement.textContent =
             count;
 
     }
 
-
     button.classList.toggle(
         "liked",
         isLiked
     );
 
-
     button.setAttribute(
         "aria-pressed",
-        String(
-            isLiked
-        )
+        String(isLiked)
     );
 
 }
@@ -1217,109 +946,201 @@ function loadLikeState(
 
 function setupCommentButtons() {
 
-    document
-        .querySelectorAll(
-            ".comment-btn"
-        )
-        .forEach(
-            button => {
+    document.querySelectorAll(
+        ".comment-btn, #commentBtn"
+    ).forEach(button => {
 
-                button.addEventListener(
-                    "click",
-                    event => {
+        if (
+            button.dataset.wwcCommentReady ===
+            "true"
+        ) {
 
-                        event.preventDefault();
+            return;
 
-                        event.stopPropagation();
+        }
 
+        button.dataset.wwcCommentReady =
+            "true";
 
-                        const item =
-                            button.closest(
-                                ".video-item"
-                            );
+        button.addEventListener(
+            "click",
+            event => {
 
+                event.preventDefault();
+                event.stopPropagation();
 
-                        if (!item) {
+                const item =
+                    button.closest(
+                        ".video-item"
+                    );
 
-                            return;
+                if (!item) {
 
-                        }
+                    return;
 
+                }
 
-                        currentCommentVideo =
-                            getWWCVideoId(
-                                item
-                            );
+                currentCommentVideo =
+                    getWWCVideoId(item);
 
-
-                        const box =
-                            document.getElementById(
-                                "commentBox"
-                            );
-
-
-                        const input =
-                            document.getElementById(
-                                "commentInput"
-                            );
-
-
-                        if (
-                            box
-                        ) {
-
-                            box.style.display =
-                                "block";
-
-                        }
-
-
-                        if (
-                            input
-                        ) {
-
-                            input.value =
-                                "";
-
-                            input.focus();
-
-                        }
-
-                    }
-                );
+                openCommentBox();
 
             }
         );
 
+    });
+
+}
+
+
+function setupCommentBox() {
+
+    const box =
+        document.getElementById(
+            "commentBox"
+        );
 
     const cancel =
         document.getElementById(
             "commentCancel"
         );
 
+    const send =
+        document.getElementById(
+            "commentSend"
+        );
+
+    const input =
+        document.getElementById(
+            "commentInput"
+        );
+
+    if (!box) {
+
+        return;
+
+    }
+
 
     if (cancel) {
 
         cancel.addEventListener(
             "click",
-            closeCommentBox
+            () => {
+
+                closeCommentBox();
+
+            }
         );
 
     }
-
-
-    const send =
-        document.getElementById(
-            "commentSend"
-        );
 
 
     if (send) {
 
         send.addEventListener(
             "click",
-            sendComment
+            () => {
+
+                const text =
+                    input
+                        ? input.value.trim()
+                        : "";
+
+                if (!text) {
+
+                    showWWCMessage(
+                        "⚠️ Comment লিখুন"
+                    );
+
+                    return;
+
+                }
+
+
+                const comments =
+                    wwcGetStorage(
+                        "wwc_comments",
+                        {}
+                    );
+
+
+                if (
+                    !comments[currentCommentVideo]
+                ) {
+
+                    comments[
+                        currentCommentVideo
+                    ] = [];
+
+                }
+
+
+                comments[
+                    currentCommentVideo
+                ].push({
+
+                    text: text,
+
+                    user:
+                        currentUser
+                            ? (
+                                currentUser.displayName ||
+                                currentUser.email ||
+                                "WWC User"
+                            )
+                            : "Guest",
+
+                    time:
+                        new Date().toISOString()
+
+                });
+
+
+                wwcSetStorage(
+                    "wwc_comments",
+                    comments
+                );
+
+
+                if (input) {
+
+                    input.value = "";
+
+                }
+
+
+                closeCommentBox();
+
+
+                addWWCNotification(
+                    "💬 নতুন Comment যোগ হয়েছে"
+                );
+
+
+                showWWCMessage(
+                    "✅ Comment যোগ হয়েছে"
+                );
+
+            }
         );
+
+    }
+
+}
+
+
+function openCommentBox() {
+
+    const box =
+        document.getElementById(
+            "commentBox"
+        );
+
+    if (box) {
+
+        box.style.display =
+            "block";
 
     }
 
@@ -1333,119 +1154,12 @@ function closeCommentBox() {
             "commentBox"
         );
 
-
     if (box) {
 
         box.style.display =
             "none";
 
     }
-
-
-    currentCommentVideo =
-        null;
-
-}
-
-
-function sendComment() {
-
-    const input =
-        document.getElementById(
-            "commentInput"
-        );
-
-
-    if (!input) {
-
-        return;
-
-    }
-
-
-    const text =
-        input.value.trim();
-
-
-    if (!text) {
-
-        showWWCMessage(
-            "⚠️ আগে Comment লিখুন"
-        );
-
-        return;
-
-    }
-
-
-    if (!currentCommentVideo) {
-
-        return;
-
-    }
-
-
-    const comments =
-        wwcGetStorage(
-            "wwc_comments",
-            {}
-        );
-
-
-    if (
-        !Array.isArray(
-            comments[currentCommentVideo]
-        )
-    ) {
-
-        comments[currentCommentVideo] =
-            [];
-
-    }
-
-
-    comments[currentCommentVideo]
-        .push({
-
-            text:
-                text,
-
-            user:
-                currentUser
-                    ? (
-                        currentUser.displayName ||
-                        currentUser.email ||
-                        "WWC User"
-                    )
-                    : "Guest",
-
-            time:
-                new Date().toISOString()
-
-        });
-
-
-    wwcSetStorage(
-        "wwc_comments",
-        comments
-    );
-
-
-    addWWCNotification(
-        "💬 আপনার Comment সংরক্ষণ হয়েছে"
-    );
-
-
-    input.value =
-        "";
-
-
-    closeCommentBox();
-
-
-    showWWCMessage(
-        "✅ Comment যোগ হয়েছে"
-    );
 
 }
 
@@ -1456,148 +1170,117 @@ function sendComment() {
 
 function setupSaveButtons() {
 
-    document
-        .querySelectorAll(
-            ".save-btn"
-        )
-        .forEach(
-            button => {
+    document.querySelectorAll(
+        ".save-btn, #saveBtn"
+    ).forEach(button => {
 
-                if (
-                    button.dataset.wwcSaveReady ===
-                    "true"
-                ) {
+        if (
+            button.dataset.wwcSaveReady ===
+            "true"
+        ) {
 
-                    return;
+            return;
+
+        }
+
+        button.dataset.wwcSaveReady =
+            "true";
+
+        const item =
+            button.closest(".video-item");
+
+        if (!item) {
+
+            return;
+
+        }
+
+        const videoId =
+            getWWCVideoId(item);
+
+        loadSaveState(
+            button,
+            videoId
+        );
+
+
+        button.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                const saved =
+                    wwcGetStorage(
+                        "wwc_saved_videos",
+                        []
+                    );
+
+                const index =
+                    saved.indexOf(videoId);
+
+                let isSaved = false;
+
+
+                if (index !== -1) {
+
+                    saved.splice(
+                        index,
+                        1
+                    );
+
+                } else {
+
+                    saved.push(
+                        videoId
+                    );
+
+                    isSaved = true;
 
                 }
 
 
-                button.dataset.wwcSaveReady =
-                    "true";
-
-
-                const item =
-                    button.closest(
-                        ".video-item"
-                    );
-
-
-                if (!item) {
-
-                    return;
-
-                }
-
-
-                const videoId =
-                    getWWCVideoId(
-                        item
-                    );
-
-
-                loadSaveState(
-                    button,
-                    videoId
+                wwcSetStorage(
+                    "wwc_saved_videos",
+                    saved
                 );
 
 
-                button.addEventListener(
-                    "click",
-                    event => {
+                button.classList.toggle(
+                    "saved",
+                    isSaved
+                );
 
-                        event.preventDefault();
-
-                        event.stopPropagation();
-
-
-                        const saved =
-                            wwcGetStorage(
-                                "wwc_saved_videos",
-                                []
-                            );
+                button.setAttribute(
+                    "aria-pressed",
+                    String(isSaved)
+                );
 
 
-                        const index =
-                            saved.indexOf(
-                                videoId
-                            );
+                const countElement =
+                    button.querySelector(
+                        ".save-count"
+                    );
+
+                if (countElement) {
+
+                    countElement.textContent =
+                        isSaved ? "1" : "0";
+
+                }
 
 
-                        let saving =
-                            false;
-
-
-                        if (
-                            index !== -1
-                        ) {
-
-                            saved.splice(
-                                index,
-                                1
-                            );
-
-                        } else {
-
-                            saved.push(
-                                videoId
-                            );
-
-                            saving =
-                                true;
-
-                        }
-
-
-                        wwcSetStorage(
-                            "wwc_saved_videos",
-                            saved
-                        );
-
-
-                        button.classList.toggle(
-                            "saved",
-                            saving
-                        );
-
-
-                        button.setAttribute(
-                            "aria-pressed",
-                            String(
-                                saving
-                            )
-                        );
-
-
-                        const count =
-                            button.querySelector(
-                                ".save-count"
-                            );
-
-
-                        if (
-                            count
-                        ) {
-
-                            count.textContent =
-                                saving
-                                    ? "1"
-                                    : "0";
-
-                        }
-
-
-                        showWWCMessage(
-                            saving
-                                ? "🔖 Video Saved"
-                                : "🔖 Video থেকে Save সরানো হয়েছে"
-                        );
-
-                    }
+                showWWCMessage(
+                    isSaved
+                        ? "🔖 Saved"
+                        : "🔖 Unsaved"
                 );
 
             }
         );
+
+    });
 
 }
 
@@ -1613,40 +1296,28 @@ function loadSaveState(
             []
         );
 
-
     const isSaved =
-        saved.includes(
-            videoId
-        );
-
+        saved.includes(videoId);
 
     button.classList.toggle(
         "saved",
         isSaved
     );
 
-
     button.setAttribute(
         "aria-pressed",
-        String(
-            isSaved
-        );
+        String(isSaved)
+    );
 
-
-    const count =
+    const countElement =
         button.querySelector(
             ".save-count"
         );
 
+    if (countElement) {
 
-    if (
-        count
-    ) {
-
-        count.textContent =
-            isSaved
-                ? "1"
-                : "0";
+        countElement.textContent =
+            isSaved ? "1" : "0";
 
     }
 
@@ -1659,108 +1330,97 @@ function loadSaveState(
 
 function setupShareButtons() {
 
-    document
-        .querySelectorAll(
-            ".share-btn"
-        )
-        .forEach(
-            button => {
+    document.querySelectorAll(
+        ".share-btn, #shareBtn"
+    ).forEach(button => {
 
-                button.addEventListener(
-                    "click",
-                    async event => {
+        if (
+            button.dataset.wwcShareReady ===
+            "true"
+        ) {
 
-                        event.preventDefault();
+            return;
 
-                        event.stopPropagation();
+        }
 
+        button.dataset.wwcShareReady =
+            "true";
 
-                        const item =
-                            button.closest(
-                                ".video-item"
-                            );
+        button.addEventListener(
+            "click",
+            async event => {
 
+                event.preventDefault();
+                event.stopPropagation();
 
-                        if (!item) {
+                const item =
+                    button.closest(
+                        ".video-item"
+                    );
 
-                            return;
+                const video =
+                    item
+                        ? item.querySelector(
+                            "video"
+                        )
+                        : null;
 
-                        }
-
-
-                        const video =
-                            item.querySelector(
-                                "video"
-                            );
-
-
-                        const source =
-                            video
-                                ? video.querySelector(
-                                    "source"
-                                )
-                                : null;
+                const url =
+                    video?.currentSrc ||
+                    window.location.href;
 
 
-                        const url =
-                            (
-                                video &&
-                                video.currentSrc
-                            ) ||
-                            (
-                                source &&
-                                source.src
-                            ) ||
-                            window.location.href;
+                try {
 
+                    if (
+                        navigator.share
+                    ) {
 
-                        try {
+                        await navigator.share({
 
-                            if (
-                                navigator.share
-                            ) {
+                            title:
+                                "World Wide Connect",
 
-                                await navigator.share({
+                            text:
+                                "Check this video on World Wide Connect 🌍",
 
-                                    title:
-                                        "World Wide Connect",
+                            url:
+                                url
 
-                                    text:
-                                        getVideoTitle(
-                                            item
-                                        ),
+                        });
 
-                                    url:
-                                        url
+                    } else if (
+                        navigator.clipboard
+                    ) {
 
-                                });
+                        await navigator.clipboard.writeText(
+                            window.location.href
+                        );
 
-                            } else {
+                        showWWCMessage(
+                            "✅ Link কপি হয়েছে"
+                        );
 
-                                await navigator.clipboard.writeText(
-                                    url
-                                );
+                    } else {
 
-
-                                showWWCMessage(
-                                    "🔗 Video link Copy হয়েছে"
-                                );
-
-                            }
-
-                        } catch (error) {
-
-                            console.log(
-                                "Share cancelled"
-                            );
-
-                        }
+                        showWWCMessage(
+                            "📤 Share করার অপশন পাওয়া যায়নি"
+                        );
 
                     }
-                );
+
+                } catch (error) {
+
+                    console.log(
+                        "Share cancelled"
+                    );
+
+                }
 
             }
         );
+
+    });
 
 }
 
@@ -1771,113 +1431,110 @@ function setupShareButtons() {
 
 function setupFollowButtons() {
 
-    document
-        .querySelectorAll(
-            ".follow-btn"
-        )
-        .forEach(
-            button => {
+    document.querySelectorAll(
+        ".follow-btn, #followBtn"
+    ).forEach(button => {
 
-                if (
-                    button.dataset.wwcFollowReady ===
-                    "true"
-                ) {
+        if (
+            button.dataset.wwcFollowReady ===
+            "true"
+        ) {
 
-                    return;
+            return;
 
-                }
+        }
+
+        button.dataset.wwcFollowReady =
+            "true";
+
+        const item =
+            button.closest(
+                ".video-item"
+            );
+
+        const usernameElement =
+            item?.querySelector(
+                ".username"
+            );
+
+        const username =
+            usernameElement
+                ? usernameElement.textContent.trim()
+                : "wwc_user";
 
 
-                button.dataset.wwcFollowReady =
-                    "true";
+        const following =
+            wwcGetStorage(
+                "wwc_following",
+                []
+            );
 
 
-                const item =
-                    button.closest(
-                        ".video-item"
+        updateFollowButton(
+            button,
+            following.includes(username)
+        );
+
+
+        button.addEventListener(
+            "click",
+            event => {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                const list =
+                    wwcGetStorage(
+                        "wwc_following",
+                        []
                     );
 
+                const index =
+                    list.indexOf(username);
 
-                if (!item) {
+                let isFollowing = false;
 
-                    return;
+
+                if (index !== -1) {
+
+                    list.splice(
+                        index,
+                        1
+                    );
+
+                } else {
+
+                    list.push(
+                        username
+                    );
+
+                    isFollowing = true;
 
                 }
 
 
-                const username =
-                    (
-                        item.querySelector(
-                            ".username"
-                        ) || {}
-                    ).textContent
-                        ? item.querySelector(
-                            ".username"
-                        ).textContent.trim()
-                        : "wwc_user";
-
-
-                const key =
-                    "wwc_follow_" +
-                    username;
-
-
-                const following =
-                    localStorage.getItem(
-                        key
-                    ) === "true";
+                wwcSetStorage(
+                    "wwc_following",
+                    list
+                );
 
 
                 updateFollowButton(
                     button,
-                    following
+                    isFollowing
                 );
 
 
-                button.addEventListener(
-                    "click",
-                    event => {
-
-                        event.preventDefault();
-
-                        event.stopPropagation();
-
-
-                        const oldState =
-                            localStorage.getItem(
-                                key
-                            ) === "true";
-
-
-                        const newState =
-                            !oldState;
-
-
-                        localStorage.setItem(
-                            key,
-                            String(
-                                newState
-                            )
-                        );
-
-
-                        updateFollowButton(
-                            button,
-                            newState
-                        );
-
-
-                        showWWCMessage(
-                            newState
-                                ? "✅ Follow করা হয়েছে"
-                                : "Follow সরানো হয়েছে"
-                        );
-
-                    }
+                showWWCMessage(
+                    isFollowing
+                        ? "✅ Following"
+                        : "Following থেকে সরানো হয়েছে"
                 );
 
             }
         );
+
+    });
 
 }
 
@@ -1893,92 +1550,20 @@ function updateFollowButton(
 
     }
 
-
     button.textContent =
         following
             ? "Following"
             : "Follow";
-
 
     button.classList.toggle(
         "following",
         following
     );
 
-
     button.setAttribute(
         "aria-pressed",
-        String(
-            following
-        )
+        String(following)
     );
-
-}
-
-
-/* =========================================================
-   TITLE + CAPTION
-   ========================================================= */
-
-function getVideoTitle(
-    item
-) {
-
-    if (!item) {
-
-        return "World Wide Connect";
-
-    }
-
-
-    const title =
-        item.querySelector(
-            ".video-title"
-        );
-
-
-    if (
-        title &&
-        title.textContent.trim()
-    ) {
-
-        return title.textContent.trim();
-
-    }
-
-
-    return "World Wide Connect Video";
-
-}
-
-
-function setupVideoText() {
-
-    document
-        .querySelectorAll(
-            ".video-item"
-        )
-        .forEach(
-            item => {
-
-                const caption =
-                    item.querySelector(
-                        ".video-caption"
-                    );
-
-
-                if (
-                    caption &&
-                    !caption.dataset.wwcReady
-                ) {
-
-                    caption.dataset.wwcReady =
-                        "true";
-
-                }
-
-            }
-        );
 
 }
 
@@ -1994,31 +1579,13 @@ function setupSearch() {
             "#searchInput, .search-input"
         );
 
-
     const searchButton =
         document.querySelector(
             "#searchBtn, .search-btn"
         );
 
 
-    if (
-        !searchInput
-    ) {
-
-        if (searchButton) {
-
-            searchButton.addEventListener(
-                "click",
-                () => {
-
-                    showWWCMessage(
-                        "🔎 Search box পাওয়া যায়নি"
-                    );
-
-                }
-            );
-
-        }
+    if (!searchInput) {
 
         return;
 
@@ -2050,38 +1617,33 @@ function setupSearch() {
             );
 
 
-        let found =
-            0;
+        let found = 0;
 
 
-        items.forEach(
-            item => {
+        items.forEach(item => {
 
-                const text =
-                    item.textContent
-                        .toLowerCase();
+            const text =
+                item.textContent
+                    .toLowerCase();
 
 
-                if (
-                    text.includes(
-                        query
-                    )
-                ) {
+            if (
+                text.includes(query)
+            ) {
 
-                    item.style.display =
-                        "";
+                item.style.display =
+                    "";
 
-                    found++;
+                found++;
 
-                } else {
+            } else {
 
-                    item.style.display =
-                        "none";
-
-                }
+                item.style.display =
+                    "none";
 
             }
-        );
+
+        });
 
 
         showWWCMessage(
@@ -2093,9 +1655,7 @@ function setupSearch() {
     }
 
 
-    if (
-        searchButton
-    ) {
+    if (searchButton) {
 
         searchButton.addEventListener(
             "click",
@@ -2143,10 +1703,7 @@ function setupSearchClear() {
             "#clearSearch, .clear-search"
         );
 
-
-    if (
-        !clearButton
-    ) {
+    if (!clearButton) {
 
         return;
 
@@ -2162,27 +1719,20 @@ function setupSearchClear() {
                     "#searchInput, .search-input"
                 );
 
-
             if (input) {
 
-                input.value =
-                    "";
+                input.value = "";
 
             }
 
 
-            document
-                .querySelectorAll(
-                    ".video-item, .user-item, .search-item"
-                )
-                .forEach(
-                    item => {
+            document.querySelectorAll(
+                ".video-item, .user-item, .search-item"
+            ).forEach(item => {
 
-                        item.style.display =
-                            "";
+                item.style.display = "";
 
-                    }
-                );
+            });
 
         }
     );
@@ -2194,9 +1744,7 @@ function setupSearchClear() {
    NOTIFICATIONS
    ========================================================= */
 
-function addWWCNotification(
-    text
-) {
+function addWWCNotification(text) {
 
     const notifications =
         wwcGetStorage(
@@ -2207,21 +1755,18 @@ function addWWCNotification(
 
     notifications.unshift({
 
-        text:
-            text,
+        text: text,
 
         time:
             new Date().toISOString(),
 
-        read:
-            false
+        read: false
 
     });
 
 
     if (
-        notifications.length >
-        50
+        notifications.length > 50
     ) {
 
         notifications.pop();
@@ -2251,28 +1796,23 @@ function updateNotificationCount() {
 
     const unread =
         notifications.filter(
-            item =>
-                !item.read
+            item => !item.read
         ).length;
 
 
-    document
-        .querySelectorAll(
-            ".notification-count, #notificationCount"
-        )
-        .forEach(
-            counter => {
+    document.querySelectorAll(
+        ".notification-count, #notificationCount"
+    ).forEach(counter => {
 
-                counter.textContent =
-                    unread;
+        counter.textContent =
+            unread;
 
-                counter.style.display =
-                    unread
-                        ? ""
-                        : "none";
+        counter.style.display =
+            unread > 0
+                ? ""
+                : "none";
 
-            }
-        );
+    });
 
 }
 
@@ -2290,131 +1830,105 @@ function setupNotifications() {
 
 function setupMuteButtons() {
 
-    document
-        .querySelectorAll(
-            ".mute-btn, #muteBtn"
-        )
-        .forEach(
-            button => {
+    document.querySelectorAll(
+        "#muteBtn, .mute-btn"
+    ).forEach(button => {
 
-                button.addEventListener(
-                    "click",
-                    event => {
+        button.addEventListener(
+            "click",
+            event => {
 
-                        event.preventDefault();
+                event.preventDefault();
+                event.stopPropagation();
 
-                        event.stopPropagation();
+                const item =
+                    button.closest(
+                        ".video-item"
+                    );
 
+                const video =
+                    item?.querySelector(
+                        "video"
+                    );
 
-                        const item =
-                            button.closest(
-                                ".video-item"
-                            );
+                if (!video) {
 
+                    return;
 
-                        const video =
-                            item
-                                ? item.querySelector(
-                                    "video"
-                                )
-                                : null;
+                }
 
 
-                        if (!video) {
-
-                            return;
-
-                        }
+                video.muted =
+                    !video.muted;
 
 
-                        video.muted =
-                            !video.muted;
-
-
-                        button.textContent =
-                            video.muted
-                                ? "🔇"
-                                : "🔊";
-
-                    }
-                );
+                button.textContent =
+                    video.muted
+                        ? "🔇"
+                        : "🔊";
 
             }
         );
+
+    });
 
 }
 
 
 /* =========================================================
-   PLAY / PAUSE BUTTON
+   PLAY BUTTON
    ========================================================= */
 
 function setupPlayButtons() {
 
-    document
-        .querySelectorAll(
-            ".play-btn, #playBtn"
-        )
-        .forEach(
-            button => {
+    document.querySelectorAll(
+        "#playBtn, .play-btn"
+    ).forEach(button => {
 
-                button.addEventListener(
-                    "click",
-                    event => {
+        button.addEventListener(
+            "click",
+            event => {
 
-                        event.preventDefault();
+                event.preventDefault();
+                event.stopPropagation();
 
-                        event.stopPropagation();
+                const item =
+                    button.closest(
+                        ".video-item"
+                    );
 
+                const video =
+                    item?.querySelector(
+                        "video"
+                    );
 
-                        const item =
-                            button.closest(
-                                ".video-item"
-                            );
+                if (!video) {
 
+                    return;
 
-                        const video =
-                            item
-                                ? item.querySelector(
-                                    "video"
-                                )
-                                : null;
+                }
 
 
-                        if (!video) {
+                if (video.paused) {
 
-                            return;
+                    video.play().catch(() => {});
 
-                        }
+                    button.textContent =
+                        "⏸️";
 
+                } else {
 
-                        if (
-                            video.paused
-                        ) {
+                    video.pause();
 
-                            video
-                                .play()
-                                .catch(
-                                    () => {}
-                                );
+                    button.textContent =
+                        "▶️";
 
-                            button.textContent =
-                                "⏸️";
-
-                        } else {
-
-                            video.pause();
-
-                            button.textContent =
-                                "▶️";
-
-                        }
-
-                    }
-                );
+                }
 
             }
         );
+
+    });
 
 }
 
@@ -2425,94 +1939,42 @@ function setupPlayButtons() {
 
 function setupProfileLinks() {
 
-    document
-        .querySelectorAll(
-            ".profile-photo, .profile-area, .username"
-        )
-        .forEach(
-            element => {
+    document.querySelectorAll(
+        "[data-profile-uid]"
+    ).forEach(element => {
 
-                if (
-                    element.dataset.wwcProfileReady ===
-                    "true"
-                ) {
+        element.addEventListener(
+            "click",
+            () => {
+
+                const uid =
+                    element.dataset.profileUid;
+
+                if (!uid) {
 
                     return;
 
                 }
 
 
-                element.dataset.wwcProfileReady =
-                    "true";
+                if (!currentUser) {
+
+                    window.location.href =
+                        "./auth.html";
+
+                    return;
+
+                }
 
 
-                element.addEventListener(
-                    "click",
-                    event => {
-
-                        if (
-                            event.target.closest(
-                                ".follow-btn"
-                            )
-                        ) {
-
-                            return;
-
-                        }
-
-
-                        if (!currentUser) {
-
-                            window.location.href =
-                                "./auth.html";
-
-                            return;
-
-                        }
-
-
-                        const item =
-                            element.closest(
-                                ".video-item"
-                            );
-
-
-                        const usernameElement =
-                            item
-                                ? item.querySelector(
-                                    ".username"
-                                )
-                                : null;
-
-
-                        const username =
-                            usernameElement
-                                ? usernameElement.textContent.trim()
-                                : "";
-
-
-                        if (
-                            username
-                        ) {
-
-                            window.location.href =
-                                "./profile.html?username=" +
-                                encodeURIComponent(
-                                    username
-                                );
-
-                        } else {
-
-                            window.location.href =
-                                "./profile.html";
-
-                        }
-
-                    }
-                );
+                window.location.href =
+                    "./profile.html?uid=" +
+                    encodeURIComponent(uid);
 
             }
         );
+
+    });
 
 }
 
@@ -2521,9 +1983,7 @@ function setupProfileLinks() {
    GLOBAL MESSAGE
    ========================================================= */
 
-function showWWCMessage(
-    text
-) {
+function showWWCMessage(text) {
 
     let message =
         document.getElementById(
@@ -2538,10 +1998,8 @@ function showWWCMessage(
                 "div"
             );
 
-
         message.id =
             "wwcMessage";
-
 
         message.style.position =
             "fixed";
@@ -2550,19 +2008,19 @@ function showWWCMessage(
             "50%";
 
         message.style.bottom =
-            "85px";
+            "25px";
 
         message.style.transform =
             "translateX(-50%)";
 
         message.style.zIndex =
-            "99999";
+            "999999";
 
         message.style.padding =
             "12px 18px";
 
         message.style.borderRadius =
-            "12px";
+            "10px";
 
         message.style.background =
             "#222";
@@ -2573,15 +2031,14 @@ function showWWCMessage(
         message.style.fontSize =
             "14px";
 
+        message.style.boxShadow =
+            "0 5px 20px rgba(0,0,0,.4)";
+
         message.style.maxWidth =
             "85%";
 
         message.style.textAlign =
             "center";
-
-        message.style.boxShadow =
-            "0 5px 20px rgba(0,0,0,.4)";
-
 
         document.body.appendChild(
             message
@@ -2592,7 +2049,6 @@ function showWWCMessage(
 
     message.textContent =
         text;
-
 
     message.style.display =
         "block";
@@ -2618,38 +2074,49 @@ function showWWCMessage(
 
 
 /* =========================================================
-   GLOBAL WWC API
+   GLOBAL WWC
    ========================================================= */
 
 window.WWC = {
 
-    getCurrentUser:
-        () => currentUser,
+    getCurrentUser: () => {
 
-    logout:
-        () => logoutUser(),
+        return currentUser;
 
-    getAuth:
-        () => auth,
+    },
 
-    getFirestore:
-        () => db,
+    logout: () => {
 
-    showMessage:
-        text => showWWCMessage(text)
+        return logoutUser();
+
+    },
+
+    getAuth: () => {
+
+        return auth;
+
+    },
+
+    getFirestore: () => {
+
+        return db;
+
+    },
+
+    showMessage: text => {
+
+        showWWCMessage(text);
+
+    }
 
 };
 
 
 /* =========================================================
-   FINAL INITIALIZATION
+   FINAL
    ========================================================= */
-
-setupVideoText();
-
-updateNotificationCount();
-
 
 console.log(
     "🌍 WWC-Core APP.JS loaded successfully"
 );
+
