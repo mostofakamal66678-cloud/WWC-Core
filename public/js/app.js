@@ -1,24 +1,14 @@
 /* =========================================================
    WORLD WIDE CONNECT
    WWC-CORE
-   APP.JS
-   COMPLETE VERSION
-
-   Main functions:
-   1. Firebase Authentication
-   2. Upload Button
-   3. Inbox
-   4. Friends
-   5. User Profile
-   6. Caption + Title support
-   7. Basic video feed autoplay
+   COMPLETE APP.JS
    ========================================================= */
 
 "use strict";
 
 
 /* =========================================================
-   FIREBASE IMPORT
+   FIREBASE
    ========================================================= */
 
 import {
@@ -29,7 +19,6 @@ import {
 import {
     getAuth,
     onAuthStateChanged,
-    authStateReady,
     signOut
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
@@ -38,8 +27,6 @@ import {
     doc,
     getDoc,
     setDoc,
-    collection,
-    addDoc,
     serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
@@ -49,27 +36,13 @@ import {
    ========================================================= */
 
 const firebaseConfig = {
-
-    apiKey:
-        "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
-
-    authDomain:
-        "world-wide-connect-62c87.firebaseapp.com",
-
-    projectId:
-        "world-wide-connect-62c87",
-
-    storageBucket:
-        "world-wide-connect-62c87.firebasestorage.app",
-
-    messagingSenderId:
-        "93178453668",
-
-    appId:
-        "1:93178453668:web:2184630caae8e61f7445031",
-
-    measurementId:
-        "G-PKFJ5NEMGQ"
+    apiKey: "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
+    authDomain: "world-wide-connect-62c87.firebaseapp.com",
+    projectId: "world-wide-connect-62c87",
+    storageBucket: "world-wide-connect-62c87.firebasestorage.app",
+    messagingSenderId: "93178453668",
+    appId: "1:93178453668:web:2184630caae8e61f7445031",
+    measurementId: "G-PKFJ5NEMGQ"
 };
 
 
@@ -82,222 +55,151 @@ const app =
         ? getApps()[0]
         : initializeApp(firebaseConfig);
 
-const auth =
-    getAuth(app);
-
-const db =
-    getFirestore(app);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 
 /* =========================================================
-   GLOBAL VARIABLES
+   GLOBAL USER
    ========================================================= */
 
 let currentUser = null;
-
-let authReady = false;
 
 
 /* =========================================================
    START
    ========================================================= */
 
-document.addEventListener(
-    "DOMContentLoaded",
-    async () => {
+document.addEventListener("DOMContentLoaded", () => {
 
-        console.log(
-            "🌍 WWC-Core starting..."
-        );
+    console.log("🌍 WWC-Core starting...");
 
-        try {
+    setupAuth();
 
-            /*
-             * Firebase-এর login state সম্পূর্ণ
-             * ready হওয়া পর্যন্ত অপেক্ষা করবে।
-             */
+    setupNavigation();
 
-            await authStateReady();
+    setupVideoFeed();
 
-            authReady = true;
+    setupLikeButtons();
 
-        } catch (error) {
+    setupFollowButtons();
 
-            console.error(
-                "Auth state error:",
-                error
-            );
+    setupCommentButtons();
 
-        }
+    setupShareButtons();
 
+    setupSaveButtons();
 
-        setupAuthentication();
+    setupSearch();
 
-        setupUploadButton();
+    setupTopTabs();
 
-        setupProfileButton();
+    setupProfileMenu();
 
-        setupFriendsButton();
+    console.log("✅ WWC-Core ready");
 
-        setupInboxButton();
-
-        setupLogoutButton();
-
-        setupVideoFeed();
-
-        setupCaptionSupport();
-
-        console.log(
-            "✅ WWC-Core ready"
-        );
-
-    }
-);
+});
 
 
 /* =========================================================
    AUTHENTICATION
    ========================================================= */
 
-function setupAuthentication() {
+function setupAuth() {
 
-    onAuthStateChanged(
-        auth,
-        async (user) => {
+    onAuthStateChanged(auth, async (user) => {
 
-            currentUser = user;
+        currentUser = user;
 
+        if (user) {
 
-            if (user) {
+            console.log(
+                "✅ Login:",
+                user.email || user.displayName || user.uid
+            );
 
-                console.log(
-                    "✅ Logged in:",
-                    user.email ||
-                    user.displayName ||
-                    user.uid
-                );
+            await createProfile(user);
 
+            updateLoginUI(true, user);
 
-                /*
-                 * নতুন user হলে profile তৈরি করবে।
-                 */
+        } else {
 
-                await createUserProfile(
-                    user
-                );
+            console.log("ℹ️ Not logged in");
 
-
-                updateLoginUI(
-                    true,
-                    user
-                );
-
-            } else {
-
-                console.log(
-                    "ℹ️ User is not logged in"
-                );
-
-
-                updateLoginUI(
-                    false,
-                    null
-                );
-
-            }
+            updateLoginUI(false, null);
 
         }
-    );
+
+    });
 
 }
 
 
 /* =========================================================
-   CREATE USER PROFILE
+   CREATE PROFILE
    ========================================================= */
 
-async function createUserProfile(
-    user
-) {
+async function createProfile(user) {
 
     try {
 
-        const userRef =
-            doc(
-                db,
-                "users",
-                user.uid
-            );
+        const userRef = doc(
+            db,
+            "users",
+            user.uid
+        );
 
+        const snapshot = await getDoc(userRef);
 
-        const snapshot =
-            await getDoc(
-                userRef
-            );
+        if (!snapshot.exists()) {
 
+            await setDoc(userRef, {
 
-        if (
-            !snapshot.exists()
-        ) {
+                name:
+                    user.displayName ||
+                    "WWC User",
 
-            await setDoc(
-                userRef,
-                {
+                username:
+                    user.displayName
+                        ? user.displayName
+                            .replace(/\s+/g, "_")
+                            .toLowerCase()
+                        : "wwc_user",
 
-                    name:
-                        user.displayName ||
-                        "WWC User",
+                email:
+                    user.email || "",
 
-                    username:
-                        user.displayName
-                            ? user.displayName
-                                .replace(
-                                    /\s+/g,
-                                    "_"
-                                )
-                                .toLowerCase()
-                            : "wwc_user",
+                photoURL:
+                    user.photoURL || "",
 
-                    email:
-                        user.email ||
-                        "",
+                bio:
+                    "Welcome to World Wide Connect 🌍",
 
-                    photoURL:
-                        user.photoURL ||
-                        "",
+                country:
+                    "Bangladesh",
 
-                    bio:
-                        "Welcome to World Wide Connect 🌍",
+                followers:
+                    0,
 
-                    country:
-                        "Bangladesh",
+                following:
+                    0,
 
-                    followers:
-                        0,
+                likes:
+                    0,
 
-                    following:
-                        0,
+                createdAt:
+                    serverTimestamp()
 
-                    likes:
-                        0,
+            });
 
-                    createdAt:
-                        serverTimestamp()
-
-                }
-            );
-
-
-            console.log(
-                "✅ User profile created"
-            );
+            console.log("✅ Profile created");
 
         }
 
     } catch (error) {
 
         console.error(
-            "❌ Profile creation error:",
+            "❌ Profile error:",
             error
         );
 
@@ -310,55 +212,31 @@ async function createUserProfile(
    LOGIN UI
    ========================================================= */
 
-function updateLoginUI(
-    loggedIn,
-    user
-) {
+function updateLoginUI(loggedIn, user) {
 
-    const loginButtons =
-        document.querySelectorAll(
-            "#loginBtn, .login-btn"
-        );
-
-
-    const logoutButtons =
-        document.querySelectorAll(
-            "#logoutBtn, .logout-btn, .logout-menu-btn"
-        );
-
-
-    loginButtons.forEach(
-        button => {
+    document
+        .querySelectorAll("#loginBtn, .login-btn")
+        .forEach(button => {
 
             button.style.display =
-                loggedIn
-                    ? "none"
-                    : "";
+                loggedIn ? "none" : "";
 
-        }
-    );
+        });
 
 
-    logoutButtons.forEach(
-        button => {
+    document
+        .querySelectorAll("#logoutBtn, .logout-btn, .logout-menu-btn")
+        .forEach(button => {
 
             button.style.display =
-                loggedIn
-                    ? ""
-                    : "none";
+                loggedIn ? "" : "none";
 
-        }
-    );
+        });
 
 
-    const userNames =
-        document.querySelectorAll(
-            ".current-user-name"
-        );
-
-
-    userNames.forEach(
-        element => {
+    document
+        .querySelectorAll(".current-user-name")
+        .forEach(element => {
 
             element.textContent =
                 user
@@ -369,379 +247,147 @@ function updateLoginUI(
                     )
                     : "Guest";
 
-        }
-    );
+        });
 
 }
 
 
 /* =========================================================
-   WAIT FOR AUTH
+   NAVIGATION
    ========================================================= */
 
-async function waitForAuth() {
+function setupNavigation() {
 
-    if (
-        authReady
-    ) {
+    /* HOME */
 
-        return currentUser;
+    document
+        .querySelectorAll("#homeBtn, .home-btn")
+        .forEach(button => {
 
-    }
+            button.addEventListener("click", () => {
 
+                window.location.href =
+                    "./index.html";
 
-    try {
+            });
 
-        await authStateReady();
-
-        authReady = true;
-
-    } catch (error) {
-
-        console.error(
-            "Auth ready error:",
-            error
-        );
-
-    }
+        });
 
 
-    return auth.currentUser;
+    /* PROFILE */
 
-}
-
-
-/* =========================================================
-   UPLOAD BUTTON
-   ========================================================= */
-
-function setupUploadButton() {
-
-    const buttons =
-        document.querySelectorAll(
-            "#uploadBtn, .upload-btn, #createBtn"
-        );
-
-
-    buttons.forEach(
-        button => {
-
-            if (
-                button.dataset.wwcUploadReady ===
-                "true"
-            ) {
-
-                return;
-
-            }
-
-
-            button.dataset.wwcUploadReady =
-                "true";
-
-
-            button.addEventListener(
-                "click",
-                async event => {
-
-                    event.preventDefault();
-
-                    event.stopPropagation();
-
-
-                    const user =
-                        await waitForAuth();
-
-
-                    if (!user) {
-
-                        showWWCMessage(
-                            "⚠️ আগে Login করুন"
-                        );
-
-
-                        setTimeout(
-                            () => {
-
-                                window.location.href =
-                                    "./auth.html";
-
-                            },
-                            600
-                        );
-
-
-                        return;
-
-                    }
-
-
-                    /*
-                     * Login থাকলে সরাসরি
-                     * upload.html
-                     */
-
-                    window.location.href =
-                        "./upload.html";
-
-                }
-            );
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   PROFILE BUTTON
-   ========================================================= */
-
-function setupProfileButton() {
-
-    const buttons =
-        document.querySelectorAll(
+    document
+        .querySelectorAll(
             "#profileBtn, #profileBtnMenu, .profile-btn"
-        );
+        )
+        .forEach(button => {
 
+            button.addEventListener("click", () => {
 
-    buttons.forEach(
-        button => {
-
-            if (
-                button.dataset.wwcProfileReady ===
-                "true"
-            ) {
-
-                return;
-
-            }
-
-
-            button.dataset.wwcProfileReady =
-                "true";
-
-
-            button.addEventListener(
-                "click",
-                async event => {
-
-                    event.preventDefault();
-
-                    event.stopPropagation();
-
-
-                    const user =
-                        await waitForAuth();
-
-
-                    if (!user) {
-
-                        showWWCMessage(
-                            "⚠️ আগে Login / Register করুন"
-                        );
-
-
-                        setTimeout(
-                            () => {
-
-                                window.location.href =
-                                    "./auth.html";
-
-                            },
-                            600
-                        );
-
-
-                        return;
-
-                    }
-
-
-                    /*
-                     * নিজের profile
-                     */
+                if (!currentUser) {
 
                     window.location.href =
-                        "./profile.html?uid=" +
-                        encodeURIComponent(
-                            user.uid
-                        );
+                        "./auth.html";
+
+                    return;
 
                 }
-            );
 
-        }
-    );
+                window.location.href =
+                    "./profile.html?uid=" +
+                    encodeURIComponent(
+                        currentUser.uid
+                    );
 
-}
+            });
 
-
-/* =========================================================
-   FRIENDS BUTTON
-   ========================================================= */
-
-function setupFriendsButton() {
-
-    const buttons =
-        document.querySelectorAll(
-            "#friendsBtn, .friends-btn"
-        );
+        });
 
 
-    buttons.forEach(
-        button => {
+    /* UPLOAD */
 
-            if (
-                button.dataset.wwcFriendsReady ===
-                "true"
-            ) {
+    document
+        .querySelectorAll(
+            "#uploadBtn, .upload-btn, #createBtn"
+        )
+        .forEach(button => {
 
-                return;
+            button.addEventListener("click", () => {
 
-            }
-
-
-            button.dataset.wwcFriendsReady =
-                "true";
-
-
-            button.addEventListener(
-                "click",
-                async event => {
-
-                    event.preventDefault();
-
-                    event.stopPropagation();
-
-
-                    const user =
-                        await waitForAuth();
-
-
-                    /*
-                     * Friends page ব্যবহার করতে
-                     * Login প্রয়োজন।
-                     */
-
-                    if (!user) {
-
-                        showWWCMessage(
-                            "⚠️ Friends দেখতে আগে Login করুন"
-                        );
-
-
-                        setTimeout(
-                            () => {
-
-                                window.location.href =
-                                    "./auth.html";
-
-                            },
-                            600
-                        );
-
-
-                        return;
-
-                    }
-
-
-                    /*
-                     * friends.html থাকলে
-                     * সেখানে যাবে।
-                     */
+                if (!currentUser) {
 
                     window.location.href =
-                        "./friends.html";
+                        "./auth.html";
+
+                    return;
 
                 }
-            );
 
-        }
-    );
+                window.location.href =
+                    "./upload.html";
 
-}
+            });
 
-
-/* =========================================================
-   INBOX BUTTON
-   ========================================================= */
-
-function setupInboxButton() {
-
-    const buttons =
-        document.querySelectorAll(
-            "#inboxBtn, .inbox-btn"
-        );
+        });
 
 
-    buttons.forEach(
-        button => {
+    /* FRIENDS */
 
-            if (
-                button.dataset.wwcInboxReady ===
-                "true"
-            ) {
+    document
+        .querySelectorAll("#friendsBtn, .friends-btn")
+        .forEach(button => {
 
-                return;
+            button.addEventListener("click", () => {
 
-            }
-
-
-            button.dataset.wwcInboxReady =
-                "true";
-
-
-            button.addEventListener(
-                "click",
-                async event => {
-
-                    event.preventDefault();
-
-                    event.stopPropagation();
-
-
-                    const user =
-                        await waitForAuth();
-
-
-                    if (!user) {
-
-                        showWWCMessage(
-                            "⚠️ Inbox দেখতে আগে Login করুন"
-                        );
-
-
-                        setTimeout(
-                            () => {
-
-                                window.location.href =
-                                    "./auth.html";
-
-                            },
-                            600
-                        );
-
-
-                        return;
-
-                    }
-
-
-                    /*
-                     * inbox.html থাকলে সেখানে যাবে।
-                     * না থাকলে একটি সুন্দর message দেখাবে।
-                     */
+                if (!currentUser) {
 
                     window.location.href =
-                        "./inbox.html";
+                        "./auth.html";
+
+                    return;
 
                 }
-            );
 
-        }
-    );
+                /*
+                 * friends.html থাকলে সেটি খুলবে।
+                 * না থাকলে WWC message দেখাবে।
+                 */
+
+                window.location.href =
+                    "./friends.html";
+
+            });
+
+        });
+
+
+    /* INBOX */
+
+    document
+        .querySelectorAll("#inboxBtn, .inbox-btn")
+        .forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                if (!currentUser) {
+
+                    window.location.href =
+                        "./auth.html";
+
+                    return;
+
+                }
+
+                /*
+                 * inbox.html থাকলে সেটি খুলবে।
+                 */
+
+                window.location.href =
+                    "./inbox.html";
+
+            });
+
+        });
 
 }
 
@@ -750,30 +396,13 @@ function setupInboxButton() {
    LOGOUT
    ========================================================= */
 
-function setupLogoutButton() {
+function setupLogout() {
 
-    const buttons =
-        document.querySelectorAll(
+    document
+        .querySelectorAll(
             "#logoutBtn, .logout-btn, .logout-menu-btn"
-        );
-
-
-    buttons.forEach(
-        button => {
-
-            if (
-                button.dataset.wwcLogoutReady ===
-                "true"
-            ) {
-
-                return;
-
-            }
-
-
-            button.dataset.wwcLogoutReady =
-                "true";
-
+        )
+        .forEach(button => {
 
             button.addEventListener(
                 "click",
@@ -781,31 +410,20 @@ function setupLogoutButton() {
 
                     event.preventDefault();
 
-                    event.stopPropagation();
-
-
                     try {
 
-                        await signOut(
-                            auth
-                        );
+                        await signOut(auth);
 
-
-                        showWWCMessage(
+                        showMessage(
                             "✅ Logout হয়েছে"
                         );
 
+                        setTimeout(() => {
 
-                        setTimeout(
-                            () => {
+                            window.location.href =
+                                "./auth.html";
 
-                                window.location.href =
-                                    "./auth.html";
-
-                            },
-                            700
-                        );
-
+                        }, 500);
 
                     } catch (error) {
 
@@ -814,8 +432,7 @@ function setupLogoutButton() {
                             error
                         );
 
-
-                        showWWCMessage(
+                        showMessage(
                             "❌ Logout করা যায়নি"
                         );
 
@@ -824,8 +441,7 @@ function setupLogoutButton() {
                 }
             );
 
-        }
-    );
+        });
 
 }
 
@@ -841,7 +457,6 @@ function setupVideoFeed() {
             "video-feed"
         );
 
-
     if (!feed) {
 
         return;
@@ -849,51 +464,128 @@ function setupVideoFeed() {
     }
 
 
-    const videos =
+    const items =
         Array.from(
             feed.querySelectorAll(
-                ".feed-video"
+                ".video-item"
             )
         );
 
 
-    if (
-        !videos.length
-    ) {
+    const videos =
+        items.map(item =>
+            item.querySelector(
+                ".feed-video"
+            )
+        ).filter(Boolean);
+
+
+    if (!videos.length) {
 
         return;
 
     }
 
 
-    videos.forEach(
-        video => {
+    /*
+     * সব ভিডিও mobile-friendly autoplay
+     */
 
-            video.setAttribute(
-                "playsinline",
-                ""
-            );
+    videos.forEach(video => {
+
+        video.setAttribute(
+            "playsinline",
+            ""
+        );
+
+        video.setAttribute(
+            "webkit-playsinline",
+            ""
+        );
+
+        video.preload =
+            "metadata";
+
+        video.muted =
+            true;
+
+        video.addEventListener(
+            "play",
+            () => {
+
+                videos.forEach(other => {
+
+                    if (
+                        other !== video
+                    ) {
+
+                        other.pause();
+
+                    }
+
+                });
+
+            }
+        );
+
+    });
 
 
-            video.preload =
-                "metadata";
+    /*
+     * এক ভিডিও থেকে পরের ভিডিও
+     */
+
+    videos.forEach((video, index) => {
+
+        video.addEventListener(
+            "ended",
+            () => {
+
+                const next =
+                    videos[index + 1];
+
+                if (next) {
+
+                    next.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center"
+                    });
+
+                    setTimeout(() => {
+
+                        next.play().catch(
+                            () => {}
+                        );
+
+                    }, 400);
+
+                }
+
+            }
+        );
+
+    });
 
 
-            /*
-             * Mobile autoplay-এর জন্য
-             * শুরুতে muted থাকবে।
-             */
+    /*
+     * Swipe / scroll autoplay
+     */
 
-            video.muted =
-                true;
+    const observer =
+        new IntersectionObserver(
+            entries => {
 
+                entries.forEach(entry => {
 
-            video.addEventListener(
-                "play",
-                () => {
+                    const video =
+                        entry.target;
 
-                    videos.forEach(
-                        other => {
+                    if (
+                        entry.isIntersecting &&
+                        entry.intersectionRatio >= 0.65
+                    ) {
+
+                        videos.forEach(other => {
 
                             if (
                                 other !== video
@@ -903,281 +595,908 @@ function setupVideoFeed() {
 
                             }
 
+                        });
+
+                        video.play().catch(
+                            () => {}
+                        );
+
+                    } else {
+
+                        video.pause();
+
+                    }
+
+                });
+
+            },
+            {
+                threshold: [0.65]
+            }
+        );
+
+
+    videos.forEach(video => {
+
+        observer.observe(video);
+
+    });
+
+}
+
+
+/* =========================================================
+   LIKE
+   ========================================================= */
+
+function setupLikeButtons() {
+
+    document
+        .querySelectorAll(
+            ".like-btn, #likeBtn"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                event => {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    const item =
+                        button.closest(
+                            ".video-item"
+                        );
+
+                    if (!item) return;
+
+                    const id =
+                        item.dataset.videoId ||
+                        "video";
+
+                    const likes =
+                        JSON.parse(
+                            localStorage.getItem(
+                                "wwc_likes"
+                            ) || "{}"
+                        );
+
+                    const liked =
+                        JSON.parse(
+                            localStorage.getItem(
+                                "wwc_liked_videos"
+                            ) || "[]"
+                        );
+
+
+                    const alreadyLiked =
+                        liked.includes(id);
+
+
+                    let count =
+                        Number(
+                            likes[id] || 0
+                        );
+
+
+                    if (alreadyLiked) {
+
+                        count =
+                            Math.max(
+                                0,
+                                count - 1
+                            );
+
+                        const index =
+                            liked.indexOf(id);
+
+                        if (index !== -1) {
+
+                            liked.splice(
+                                index,
+                                1
+                            );
+
                         }
+
+                    } else {
+
+                        count++;
+
+                        liked.push(id);
+
+                    }
+
+
+                    likes[id] =
+                        count;
+
+
+                    localStorage.setItem(
+                        "wwc_likes",
+                        JSON.stringify(likes)
+                    );
+
+
+                    localStorage.setItem(
+                        "wwc_liked_videos",
+                        JSON.stringify(liked)
+                    );
+
+
+                    button.classList.toggle(
+                        "liked",
+                        !alreadyLiked
+                    );
+
+
+                    button.setAttribute(
+                        "aria-pressed",
+                        String(
+                            !alreadyLiked
+                        )
+                    );
+
+
+                    const countElement =
+                        button.querySelector(
+                            ".like-count"
+                        );
+
+                    if (countElement) {
+
+                        countElement.textContent =
+                            count;
+
+                    }
+
+                }
+            );
+
+        });
+
+}
+
+
+/* =========================================================
+   FOLLOW
+   ========================================================= */
+
+function setupFollowButtons() {
+
+    document
+        .querySelectorAll(
+            ".follow-btn"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                event => {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+
+                    const item =
+                        button.closest(
+                            ".video-item"
+                        );
+
+                    if (!item) return;
+
+
+                    const usernameElement =
+                        item.querySelector(
+                            ".username"
+                        );
+
+
+                    const username =
+                        usernameElement
+                            ? usernameElement.textContent.trim()
+                            : "wwc_user";
+
+
+                    const key =
+                        "wwc_follow_" +
+                        username;
+
+
+                    const following =
+                        localStorage.getItem(
+                            key
+                        ) === "true";
+
+
+                    const newState =
+                        !following;
+
+
+                    localStorage.setItem(
+                        key,
+                        String(newState)
+                    );
+
+
+                    button.textContent =
+                        newState
+                            ? "Following"
+                            : "Follow";
+
+
+                    button.classList.toggle(
+                        "following",
+                        newState
+                    );
+
+
+                    button.setAttribute(
+                        "aria-pressed",
+                        String(newState)
                     );
 
                 }
             );
 
+        });
+
+}
+
+
+/* =========================================================
+   COMMENT
+   ========================================================= */
+
+let activeCommentItem = null;
+
+
+function setupCommentButtons() {
+
+    const box =
+        document.getElementById(
+            "commentBox"
+        );
+
+    const input =
+        document.getElementById(
+            "commentInput"
+        );
+
+    const send =
+        document.getElementById(
+            "commentSend"
+        );
+
+    const cancel =
+        document.getElementById(
+            "commentCancel"
+        );
+
+
+    document
+        .querySelectorAll(
+            ".comment-btn"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                event => {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    activeCommentItem =
+                        button.closest(
+                            ".video-item"
+                        );
+
+
+                    if (!box) {
+
+                        showMessage(
+                            "💬 Comment system প্রস্তুত"
+                        );
+
+                        return;
+
+                    }
+
+
+                    box.style.display =
+                        "block";
+
+
+                    if (input) {
+
+                        input.value =
+                            "";
+
+                        input.focus();
+
+                    }
+
+                }
+            );
+
+        });
+
+
+    if (cancel) {
+
+        cancel.addEventListener(
+            "click",
+            () => {
+
+                if (box) {
+
+                    box.style.display =
+                        "none";
+
+                }
+
+                activeCommentItem =
+                    null;
+
+            }
+        );
+
+    }
+
+
+    if (send) {
+
+        send.addEventListener(
+            "click",
+            () => {
+
+                const text =
+                    input
+                        ? input.value.trim()
+                        : "";
+
+
+                if (!text) {
+
+                    showMessage(
+                        "⚠️ Comment লিখুন"
+                    );
+
+                    return;
+
+                }
+
+
+                const comments =
+                    JSON.parse(
+                        localStorage.getItem(
+                            "wwc_comments"
+                        ) || "{}"
+                    );
+
+
+                const id =
+                    activeCommentItem
+                        ? (
+                            activeCommentItem.dataset.videoId ||
+                            "video"
+                        )
+                        : "video";
+
+
+                if (!comments[id]) {
+
+                    comments[id] = [];
+
+                }
+
+
+                comments[id].push({
+                    text: text,
+                    time: new Date().toISOString()
+                });
+
+
+                localStorage.setItem(
+                    "wwc_comments",
+                    JSON.stringify(comments)
+                );
+
+
+                if (box) {
+
+                    box.style.display =
+                        "none";
+
+                }
+
+
+                showMessage(
+                    "✅ Comment যোগ হয়েছে"
+                );
+
+
+                if (input) {
+
+                    input.value =
+                        "";
+
+                }
+
+            }
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SAVE
+   ========================================================= */
+
+function setupSaveButtons() {
+
+    document
+        .querySelectorAll(
+            ".save-btn"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                event => {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+
+                    const item =
+                        button.closest(
+                            ".video-item"
+                        );
+
+                    if (!item) return;
+
+
+                    const id =
+                        item.dataset.videoId ||
+                        "video";
+
+
+                    const saved =
+                        JSON.parse(
+                            localStorage.getItem(
+                                "wwc_saved_videos"
+                            ) || "[]"
+                        );
+
+
+                    const index =
+                        saved.indexOf(id);
+
+
+                    let isSaved;
+
+
+                    if (index !== -1) {
+
+                        saved.splice(
+                            index,
+                            1
+                        );
+
+                        isSaved =
+                            false;
+
+                    } else {
+
+                        saved.push(id);
+
+                        isSaved =
+                            true;
+
+                    }
+
+
+                    localStorage.setItem(
+                        "wwc_saved_videos",
+                        JSON.stringify(saved)
+                    );
+
+
+                    button.classList.toggle(
+                        "saved",
+                        isSaved
+                    );
+
+
+                    button.setAttribute(
+                        "aria-pressed",
+                        String(isSaved)
+                    );
+
+
+                    const count =
+                        button.querySelector(
+                            ".save-count"
+                        );
+
+
+                    if (count) {
+
+                        count.textContent =
+                            saved.length;
+
+                    }
+
+                }
+            );
+
+        });
+
+}
+
+
+/* =========================================================
+   SHARE
+   ========================================================= */
+
+function setupShareButtons() {
+
+    document
+        .querySelectorAll(
+            ".share-btn"
+        )
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                async event => {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+
+                    const item =
+                        button.closest(
+                            ".video-item"
+                        );
+
+
+                    const url =
+                        window.location.href +
+                        "#video-" +
+                        (
+                            item
+                                ? item.dataset.videoId || ""
+                                : ""
+                        );
+
+
+                    try {
+
+                        if (
+                            navigator.share
+                        ) {
+
+                            await navigator.share({
+
+                                title:
+                                    "World Wide Connect",
+
+                                text:
+                                    "Check this video on World Wide Connect 🌍",
+
+                                url:
+                                    url
+
+                            });
+
+                        } else {
+
+                            await navigator.clipboard.writeText(
+                                url
+                            );
+
+                            showMessage(
+                                "✅ Video link copied"
+                            );
+
+                        }
+
+                    } catch (error) {
+
+                        console.log(
+                            "Share cancelled"
+                        );
+
+                    }
+
+                }
+            );
+
+        });
+
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+function setupSearch() {
+
+    const searchButton =
+        document.getElementById(
+            "searchBtn"
+        );
+
+
+    if (!searchButton) {
+
+        return;
+
+    }
+
+
+    searchButton.addEventListener(
+        "click",
+        event => {
+
+            event.preventDefault();
+
+
+            /*
+             * যদি search input থাকে
+             * তাহলে সেটি ব্যবহার করবে।
+             */
+
+            let input =
+                document.querySelector(
+                    "#searchInput, .search-input"
+                );
+
+
+            /*
+             * Input না থাকলে নিজেই তৈরি করবে।
+             */
+
+            if (!input) {
+
+                input =
+                    document.createElement(
+                        "input"
+                    );
+
+                input.id =
+                    "wwcSearchInput";
+
+                input.placeholder =
+                    "Search...";
+
+                input.style.position =
+                    "fixed";
+
+                input.style.top =
+                    "60px";
+
+                input.style.left =
+                    "50%";
+
+                input.style.transform =
+                    "translateX(-50%)";
+
+                input.style.zIndex =
+                    "99999";
+
+                input.style.padding =
+                    "12px";
+
+                input.style.width =
+                    "80%";
+
+                input.style.borderRadius =
+                    "10px";
+
+                input.style.border =
+                    "none";
+
+                document.body.appendChild(
+                    input
+                );
+
+            }
+
+
+            input.focus();
+
+
+            input.oninput =
+                () => {
+
+                    const query =
+                        input.value
+                            .trim()
+                            .toLowerCase();
+
+
+                    document
+                        .querySelectorAll(
+                            ".video-item"
+                        )
+                        .forEach(item => {
+
+                            const text =
+                                item.textContent
+                                    .toLowerCase();
+
+
+                            item.style.display =
+                                !query ||
+                                text.includes(query)
+                                    ? ""
+                                    : "none";
+
+                        });
+
+                };
+
         }
     );
 
-
-    /*
-     * যে ভিডিও screen-এর মাঝখানে
-     * আসবে সেটি play হবে।
-     */
-
-    const observer =
-        new IntersectionObserver(
-            entries => {
-
-                entries.forEach(
-                    entry => {
-
-                        const video =
-                            entry.target;
+}
 
 
-                        if (
-                            entry.isIntersecting &&
-                            entry.intersectionRatio >= 0.65
-                        ) {
+/* =========================================================
+   FOLLOWING / FOR YOU
+   ========================================================= */
 
-                            videos.forEach(
-                                other => {
+function setupTopTabs() {
 
-                                    if (
-                                        other !== video
-                                    ) {
-
-                                        other.pause();
-
-                                    }
-
-                                }
-                            );
+    const tabs =
+        document.querySelectorAll(
+            ".wwc-top-tab"
+        );
 
 
-                            const promise =
-                                video.play();
+    tabs.forEach(tab => {
 
+        tab.addEventListener(
+            "click",
+            () => {
 
-                            if (
-                                promise &&
-                                promise.catch
-                            ) {
+                tabs.forEach(
+                    item => {
 
-                                promise.catch(
-                                    () => {}
-                                );
-
-                            }
-
-                        }
+                        item.classList.remove(
+                            "active"
+                        );
 
                     }
                 );
 
-            },
-            {
-                threshold: [
-                    0.65
-                ]
+
+                tab.classList.add(
+                    "active"
+                );
+
+
+                const text =
+                    tab.textContent
+                        .trim()
+                        .toLowerCase();
+
+
+                if (
+                    text === "following"
+                ) {
+
+                    showMessage(
+                        "👥 Following feed"
+                    );
+
+                } else {
+
+                    showMessage(
+                        "🌎 For You feed"
+                    );
+
+                }
+
             }
         );
 
+    });
 
-    videos.forEach(
-        video => {
+}
 
-            observer.observe(
-                video
+
+/* =========================================================
+   PROFILE MENU
+   ========================================================= */
+
+function setupProfileMenu() {
+
+    const profileButton =
+        document.getElementById(
+            "profileBtn"
+        );
+
+    const menu =
+        document.getElementById(
+            "profileMenu"
+        );
+
+    const close =
+        document.getElementById(
+            "profileMenuClose"
+        );
+
+
+    if (
+        !profileButton ||
+        !menu
+    ) {
+
+        return;
+
+    }
+
+
+    profileButton.addEventListener(
+        "click",
+        event => {
+
+            /*
+             * Profile navigation-এর পরিবর্তে
+             * menu খুলবে।
+             */
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+
+            const visible =
+                menu.getAttribute(
+                    "aria-hidden"
+                ) !== "true";
+
+
+            menu.setAttribute(
+                "aria-hidden",
+                String(visible)
             );
 
-        }
-    );
 
-}
-
-
-/* =========================================================
-   CAPTION + TITLE SUPPORT
-   ========================================================= */
-
-function setupCaptionSupport() {
-
-    /*
-     * Upload page বা অন্য কোনো page-এ
-     * title/caption input থাকলে এগুলো
-     * automaticভাবে localStorage-এ রাখবে।
-     */
-
-
-    const titleInput =
-        document.querySelector(
-            "#videoTitle, #title, .video-title-input"
-        );
-
-
-    const captionInput =
-        document.querySelector(
-            "#videoCaption, #caption, .caption-input"
-        );
-
-
-    if (
-        titleInput
-    ) {
-
-        titleInput.addEventListener(
-            "input",
-            () => {
-
-                sessionStorage.setItem(
-                    "wwc_video_title",
-                    titleInput.value
-                );
-
-            }
-        );
-
-    }
-
-
-    if (
-        captionInput
-    ) {
-
-        captionInput.addEventListener(
-            "input",
-            () => {
-
-                sessionStorage.setItem(
-                    "wwc_video_caption",
-                    captionInput.value
-                );
-
-            }
-        );
-
-    }
-
-
-    /*
-     * Feed-এ caption/title থাকলে
-     * data attributes থেকেও দেখাতে পারবে।
-     */
-
-    const videoItems =
-        document.querySelectorAll(
-            ".video-item"
-        );
-
-
-    videoItems.forEach(
-        item => {
-
-            const title =
-                item.dataset.title;
-
-
-            const caption =
-                item.dataset.caption;
-
-
-            const titleElement =
-                item.querySelector(
-                    ".video-title"
-                );
-
-
-            const captionElement =
-                item.querySelector(
-                    ".video-caption"
-                );
-
-
-            if (
-                titleElement &&
-                title
-            ) {
-
-                titleElement.textContent =
-                    title;
-
-            }
-
-
-            if (
-                captionElement &&
-                caption
-            ) {
-
-                captionElement.textContent =
-                    caption;
-
-            }
+            menu.style.display =
+                visible
+                    ? "none"
+                    : "block";
 
         }
     );
 
-}
 
+    if (close) {
 
-/* =========================================================
-   SAVE CAPTION + TITLE
-   ========================================================= */
+        close.addEventListener(
+            "click",
+            () => {
 
-async function saveVideoInfo(
-    videoId,
-    title,
-    caption
-) {
+                menu.style.display =
+                    "none";
 
-    const user =
-        await waitForAuth();
+                menu.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
 
-
-    if (!user) {
-
-        return false;
-
-    }
-
-
-    try {
-
-        await setDoc(
-            doc(
-                db,
-                "videos",
-                videoId
-            ),
-            {
-
-                title:
-                    title ||
-                    "",
-
-                caption:
-                    caption ||
-                    "",
-
-                userId:
-                    user.uid,
-
-                updatedAt:
-                    serverTimestamp()
-
-            },
-            {
-                merge: true
             }
         );
-
-
-        return true;
-
-    } catch (error) {
-
-        console.error(
-            "Video info error:",
-            error
-        );
-
-
-        return false;
 
     }
 
@@ -1185,151 +1504,88 @@ async function saveVideoInfo(
 
 
 /* =========================================================
-   GLOBAL WWC OBJECT
+   MESSAGE
    ========================================================= */
 
-window.WWC = {
+function showMessage(text) {
 
-    getCurrentUser:
-        () => {
-
-            return currentUser;
-
-        },
-
-
-    getAuth:
-        () => {
-
-            return auth;
-
-        },
-
-
-    getFirestore:
-        () => {
-
-            return db;
-
-        },
-
-
-    logout:
-        async () => {
-
-            try {
-
-                await signOut(
-                    auth
-                );
-
-            } catch (error) {
-
-                console.error(
-                    error
-                );
-
-            }
-
-        },
-
-
-    saveVideoInfo:
-        saveVideoInfo
-
-};
-
-
-/* =========================================================
-   GLOBAL MESSAGE
-   ========================================================= */
-
-function showWWCMessage(
-    text
-) {
-
-    let message =
+    let box =
         document.getElementById(
             "wwcMessage"
         );
 
 
-    if (!message) {
+    if (!box) {
 
-        message =
+        box =
             document.createElement(
                 "div"
             );
 
-
-        message.id =
+        box.id =
             "wwcMessage";
 
 
-        message.style.position =
+        box.style.position =
             "fixed";
 
 
-        message.style.left =
+        box.style.left =
             "50%";
 
 
-        message.style.bottom =
-            "30px";
+        box.style.bottom =
+            "80px";
 
 
-        message.style.transform =
+        box.style.transform =
             "translateX(-50%)";
 
 
-        message.style.zIndex =
+        box.style.zIndex =
             "999999";
 
 
-        message.style.padding =
-            "12px 20px";
-
-
-        message.style.borderRadius =
-            "12px";
-
-
-        message.style.background =
+        box.style.background =
             "#222";
 
 
-        message.style.color =
+        box.style.color =
             "#fff";
 
 
-        message.style.fontSize =
-            "15px";
+        box.style.padding =
+            "12px 18px";
 
 
-        message.style.textAlign =
-            "center";
+        box.style.borderRadius =
+            "12px";
 
 
-        message.style.maxWidth =
+        box.style.fontSize =
+            "14px";
+
+
+        box.style.maxWidth =
             "90%";
 
 
-        message.style.boxShadow =
-            "0 5px 25px rgba(0,0,0,.4)";
+        box.style.textAlign =
+            "center";
 
 
         document.body.appendChild(
-            message
+            box
         );
 
     }
 
 
-    message.textContent =
+    box.textContent =
         text;
 
 
-    message.style.display =
+    box.style.display =
         "block";
 
 
@@ -1342,7 +1598,7 @@ function showWWCMessage(
         setTimeout(
             () => {
 
-                message.style.display =
+                box.style.display =
                     "none";
 
             },
@@ -1350,6 +1606,27 @@ function showWWCMessage(
         );
 
 }
+
+
+/* =========================================================
+   GLOBAL WWC
+   ========================================================= */
+
+window.WWC = {
+
+    getCurrentUser:
+        () => currentUser,
+
+    getAuth:
+        () => auth,
+
+    getFirestore:
+        () => db,
+
+    logout:
+        () => signOut(auth)
+
+};
 
 
 /* =========================================================
