@@ -1,1 +1,215 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>WWC Friends</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    .header {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      border-bottom: 1px solid #333;
+      background: #111;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .back-btn {
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 50%;
+      background: #222;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    .title {
+      margin-left: 15px;
+      font-size: 21px;
+      font-weight: bold;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px 15px 90px;
+    }
+
+    .welcome {
+      background: #181818;
+      border: 1px solid #333;
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .welcome h2 {
+      margin: 0 0 8px;
+      font-size: 20px;
+    }
+
+    .welcome p {
+      margin: 0;
+      color: #aaa;
+      line-height: 1.5;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 20px 0 12px;
+    }
+
+    .friend-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+      background: #181818;
+      border: 1px solid #333;
+      border-radius: 13px;
+    }
+
+    .avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #333;
+      border: 1px solid #555;
+    }
+
+    .friend-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .friend-name {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .friend-handle {
+      color: #999;
+      font-size: 13px;
+    }
+
+    .profile-btn {
+      border: 0;
+      border-radius: 8px;
+      padding: 9px 14px;
+      background: #fff;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 45px 20px;
+      color: #888;
+      background: #111;
+      border-radius: 15px;
+      border: 1px solid #222;
+    }
+
+    .empty-icon {
+      font-size: 42px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .profile-btn {
+        padding: 8px 11px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+
+    <button
+      class="back-btn"
+      type="button"
+      onclick="history.back()"
+    >
+      ←
+    </button>
+
+    <div class="title">
+      👥 Friends
+    </div>
+
+  </header>
+
+
+  <main class="container">
+
+    <section class="welcome">
+
+      <h2>
+        🌍 WWC Friends
+      </h2>
+
+      <p>
+        আপনার Friends এবং পরিচিতদের এখানে দেখা যাবে।
+        Friends system ধীরে ধীরে তৈরি করা হচ্ছে।
+      </p>
+
+    </section>
+
+
+    <div class="section-title">
+      👥 My Friends
+    </div>
+
+
+    <section class="empty">
+
+      <div class="empty-icon">
+        👥
+      </div>
+
+      <div>
+        এখনো কোনো Friend যোগ করা হয়নি।
+      </div>
+
+      <p>
+        নতুন Friends যোগ করার সুবিধা শীঘ্রই আসছে।
+      </p>
+
+    </section>
+
+  </main>
+
+</body>
+</html>
