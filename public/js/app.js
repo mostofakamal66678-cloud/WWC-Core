@@ -1,6 +1,7 @@
 /* =========================================================
-   WORLD WIDE CONNECT - WWC CORE
-   app.js
+   WORLD WIDE CONNECT
+   WWC-CORE
+   MAIN APP.JS
    ========================================================= */
 
 import {
@@ -40,7 +41,7 @@ const firebaseConfig = {
 
 
 /* =========================================================
-   FIREBASE START
+   FIREBASE INITIALIZE
    ========================================================= */
 
 const app = getApps().length
@@ -52,59 +53,10 @@ const db = getFirestore(app);
 
 
 /* =========================================================
-   ELEMENTS
+   GLOBAL USER
    ========================================================= */
 
-const feed = document.getElementById("video-feed");
-
-const friendsBtn =
-  document.getElementById("friendsBtn");
-
-const uploadBtn =
-  document.getElementById("uploadBtn");
-
-const inboxBtn =
-  document.getElementById("inboxBtn");
-
-const profileBtn =
-  document.getElementById("profileBtn");
-
-const homeBtn =
-  document.getElementById("homeBtn");
-
-const searchBtn =
-  document.getElementById("searchBtn");
-
-const profileMenu =
-  document.getElementById("profileMenu");
-
-const profileMenuClose =
-  document.getElementById("profileMenuClose");
-
-const profileBtnMenu =
-  document.getElementById("profileBtnMenu");
-
-const loginBtn =
-  document.getElementById("loginBtn");
-
-const logoutBtn =
-  document.getElementById("logoutBtn");
-
-const commentBox =
-  document.getElementById("commentBox");
-
-const commentInput =
-  document.getElementById("commentInput");
-
-const commentCancel =
-  document.getElementById("commentCancel");
-
-const commentSend =
-  document.getElementById("commentSend");
-
-
 let currentUser = null;
-let currentCommentVideo = null;
 
 
 /* =========================================================
@@ -118,15 +70,17 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
 
     console.log(
-      "WWC Login:",
+      "WWC logged in:",
       user.email || user.uid
     );
 
-    await createUserProfileIfNeeded(user);
+    await makeUserProfile(user);
 
   } else {
 
-    console.log("WWC: Guest user");
+    console.log(
+      "WWC guest mode"
+    );
 
   }
 
@@ -137,17 +91,17 @@ onAuthStateChanged(auth, async (user) => {
    CREATE USER PROFILE
    ========================================================= */
 
-async function createUserProfileIfNeeded(user) {
+async function makeUserProfile(user) {
 
   try {
 
     const userRef =
       doc(db, "users", user.uid);
 
-    const snapshot =
+    const snap =
       await getDoc(userRef);
 
-    if (!snapshot.exists()) {
+    if (!snap.exists()) {
 
       await setDoc(userRef, {
 
@@ -158,7 +112,7 @@ async function createUserProfileIfNeeded(user) {
           "WWC User",
 
         username:
-          "wwc_user_" +
+          "wwc_" +
           user.uid.substring(0, 6),
 
         email:
@@ -197,19 +151,23 @@ async function createUserProfileIfNeeded(user) {
 
 
 /* =========================================================
-   PAGE NAVIGATION
+   PAGE HELPER
    ========================================================= */
 
-function goTo(page) {
+function openPage(file) {
 
-  window.location.href = "./" + page;
+  window.location.href =
+    "./" + file;
 
 }
 
 
 /* =========================================================
-   HOME
+   HOME BUTTON
    ========================================================= */
+
+const homeBtn =
+  document.getElementById("homeBtn");
 
 if (homeBtn) {
 
@@ -217,26 +175,7 @@ if (homeBtn) {
     "click",
     () => {
 
-      if (
-        window.location.pathname.endsWith(
-          "/index.html"
-        )
-      ) {
-
-        if (feed) {
-
-          feed.scrollTo({
-            top: 0,
-            behavior: "smooth"
-          });
-
-        }
-
-      } else {
-
-        goTo("index.html");
-
-      }
+      openPage("index.html");
 
     }
   );
@@ -245,8 +184,11 @@ if (homeBtn) {
 
 
 /* =========================================================
-   FRIENDS
+   FRIENDS BUTTON
    ========================================================= */
+
+const friendsBtn =
+  document.getElementById("friendsBtn");
 
 if (friendsBtn) {
 
@@ -254,7 +196,7 @@ if (friendsBtn) {
     "click",
     () => {
 
-      goTo("friends.html");
+      openPage("friends.html");
 
     }
   );
@@ -263,8 +205,11 @@ if (friendsBtn) {
 
 
 /* =========================================================
-   UPLOAD
+   UPLOAD BUTTON
    ========================================================= */
+
+const uploadBtn =
+  document.getElementById("uploadBtn");
 
 if (uploadBtn) {
 
@@ -274,13 +219,13 @@ if (uploadBtn) {
 
       if (!currentUser) {
 
-        goTo("auth.html");
+        openPage("auth.html");
 
         return;
 
       }
 
-      goTo("upload.html");
+      openPage("upload.html");
 
     }
   );
@@ -289,8 +234,11 @@ if (uploadBtn) {
 
 
 /* =========================================================
-   INBOX
+   INBOX BUTTON
    ========================================================= */
+
+const inboxBtn =
+  document.getElementById("inboxBtn");
 
 if (inboxBtn) {
 
@@ -298,7 +246,7 @@ if (inboxBtn) {
     "click",
     () => {
 
-      goTo("inbox.html");
+      openPage("inbox.html");
 
     }
   );
@@ -307,8 +255,11 @@ if (inboxBtn) {
 
 
 /* =========================================================
-   PROFILE BUTTON
+   BOTTOM PROFILE BUTTON
    ========================================================= */
+
+const profileBtn =
+  document.getElementById("profileBtn");
 
 if (profileBtn) {
 
@@ -318,13 +269,13 @@ if (profileBtn) {
 
       if (!currentUser) {
 
-        goTo("auth.html");
+        openPage("auth.html");
 
         return;
 
       }
 
-      goTo("profile.html");
+      openPage("profile.html");
 
     }
   );
@@ -333,8 +284,11 @@ if (profileBtn) {
 
 
 /* =========================================================
-   SEARCH
+   SEARCH BUTTON
    ========================================================= */
+
+const searchBtn =
+  document.getElementById("searchBtn");
 
 if (searchBtn) {
 
@@ -342,471 +296,23 @@ if (searchBtn) {
     "click",
     () => {
 
-      const query =
+      const search =
         prompt(
-          "🔍 Search username:"
+          "🔍 Username লিখুন"
         );
 
-      if (!query) return;
+      if (!search) return;
 
       const username =
-        query.trim().replace(/^@/, "");
+        search
+          .trim()
+          .replace(/^@/, "");
 
       if (!username) return;
 
-      window.location.href =
-        "./profile.html?username=" +
-        encodeURIComponent(username);
-
-    }
-  );
-
-}
-
-
-/* =========================================================
-   VIDEO USER PROFILE
-   ========================================================= */
-
-document
-  .querySelectorAll(
-    ".video-item .profile-area .profile-photo, " +
-    ".video-item .profile-area .username"
-  )
-  .forEach(element => {
-
-    element.addEventListener(
-      "click",
-      event => {
-
-        event.stopPropagation();
-
-        const videoItem =
-          element.closest(".video-item");
-
-        if (!videoItem) return;
-
-        const usernameElement =
-          videoItem.querySelector(
-            ".profile-area .username"
-          );
-
-        if (!usernameElement) return;
-
-        const username =
-          usernameElement.textContent
-            .trim()
-            .replace(/^@/, "");
-
-        if (!username) return;
-
-        window.location.href =
-          "./profile.html?username=" +
-          encodeURIComponent(username);
-
-      }
-    );
-
-  });
-
-
-/* =========================================================
-   FOLLOW BUTTON
-   ========================================================= */
-
-document
-  .querySelectorAll(".follow-btn")
-  .forEach(button => {
-
-    button.addEventListener(
-      "click",
-      async event => {
-
-        event.stopPropagation();
-
-        if (!currentUser) {
-
-          goTo("auth.html");
-
-          return;
-
-        }
-
-        const videoItem =
-          button.closest(".video-item");
-
-        if (!videoItem) return;
-
-        const usernameElement =
-          videoItem.querySelector(
-            ".profile-area .username"
-          );
-
-        if (!usernameElement) return;
-
-        const username =
-          usernameElement.textContent
-            .trim()
-            .replace(/^@/, "");
-
-        if (!username) return;
-
-        const following =
-          button.classList.contains(
-            "following"
-          );
-
-        if (following) {
-
-          button.classList.remove(
-            "following"
-          );
-
-          button.textContent =
-            "Follow";
-
-        } else {
-
-          button.classList.add(
-            "following"
-          );
-
-          button.textContent =
-            "Following";
-
-        }
-
-      }
-    );
-
-  });
-
-
-/* =========================================================
-   LIKE
-   ========================================================= */
-
-document
-  .querySelectorAll(".like-btn")
-  .forEach(button => {
-
-    button.addEventListener(
-      "click",
-      async event => {
-
-        event.stopPropagation();
-
-        const countElement =
-          button.querySelector(
-            ".like-count"
-          );
-
-        let count =
-          Number(
-            countElement?.textContent || 0
-          );
-
-        const liked =
-          button.classList.contains(
-            "liked"
-          );
-
-        if (liked) {
-
-          count =
-            Math.max(0, count - 1);
-
-          button.classList.remove(
-            "liked"
-          );
-
-          button.setAttribute(
-            "aria-pressed",
-            "false"
-          );
-
-        } else {
-
-          count++;
-
-          button.classList.add(
-            "liked"
-          );
-
-          button.setAttribute(
-            "aria-pressed",
-            "true"
-          );
-
-        }
-
-        if (countElement) {
-
-          countElement.textContent =
-            count;
-
-        }
-
-      }
-    );
-
-  });
-
-
-/* =========================================================
-   SAVE
-   ========================================================= */
-
-document
-  .querySelectorAll(".save-btn")
-  .forEach(button => {
-
-    button.addEventListener(
-      "click",
-      event => {
-
-        event.stopPropagation();
-
-        const countElement =
-          button.querySelector(
-            ".save-count"
-          );
-
-        let count =
-          Number(
-            countElement?.textContent || 0
-          );
-
-        const saved =
-          button.classList.contains(
-            "saved"
-          );
-
-        if (saved) {
-
-          count =
-            Math.max(0, count - 1);
-
-          button.classList.remove(
-            "saved"
-          );
-
-          button.setAttribute(
-            "aria-pressed",
-            "false"
-          );
-
-        } else {
-
-          count++;
-
-          button.classList.add(
-            "saved"
-          );
-
-          button.setAttribute(
-            "aria-pressed",
-            "true"
-          );
-
-        }
-
-        if (countElement) {
-
-          countElement.textContent =
-            count;
-
-        }
-
-      }
-    );
-
-  });
-
-
-/* =========================================================
-   SHARE
-   ========================================================= */
-
-document
-  .querySelectorAll(".share-btn")
-  .forEach(button => {
-
-    button.addEventListener(
-      "click",
-      async event => {
-
-        event.stopPropagation();
-
-        const videoItem =
-          button.closest(".video-item");
-
-        const url =
-          window.location.origin +
-          window.location.pathname +
-          "#video-" +
-          (
-            videoItem?.dataset.videoId ||
-            ""
-          );
-
-        try {
-
-          if (
-            navigator.share
-          ) {
-
-            await navigator.share({
-
-              title:
-                "World Wide Connect",
-
-              text:
-                "এই ভিডিওটি World Wide Connect-এ দেখুন 🌍",
-
-              url: url
-
-            });
-
-          } else if (
-            navigator.clipboard
-          ) {
-
-            await navigator.clipboard.writeText(
-              url
-            );
-
-            alert(
-              "✅ Video link কপি হয়েছে।"
-            );
-
-          } else {
-
-            prompt(
-              "Video link:",
-              url
-            );
-
-          }
-
-        } catch (error) {
-
-          console.log(
-            "Share cancelled:",
-            error
-          );
-
-        }
-
-      }
-    );
-
-  });
-
-
-/* =========================================================
-   COMMENTS
-   ========================================================= */
-
-document
-  .querySelectorAll(".comment-btn")
-  .forEach(button => {
-
-    button.addEventListener(
-      "click",
-      event => {
-
-        event.stopPropagation();
-
-        currentCommentVideo =
-          button.closest(".video-item");
-
-        if (!commentBox) return;
-
-        commentBox.classList.add(
-          "show"
-        );
-
-        if (commentInput) {
-
-          commentInput.value = "";
-
-          setTimeout(
-            () => commentInput.focus(),
-            100
-          );
-
-        }
-
-      }
-    );
-
-  });
-
-
-if (commentCancel) {
-
-  commentCancel.addEventListener(
-    "click",
-    () => {
-
-      if (commentBox) {
-
-        commentBox.classList.remove(
-          "show"
-        );
-
-      }
-
-      currentCommentVideo =
-        null;
-
-    }
-  );
-
-}
-
-
-if (commentSend) {
-
-  commentSend.addEventListener(
-    "click",
-    () => {
-
-      const text =
-        commentInput?.value.trim();
-
-      if (!text) {
-
-        alert(
-          "⚠️ Comment লিখুন।"
-        );
-
-        return;
-
-      }
-
-      console.log(
-        "Comment:",
-        text
-      );
-
-      if (commentBox) {
-
-        commentBox.classList.remove(
-          "show"
-        );
-
-      }
-
-      if (commentInput) {
-
-        commentInput.value = "";
-
-      }
-
-      alert(
-        "✅ Comment পাঠানো হয়েছে।"
+      openPage(
+        "profile.html?username=" +
+        encodeURIComponent(username)
       );
 
     }
@@ -818,6 +324,28 @@ if (commentSend) {
 /* =========================================================
    PROFILE MENU
    ========================================================= */
+
+const profileMenu =
+  document.getElementById("profileMenu");
+
+const profileMenuClose =
+  document.getElementById("profileMenuClose");
+
+const profileBtnMenu =
+  document.getElementById("profileBtnMenu");
+
+const loginBtn =
+  document.getElementById("loginBtn");
+
+const logoutBtn =
+  document.getElementById("logoutBtn");
+
+
+/*
+   আপনার index.html-এ profile menu আছে।
+   Bottom profile button চাপলে সরাসরি profile.html যাবে।
+   Menu-এর profile button-ও profile.html যাবে।
+*/
 
 if (profileMenuClose) {
 
@@ -866,7 +394,7 @@ function openProfileMenu() {
 
 
 /* =========================================================
-   PROFILE MENU BUTTON
+   PROFILE MENU PROFILE
    ========================================================= */
 
 if (profileBtnMenu) {
@@ -879,13 +407,13 @@ if (profileBtnMenu) {
 
       if (!currentUser) {
 
-        goTo("auth.html");
+        openPage("auth.html");
 
         return;
 
       }
 
-      goTo("profile.html");
+      openPage("profile.html");
 
     }
   );
@@ -894,7 +422,7 @@ if (profileBtnMenu) {
 
 
 /* =========================================================
-   LOGIN BUTTON
+   LOGIN / REGISTER
    ========================================================= */
 
 if (loginBtn) {
@@ -905,7 +433,7 @@ if (loginBtn) {
 
       closeProfileMenu();
 
-      goTo("auth.html");
+      openPage("auth.html");
 
     }
   );
@@ -930,20 +458,20 @@ if (logoutBtn) {
         closeProfileMenu();
 
         alert(
-          "✅ Logout সফল হয়েছে।"
+          "✅ Logout সফল হয়েছে"
         );
 
-        goTo("auth.html");
+        openPage("auth.html");
 
       } catch (error) {
 
         console.error(
-          "Logout Error:",
+          "Logout error:",
           error
         );
 
         alert(
-          "❌ Logout করা যায়নি।"
+          "❌ Logout করা যায়নি"
         );
 
       }
@@ -955,35 +483,490 @@ if (logoutBtn) {
 
 
 /* =========================================================
-   CLOSE MENU OUTSIDE
+   VIDEO PROFILE
    ========================================================= */
 
-document.addEventListener(
-  "click",
-  event => {
+document
+  .querySelectorAll(
+    ".video-item .profile-photo"
+  )
+  .forEach(photo => {
 
-    if (
-      profileMenu &&
-      profileMenu.classList.contains(
-        "show"
-      ) &&
-      !profileMenu.contains(
-        event.target
-      ) &&
-      event.target !== profileBtn
-    ) {
+    photo.addEventListener(
+      "click",
+      event => {
 
-      closeProfileMenu();
+        event.stopPropagation();
 
-    }
+        const item =
+          photo.closest(
+            ".video-item"
+          );
 
-  }
-);
+        if (!item) return;
+
+        const usernameElement =
+          item.querySelector(
+            ".profile-area .username"
+          );
+
+        if (!usernameElement) return;
+
+        const username =
+          usernameElement.textContent
+            .trim()
+            .replace(/^@/, "");
+
+        if (!username) return;
+
+        openPage(
+          "profile.html?username=" +
+          encodeURIComponent(username)
+        );
+
+      }
+    );
+
+  });
 
 
 /* =========================================================
-   VIDEO PLAY / PAUSE
+   VIDEO USERNAME PROFILE
    ========================================================= */
+
+document
+  .querySelectorAll(
+    ".video-item .profile-area .username"
+  )
+  .forEach(usernameElement => {
+
+    usernameElement.addEventListener(
+      "click",
+      event => {
+
+        event.stopPropagation();
+
+        const username =
+          usernameElement.textContent
+            .trim()
+            .replace(/^@/, "");
+
+        if (!username) return;
+
+        openPage(
+          "profile.html?username=" +
+          encodeURIComponent(username)
+        );
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   FOLLOW
+   ========================================================= */
+
+document
+  .querySelectorAll(".follow-btn")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      async event => {
+
+        event.stopPropagation();
+
+        if (!currentUser) {
+
+          openPage("auth.html");
+
+          return;
+
+        }
+
+        if (
+          button.classList.contains(
+            "following"
+          )
+        ) {
+
+          button.classList.remove(
+            "following"
+          );
+
+          button.textContent =
+            "Follow";
+
+        } else {
+
+          button.classList.add(
+            "following"
+          );
+
+          button.textContent =
+            "Following";
+
+        }
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   LIKE
+   ========================================================= */
+
+document
+  .querySelectorAll(".like-btn")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      event => {
+
+        event.stopPropagation();
+
+        const count =
+          button.querySelector(
+            ".like-count"
+          );
+
+        let number =
+          Number(
+            count?.textContent || 0
+          );
+
+        const liked =
+          button.classList.contains(
+            "liked"
+          );
+
+        if (liked) {
+
+          number =
+            Math.max(
+              0,
+              number - 1
+            );
+
+          button.classList.remove(
+            "liked"
+          );
+
+          button.setAttribute(
+            "aria-pressed",
+            "false"
+          );
+
+        } else {
+
+          number++;
+
+          button.classList.add(
+            "liked"
+          );
+
+          button.setAttribute(
+            "aria-pressed",
+            "true"
+          );
+
+        }
+
+        if (count) {
+
+          count.textContent =
+            number;
+
+        }
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   SAVE
+   ========================================================= */
+
+document
+  .querySelectorAll(".save-btn")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      event => {
+
+        event.stopPropagation();
+
+        const count =
+          button.querySelector(
+            ".save-count"
+          );
+
+        let number =
+          Number(
+            count?.textContent || 0
+          );
+
+        const saved =
+          button.classList.contains(
+            "saved"
+          );
+
+        if (saved) {
+
+          number =
+            Math.max(
+              0,
+              number - 1
+            );
+
+          button.classList.remove(
+            "saved"
+          );
+
+          button.setAttribute(
+            "aria-pressed",
+            "false"
+          );
+
+        } else {
+
+          number++;
+
+          button.classList.add(
+            "saved"
+          );
+
+          button.setAttribute(
+            "aria-pressed",
+            "true"
+          );
+
+        }
+
+        if (count) {
+
+          count.textContent =
+            number;
+
+        }
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   SHARE
+   ========================================================= */
+
+document
+  .querySelectorAll(".share-btn")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      async event => {
+
+        event.stopPropagation();
+
+        const item =
+          button.closest(
+            ".video-item"
+          );
+
+        const videoId =
+          item?.dataset.videoId ||
+          "";
+
+        const url =
+          window.location.href
+            .split("#")[0] +
+          "#" +
+          videoId;
+
+        try {
+
+          if (
+            navigator.share
+          ) {
+
+            await navigator.share({
+
+              title:
+                "World Wide Connect",
+
+              text:
+                "এই ভিডিওটি দেখুন 🌍",
+
+              url:
+                url
+
+            });
+
+          } else if (
+            navigator.clipboard
+          ) {
+
+            await navigator.clipboard.writeText(
+              url
+            );
+
+            alert(
+              "✅ Video link কপি হয়েছে"
+            );
+
+          } else {
+
+            prompt(
+              "Video link:",
+              url
+            );
+
+          }
+
+        } catch (error) {
+
+          console.log(
+            "Share cancelled"
+          );
+
+        }
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   COMMENT
+   ========================================================= */
+
+const commentBox =
+  document.getElementById("commentBox");
+
+const commentInput =
+  document.getElementById("commentInput");
+
+const commentCancel =
+  document.getElementById("commentCancel");
+
+const commentSend =
+  document.getElementById("commentSend");
+
+
+document
+  .querySelectorAll(".comment-btn")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      event => {
+
+        event.stopPropagation();
+
+        if (!commentBox) return;
+
+        commentBox.classList.add(
+          "show"
+        );
+
+        if (commentInput) {
+
+          commentInput.value =
+            "";
+
+          commentInput.focus();
+
+        }
+
+      }
+    );
+
+  });
+
+
+if (commentCancel) {
+
+  commentCancel.addEventListener(
+    "click",
+    () => {
+
+      if (commentBox) {
+
+        commentBox.classList.remove(
+          "show"
+        );
+
+      }
+
+    }
+  );
+
+}
+
+
+if (commentSend) {
+
+  commentSend.addEventListener(
+    "click",
+    () => {
+
+      const text =
+        commentInput?.value.trim();
+
+      if (!text) {
+
+        alert(
+          "⚠️ Comment লিখুন"
+        );
+
+        return;
+
+      }
+
+      if (commentBox) {
+
+        commentBox.classList.remove(
+          "show"
+        );
+
+      }
+
+      if (commentInput) {
+
+        commentInput.value =
+          "";
+
+      }
+
+      alert(
+        "✅ Comment পাঠানো হয়েছে"
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   VIDEO AUTO PLAY
+   ========================================================= */
+
+const videoFeed =
+  document.getElementById(
+    "video-feed"
+  );
 
 const videos =
   document.querySelectorAll(
@@ -991,130 +974,114 @@ const videos =
   );
 
 
-videos.forEach(video => {
-
-  video.addEventListener(
-    "click",
-    () => {
-
-      if (video.paused) {
-
-        video.play().catch(
-          () => {}
-        );
-
-      } else {
-
-        video.pause();
-
-      }
-
-    }
-  );
-
-});
-
-
-/* =========================================================
-   AUTO PLAY CURRENT VIDEO
-   ========================================================= */
-
 if (
-  feed &&
-  videos.length
+  videoFeed &&
+  videos.length > 0
 ) {
 
   const observer =
     new IntersectionObserver(
       entries => {
 
-        entries.forEach(entry => {
+        entries.forEach(
+          entry => {
 
-          const video =
-            entry.target;
+            const video =
+              entry.target;
 
-          if (
-            entry.isIntersecting &&
-            entry.intersectionRatio >= 0.65
-          ) {
+            if (
+              entry.isIntersecting &&
+              entry.intersectionRatio >= 0.65
+            ) {
 
-            videos.forEach(other => {
+              videos.forEach(
+                otherVideo => {
 
-              if (
-                other !== video
-              ) {
+                  if (
+                    otherVideo !== video
+                  ) {
 
-                other.pause();
+                    otherVideo.pause();
 
-              }
+                  }
 
-            });
+                }
+              );
 
-            video.play().catch(
-              () => {}
-            );
+              video.play().catch(
+                () => {}
+              );
 
-          } else {
+            } else {
 
-            video.pause();
+              video.pause();
+
+            }
 
           }
-
-        });
+        );
 
       },
       {
-        root: feed,
-        threshold: [0.65]
+        root: videoFeed,
+        threshold: 0.65
       }
     );
 
 
   videos.forEach(
-    video => observer.observe(video)
+    video => {
+
+      observer.observe(
+        video
+      );
+
+    }
   );
 
 }
 
 
 /* =========================================================
-   VIDEO ENDED → NEXT VIDEO
+   NEXT VIDEO AFTER END
    ========================================================= */
 
-videos.forEach(video => {
+videos.forEach(
+  video => {
 
-  video.addEventListener(
-    "ended",
-    () => {
+    video.addEventListener(
+      "ended",
+      () => {
 
-      const currentItem =
-        video.closest(
-          ".video-item"
-        );
+        const currentItem =
+          video.closest(
+            ".video-item"
+          );
 
-      if (!currentItem) return;
+        if (!currentItem) return;
 
-      const nextItem =
-        currentItem.nextElementSibling;
+        const nextItem =
+          currentItem.nextElementSibling;
 
-      if (
-        nextItem &&
-        nextItem.classList.contains(
-          "video-item"
-        )
-      ) {
+        if (
+          nextItem &&
+          nextItem.classList.contains(
+            "video-item"
+          )
+        ) {
 
-        nextItem.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
+          nextItem.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+
+        }
 
       }
+    );
 
-    }
-  );
-
-});
+  }
+);
 
 
 /* =========================================================
@@ -1122,7 +1089,9 @@ videos.forEach(video => {
    ========================================================= */
 
 document
-  .querySelectorAll(".wwc-top-tab")
+  .querySelectorAll(
+    ".wwc-top-tab"
+  )
   .forEach(tab => {
 
     tab.addEventListener(
@@ -1134,10 +1103,13 @@ document
             ".wwc-top-tab"
           )
           .forEach(
-            item =>
+            item => {
+
               item.classList.remove(
                 "active"
-              )
+              );
+
+            }
           );
 
         tab.classList.add(
@@ -1151,28 +1123,33 @@ document
 
 
 /* =========================================================
-   VIDEO LOAD ERROR
+   CLOSE PROFILE MENU
    ========================================================= */
 
-videos.forEach(video => {
+document.addEventListener(
+  "click",
+  event => {
 
-  video.addEventListener(
-    "error",
-    () => {
+    if (
+      profileMenu &&
+      profileMenu.classList.contains(
+        "show"
+      ) &&
+      !profileMenu.contains(
+        event.target
+      )
+    ) {
 
-      console.error(
-        "Video load error:",
-        video.currentSrc
-      );
+      closeProfileMenu();
 
     }
-  );
 
-});
+  }
+);
 
 
 /* =========================================================
-   ESC KEY
+   ESCAPE
    ========================================================= */
 
 document.addEventListener(
@@ -1200,9 +1177,54 @@ document.addEventListener(
 
 
 /* =========================================================
-   START
+   VIDEO CLICK = PLAY / PAUSE
+   ========================================================= */
+
+videos.forEach(
+  video => {
+
+    video.addEventListener(
+      "click",
+      event => {
+
+        /*
+          শুধু ভিডিওতে ক্লিক করলে play/pause।
+          Button-এ ক্লিক করলে এখানে আসবে না।
+        */
+
+        if (
+          event.target.closest(
+            "button"
+          )
+        ) {
+
+          return;
+
+        }
+
+        if (video.paused) {
+
+          video.play().catch(
+            () => {}
+          );
+
+        } else {
+
+          video.pause();
+
+        }
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   INITIAL LOG
    ========================================================= */
 
 console.log(
-  "🌍 World Wide Connect app.js loaded successfully."
+  "🌍 WWC-Core app.js loaded"
 );
