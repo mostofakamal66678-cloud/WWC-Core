@@ -174,6 +174,7 @@
       text-align: center;
       padding: 50px 20px;
       color: #888;
+      grid-column: 1 / -1;
     }
 
     .error {
@@ -241,14 +242,12 @@
         alt="Profile"
       >
 
-
       <h1
         id="profileName"
         class="name"
       >
         WWC User
       </h1>
-
 
       <div
         id="profileHandle"
@@ -257,7 +256,6 @@
         @wwc_user
       </div>
 
-
       <div
         id="profileBio"
         class="bio"
@@ -265,46 +263,29 @@
         Welcome to WWC 🌍
       </div>
 
-
       <div
         id="profileCountry"
         class="country"
       ></div>
 
-
       <div class="stats">
 
         <div class="stat">
-          <strong id="followers">
-            0
-          </strong>
-          <span>
-            Followers
-          </span>
+          <strong id="followers">0</strong>
+          <span>Followers</span>
         </div>
 
-
         <div class="stat">
-          <strong id="following">
-            0
-          </strong>
-          <span>
-            Following
-          </span>
+          <strong id="following">0</strong>
+          <span>Following</span>
         </div>
 
-
         <div class="stat">
-          <strong id="likes">
-            0
-          </strong>
-          <span>
-            Likes
-          </span>
+          <strong id="likes">0</strong>
+          <span>Likes</span>
         </div>
 
       </div>
-
 
       <button
         type="button"
@@ -313,7 +294,6 @@
       >
         Follow
       </button>
-
 
       <div
         id="message"
@@ -327,7 +307,6 @@
       🎬 Videos
     </div>
 
-
     <section
       id="videoGrid"
       class="video-grid"
@@ -338,23 +317,26 @@
 
   <script type="module">
 
+    // ==========================================
+    // FIREBASE IMPORT
+    // ==========================================
+
     import {
       getApps,
       initializeApp
     } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-
 
     import {
       getAuth,
       onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
-
     import {
       getFirestore,
       doc,
       getDoc,
-      updateDoc
+      updateDoc,
+      setDoc
     } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
@@ -365,7 +347,7 @@
     const firebaseConfig = {
 
       apiKey:
-        "AIzaSyCgio17aPEfR7d6juqIhn3yiMf65W_tO4",
+        "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
 
       authDomain:
         "world-wide-connect-62c87.firebaseapp.com",
@@ -395,7 +377,6 @@
       getApps().length
         ? getApps()[0]
         : initializeApp(firebaseConfig);
-
 
     const auth =
       getAuth(app);
@@ -460,14 +441,11 @@
         window.location.search
       );
 
-
     const targetUid =
       params.get("uid");
 
-
     const defaultPhoto =
       "./images/profile.png";
-
 
     let currentUser =
       null;
@@ -475,12 +453,15 @@
     let targetProfile =
       {};
 
-    let followingIds =
-      [];
+    let myProfile =
+      {};
+
+    let isFollowing =
+      false;
 
 
     // ==========================================
-    // BACK
+    // BACK BUTTON
     // ==========================================
 
     backBtn.addEventListener(
@@ -492,7 +473,7 @@
 
 
     // ==========================================
-    // SHOW ERROR
+    // ERROR
     // ==========================================
 
     function showError(text) {
@@ -502,6 +483,75 @@
 
       loading.textContent =
         text;
+
+      profile.style.display =
+        "none";
+    }
+
+
+    // ==========================================
+    // LOAD MY PROFILE
+    // ==========================================
+
+    async function loadMyProfile() {
+
+      if (!currentUser) {
+        return;
+      }
+
+      const myRef =
+        doc(
+          db,
+          "users",
+          currentUser.uid
+        );
+
+      const snapshot =
+        await getDoc(myRef);
+
+      if (snapshot.exists()) {
+
+        myProfile =
+          snapshot.data();
+
+      } else {
+
+        myProfile = {
+
+          name:
+            currentUser.displayName
+            || "WWC User",
+
+          username:
+            "wwc_user",
+
+          photoURL:
+            currentUser.photoURL
+            || defaultPhoto,
+
+          followers:
+            0,
+
+          following:
+            0,
+
+          followingIds:
+            [],
+
+          followerIds:
+            [],
+
+          likes:
+            0
+
+        };
+
+        await setDoc(
+          myRef,
+          myProfile
+        );
+
+      }
 
     }
 
@@ -523,6 +573,20 @@
       }
 
 
+      if (
+        targetUid ===
+        currentUser.uid
+      ) {
+
+        showError(
+          "❌ নিজের Profile দেখার জন্য Profile ব্যবহার করুন।"
+        );
+
+        return;
+
+      }
+
+
       try {
 
         const userRef =
@@ -531,7 +595,6 @@
             "users",
             targetUid
           );
-
 
         const snapshot =
           await getDoc(
@@ -554,6 +617,25 @@
           snapshot.data();
 
 
+        // ====================================
+        // IMPORTANT:
+        // নিজের followingIds থেকে পরীক্ষা
+        // ====================================
+
+        const myFollowingIds =
+          Array.isArray(
+            myProfile.followingIds
+          )
+            ? myProfile.followingIds
+            : [];
+
+
+        isFollowing =
+          myFollowingIds.includes(
+            targetUid
+          );
+
+
         renderProfile();
 
 
@@ -563,7 +645,6 @@
           "Profile error:",
           error
         );
-
 
         showError(
           "❌ Profile লোড করা যায়নি।"
@@ -575,7 +656,7 @@
 
 
     // ==========================================
-    // RENDER
+    // RENDER PROFILE
     // ==========================================
 
     function renderProfile() {
@@ -592,10 +673,11 @@
 
 
       username =
-        username.replace(
-          /^@/,
-          ""
-        );
+        String(username)
+          .replace(
+            /^@/,
+            ""
+          );
 
 
       profileHandle.textContent =
@@ -629,26 +711,24 @@
 
 
       followers.textContent =
-        targetProfile.followers
-        || 0;
+        Number(
+          targetProfile.followers
+          || 0
+        );
 
 
       following.textContent =
-        targetProfile.following
-        || 0;
+        Number(
+          targetProfile.following
+          || 0
+        );
 
 
       likes.textContent =
-        targetProfile.likes
-        || 0;
-
-
-      followingIds =
-        Array.isArray(
-          targetProfile.followerIds
-        )
-          ? targetProfile.followerIds
-          : [];
+        Number(
+          targetProfile.likes
+          || 0
+        );
 
 
       updateFollowButton();
@@ -667,13 +747,15 @@
 
 
     // ==========================================
-    // FOLLOW BUTTON
+    // FOLLOW BUTTON UI
     // ==========================================
 
     function updateFollowButton() {
 
       if (
         !currentUser
+        ||
+        !targetUid
         ||
         currentUser.uid === targetUid
       ) {
@@ -688,12 +770,6 @@
 
       followBtn.style.display =
         "inline-block";
-
-
-      const isFollowing =
-        followingIds.includes(
-          currentUser.uid
-        );
 
 
       if (isFollowing) {
@@ -741,7 +817,6 @@
         followBtn.disabled =
           true;
 
-
         message.textContent =
           "⏳ পরিবর্তন হচ্ছে...";
 
@@ -754,7 +829,6 @@
               "users",
               currentUser.uid
             );
-
 
           const targetRef =
             doc(
@@ -769,7 +843,6 @@
               myRef
             );
 
-
           const targetSnapshot =
             await getDoc(
               targetRef
@@ -781,7 +854,7 @@
           ) {
 
             throw new Error(
-              "User not found"
+              "Target user not found"
             );
 
           }
@@ -791,7 +864,6 @@
             mySnapshot.exists()
               ? mySnapshot.data()
               : {};
-
 
           const targetData =
             targetSnapshot.data();
@@ -813,15 +885,9 @@
               : [];
 
 
-          const alreadyFollowing =
-            myFollowingIds.includes(
-              targetUid
-            );
+          if (isFollowing) {
 
-
-          if (
-            alreadyFollowing
-          ) {
+            // UNFOLLOW
 
             myFollowingIds =
               myFollowingIds.filter(
@@ -836,11 +902,22 @@
                   id !== currentUser.uid
               );
 
+
           } else {
 
-            myFollowingIds.push(
-              targetUid
-            );
+            // FOLLOW
+
+            if (
+              !myFollowingIds.includes(
+                targetUid
+              )
+            ) {
+
+              myFollowingIds.push(
+                targetUid
+              );
+
+            }
 
 
             if (
@@ -858,6 +935,10 @@
           }
 
 
+          // ====================================
+          // UPDATE MY PROFILE
+          // ====================================
+
           await updateDoc(
             myRef,
             {
@@ -871,6 +952,10 @@
             }
           );
 
+
+          // ====================================
+          // UPDATE TARGET PROFILE
+          // ====================================
 
           await updateDoc(
             targetRef,
@@ -886,25 +971,45 @@
           );
 
 
-          followingIds =
-            targetFollowerIds;
+          // ====================================
+          // UPDATE LOCAL DATA
+          // ====================================
 
+          myProfile.followingIds =
+            myFollowingIds;
+
+          myProfile.following =
+            myFollowingIds.length;
+
+
+          targetProfile.followerIds =
+            targetFollowerIds;
 
           targetProfile.followers =
             targetFollowerIds.length;
+
+
+          isFollowing =
+            myFollowingIds.includes(
+              targetUid
+            );
 
 
           followers.textContent =
             targetFollowerIds.length;
 
 
+          following.textContent =
+            myFollowingIds.length;
+
+
           updateFollowButton();
 
 
           message.textContent =
-            alreadyFollowing
-              ? "✅ Unfollow করা হয়েছে।"
-              : "✅ Follow করা হয়েছে।";
+            isFollowing
+              ? "✅ Follow করা হয়েছে।"
+              : "✅ Unfollow করা হয়েছে।";
 
 
           message.style.color =
@@ -922,7 +1027,6 @@
           message.textContent =
             "❌ Follow পরিবর্তন করা যায়নি।";
 
-
           message.style.color =
             "#ff6684";
 
@@ -937,25 +1041,13 @@
 
 
     // ==========================================
-    // VIDEOS
+    // RENDER VIDEOS
     // ==========================================
 
     function renderVideos() {
 
-      videoGrid.innerHTML = "";
-
-
-      /*
-       * এখন User document-এ videos array থাকলে
-       * সেগুলো দেখাবে।
-       *
-       * উদাহরণ:
-       *
-       * videos: [
-       *   "https://....mp4",
-       *   "https://....mp4"
-       * ]
-       */
+      videoGrid.innerHTML =
+        "";
 
 
       const videos =
@@ -970,10 +1062,7 @@
 
         videoGrid.innerHTML = `
 
-          <div
-            class="empty"
-            style="grid-column:1/-1;"
-          >
+          <div class="empty">
 
             🎬 এই User এখনো কোনো Video Upload করেনি।
 
@@ -987,7 +1076,42 @@
 
 
       videos.forEach(
-        (videoUrl) => {
+        (videoItem) => {
+
+          let videoUrl = "";
+
+
+          if (
+            typeof videoItem ===
+            "string"
+          ) {
+
+            videoUrl =
+              videoItem;
+
+          } else if (
+            videoItem
+            &&
+            typeof videoItem ===
+            "object"
+          ) {
+
+            videoUrl =
+              videoItem.url
+              ||
+              videoItem.videoURL
+              ||
+              videoItem.downloadURL
+              ||
+              "";
+
+          }
+
+
+          if (!videoUrl) {
+            return;
+          }
+
 
           const card =
             document.createElement(
@@ -1008,17 +1132,17 @@
           video.src =
             videoUrl;
 
-
           video.controls =
             true;
-
 
           video.muted =
             true;
 
-
           video.playsInline =
             true;
+
+          video.preload =
+            "metadata";
 
 
           card.appendChild(
@@ -1032,6 +1156,23 @@
 
         }
       );
+
+
+      if (
+        !videoGrid.children.length
+      ) {
+
+        videoGrid.innerHTML = `
+
+          <div class="empty">
+
+            🎬 কোনো Video পাওয়া যায়নি।
+
+          </div>
+
+        `;
+
+      }
 
     }
 
@@ -1071,7 +1212,24 @@
           user;
 
 
-        await loadProfile();
+        try {
+
+          await loadMyProfile();
+
+          await loadProfile();
+
+        } catch (error) {
+
+          console.error(
+            "Startup error:",
+            error
+          );
+
+          showError(
+            "❌ Profile চালু করা যায়নি।"
+          );
+
+        }
 
       }
     );
