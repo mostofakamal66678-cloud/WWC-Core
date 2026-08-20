@@ -1,931 +1,1509 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>WWC Profile</title>
+  <title>WWC My Profile</title>
 
-<style>
-*{
-  box-sizing:border-box;
-}
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-body{
-  margin:0;
-  background:#000;
-  color:#fff;
-  font-family:Arial,sans-serif;
-}
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+    }
 
-.profile-header{
-  padding:55px 20px 25px;
-  text-align:center;
-  border-bottom:1px solid #333;
-}
+    .header {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      background: #111;
+      border-bottom: 1px solid #333;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-.back-btn{
-  position:fixed;
-  left:15px;
-  top:15px;
-  z-index:20;
-  width:45px;
-  height:45px;
-  border:0;
-  border-radius:50%;
-  background:#222;
-  color:#fff;
-  font-size:25px;
-}
+    .back-btn {
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 50%;
+      background: #222;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+    }
 
-.profile-photo{
-  width:110px;
-  height:110px;
-  border-radius:50%;
-  object-fit:cover;
-  border:3px solid #fff;
-  background:#333;
-}
+    .title {
+      margin-left: 15px;
+      font-size: 20px;
+      font-weight: bold;
+    }
 
-.username{
-  font-size:25px;
-  margin:12px 0 5px;
-}
+    .container {
+      max-width: 650px;
+      margin: auto;
+      padding-bottom: 80px;
+    }
 
-.handle{
-  color:#aaa;
-  margin-bottom:10px;
-}
+    .profile-header {
+      text-align: center;
+      padding: 35px 20px 25px;
+      border-bottom: 1px solid #333;
+    }
 
-.email{
-  color:#777;
-  font-size:13px;
-  word-break:break-all;
-}
+    .photo-wrapper {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin: auto;
+      cursor: pointer;
+    }
 
-.bio{
-  color:#ddd;
-  margin:12px auto 20px;
-  max-width:420px;
-  line-height:1.5;
-}
+    .profile-photo {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #333;
+      border: 3px solid #fff;
+      display: block;
+    }
 
-.stats{
-  display:flex;
-  justify-content:center;
-  gap:38px;
-  margin:20px 0;
-}
+    .photo-edit {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #fe2c55;
+      border: 3px solid #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
 
-.stat{
-  text-align:center;
-}
+    #photoInput {
+      display: none;
+    }
 
-.stat strong{
-  display:block;
-  font-size:20px;
-}
+    .photo-help {
+      color: #999;
+      font-size: 12px;
+      margin-top: 8px;
+    }
 
-.stat span{
-  color:#aaa;
-  font-size:13px;
-}
+    .name {
+      font-size: 25px;
+      margin: 14px 0 5px;
+    }
 
-.buttons{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  flex-wrap:wrap;
-}
+    .handle {
+      color: #999;
+      margin-bottom: 12px;
+    }
 
-.main-btn{
-  border:0;
-  background:#fff;
-  color:#000;
-  padding:11px 20px;
-  border-radius:8px;
-  font-weight:bold;
-  cursor:pointer;
-}
+    .bio {
+      color: #ddd;
+      line-height: 1.5;
+      max-width: 450px;
+      margin: 10px auto;
+    }
 
-.logout-btn{
-  background:#d9363e;
-  color:#fff;
-}
+    .country {
+      color: #999;
+      font-size: 14px;
+      margin-top: 10px;
+    }
 
-.edit-box{
-  display:none;
-  max-width:500px;
-  margin:20px auto;
-  padding:20px;
-  background:#181818;
-  border-radius:15px;
-  border:1px solid #333;
-}
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin: 22px 0;
+    }
 
-.edit-box.show{
-  display:block;
-}
+    .stat strong {
+      display: block;
+      font-size: 20px;
+    }
 
-.form-group{
-  margin-bottom:15px;
-}
+    .stat span {
+      color: #999;
+      font-size: 13px;
+    }
 
-.form-group label{
-  display:block;
-  margin-bottom:7px;
-  color:#ddd;
-}
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
 
-.form-group input,
-.form-group textarea,
-.form-group select{
-  width:100%;
-  padding:12px;
-  border:1px solid #444;
-  border-radius:8px;
-  background:#111;
-  color:#fff;
-  font-size:15px;
-}
+    .main-btn {
+      border: 0;
+      border-radius: 9px;
+      padding: 11px 22px;
+      background: #fff;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-.form-group textarea{
-  min-height:90px;
-  resize:vertical;
-}
+    .friends-btn {
+      background: #fe2c55;
+      color: #fff;
+    }
 
-.save-btn,
-.cancel-btn{
-  width:100%;
-  padding:13px;
-  border-radius:8px;
-  font-size:16px;
-  cursor:pointer;
-}
+    .logout-btn {
+      background: #222;
+      color: #fff;
+      border: 1px solid #555;
+    }
 
-.save-btn{
-  border:0;
-  background:#4f46e5;
-  color:#fff;
-}
+    .edit-box {
+      margin: 20px 15px;
+      padding: 20px;
+      background: #181818;
+      border: 1px solid #333;
+      border-radius: 15px;
+    }
 
-.cancel-btn{
-  margin-top:10px;
-  border:1px solid #555;
-  background:transparent;
-  color:#fff;
-}
+    .edit-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
 
-#message{
-  min-height:22px;
-  margin-top:15px;
-  text-align:center;
-  color:#aaa;
-}
+    .field {
+      margin-bottom: 13px;
+    }
 
-.videos-title{
-  padding:15px;
-  font-size:18px;
-  border-bottom:1px solid #333;
-}
+    .field label {
+      display: block;
+      color: #aaa;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
 
-.video-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:2px;
-}
+    .field input,
+    .field textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 9px;
+      border: 1px solid #444;
+      outline: none;
+      background: #111;
+      color: #fff;
+      font-size: 15px;
+      font-family: Arial, sans-serif;
+    }
 
-.video-grid video{
-  width:100%;
-  height:180px;
-  object-fit:cover;
-  background:#111;
-}
+    .field textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
 
-.loading{
-  padding:70px 20px;
-  text-align:center;
-  color:#aaa;
-}
+    .save-btn {
+      width: 100%;
+      border: 0;
+      border-radius: 9px;
+      padding: 12px;
+      background: #fe2c55;
+      color: #fff;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-@media(max-width:500px){
-  .video-grid video{
-    height:150px;
-  }
+    .save-btn:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
 
-  .stats{
-    gap:25px;
-  }
-}
-</style>
+    .status {
+      text-align: center;
+      min-height: 22px;
+      margin: 12px 15px;
+      color: #aaa;
+      font-size: 14px;
+    }
+
+    .error {
+      color: #ff6684;
+    }
+
+    .success {
+      color: #4ade80;
+    }
+
+    .videos-title {
+      padding: 18px 15px;
+      font-size: 18px;
+      font-weight: bold;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .video-card {
+      background: #111;
+      aspect-ratio: 9 / 16;
+      overflow: hidden;
+    }
+
+    .video-card video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 45px 20px;
+      color: #888;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: #aaa;
+    }
+
+    @media (max-width: 500px) {
+      .stats {
+        gap: 25px;
+      }
+
+      .profile-photo,
+      .photo-wrapper {
+        width: 105px;
+        height: 105px;
+      }
+
+      .name {
+        font-size: 23px;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<button class="back-btn" id="backBtn">←</button>
+  <header class="header">
+
+    <button
+      type="button"
+      class="back-btn"
+      id="backBtn"
+    >
+      ←
+    </button>
+
+    <div class="title">
+      👤 My Profile
+    </div>
+
+  </header>
+
+
+  <div
+    id="loading"
+    class="loading"
+  >
+    ⏳ Profile লোড হচ্ছে...
+  </div>
+
+
+  <main
+    id="mainContainer"
+    class="container"
+    style="display:none;"
+  >
+
+    <section class="profile-header">
+
+      <!-- PROFILE PHOTO -->
+      <label
+        class="photo-wrapper"
+        for="photoInput"
+        title="ছবি পরিবর্তন করুন"
+      >
+
+        <img
+          id="profilePhoto"
+          class="profile-photo"
+          src="./images/profile.png"
+          alt="Profile"
+        >
+
+        <span class="photo-edit">
+          📷
+        </span>
+
+      </label>
+
+      <input
+        type="file"
+        id="photoInput"
+        accept="image/*"
+      >
 
-<div id="loading" class="loading">
-  Profile লোড হচ্ছে...
-</div>
+      <div class="photo-help">
+        ছবিতে ক্লিক করে Profile Photo পরিবর্তন করুন
+      </div>
 
-<main id="profileContent" style="display:none;">
 
-<section class="profile-header">
+      <h1
+        id="profileName"
+        class="name"
+      >
+        WWC User
+      </h1>
+
 
-<img
-  id="profilePhoto"
-  class="profile-photo"
-  src="./images/profile.png"
-  alt="Profile"
->
+      <div
+        id="profileHandle"
+        class="handle"
+      >
+        @wwc_user
+      </div>
 
-<h1 id="profileName" class="username">
-  WWC User
-</h1>
 
-<div id="profileHandle" class="handle">
-  @wwc_user
-</div>
+      <div
+        id="profileBio"
+        class="bio"
+      >
+        Welcome to WWC 🌍
+      </div>
 
-<div id="profileEmail" class="email"></div>
 
-<div id="profileBio" class="bio">
-  Welcome to my WWC profile 🌍
-</div>
+      <div
+        id="profileCountry"
+        class="country"
+      ></div>
 
-<div class="stats">
 
-<div class="stat">
-<strong id="followers">0</strong>
-<span>Followers</span>
-</div>
+      <div class="stats">
 
-<div class="stat">
-<strong id="followingCount">0</strong>
-<span>Following</span>
-</div>
+        <div class="stat">
+          <strong id="followers">
+            0
+          </strong>
+          <span>
+            Followers
+          </span>
+        </div>
 
-<div class="stat">
-<strong id="likesCount">0</strong>
-<span>Likes</span>
-</div>
+        <div class="stat">
+          <strong id="following">
+            0
+          </strong>
+          <span>
+            Following
+          </span>
+        </div>
 
-</div>
+        <div class="stat">
+          <strong id="likes">
+            0
+          </strong>
+          <span>
+            Likes
+          </span>
+        </div>
 
-<div class="buttons">
+      </div>
 
-<button id="followBtn" class="main-btn">
-Follow
-</button>
 
-<button id="editBtn" class="main-btn">
-✏️ Edit Profile
-</button>
+      <div class="buttons">
 
-<button id="logoutBtn" class="main-btn logout-btn">
-🚪 Logout
-</button>
+        <button
+          type="button"
+          class="main-btn friends-btn"
+          id="friendsBtn"
+        >
+          👥 Friends
+        </button>
 
-</div>
+        <button
+          type="button"
+          class="main-btn logout-btn"
+          id="logoutBtn"
+        >
+          🚪 Logout
+        </button>
 
-<div id="message"></div>
+      </div>
 
-</section>
+    </section>
 
 
-<section id="editBox" class="edit-box">
+    <!-- EDIT PROFILE -->
 
-<h2 style="text-align:center;">
-✏️ Edit Profile
-</h2>
+    <section class="edit-box">
 
-<div class="form-group">
-<label>নাম</label>
-<input id="nameInput" type="text" maxlength="50">
-</div>
+      <div class="edit-title">
+        ✏️ Edit Profile
+      </div>
 
-<div class="form-group">
-<label>Username</label>
-<input id="usernameInput" type="text" maxlength="30">
-</div>
 
-<div class="form-group">
-<label>জন্মতারিখ</label>
-<input id="dobInput" type="date">
-</div>
+      <div class="field">
 
-<div class="form-group">
-<label>বয়স</label>
-<input id="ageInput" type="text" readonly>
-</div>
+        <label>
+          Name
+        </label>
 
-<div class="form-group">
-<label>Bio</label>
-<textarea id="bioInput" maxlength="160"></textarea>
-</div>
+        <input
+          type="text"
+          id="nameInput"
+          placeholder="আপনার নাম"
+          maxlength="50"
+        >
 
-<div class="form-group">
-<label>Gender</label>
+      </div>
 
-<select id="genderInput">
-<option value="">নির্বাচন করুন</option>
-<option value="Male">Male</option>
-<option value="Female">Female</option>
-<option value="Other">Other</option>
-<option value="Prefer not to say">
-Prefer not to say
-</option>
-</select>
 
-</div>
+      <div class="field">
 
-<div class="form-group">
-<label>Country</label>
-<input id="countryInput" type="text" maxlength="50">
-</div>
+        <label>
+          Username
+        </label>
 
-<button id="saveBtn" class="save-btn">
-💾 Save Changes
-</button>
+        <input
+          type="text"
+          id="usernameInput"
+          placeholder="username"
+          maxlength="30"
+        >
 
-<button id="cancelBtn" class="cancel-btn">
-Cancel
-</button>
+      </div>
 
-</section>
 
+      <div class="field">
 
-<div class="videos-title">
-🎬 Videos
-</div>
+        <label>
+          Bio
+        </label>
 
-<section class="video-grid">
+        <textarea
+          id="bioInput"
+          placeholder="আপনার সম্পর্কে লিখুন..."
+          maxlength="200"
+        ></textarea>
 
-<video controls muted playsinline>
-<source src="./videos/video1.mp4" type="video/mp4">
-</video>
+      </div>
 
-<video controls muted playsinline>
-<source src="./videos/video2.mp4" type="video/mp4">
-</video>
 
-<video controls muted playsinline>
-<source src="./videos/video3.mp4" type="video/mp4">
-</video>
+      <div class="field">
 
-</section>
+        <label>
+          Country
+        </label>
 
-</main>
+        <input
+          type="text"
+          id="countryInput"
+          placeholder="Bangladesh"
+          maxlength="50"
+        >
 
+      </div>
 
-<script type="module">
 
-import {
-  getApps,
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+      <button
+        type="button"
+        id="saveBtn"
+        class="save-btn"
+      >
+        💾 Save Profile
+      </button>
 
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+    </section>
 
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
+    <div
+      id="status"
+      class="status"
+    ></div>
 
-const firebaseConfig = {
 
-  apiKey:
-    "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
+    <!-- VIDEOS -->
 
-  authDomain:
-    "world-wide-connect-62c87.firebaseapp.com",
+    <div class="videos-title">
+      🎬 My Videos
+    </div>
 
-  projectId:
-    "world-wide-connect-62c87",
+    <section
+      id="videoGrid"
+      class="video-grid"
+    ></section>
 
-  storageBucket:
-    "world-wide-connect-62c87.firebasestorage.app",
+  </main>
 
-  messagingSenderId:
-    "93178453668",
 
-  appId:
-    "1:93178453668:web:2184630caa8e61f7445031",
+  <script type="module">
 
-  measurementId:
-    "G-PKFJ5NEMGQ"
-};
+    // ==========================================
+    // FIREBASE IMPORT
+    // ==========================================
 
+    import {
+      getApps,
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
-const app = getApps().length
-  ? getApps()[0]
-  : initializeApp(firebaseConfig);
 
-const auth = getAuth(app);
-const db = getFirestore(app);
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
 
-const loading =
-  document.getElementById("loading");
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      updateDoc
+    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
-const profileContent =
-  document.getElementById("profileContent");
 
-const profilePhoto =
-  document.getElementById("profilePhoto");
+    import {
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL
+    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
 
-const profileName =
-  document.getElementById("profileName");
 
-const profileHandle =
-  document.getElementById("profileHandle");
+    // ==========================================
+    // FIREBASE CONFIG
+    // ==========================================
 
-const profileEmail =
-  document.getElementById("profileEmail");
+    const firebaseConfig = {
 
-const profileBio =
-  document.getElementById("profileBio");
+      apiKey:
+        "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
 
-const followers =
-  document.getElementById("followers");
+      authDomain:
+        "world-wide-connect-62c87.firebaseapp.com",
 
-const followingCount =
-  document.getElementById("followingCount");
+      projectId:
+        "world-wide-connect-62c87",
 
-const likesCount =
-  document.getElementById("likesCount");
+      storageBucket:
+        "world-wide-connect-62c87.firebasestorage.app",
 
-const followBtn =
-  document.getElementById("followBtn");
+      messagingSenderId:
+        "93178453668",
 
-const editBtn =
-  document.getElementById("editBtn");
+      appId:
+        "1:93178453668:web:2184630caa8e61f7445031",
 
-const logoutBtn =
-  document.getElementById("logoutBtn");
+      measurementId:
+        "G-PKFJ5NEMGQ"
+    };
 
-const editBox =
-  document.getElementById("editBox");
 
-const saveBtn =
-  document.getElementById("saveBtn");
+    // ==========================================
+    // FIREBASE START
+    // ==========================================
 
-const cancelBtn =
-  document.getElementById("cancelBtn");
+    const app =
+      getApps().length
+        ? getApps()[0]
+        : initializeApp(firebaseConfig);
 
-const message =
-  document.getElementById("message");
 
-const backBtn =
-  document.getElementById("backBtn");
+    const auth =
+      getAuth(app);
 
-const nameInput =
-  document.getElementById("nameInput");
 
-const usernameInput =
-  document.getElementById("usernameInput");
+    const db =
+      getFirestore(app);
 
-const dobInput =
-  document.getElementById("dobInput");
 
-const ageInput =
-  document.getElementById("ageInput");
+    const storage =
+      getStorage(app);
 
-const bioInput =
-  document.getElementById("bioInput");
 
-const genderInput =
-  document.getElementById("genderInput");
+    // ==========================================
+    // ELEMENTS
+    // ==========================================
 
-const countryInput =
-  document.getElementById("countryInput");
+    const backBtn =
+      document.getElementById("backBtn");
 
+    const loading =
+      document.getElementById("loading");
 
-const defaultPhoto =
-  "./images/profile.png";
+    const mainContainer =
+      document.getElementById("mainContainer");
 
-let currentUser = null;
-let currentProfile = {};
+    const profilePhoto =
+      document.getElementById("profilePhoto");
 
+    const photoInput =
+      document.getElementById("photoInput");
 
-function showMessage(text, success=false){
+    const profileName =
+      document.getElementById("profileName");
 
-  message.textContent = text;
+    const profileHandle =
+      document.getElementById("profileHandle");
 
-  message.style.color =
-    success ? "#4ade80" : "#aaa";
-}
+    const profileBio =
+      document.getElementById("profileBio");
 
+    const profileCountry =
+      document.getElementById("profileCountry");
 
-function calculateAge(dateString){
+    const followers =
+      document.getElementById("followers");
 
-  if(!dateString) return "";
+    const following =
+      document.getElementById("following");
 
-  const birth =
-    new Date(dateString);
+    const likes =
+      document.getElementById("likes");
 
-  if(isNaN(birth.getTime()))
-    return "";
+    const nameInput =
+      document.getElementById("nameInput");
 
-  const today =
-    new Date();
+    const usernameInput =
+      document.getElementById("usernameInput");
 
-  let age =
-    today.getFullYear()
-    - birth.getFullYear();
+    const bioInput =
+      document.getElementById("bioInput");
 
-  const month =
-    today.getMonth()
-    - birth.getMonth();
+    const countryInput =
+      document.getElementById("countryInput");
 
-  if(
-    month < 0 ||
-    (
-      month === 0 &&
-      today.getDate() < birth.getDate()
-    )
-  ){
-    age--;
-  }
+    const saveBtn =
+      document.getElementById("saveBtn");
 
-  return age >= 0 ? age : "";
-}
+    const friendsBtn =
+      document.getElementById("friendsBtn");
 
+    const logoutBtn =
+      document.getElementById("logoutBtn");
 
-dobInput.addEventListener(
-  "change",
-  () => {
+    const status =
+      document.getElementById("status");
 
-    ageInput.value =
-      calculateAge(dobInput.value);
+    const videoGrid =
+      document.getElementById("videoGrid");
 
-  }
-);
 
+    // ==========================================
+    // VARIABLES
+    // ==========================================
 
-function renderProfile(){
+    const defaultPhoto =
+      "./images/profile.png";
 
-  profileName.textContent =
-    currentProfile.name ||
-    currentUser.displayName ||
-    "WWC User";
+    let currentUser =
+      null;
 
-  let username =
-    currentProfile.username ||
-    "wwc_user";
+    let currentProfile =
+      {};
 
-  username =
-    username.replace(/^@/, "");
 
-  profileHandle.textContent =
-    "@" + username;
+    // ==========================================
+    // BACK
+    // ==========================================
 
-  profileEmail.textContent =
-    currentUser.email ||
-    currentProfile.email ||
-    "";
+    backBtn.addEventListener(
+      "click",
+      () => {
 
-  profileBio.textContent =
-    currentProfile.bio ||
-    "Welcome to my WWC profile 🌍";
+        history.back();
 
-  profilePhoto.src =
-    currentProfile.photoURL ||
-    currentUser.photoURL ||
-    defaultPhoto;
-
-  followers.textContent =
-    currentProfile.followers || 0;
-
-  followingCount.textContent =
-    currentProfile.following || 0;
-
-  likesCount.textContent =
-    currentProfile.likes || 0;
-
-}
-
-
-function fillEditForm(){
-
-  nameInput.value =
-    currentProfile.name ||
-    currentUser.displayName ||
-    "";
-
-  usernameInput.value =
-    currentProfile.username ||
-    "wwc_user";
-
-  dobInput.value =
-    currentProfile.dob || "";
-
-  ageInput.value =
-    currentProfile.age ||
-    calculateAge(currentProfile.dob);
-
-  bioInput.value =
-    currentProfile.bio ||
-    "";
-
-  genderInput.value =
-    currentProfile.gender ||
-    "";
-
-  countryInput.value =
-    currentProfile.country ||
-    "Bangladesh";
-}
-
-
-async function loadProfile(user){
-
-  currentUser = user;
-
-  try{
-
-    const userRef =
-      doc(db, "users", user.uid);
-
-    const snapshot =
-      await getDoc(userRef);
-
-    if(snapshot.exists()){
-
-      currentProfile =
-        snapshot.data();
-
-    }else{
-
-      currentProfile = {
-
-        name:
-          user.displayName ||
-          "WWC User",
-
-        username:
-          "wwc_user",
-
-        email:
-          user.email || "",
-
-        bio:
-          "Welcome to my WWC profile 🌍",
-
-        dob:"",
-        age:"",
-        gender:"",
-        country:"Bangladesh",
-
-        photoURL:
-          user.photoURL ||
-          defaultPhoto,
-
-        followers:0,
-        following:0,
-        likes:0
-      };
-
-      await setDoc(
-        userRef,
-        currentProfile
-      );
-    }
-
-    renderProfile();
-    fillEditForm();
-
-    loading.style.display = "none";
-    profileContent.style.display = "block";
-
-  }catch(error){
-
-    console.error(error);
-
-    loading.innerHTML =
-      "❌ Profile লোড করা যায়নি।<br><br>" +
-      "Firebase Firestore Rules পরীক্ষা করুন।";
-  }
-}
-
-
-onAuthStateChanged(
-  auth,
-  (user) => {
-
-    if(user){
-
-      loadProfile(user);
-
-    }else{
-
-      loading.innerHTML =
-        "❌ Login করা নেই।<br><br>" +
-        "<a href='./login.html' style='color:#00e5ff;'>Login করুন</a>";
-    }
-
-  }
-);
-
-
-editBtn.addEventListener(
-  "click",
-  () => {
-
-    editBox.classList.toggle("show");
-
-  }
-);
-
-
-cancelBtn.addEventListener(
-  "click",
-  () => {
-
-    editBox.classList.remove("show");
-
-    fillEditForm();
-
-  }
-);
-
-
-saveBtn.addEventListener(
-  "click",
-  async () => {
-
-    if(!currentUser) return;
-
-    saveBtn.disabled = true;
-
-    showMessage(
-      "⏳ Profile Save হচ্ছে..."
+      }
     );
 
-    try{
 
-      const username =
-        usernameInput.value
-        .trim()
-        .replace(/^@/, "");
+    // ==========================================
+    // STATUS
+    // ==========================================
 
-      const newProfile = {
+    function showStatus(
+      text,
+      type = ""
+    ) {
 
-        name:
-          nameInput.value.trim()
-          || "WWC User",
+      status.textContent =
+        text;
 
-        username:
-          username
-          || "wwc_user",
+      status.className =
+        "status " + type;
 
-        dob:
-          dobInput.value,
-
-        age:
-          calculateAge(
-            dobInput.value
-          ),
-
-        bio:
-          bioInput.value.trim(),
-
-        gender:
-          genderInput.value,
-
-        country:
-          countryInput.value.trim(),
-
-        email:
-          currentUser.email || "",
-
-        photoURL:
-          currentProfile.photoURL ||
-          currentUser.photoURL ||
-          defaultPhoto,
-
-        followers:
-          Number(currentProfile.followers || 0),
-
-        following:
-          Number(currentProfile.following || 0),
-
-        likes:
-          Number(currentProfile.likes || 0)
-
-      };
+    }
 
 
-      const userRef =
-        doc(
-          db,
-          "users",
-          currentUser.uid
+    // ==========================================
+    // LOAD PROFILE
+    // ==========================================
+
+    async function loadProfile() {
+
+      if (!currentUser) {
+        return;
+      }
+
+
+      try {
+
+        const userRef =
+          doc(
+            db,
+            "users",
+            currentUser.uid
+          );
+
+
+        const snapshot =
+          await getDoc(
+            userRef
+          );
+
+
+        if (snapshot.exists()) {
+
+          currentProfile =
+            snapshot.data();
+
+        } else {
+
+          currentProfile = {
+
+            name:
+              currentUser.displayName
+              || "WWC User",
+
+            username:
+              "wwc_user",
+
+            bio:
+              "Welcome to WWC 🌍",
+
+            country:
+              "",
+
+            photoURL:
+              currentUser.photoURL
+              || defaultPhoto,
+
+            followers:
+              0,
+
+            following:
+              0,
+
+            likes:
+              0,
+
+            followingIds:
+              [],
+
+            followerIds:
+              [],
+
+            videos:
+              []
+
+          };
+
+
+          await setDoc(
+            userRef,
+            currentProfile
+          );
+
+        }
+
+
+        renderProfile();
+
+
+      } catch (error) {
+
+        console.error(
+          "Profile load error:",
+          error
         );
 
-      await setDoc(
-        userRef,
-        newProfile,
-        { merge:true }
-      );
 
-      currentProfile = {
-        ...currentProfile,
-        ...newProfile
-      };
+        loading.textContent =
+          "❌ Profile লোড করা যায়নি।";
 
-      renderProfile();
-      fillEditForm();
+        loading.style.color =
+          "#ff6684";
 
-      editBox.classList.remove("show");
-
-      showMessage(
-        "✅ Profile সফলভাবে Save হয়েছে।",
-        true
-      );
-
-    }catch(error){
-
-      console.error(error);
-
-      showMessage(
-        "❌ Profile Save করা যায়নি: " +
-        error.message
-      );
+      }
 
     }
 
-    saveBtn.disabled = false;
 
-  }
-);
+    // ==========================================
+    // RENDER PROFILE
+    // ==========================================
+
+    function renderProfile() {
+
+      const name =
+        currentProfile.name
+        || currentProfile.displayName
+        || "WWC User";
 
 
-followBtn.addEventListener(
-  "click",
-  () => {
+      let username =
+        currentProfile.username
+        || "wwc_user";
 
-    if(!currentUser){
 
-      showMessage(
-        "⚠️ আগে Login করুন।"
-      );
+      username =
+        String(username)
+          .replace(
+            /^@/,
+            ""
+          );
 
-      return;
+
+      const bio =
+        currentProfile.bio
+        || "Welcome to WWC 🌍";
+
+
+      const country =
+        currentProfile.country
+        || "";
+
+
+      profileName.textContent =
+        name;
+
+
+      profileHandle.textContent =
+        "@" + username;
+
+
+      profileBio.textContent =
+        bio;
+
+
+      profileCountry.textContent =
+        country
+          ? "🌍 " + country
+          : "";
+
+
+      profilePhoto.src =
+        currentProfile.photoURL
+        || defaultPhoto;
+
+
+      nameInput.value =
+        name;
+
+
+      usernameInput.value =
+        username;
+
+
+      bioInput.value =
+        currentProfile.bio
+        || "";
+
+
+      countryInput.value =
+        country;
+
+
+      followers.textContent =
+        Number(
+          currentProfile.followers
+          || 0
+        );
+
+
+      following.textContent =
+        Number(
+          currentProfile.following
+          || 0
+        );
+
+
+      likes.textContent =
+        Number(
+          currentProfile.likes
+          || 0
+        );
+
+
+      loading.style.display =
+        "none";
+
+
+      mainContainer.style.display =
+        "block";
+
+
+      renderVideos();
+
     }
 
-    showMessage(
-      "ℹ️ নিজের Profile নিজেকে Follow করার দরকার নেই।"
+
+    // ==========================================
+    // SAVE PROFILE
+    // ==========================================
+
+    saveBtn.addEventListener(
+      "click",
+      async () => {
+
+        if (!currentUser) {
+          return;
+        }
+
+
+        const name =
+          nameInput.value.trim();
+
+
+        const username =
+          usernameInput.value
+            .trim()
+            .replace(
+              /^@/,
+              ""
+            );
+
+
+        const bio =
+          bioInput.value.trim();
+
+
+        const country =
+          countryInput.value.trim();
+
+
+        if (!name) {
+
+          showStatus(
+            "❌ Name লিখুন।",
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        if (!username) {
+
+          showStatus(
+            "❌ Username লিখুন।",
+            "error"
+          );
+
+          return;
+
+        }
+
+
+        saveBtn.disabled =
+          true;
+
+
+        showStatus(
+          "⏳ Profile Save হচ্ছে..."
+        );
+
+
+        try {
+
+          const userRef =
+            doc(
+              db,
+              "users",
+              currentUser.uid
+            );
+
+
+          await updateDoc(
+            userRef,
+            {
+
+              name:
+                name,
+
+              username:
+                username,
+
+              bio:
+                bio,
+
+              country:
+                country
+
+            }
+          );
+
+
+          currentProfile.name =
+            name;
+
+          currentProfile.username =
+            username;
+
+          currentProfile.bio =
+            bio;
+
+          currentProfile.country =
+            country;
+
+
+          renderProfile();
+
+
+          showStatus(
+            "✅ Profile সফলভাবে Save হয়েছে।",
+            "success"
+          );
+
+
+        } catch (error) {
+
+          console.error(
+            "Save profile error:",
+            error
+          );
+
+
+          showStatus(
+            "❌ Profile Save করা যায়নি।",
+            "error"
+          );
+
+        }
+
+
+        saveBtn.disabled =
+          false;
+
+      }
     );
 
-  }
-);
+
+    // ==========================================
+    // CHANGE PROFILE PHOTO
+    // ==========================================
+
+    photoInput.addEventListener(
+      "change",
+      async () => {
+
+        const file =
+          photoInput.files[0];
 
 
-logoutBtn.addEventListener(
-  "click",
-  async () => {
+        if (!file) {
+          return;
+        }
 
-    try{
 
-      await signOut(auth);
+        if (
+          !file.type.startsWith(
+            "image/"
+          )
+        ) {
 
-      window.location.href =
-        "./login.html";
+          showStatus(
+            "❌ শুধু Image নির্বাচন করুন।",
+            "error"
+          );
 
-    }catch(error){
+          photoInput.value =
+            "";
 
-      console.error(error);
+          return;
 
-      showMessage(
-        "❌ Logout করা যায়নি।"
+        }
+
+
+        if (
+          file.size >
+          5 * 1024 * 1024
+        ) {
+
+          showStatus(
+            "❌ ছবির সাইজ 5MB-এর কম হতে হবে।",
+            "error"
+          );
+
+          photoInput.value =
+            "";
+
+          return;
+
+        }
+
+
+        try {
+
+          showStatus(
+            "⏳ Profile Photo Upload হচ্ছে..."
+          );
+
+
+          const storageRef =
+            ref(
+              storage,
+              "profilePhotos/"
+              +
+              currentUser.uid
+              +
+              "/profile.jpg"
+            );
+
+
+          const uploadResult =
+            await uploadBytes(
+              storageRef,
+              file,
+              {
+                contentType:
+                  file.type
+              }
+            );
+
+
+          const downloadURL =
+            await getDownloadURL(
+              uploadResult.ref
+            );
+
+
+          const userRef =
+            doc(
+              db,
+              "users",
+              currentUser.uid
+            );
+
+
+          await updateDoc(
+            userRef,
+            {
+
+              photoURL:
+                downloadURL
+
+            }
+          );
+
+
+          currentProfile.photoURL =
+            downloadURL;
+
+
+          profilePhoto.src =
+            downloadURL;
+
+
+          showStatus(
+            "✅ Profile Photo পরিবর্তন হয়েছে।",
+            "success"
+          );
+
+
+        } catch (error) {
+
+          console.error(
+            "Photo upload error:",
+            error
+          );
+
+
+          showStatus(
+            "❌ Profile Photo Upload করা যায়নি।",
+            "error"
+          );
+
+        }
+
+
+        photoInput.value =
+          "";
+
+      }
+    );
+
+
+    // ==========================================
+    // FRIENDS
+    // ==========================================
+
+    friendsBtn.addEventListener(
+      "click",
+      () => {
+
+        window.location.href =
+          "./friends.html";
+
+      }
+    );
+
+
+    // ==========================================
+    // LOGOUT
+    // ==========================================
+
+    logoutBtn.addEventListener(
+      "click",
+      async () => {
+
+        logoutBtn.disabled =
+          true;
+
+
+        showStatus(
+          "⏳ Logout হচ্ছে..."
+        );
+
+
+        try {
+
+          await signOut(
+            auth
+          );
+
+
+          window.location.href =
+            "./login.html";
+
+
+        } catch (error) {
+
+          console.error(
+            "Logout error:",
+            error
+          );
+
+
+          showStatus(
+            "❌ Logout করা যায়নি।",
+            "error"
+          );
+
+
+          logoutBtn.disabled =
+            false;
+
+        }
+
+      }
+    );
+
+
+    // ==========================================
+    // RENDER VIDEOS
+    // ==========================================
+
+    function renderVideos() {
+
+      videoGrid.innerHTML =
+        "";
+
+
+      const videos =
+        Array.isArray(
+          currentProfile.videos
+        )
+          ? currentProfile.videos
+          : [];
+
+
+      if (!videos.length) {
+
+        videoGrid.innerHTML = `
+
+          <div class="empty">
+
+            🎬 এখনো কোনো Video Upload করেননি।
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      videos.forEach(
+        (videoItem) => {
+
+          let videoUrl =
+            "";
+
+
+          if (
+            typeof videoItem ===
+            "string"
+          ) {
+
+            videoUrl =
+              videoItem;
+
+          } else if (
+            videoItem
+            &&
+            typeof videoItem ===
+            "object"
+          ) {
+
+            videoUrl =
+              videoItem.url
+              ||
+              videoItem.videoURL
+              ||
+              videoItem.downloadURL
+              ||
+              "";
+
+          }
+
+
+          if (!videoUrl) {
+            return;
+          }
+
+
+          const card =
+            document.createElement(
+              "div"
+            );
+
+
+          card.className =
+            "video-card";
+
+
+          const video =
+            document.createElement(
+              "video"
+            );
+
+
+          video.src =
+            videoUrl;
+
+          video.controls =
+            true;
+
+          video.muted =
+            true;
+
+          video.playsInline =
+            true;
+
+          video.preload =
+            "metadata";
+
+
+          card.appendChild(
+            video
+          );
+
+
+          videoGrid.appendChild(
+            card
+          );
+
+        }
       );
+
+
+      if (
+        !videoGrid.children.length
+      ) {
+
+        videoGrid.innerHTML = `
+
+          <div class="empty">
+
+            🎬 কোনো Video পাওয়া যায়নি।
+
+          </div>
+
+        `;
+
+      }
 
     }
 
-  }
-);
+
+    // ==========================================
+    // AUTH
+    // ==========================================
+
+    onAuthStateChanged(
+      auth,
+      async (user) => {
+
+        if (!user) {
+
+          loading.textContent =
+            "❌ আগে Login করুন।";
 
 
-backBtn.addEventListener(
-  "click",
-  () => {
+          setTimeout(
+            () => {
 
-    window.location.href =
-      "./index.html";
+              window.location.href =
+                "./login.html";
 
-  }
-);
+            },
+            1000
+          );
 
-</script>
+
+          return;
+
+        }
+
+
+        currentUser =
+          user;
+
+
+        await loadProfile();
+
+      }
+    );
+
+  </script>
 
 </body>
 </html>
