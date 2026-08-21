@@ -15,7 +15,10 @@
 
   <title>World Wide Connect</title>
 
-  <!-- Main CSS -->
+  <!-- ================================
+       MAIN CSS
+  ================================= -->
+
   <link
     rel="stylesheet"
     href="./css/style.css"
@@ -24,49 +27,8 @@
 
 <body>
 
-
   <!-- =====================================================
-       TOP BAR
-  ====================================================== -->
-
-  <header class="wwc-top-bar">
-
-    <div class="wwc-top-tabs">
-
-      <button
-        id="followingTab"
-        class="wwc-top-tab"
-        type="button"
-      >
-        Following
-      </button>
-
-      <button
-        id="forYouTab"
-        class="wwc-top-tab active"
-        type="button"
-      >
-        For You
-      </button>
-
-    </div>
-
-
-    <button
-      id="searchBtn"
-      class="wwc-search-btn"
-      type="button"
-      aria-label="Search"
-    >
-      🔍
-    </button>
-
-  </header>
-
-
-
-  <!-- =====================================================
-       VIDEO FEED
+       MAIN VIDEO FEED
   ====================================================== -->
 
   <main id="video-feed">
@@ -87,15 +49,15 @@
         autoplay
         muted
         playsinline
+        loop="false"
         preload="metadata"
-        loop
       >
-
         <source
           src="https://res.cloudinary.com/fsalagrz/video/upload/v1786681051/Video5.mp4"
           type="video/mp4"
         >
 
+        আপনার ব্রাউজার ভিডিও সাপোর্ট করে না।
       </video>
 
 
@@ -106,7 +68,7 @@
         <img
           class="profile-photo"
           src="./images/profile.png"
-          alt="Profile"
+          alt="WWC User"
           loading="lazy"
         >
 
@@ -150,11 +112,6 @@
           aria-label="Comment"
         >
           💬
-
-          <span>
-            0
-          </span>
-
         </button>
 
 
@@ -179,17 +136,12 @@
           aria-label="Share"
         >
           ↗️
-
-          <span>
-            Share
-          </span>
-
         </button>
 
       </div>
 
 
-      <!-- VIDEO INFO -->
+      <!-- VIDEO INFORMATION -->
 
       <div class="video-info">
 
@@ -229,6 +181,8 @@
           type="video/mp4"
         >
 
+        আপনার ব্রাউজার ভিডিও সাপোর্ট করে না।
+
       </video>
 
 
@@ -237,7 +191,7 @@
         <img
           class="profile-photo"
           src="./images/profile.png"
-          alt="Profile"
+          alt="WWC User 2"
           loading="lazy"
         >
 
@@ -279,11 +233,6 @@
           aria-label="Comment"
         >
           💬
-
-          <span>
-            0
-          </span>
-
         </button>
 
 
@@ -308,11 +257,6 @@
           aria-label="Share"
         >
           ↗️
-
-          <span>
-            Share
-          </span>
-
         </button>
 
       </div>
@@ -356,6 +300,8 @@
           type="video/mp4"
         >
 
+        আপনার ব্রাউজার ভিডিও সাপোর্ট করে না।
+
       </video>
 
 
@@ -364,7 +310,7 @@
         <img
           class="profile-photo"
           src="./images/profile.png"
-          alt="Profile"
+          alt="WWC User 3"
           loading="lazy"
         >
 
@@ -406,11 +352,6 @@
           aria-label="Comment"
         >
           💬
-
-          <span>
-            0
-          </span>
-
         </button>
 
 
@@ -435,11 +376,6 @@
           aria-label="Share"
         >
           ↗️
-
-          <span>
-            Share
-          </span>
-
         </button>
 
       </div>
@@ -464,60 +400,43 @@
 
 
   <!-- =====================================================
-       PROFILE MENU
+       TOP BAR
   ====================================================== -->
 
-  <div
-    id="profileMenu"
-    class="profile-menu"
-    aria-hidden="true"
-  >
+  <header class="wwc-top-bar">
 
-    <div class="profile-menu-header">
-
-      <div class="profile-menu-title">
-        👤 My Profile
-      </div>
+    <div class="wwc-top-tabs">
 
       <button
-        id="profileMenuClose"
-        class="profile-menu-close"
+        class="wwc-top-tab"
+        id="followingTab"
         type="button"
-        aria-label="Close"
       >
-        ✕
+        Following
+      </button>
+
+
+      <button
+        class="wwc-top-tab active"
+        id="forYouTab"
+        type="button"
+      >
+        For You
       </button>
 
     </div>
 
 
     <button
-      id="profileBtnMenu"
-      class="profile-menu-btn"
+      id="searchBtn"
+      class="wwc-search-btn"
       type="button"
+      aria-label="Search"
     >
-      👤 Profile
+      🔍
     </button>
 
-
-    <button
-      id="loginBtn"
-      class="profile-menu-btn"
-      type="button"
-    >
-      🔐 Login / Register
-    </button>
-
-
-    <button
-      id="logoutBtn"
-      class="profile-menu-btn logout-menu-btn"
-      type="button"
-    >
-      🚪 Logout
-    </button>
-
-  </div>
+  </header>
 
 
 
@@ -567,6 +486,65 @@
 
 
   <!-- =====================================================
+       PROFILE MENU
+  ====================================================== -->
+
+  <div
+    id="profileMenu"
+    class="profile-menu"
+    aria-hidden="true"
+  >
+
+    <div class="profile-menu-header">
+
+      <div class="profile-menu-title">
+        👤 My Profile
+      </div>
+
+
+      <button
+        id="profileMenuClose"
+        class="profile-menu-close"
+        type="button"
+        aria-label="Close"
+      >
+        ✕
+      </button>
+
+    </div>
+
+
+    <button
+      id="profileBtnMenu"
+      class="profile-menu-btn"
+      type="button"
+    >
+      👤 Profile
+    </button>
+
+
+    <button
+      id="loginBtn"
+      class="profile-menu-btn"
+      type="button"
+    >
+      🔐 Login / Register
+    </button>
+
+
+    <button
+      id="logoutBtn"
+      class="profile-menu-btn logout-menu-btn"
+      type="button"
+    >
+      🚪 Logout
+    </button>
+
+  </div>
+
+
+
+  <!-- =====================================================
        BOTTOM NAVIGATION
   ====================================================== -->
 
@@ -575,12 +553,11 @@
     aria-label="Main Navigation"
   >
 
-
     <!-- HOME -->
 
     <button
-      id="homeBtn"
       class="wwc-nav-btn active"
+      id="homeBtn"
       type="button"
     >
 
@@ -595,12 +572,11 @@
     </button>
 
 
-
     <!-- FRIENDS -->
 
     <button
-      id="friendsBtn"
       class="wwc-nav-btn"
+      id="friendsBtn"
       type="button"
     >
 
@@ -615,8 +591,7 @@
     </button>
 
 
-
-    <!-- UPLOAD -->
+    <!-- CREATE / UPLOAD -->
 
     <button
       id="uploadBtn"
@@ -628,12 +603,11 @@
     </button>
 
 
-
     <!-- INBOX -->
 
     <button
-      id="inboxBtn"
       class="wwc-nav-btn"
+      id="inboxBtn"
       type="button"
     >
 
@@ -646,7 +620,6 @@
       </span>
 
     </button>
-
 
 
     <!-- PROFILE -->
@@ -692,6 +665,7 @@
     type="module"
     src="./js/app.js"
   ></script>
+
 
 </body>
 </html>
