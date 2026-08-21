@@ -15,7 +15,7 @@
 
   <title>World Wide Connect</title>
 
-  <!-- MAIN CSS -->
+  <!-- Main CSS -->
   <link
     rel="stylesheet"
     href="./css/style.css"
@@ -24,833 +24,668 @@
 
 <body>
 
+
   <!-- =====================================================
-       WWC MAIN APPLICATION
+       TOP BAR
   ====================================================== -->
 
-  <div id="wwcApp">
+  <header class="wwc-top-bar">
 
-    <!-- ===================================================
-         TOP BAR
-    ==================================================== -->
-
-    <header class="wwc-top-bar">
-
-      <div class="wwc-top-tabs">
-
-        <button
-          id="followingTab"
-          class="wwc-top-tab"
-          type="button"
-          data-feed="following"
-        >
-          Following
-        </button>
-
-        <button
-          id="forYouTab"
-          class="wwc-top-tab active"
-          type="button"
-          data-feed="forYou"
-        >
-          For You
-        </button>
-
-      </div>
-
-
-      <!-- SEARCH -->
+    <div class="wwc-top-tabs">
 
       <button
-        id="searchBtn"
-        class="wwc-search-btn"
+        id="followingTab"
+        class="wwc-top-tab"
         type="button"
-        aria-label="Search"
       >
-        🔍
+        Following
       </button>
 
-    </header>
-
-
-    <!-- ===================================================
-         VIDEO FEED
-    ==================================================== -->
-
-    <main
-      id="video-feed"
-      aria-label="WWC Video Feed"
-    >
-
-      <!-- ===============================================
-           VIDEO 1
-      ================================================ -->
-
-      <section
-        class="video-item"
-        data-video-id="video1"
-        data-user-id="demo-user-1"
-        data-username="wwc_user"
-      >
-
-        <!-- VIDEO -->
-
-        <video
-          class="feed-video"
-          autoplay
-          muted
-          loop
-          playsinline
-          preload="metadata"
-        >
-
-          <source
-            src="https://res.cloudinary.com/fsalagrz/video/upload/v1786681051/Video5.mp4"
-            type="video/mp4"
-          >
-
-          আপনার ব্রাউজার ভিডিও সাপোর্ট করে না।
-
-        </video>
-
-
-        <!-- =============================================
-             VIDEO PROFILE
-        ============================================== -->
-
-        <div class="profile-area">
-
-          <button
-            class="video-profile-btn"
-            type="button"
-            data-profile-user="demo-user-1"
-            aria-label="Open profile"
-          >
-
-            <img
-              class="profile-photo"
-              src="./images/profile.png"
-              alt="Profile"
-              loading="lazy"
-            >
-
-          </button>
-
-
-          <button
-            class="video-username-btn"
-            type="button"
-            data-profile-username="wwc_user"
-          >
-            @wwc_user
-          </button>
-
-
-          <button
-            class="follow-btn"
-            type="button"
-            data-follow-user="demo-user-1"
-          >
-            Follow
-          </button>
-
-        </div>
-
-
-        <!-- =============================================
-             ACTIONS
-        ============================================== -->
-
-        <div class="actions">
-
-          <!-- LIKE -->
-
-          <button
-            class="action-btn like-btn"
-            type="button"
-            data-video-id="video1"
-            aria-pressed="false"
-            aria-label="Like video"
-          >
-
-            <span class="action-icon">
-              ❤️
-            </span>
-
-            <span class="like-count">
-              0
-            </span>
-
-          </button>
-
-
-          <!-- COMMENT -->
-
-          <button
-            class="action-btn comment-btn"
-            type="button"
-            data-video-id="video1"
-            aria-label="Comments"
-          >
-
-            <span class="action-icon">
-              💬
-            </span>
-
-            <span class="comment-count">
-              0
-            </span>
-
-          </button>
-
-
-          <!-- SAVE -->
-
-          <button
-            class="action-btn save-btn"
-            type="button"
-            data-video-id="video1"
-            aria-pressed="false"
-            aria-label="Save video"
-          >
-
-            <span class="action-icon">
-              🔖
-            </span>
-
-            <span class="save-count">
-              0
-            </span>
-
-          </button>
-
-
-          <!-- SHARE -->
-
-          <button
-            class="action-btn share-btn"
-            type="button"
-            data-video-id="video1"
-            aria-label="Share video"
-          >
-
-            <span class="action-icon">
-              ↗️
-            </span>
-
-            <span class="share-label">
-              Share
-            </span>
-
-          </button>
-
-        </div>
-
-
-        <!-- =============================================
-             VIDEO INFORMATION
-        ============================================== -->
-
-        <div class="video-info">
-
-          <button
-            class="video-info-username"
-            type="button"
-            data-profile-username="wwc_user"
-          >
-            @wwc_user
-          </button>
-
-
-          <div class="video-caption">
-            Welcome to World Wide Connect 🌎
-          </div>
-
-          <div class="video-music">
-            🎵 Original sound
-          </div>
-
-        </div>
-
-      </section>
-
-
-
-      <!-- ===============================================
-           VIDEO 2
-      ================================================ -->
-
-      <section
-        class="video-item"
-        data-video-id="video2"
-        data-user-id="demo-user-2"
-        data-username="wwc_user_2"
-      >
-
-        <video
-          class="feed-video"
-          muted
-          loop
-          playsinline
-          preload="metadata"
-        >
-
-          <source
-            src="./videos/video2.mp4"
-            type="video/mp4"
-          >
-
-          আপনার ব্রাউজার ভিডিও সাপোর্ট করে না।
-
-        </video>
-
-
-        <div class="profile-area">
-
-          <button
-            class="video-profile-btn"
-            type="button"
-            data-profile-user="demo-user-2"
-            aria-label="Open profile"
-          >
-
-            <img
-              class="profile-photo"
-              src="./images/profile.png"
-              alt="Profile"
-              loading="lazy"
-            >
-
-          </button>
-
-
-          <button
-            class="video-username-btn"
-            type="button"
-            data-profile-username="wwc_user_2"
-          >
-            @wwc_user_2
-          </button>
-
-
-          <button
-            class="follow-btn"
-            type="button"
-            data-follow-user="demo-user-2"
-          >
-            Follow
-          </button>
-
-        </div>
-
-
-        <div class="actions">
-
-          <button
-            class="action-btn like-btn"
-            type="button"
-            data-video-id="video2"
-            aria-pressed="false"
-          >
-
-            <span class="action-icon">
-              ❤️
-            </span>
-
-            <span class="like-count">
-              0
-            </span>
-
-          </button>
-
-
-          <button
-            class="action-btn comment-btn"
-            type="button"
-            data-video-id="video2"
-          >
-
-            <span class="action-icon">
-              💬
-            </span>
-
-            <span class="comment-count">
-              0
-            </span>
-
-          </button>
-
-
-          <button
-            class="action-btn save-btn"
-            type="button"
-            data-video-id="video2"
-            aria-pressed="false"
-          >
-
-            <span class="action-icon">
-              🔖
-            </span>
-
-            <span class="save-count">
-              0
-            </span>
-
-          </button>
-
-
-          <button
-            class="action-btn share-btn"
-            type="button"
-            data-video-id="video2"
-          >
-
-            <span class="action-icon">
-              ↗️
-            </span>
-
-            <span class="share-label">
-              Share
-            </span>
-
-          </button>
-
-        </div>
-
-
-        <div class="video-info">
-
-          <button
-            class="video-info-username"
-            type="button"
-            data-profile-username="wwc_user_2"
-          >
-            @wwc_user_2
-          </button>
-
-
-          <div class="video-caption">
-            Share your world with everyone 🌎
-          </div>
-
-
-          <div class="video-music">
-            🎵 Original sound
-          </div>
-
-        </div>
-
-      </section>
-
-
-
-      <!-- ===============================================
-           VIDEO 3
-      ================================================ -->
-
-      <section
-        class="video-item"
-        data-video-id="video3"
-        data-user-id="demo-user-3"
-        data-username="wwc_user_3"
-      >
-
-        <video
-          class="feed-video"
-          muted
-          loop
-          playsinline
-          preload="metadata"
-        >
-
-          <source
-            src="./videos/video3.mp4"
-            type="video/mp4"
-          >
-
-          আপনার ব্রাউজার ভিডিও সাপোর্ট করে না।
-
-        </video>
-
-
-        <div class="profile-area">
-
-          <button
-            class="video-profile-btn"
-            type="button"
-            data-profile-user="demo-user-3"
-            aria-label="Open profile"
-          >
-
-            <img
-              class="profile-photo"
-              src="./images/profile.png"
-              alt="Profile"
-              loading="lazy"
-            >
-
-          </button>
-
-
-          <button
-            class="video-username-btn"
-            type="button"
-            data-profile-username="wwc_user_3"
-          >
-            @wwc_user_3
-          </button>
-
-
-          <button
-            class="follow-btn"
-            type="button"
-            data-follow-user="demo-user-3"
-          >
-            Follow
-          </button>
-
-        </div>
-
-
-        <div class="actions">
-
-          <button
-            class="action-btn like-btn"
-            type="button"
-            data-video-id="video3"
-            aria-pressed="false"
-          >
-
-            <span class="action-icon">
-              ❤️
-            </span>
-
-            <span class="like-count">
-              0
-            </span>
-
-          </button>
-
-
-          <button
-            class="action-btn comment-btn"
-            type="button"
-            data-video-id="video3"
-          >
-
-            <span class="action-icon">
-              💬
-            </span>
-
-            <span class="comment-count">
-              0
-            </span>
-
-          </button>
-
-
-          <button
-            class="action-btn save-btn"
-            type="button"
-            data-video-id="video3"
-            aria-pressed="false"
-          >
-
-            <span class="action-icon">
-              🔖
-            </span>
-
-            <span class="save-count">
-              0
-            </span>
-
-          </button>
-
-
-          <button
-            class="action-btn share-btn"
-            type="button"
-            data-video-id="video3"
-          >
-
-            <span class="action-icon">
-              ↗️
-            </span>
-
-            <span class="share-label">
-              Share
-            </span>
-
-          </button>
-
-        </div>
-
-
-        <div class="video-info">
-
-          <button
-            class="video-info-username"
-            type="button"
-            data-profile-username="wwc_user_3"
-          >
-            @wwc_user_3
-          </button>
-
-
-          <div class="video-caption">
-            Connect with the world 🌍
-          </div>
-
-
-          <div class="video-music">
-            🎵 Original sound
-          </div>
-
-        </div>
-
-      </section>
-
-    </main>
-
-
-
-    <!-- =================================================
-         COMMENT PANEL
-    ================================================== -->
-
-    <div
-      id="commentBox"
-      class="comment-box"
-      aria-hidden="true"
-    >
-
-      <div class="comment-header">
-
-        <strong>
-          Comments
-        </strong>
-
-        <button
-          id="commentClose"
-          type="button"
-          aria-label="Close comments"
-        >
-          ✕
-        </button>
-
-      </div>
-
-
-      <div
-        id="commentList"
-        class="comment-list"
-      >
-
-        <div class="comment-empty">
-          এখনো কোনো Comment নেই।
-        </div>
-
-      </div>
-
-
-      <div class="comment-input-area">
-
-        <textarea
-          id="commentInput"
-          rows="2"
-          maxlength="500"
-          placeholder="Write a comment..."
-        ></textarea>
-
-
-        <button
-          id="commentSend"
-          type="button"
-        >
-          Send
-        </button>
-
-      </div>
-
-    </div>
-
-
-
-    <!-- =================================================
-         PROFILE MENU
-    ================================================== -->
-
-    <div
-      id="profileMenu"
-      class="profile-menu"
-      aria-hidden="true"
-    >
-
-      <div class="profile-menu-header">
-
-        <div class="profile-menu-title">
-          👤 My Profile
-        </div>
-
-
-        <button
-          id="profileMenuClose"
-          class="profile-menu-close"
-          type="button"
-          aria-label="Close profile menu"
-        >
-          ✕
-        </button>
-
-      </div>
-
-
       <button
-        id="profileBtnMenu"
-        class="profile-menu-btn"
+        id="forYouTab"
+        class="wwc-top-tab active"
         type="button"
       >
-        👤 Profile
-      </button>
-
-
-      <button
-        id="loginBtn"
-        class="profile-menu-btn"
-        type="button"
-      >
-        🔐 Login / Register
-      </button>
-
-
-      <button
-        id="logoutBtn"
-        class="profile-menu-btn logout-menu-btn"
-        type="button"
-      >
-        🚪 Logout
+        For You
       </button>
 
     </div>
 
 
+    <button
+      id="searchBtn"
+      class="wwc-search-btn"
+      type="button"
+      aria-label="Search"
+    >
+      🔍
+    </button>
 
-    <!-- =================================================
-         BOTTOM NAVIGATION
-    ================================================== -->
+  </header>
 
-    <nav
-      class="wwc-bottom-nav"
-      aria-label="Main navigation"
+
+
+  <!-- =====================================================
+       VIDEO FEED
+  ====================================================== -->
+
+  <main id="video-feed">
+
+
+    <!-- ===================================================
+         VIDEO 1
+    ==================================================== -->
+
+    <section
+      class="video-item"
+      data-video-id="video1"
+      data-username="wwc_user"
     >
 
-      <!-- HOME -->
-
-      <button
-        id="homeBtn"
-        class="wwc-nav-btn active"
-        type="button"
+      <video
+        class="feed-video"
+        autoplay
+        muted
+        playsinline
+        preload="metadata"
+        loop
       >
 
-        <span>
-          🏠
-        </span>
+        <source
+          src="https://res.cloudinary.com/fsalagrz/video/upload/v1786681051/Video5.mp4"
+          type="video/mp4"
+        >
 
-        <span>
-          Home
-        </span>
-
-      </button>
-
-
-      <!-- FRIENDS -->
-
-      <button
-        id="friendsBtn"
-        class="wwc-nav-btn"
-        type="button"
-      >
-
-        <span>
-          👥
-        </span>
-
-        <span>
-          Friends
-        </span>
-
-      </button>
-
-
-      <!-- UPLOAD -->
-
-      <button
-        id="uploadBtn"
-        class="wwc-create-btn"
-        type="button"
-        aria-label="Upload Video"
-      >
-        +
-      </button>
-
-
-      <!-- INBOX -->
-
-      <button
-        id="inboxBtn"
-        class="wwc-nav-btn"
-        type="button"
-      >
-
-        <span>
-          💬
-        </span>
-
-        <span>
-          Inbox
-        </span>
-
-      </button>
+      </video>
 
 
       <!-- PROFILE -->
 
-      <button
-        id="profileBtn"
-        class="wwc-nav-btn"
-        type="button"
+      <div class="profile-area">
+
+        <img
+          class="profile-photo"
+          src="./images/profile.png"
+          alt="Profile"
+          loading="lazy"
+        >
+
+        <div class="username">
+          @wwc_user
+        </div>
+
+        <button
+          class="follow-btn"
+          type="button"
+          data-username="wwc_user"
+        >
+          Follow
+        </button>
+
+      </div>
+
+
+      <!-- ACTIONS -->
+
+      <div class="actions">
+
+        <button
+          class="action-btn like-btn"
+          type="button"
+          aria-label="Like"
+          aria-pressed="false"
+        >
+          ❤️
+
+          <span class="like-count">
+            0
+          </span>
+
+        </button>
+
+
+        <button
+          class="action-btn comment-btn"
+          type="button"
+          aria-label="Comment"
+        >
+          💬
+
+          <span>
+            0
+          </span>
+
+        </button>
+
+
+        <button
+          class="action-btn save-btn"
+          type="button"
+          aria-label="Save"
+          aria-pressed="false"
+        >
+          🔖
+
+          <span class="save-count">
+            0
+          </span>
+
+        </button>
+
+
+        <button
+          class="action-btn share-btn"
+          type="button"
+          aria-label="Share"
+        >
+          ↗️
+
+          <span>
+            Share
+          </span>
+
+        </button>
+
+      </div>
+
+
+      <!-- VIDEO INFO -->
+
+      <div class="video-info">
+
+        <div class="username">
+          @wwc_user
+        </div>
+
+        <div class="video-caption">
+          Welcome to World Wide Connect 🌎
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         VIDEO 2
+    ==================================================== -->
+
+    <section
+      class="video-item"
+      data-video-id="video2"
+      data-username="wwc_user_2"
+    >
+
+      <video
+        class="feed-video"
+        muted
+        playsinline
+        preload="metadata"
       >
 
-        <span>
-          👤
-        </span>
+        <source
+          src="./videos/video2.mp4"
+          type="video/mp4"
+        >
 
-        <span>
-          Profile
-        </span>
+      </video>
 
+
+      <div class="profile-area">
+
+        <img
+          class="profile-photo"
+          src="./images/profile.png"
+          alt="Profile"
+          loading="lazy"
+        >
+
+        <div class="username">
+          @wwc_user_2
+        </div>
+
+        <button
+          class="follow-btn"
+          type="button"
+          data-username="wwc_user_2"
+        >
+          Follow
+        </button>
+
+      </div>
+
+
+      <div class="actions">
+
+        <button
+          class="action-btn like-btn"
+          type="button"
+          aria-label="Like"
+          aria-pressed="false"
+        >
+          ❤️
+
+          <span class="like-count">
+            0
+          </span>
+
+        </button>
+
+
+        <button
+          class="action-btn comment-btn"
+          type="button"
+          aria-label="Comment"
+        >
+          💬
+
+          <span>
+            0
+          </span>
+
+        </button>
+
+
+        <button
+          class="action-btn save-btn"
+          type="button"
+          aria-label="Save"
+          aria-pressed="false"
+        >
+          🔖
+
+          <span class="save-count">
+            0
+          </span>
+
+        </button>
+
+
+        <button
+          class="action-btn share-btn"
+          type="button"
+          aria-label="Share"
+        >
+          ↗️
+
+          <span>
+            Share
+          </span>
+
+        </button>
+
+      </div>
+
+
+      <div class="video-info">
+
+        <div class="username">
+          @wwc_user_2
+        </div>
+
+        <div class="video-caption">
+          Share your world with everyone 🌎
+        </div>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         VIDEO 3
+    ==================================================== -->
+
+    <section
+      class="video-item"
+      data-video-id="video3"
+      data-username="wwc_user_3"
+    >
+
+      <video
+        class="feed-video"
+        muted
+        playsinline
+        preload="metadata"
+      >
+
+        <source
+          src="./videos/video3.mp4"
+          type="video/mp4"
+        >
+
+      </video>
+
+
+      <div class="profile-area">
+
+        <img
+          class="profile-photo"
+          src="./images/profile.png"
+          alt="Profile"
+          loading="lazy"
+        >
+
+        <div class="username">
+          @wwc_user_3
+        </div>
+
+        <button
+          class="follow-btn"
+          type="button"
+          data-username="wwc_user_3"
+        >
+          Follow
+        </button>
+
+      </div>
+
+
+      <div class="actions">
+
+        <button
+          class="action-btn like-btn"
+          type="button"
+          aria-label="Like"
+          aria-pressed="false"
+        >
+          ❤️
+
+          <span class="like-count">
+            0
+          </span>
+
+        </button>
+
+
+        <button
+          class="action-btn comment-btn"
+          type="button"
+          aria-label="Comment"
+        >
+          💬
+
+          <span>
+            0
+          </span>
+
+        </button>
+
+
+        <button
+          class="action-btn save-btn"
+          type="button"
+          aria-label="Save"
+          aria-pressed="false"
+        >
+          🔖
+
+          <span class="save-count">
+            0
+          </span>
+
+        </button>
+
+
+        <button
+          class="action-btn share-btn"
+          type="button"
+          aria-label="Share"
+        >
+          ↗️
+
+          <span>
+            Share
+          </span>
+
+        </button>
+
+      </div>
+
+
+      <div class="video-info">
+
+        <div class="username">
+          @wwc_user_3
+        </div>
+
+        <div class="video-caption">
+          Connect with the world 🌍
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+
+  <!-- =====================================================
+       PROFILE MENU
+  ====================================================== -->
+
+  <div
+    id="profileMenu"
+    class="profile-menu"
+    aria-hidden="true"
+  >
+
+    <div class="profile-menu-header">
+
+      <div class="profile-menu-title">
+        👤 My Profile
+      </div>
+
+      <button
+        id="profileMenuClose"
+        class="profile-menu-close"
+        type="button"
+        aria-label="Close"
+      >
+        ✕
       </button>
 
-    </nav>
+    </div>
 
 
-
-    <!-- =================================================
-         HIDDEN VIDEO UPLOAD INPUT
-    ================================================== -->
-
-    <input
-      id="videoUpload"
-      type="file"
-      accept="video/*"
-      hidden
+    <button
+      id="profileBtnMenu"
+      class="profile-menu-btn"
+      type="button"
     >
+      👤 Profile
+    </button>
+
+
+    <button
+      id="loginBtn"
+      class="profile-menu-btn"
+      type="button"
+    >
+      🔐 Login / Register
+    </button>
+
+
+    <button
+      id="logoutBtn"
+      class="profile-menu-btn logout-menu-btn"
+      type="button"
+    >
+      🚪 Logout
+    </button>
 
   </div>
 
 
+
   <!-- =====================================================
-       MAIN APPLICATION JAVASCRIPT
+       COMMENT BOX
+  ====================================================== -->
+
+  <div
+    id="commentBox"
+    class="comment-box"
+    aria-hidden="true"
+  >
+
+    <div class="comment-title">
+      💬 Comments
+    </div>
+
+
+    <textarea
+      id="commentInput"
+      placeholder="Write a comment..."
+      maxlength="500"
+    ></textarea>
+
+
+    <div class="comment-buttons">
+
+      <button
+        id="commentCancel"
+        type="button"
+      >
+        Cancel
+      </button>
+
+
+      <button
+        id="commentSend"
+        type="button"
+      >
+        Send
+      </button>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- =====================================================
+       BOTTOM NAVIGATION
+  ====================================================== -->
+
+  <nav
+    class="wwc-bottom-nav"
+    aria-label="Main Navigation"
+  >
+
+
+    <!-- HOME -->
+
+    <button
+      id="homeBtn"
+      class="wwc-nav-btn active"
+      type="button"
+    >
+
+      <span>
+        🏠
+      </span>
+
+      <span>
+        Home
+      </span>
+
+    </button>
+
+
+
+    <!-- FRIENDS -->
+
+    <button
+      id="friendsBtn"
+      class="wwc-nav-btn"
+      type="button"
+    >
+
+      <span>
+        👥
+      </span>
+
+      <span>
+        Friends
+      </span>
+
+    </button>
+
+
+
+    <!-- UPLOAD -->
+
+    <button
+      id="uploadBtn"
+      class="wwc-create-btn"
+      type="button"
+      aria-label="Upload Video"
+    >
+      +
+    </button>
+
+
+
+    <!-- INBOX -->
+
+    <button
+      id="inboxBtn"
+      class="wwc-nav-btn"
+      type="button"
+    >
+
+      <span>
+        💬
+      </span>
+
+      <span>
+        Inbox
+      </span>
+
+    </button>
+
+
+
+    <!-- PROFILE -->
+
+    <button
+      id="profileBtn"
+      class="wwc-nav-btn"
+      type="button"
+    >
+
+      <span>
+        👤
+      </span>
+
+      <span>
+        Profile
+      </span>
+
+    </button>
+
+  </nav>
+
+
+
+  <!-- =====================================================
+       HIDDEN VIDEO UPLOAD INPUT
+  ====================================================== -->
+
+  <input
+    id="videoUpload"
+    type="file"
+    accept="video/*"
+    hidden
+  >
+
+
+
+  <!-- =====================================================
+       APP JAVASCRIPT
   ====================================================== -->
 
   <script
