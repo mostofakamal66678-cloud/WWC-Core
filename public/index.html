@@ -2,7 +2,10 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
 
   <title>World Wide Connect</title>
 
@@ -11,19 +14,27 @@
 
 <body>
 
-  <!-- ================================
+  <!-- =====================================================
        TOP BAR
-  ================================= -->
+  ====================================================== -->
 
   <header class="wwc-top-bar">
 
     <div class="wwc-top-tabs">
 
-      <button class="wwc-top-tab" type="button">
+      <button
+        id="followingTab"
+        class="wwc-top-tab"
+        type="button"
+      >
         Following
       </button>
 
-      <button class="wwc-top-tab active" type="button">
+      <button
+        id="forYouTab"
+        class="wwc-top-tab active"
+        type="button"
+      >
         For You
       </button>
 
@@ -41,29 +52,39 @@
   </header>
 
 
-  <!-- ================================
+  <!-- =====================================================
        VIDEO FEED
-  ================================= -->
+  ====================================================== -->
 
   <main id="video-feed">
 
 
-    <!-- VIDEO 1 -->
+    <!-- ================= VIDEO 1 ================= -->
 
-    <section class="video-item" data-video-id="video1">
+    <section
+      class="video-item"
+      data-video-id="video1"
+      data-username="wwc_user"
+    >
 
       <video
         class="feed-video"
         autoplay
         muted
         playsinline
+        loop
         preload="metadata"
       >
         <source
           src="https://res.cloudinary.com/fsalagrz/video/upload/v1786681051/Video5.mp4"
           type="video/mp4"
         >
+
+        আপনার ব্রাউজার ভিডিও চালাতে পারে না।
       </video>
+
+
+      <!-- PROFILE -->
 
       <div class="profile-area">
 
@@ -71,15 +92,20 @@
           class="profile-photo"
           src="./images/profile.png"
           alt="Profile"
+          data-username="wwc_user"
         >
 
-        <div class="username">
+        <div
+          class="username"
+          data-username="wwc_user"
+        >
           @wwc_user
         </div>
 
         <button
           class="follow-btn"
           type="button"
+          data-username="wwc_user"
         >
           Follow
         </button>
@@ -87,36 +113,46 @@
       </div>
 
 
+      <!-- ACTIONS -->
+
       <div class="actions">
 
         <button
           class="action-btn like-btn"
           type="button"
           aria-pressed="false"
+          data-video-id="video1"
         >
           ❤️
           <span class="like-count">0</span>
         </button>
 
+
         <button
           class="action-btn comment-btn"
           type="button"
+          data-video-id="video1"
         >
           💬
+          <span class="comment-count">0</span>
         </button>
+
 
         <button
           class="action-btn save-btn"
           type="button"
           aria-pressed="false"
+          data-video-id="video1"
         >
           🔖
           <span class="save-count">0</span>
         </button>
 
+
         <button
           class="action-btn share-btn"
           type="button"
+          data-video-id="video1"
         >
           ↗️
         </button>
@@ -124,9 +160,14 @@
       </div>
 
 
+      <!-- VIDEO INFORMATION -->
+
       <div class="video-info">
 
-        <div class="username">
+        <div
+          class="username"
+          data-username="wwc_user"
+        >
           @wwc_user
         </div>
 
@@ -140,22 +181,29 @@
 
 
 
-    <!-- VIDEO 2 -->
+    <!-- ================= VIDEO 2 ================= -->
 
-    <section class="video-item" data-video-id="video2">
+    <section
+      class="video-item"
+      data-video-id="video2"
+      data-username="wwc_user_2"
+    >
 
       <video
         class="feed-video"
-        autoplay
         muted
         playsinline
+        loop
         preload="metadata"
       >
         <source
           src="./videos/video2.mp4"
           type="video/mp4"
         >
+
+        আপনার ব্রাউজার ভিডিও চালাতে পারে না।
       </video>
+
 
       <div class="profile-area">
 
@@ -163,15 +211,20 @@
           class="profile-photo"
           src="./images/profile.png"
           alt="Profile"
+          data-username="wwc_user_2"
         >
 
-        <div class="username">
+        <div
+          class="username"
+          data-username="wwc_user_2"
+        >
           @wwc_user_2
         </div>
 
         <button
           class="follow-btn"
           type="button"
+          data-username="wwc_user_2"
         >
           Follow
         </button>
@@ -185,30 +238,38 @@
           class="action-btn like-btn"
           type="button"
           aria-pressed="false"
+          data-video-id="video2"
         >
           ❤️
           <span class="like-count">0</span>
         </button>
 
+
         <button
           class="action-btn comment-btn"
           type="button"
+          data-video-id="video2"
         >
           💬
+          <span class="comment-count">0</span>
         </button>
+
 
         <button
           class="action-btn save-btn"
           type="button"
           aria-pressed="false"
+          data-video-id="video2"
         >
           🔖
           <span class="save-count">0</span>
         </button>
 
+
         <button
           class="action-btn share-btn"
           type="button"
+          data-video-id="video2"
         >
           ↗️
         </button>
@@ -218,7 +279,10 @@
 
       <div class="video-info">
 
-        <div class="username">
+        <div
+          class="username"
+          data-username="wwc_user_2"
+        >
           @wwc_user_2
         </div>
 
@@ -232,22 +296,29 @@
 
 
 
-    <!-- VIDEO 3 -->
+    <!-- ================= VIDEO 3 ================= -->
 
-    <section class="video-item" data-video-id="video3">
+    <section
+      class="video-item"
+      data-video-id="video3"
+      data-username="wwc_user_3"
+    >
 
       <video
         class="feed-video"
-        autoplay
         muted
         playsinline
+        loop
         preload="metadata"
       >
         <source
           src="./videos/video3.mp4"
           type="video/mp4"
         >
+
+        আপনার ব্রাউজার ভিডিও চালাতে পারে না।
       </video>
+
 
       <div class="profile-area">
 
@@ -255,15 +326,20 @@
           class="profile-photo"
           src="./images/profile.png"
           alt="Profile"
+          data-username="wwc_user_3"
         >
 
-        <div class="username">
+        <div
+          class="username"
+          data-username="wwc_user_3"
+        >
           @wwc_user_3
         </div>
 
         <button
           class="follow-btn"
           type="button"
+          data-username="wwc_user_3"
         >
           Follow
         </button>
@@ -277,30 +353,38 @@
           class="action-btn like-btn"
           type="button"
           aria-pressed="false"
+          data-video-id="video3"
         >
           ❤️
           <span class="like-count">0</span>
         </button>
 
+
         <button
           class="action-btn comment-btn"
           type="button"
+          data-video-id="video3"
         >
           💬
+          <span class="comment-count">0</span>
         </button>
+
 
         <button
           class="action-btn save-btn"
           type="button"
           aria-pressed="false"
+          data-video-id="video3"
         >
           🔖
           <span class="save-count">0</span>
         </button>
 
+
         <button
           class="action-btn share-btn"
           type="button"
+          data-video-id="video3"
         >
           ↗️
         </button>
@@ -310,7 +394,10 @@
 
       <div class="video-info">
 
-        <div class="username">
+        <div
+          class="username"
+          data-username="wwc_user_3"
+        >
           @wwc_user_3
         </div>
 
@@ -325,9 +412,10 @@
   </main>
 
 
-  <!-- ================================
+
+  <!-- =====================================================
        PROFILE MENU
-  ================================= -->
+  ====================================================== -->
 
   <div
     id="profileMenu"
@@ -381,15 +469,16 @@
   </div>
 
 
-  <!-- ================================
+
+  <!-- =====================================================
        BOTTOM NAVIGATION
-  ================================= -->
+  ====================================================== -->
 
   <nav class="wwc-bottom-nav">
 
     <button
-      class="wwc-nav-btn active"
       id="homeBtn"
+      class="wwc-nav-btn active"
       type="button"
     >
       <span>🏠</span>
@@ -398,8 +487,8 @@
 
 
     <button
-      class="wwc-nav-btn"
       id="friendsBtn"
+      class="wwc-nav-btn"
       type="button"
     >
       <span>👥</span>
@@ -418,8 +507,8 @@
 
 
     <button
-      class="wwc-nav-btn"
       id="inboxBtn"
+      class="wwc-nav-btn"
       type="button"
     >
       <span>💬</span>
@@ -439,7 +528,10 @@
   </nav>
 
 
-  <!-- HIDDEN VIDEO INPUT -->
+
+  <!-- =====================================================
+       VIDEO UPLOAD INPUT
+  ====================================================== -->
 
   <input
     id="videoUpload"
@@ -449,23 +541,26 @@
   >
 
 
-  <!-- ================================
+
+  <!-- =====================================================
        COMMENT BOX
-  ================================= -->
+  ====================================================== -->
 
   <div
     id="commentBox"
     class="comment-box"
+    aria-hidden="true"
   >
 
     <div class="comment-title">
-      Comments
+      💬 Comments
     </div>
 
 
     <textarea
       id="commentInput"
       placeholder="Write a comment..."
+      maxlength="500"
     ></textarea>
 
 
@@ -489,12 +584,17 @@
     </div>
 
   </div>
-<script type="module" src="./js/app.js"></script>
-  <!-- ================================
-       JAVASCRIPT
-  ================================= -->
 
-  
+
+
+  <!-- =====================================================
+       APP JAVASCRIPT
+  ====================================================== -->
+
+  <script
+    type="module"
+    src="./js/app.js"
+  ></script>
 
 </body>
 </html>
