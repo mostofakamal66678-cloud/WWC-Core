@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="bn">
+
 <head>
+
   <meta charset="UTF-8">
 
   <meta
@@ -15,14 +17,16 @@
 
   <title>World Wide Connect</title>
 
-  <!-- MAIN CSS -->
   <link
     rel="stylesheet"
     href="./css/style.css"
   >
+
 </head>
 
+
 <body>
+
 
   <!-- =====================================================
        TOP BAR
@@ -33,17 +37,17 @@
     <div class="wwc-top-tabs">
 
       <button
-        type="button"
         class="wwc-top-tab"
-        data-feed="following"
+        id="followingTab"
+        type="button"
       >
         Following
       </button>
 
       <button
-        type="button"
         class="wwc-top-tab active"
-        data-feed="for-you"
+        id="forYouTab"
+        type="button"
       >
         For You
       </button>
@@ -51,12 +55,10 @@
     </div>
 
 
-    <!-- SEARCH -->
-
     <button
-      type="button"
       id="searchBtn"
       class="wwc-search-btn"
+      type="button"
       aria-label="Search"
     >
       🔍
@@ -65,8 +67,9 @@
   </header>
 
 
+
   <!-- =====================================================
-       VIDEO FEED
+       MAIN VIDEO FEED
   ====================================================== -->
 
   <main id="video-feed">
@@ -96,8 +99,6 @@
           type="video/mp4"
         >
 
-        আপনার ব্রাউজার ভিডিও চালাতে পারে না।
-
       </video>
 
 
@@ -112,15 +113,13 @@
           loading="lazy"
         >
 
-
         <div class="username">
           @wwc_user
         </div>
 
-
         <button
-          type="button"
           class="follow-btn"
+          type="button"
           data-username="wwc_user"
         >
           Follow
@@ -133,12 +132,9 @@
 
       <div class="actions">
 
-
-        <!-- LIKE -->
-
         <button
-          type="button"
           class="action-btn like-btn"
+          type="button"
           aria-label="Like"
           aria-pressed="false"
         >
@@ -152,11 +148,9 @@
         </button>
 
 
-        <!-- COMMENT -->
-
         <button
-          type="button"
           class="action-btn comment-btn"
+          type="button"
           aria-label="Comment"
         >
 
@@ -165,11 +159,9 @@
         </button>
 
 
-        <!-- SAVE -->
-
         <button
-          type="button"
           class="action-btn save-btn"
+          type="button"
           aria-label="Save"
           aria-pressed="false"
         >
@@ -183,11 +175,9 @@
         </button>
 
 
-        <!-- SHARE -->
-
         <button
-          type="button"
           class="action-btn share-btn"
+          type="button"
           aria-label="Share"
         >
 
@@ -230,6 +220,7 @@
         class="feed-video"
         muted
         playsinline
+        loop
         preload="metadata"
       >
 
@@ -237,8 +228,6 @@
           src="./videos/video2.mp4"
           type="video/mp4"
         >
-
-        আপনার ব্রাউজার ভিডিও চালাতে পারে না।
 
       </video>
 
@@ -257,8 +246,8 @@
         </div>
 
         <button
-          type="button"
           class="follow-btn"
+          type="button"
           data-username="wwc_user_2"
         >
           Follow
@@ -270,42 +259,56 @@
       <div class="actions">
 
         <button
-          type="button"
           class="action-btn like-btn"
+          type="button"
           aria-label="Like"
           aria-pressed="false"
         >
+
           ❤️
-          <span class="like-count">0</span>
+
+          <span class="like-count">
+            0
+          </span>
+
         </button>
 
 
         <button
-          type="button"
           class="action-btn comment-btn"
+          type="button"
           aria-label="Comment"
         >
+
           💬
+
         </button>
 
 
         <button
-          type="button"
           class="action-btn save-btn"
+          type="button"
           aria-label="Save"
           aria-pressed="false"
         >
+
           🔖
-          <span class="save-count">0</span>
+
+          <span class="save-count">
+            0
+          </span>
+
         </button>
 
 
         <button
-          type="button"
           class="action-btn share-btn"
+          type="button"
           aria-label="Share"
         >
+
           ↗️
+
         </button>
 
       </div>
@@ -341,6 +344,7 @@
         class="feed-video"
         muted
         playsinline
+        loop
         preload="metadata"
       >
 
@@ -348,8 +352,6 @@
           src="./videos/video3.mp4"
           type="video/mp4"
         >
-
-        আপনার ব্রাউজার ভিডিও চালাতে পারে না।
 
       </video>
 
@@ -368,8 +370,8 @@
         </div>
 
         <button
-          type="button"
           class="follow-btn"
+          type="button"
           data-username="wwc_user_3"
         >
           Follow
@@ -381,42 +383,56 @@
       <div class="actions">
 
         <button
-          type="button"
           class="action-btn like-btn"
+          type="button"
           aria-label="Like"
           aria-pressed="false"
         >
+
           ❤️
-          <span class="like-count">0</span>
+
+          <span class="like-count">
+            0
+          </span>
+
         </button>
 
 
         <button
-          type="button"
           class="action-btn comment-btn"
+          type="button"
           aria-label="Comment"
         >
+
           💬
+
         </button>
 
 
         <button
-          type="button"
           class="action-btn save-btn"
+          type="button"
           aria-label="Save"
           aria-pressed="false"
         >
+
           🔖
-          <span class="save-count">0</span>
+
+          <span class="save-count">
+            0
+          </span>
+
         </button>
 
 
         <button
-          type="button"
           class="action-btn share-btn"
+          type="button"
           aria-label="Share"
         >
+
           ↗️
+
         </button>
 
       </div>
@@ -435,6 +451,7 @@
       </div>
 
     </section>
+
 
   </main>
 
@@ -458,9 +475,9 @@
 
 
       <button
-        type="button"
         id="profileMenuClose"
         class="profile-menu-close"
+        type="button"
         aria-label="Close"
       >
         ✕
@@ -470,27 +487,27 @@
 
 
     <button
-      type="button"
       id="profileBtnMenu"
       class="profile-menu-btn"
+      type="button"
     >
       👤 Profile
     </button>
 
 
     <button
-      type="button"
       id="loginBtn"
       class="profile-menu-btn"
+      type="button"
     >
       🔐 Login / Register
     </button>
 
 
     <button
-      type="button"
       id="logoutBtn"
       class="profile-menu-btn logout-menu-btn"
+      type="button"
     >
       🚪 Logout
     </button>
@@ -524,16 +541,16 @@
     <div class="comment-buttons">
 
       <button
-        type="button"
         id="commentCancel"
+        type="button"
       >
         Cancel
       </button>
 
 
       <button
-        type="button"
         id="commentSend"
+        type="button"
       >
         Send
       </button>
@@ -550,16 +567,16 @@
 
   <nav
     class="wwc-bottom-nav"
-    aria-label="Main navigation"
+    aria-label="Main Navigation"
   >
 
 
     <!-- HOME -->
 
     <button
-      type="button"
       class="wwc-nav-btn active"
       id="homeBtn"
+      type="button"
     >
 
       <span>
@@ -573,13 +590,12 @@
     </button>
 
 
-
     <!-- FRIENDS -->
 
     <button
-      type="button"
       class="wwc-nav-btn"
       id="friendsBtn"
+      type="button"
     >
 
       <span>
@@ -593,26 +609,24 @@
     </button>
 
 
-
-    <!-- UPLOAD -->
+    <!-- CREATE -->
 
     <button
-      type="button"
-      class="wwc-create-btn"
       id="uploadBtn"
+      class="wwc-create-btn"
+      type="button"
       aria-label="Upload Video"
     >
       +
     </button>
 
 
-
     <!-- INBOX -->
 
     <button
-      type="button"
       class="wwc-nav-btn"
       id="inboxBtn"
+      type="button"
     >
 
       <span>
@@ -626,13 +640,12 @@
     </button>
 
 
-
     <!-- PROFILE -->
 
     <button
-      type="button"
-      class="wwc-nav-btn"
       id="profileBtn"
+      class="wwc-nav-btn"
+      type="button"
     >
 
       <span>
@@ -650,12 +663,12 @@
 
 
   <!-- =====================================================
-       HIDDEN VIDEO INPUT
+       HIDDEN VIDEO UPLOAD INPUT
   ====================================================== -->
 
   <input
-    type="file"
     id="videoUpload"
+    type="file"
     accept="video/*"
     hidden
   >
@@ -663,7 +676,7 @@
 
 
   <!-- =====================================================
-       MAIN APP JAVASCRIPT
+       APP JAVASCRIPT
   ====================================================== -->
 
   <script
@@ -671,5 +684,7 @@
     src="./js/app.js"
   ></script>
 
+
 </body>
+
 </html>
