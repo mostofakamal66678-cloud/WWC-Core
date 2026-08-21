@@ -10,40 +10,24 @@
     padding: 0;
 }
 
-:root {
-    --bg: #000;
-    --card: #151515;
-    --text: #fff;
-    --muted: #aaa;
-    --border: rgba(255,255,255,.12);
-    --accent: #fe2c55;
-    --nav-height: 64px;
-    --top-height: 60px;
-}
-
 html,
 body {
     width: 100%;
     height: 100%;
-    background: var(--bg);
-    color: var(--text);
+    background: #000;
+    color: #fff;
     font-family: Arial, sans-serif;
     overflow: hidden;
 }
 
 body {
-    -webkit-font-smoothing: antialiased;
+    overscroll-behavior: none;
 }
 
 button,
-input,
 textarea,
-select {
+input {
     font-family: inherit;
-}
-
-button {
-    -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -56,7 +40,7 @@ button {
     inset: 0;
 
     width: 100%;
-    height: 100%;
+    height: 100vh;
     height: 100dvh;
 
     overflow-y: auto;
@@ -68,10 +52,11 @@ button {
     scroll-behavior: smooth;
 
     scrollbar-width: none;
+
     -webkit-overflow-scrolling: touch;
 
-    overscroll-behavior-y: contain;
     touch-action: pan-y;
+    overscroll-behavior-y: contain;
 }
 
 #video-feed::-webkit-scrollbar {
@@ -127,31 +112,6 @@ button {
 
 
 /* =========================================================
-   VIDEO DARK GRADIENT
-   ========================================================= */
-
-.video-item::after {
-    content: "";
-
-    position: absolute;
-    inset: 0;
-
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(0,0,0,.55),
-            transparent 18%,
-            transparent 60%,
-            rgba(0,0,0,.65)
-        );
-
-    pointer-events: none;
-
-    z-index: 2;
-}
-
-
-/* =========================================================
    TOP BAR
    ========================================================= */
 
@@ -162,16 +122,25 @@ button {
     left: 0;
 
     width: 100%;
-    height: var(--top-height);
+    height: 64px;
+
+    z-index: 500;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    z-index: 500;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, .80),
+            rgba(0, 0, 0, .35),
+            transparent
+        );
 
     pointer-events: none;
 }
+
 
 .wwc-top-tabs {
     display: flex;
@@ -180,13 +149,13 @@ button {
     gap: 24px;
 }
 
+
 .wwc-top-tab {
     border: 0;
-    outline: none;
 
     background: transparent;
 
-    color: rgba(255,255,255,.65);
+    color: rgba(255, 255, 255, .65);
 
     font-size: 16px;
     font-weight: 600;
@@ -196,42 +165,64 @@ button {
     cursor: pointer;
 
     pointer-events: auto;
+
+    transition:
+        color .2s ease,
+        transform .15s ease;
 }
+
 
 .wwc-top-tab.active {
     color: #fff;
     font-weight: 700;
 }
 
+
+.wwc-top-tab:active {
+    transform: scale(.94);
+}
+
+
+/* =========================================================
+   SEARCH BUTTON
+   ========================================================= */
+
 .wwc-search-btn {
     position: absolute;
 
-    top: 9px;
-    right: 12px;
+    top: 10px;
+    right: 14px;
 
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
 
     border: 0;
     border-radius: 50%;
 
-    background: rgba(0,0,0,.45);
+    background: rgba(0, 0, 0, .48);
 
     color: #fff;
 
     font-size: 21px;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     cursor: pointer;
 
     pointer-events: auto;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+
+    transition:
+        transform .15s ease,
+        background .2s ease;
 }
 
 .wwc-search-btn:active {
-    transform: scale(.92);
+    transform: scale(.88);
 }
 
 
@@ -242,10 +233,10 @@ button {
 .video-item .profile-area {
     position: absolute;
 
-    right: 14px;
-    bottom: 350px;
+    right: 15px;
+    bottom: 340px;
 
-    width: 70px;
+    width: 72px;
 
     display: flex;
     flex-direction: column;
@@ -256,13 +247,13 @@ button {
     z-index: 50;
 }
 
-.video-item .profile-photo {
-    width: 54px;
-    height: 54px;
 
-    border-radius: 50%;
+.video-item .profile-photo {
+    width: 56px;
+    height: 56px;
 
     border: 2px solid #fff;
+    border-radius: 50%;
 
     object-fit: cover;
 
@@ -271,8 +262,17 @@ button {
     cursor: pointer;
 
     box-shadow:
-        0 2px 10px rgba(0,0,0,.5);
+        0 2px 10px rgba(0, 0, 0, .45);
+
+    transition:
+        transform .15s ease;
 }
+
+
+.video-item .profile-photo:active {
+    transform: scale(.9);
+}
+
 
 .video-item .profile-area .username {
     width: 100%;
@@ -294,15 +294,19 @@ button {
     cursor: pointer;
 }
 
+
+/* =========================================================
+   FOLLOW BUTTON
+   ========================================================= */
+
 .video-item .follow-btn {
-    width: 68px;
+    width: 70px;
     height: 32px;
 
     border: 0;
     border-radius: 18px;
 
-    background: var(--accent);
-
+    background: #fe2c55;
     color: #fff;
 
     font-size: 12px;
@@ -310,19 +314,25 @@ button {
 
     cursor: pointer;
 
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, .35);
+
     transition:
         transform .15s ease,
-        background .15s ease;
+        background .2s ease;
 }
+
 
 .video-item .follow-btn:active {
-    transform: scale(.92);
+    transform: scale(.91);
 }
 
-.video-item .follow-btn.following {
-    background: rgba(255,255,255,.20);
 
-    border: 1px solid rgba(255,255,255,.75);
+.video-item .follow-btn.following {
+    background: rgba(255, 255, 255, .18);
+
+    border: 1px solid
+        rgba(255, 255, 255, .65);
 }
 
 
@@ -334,7 +344,7 @@ button {
     position: absolute;
 
     right: 14px;
-    bottom: 105px;
+    bottom: 78px;
 
     width: 58px;
 
@@ -342,10 +352,11 @@ button {
     flex-direction: column;
     align-items: center;
 
-    gap: 13px;
+    gap: 11px;
 
     z-index: 60;
 }
+
 
 .video-item .action-btn {
     width: 50px;
@@ -354,7 +365,7 @@ button {
     border: 0;
     border-radius: 50%;
 
-    background: rgba(0,0,0,.42);
+    background: rgba(0, 0, 0, .40);
 
     color: #fff;
 
@@ -369,22 +380,29 @@ button {
 
     cursor: pointer;
 
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+
     transition:
         transform .15s ease,
-        background .15s ease;
+        background .2s ease;
 }
+
 
 .video-item .action-btn:active {
     transform: scale(.86);
 }
 
+
 .video-item .like-btn.liked {
-    background: rgba(254,44,85,.88);
+    background: rgba(254, 44, 85, .88);
 }
 
+
 .video-item .save-btn.saved {
-    background: rgba(255,255,255,.25);
+    background: rgba(255, 255, 255, .22);
 }
+
 
 .like-count,
 .save-count {
@@ -392,6 +410,7 @@ button {
 
     font-size: 11px;
     line-height: 12px;
+
     font-weight: 600;
 
     text-shadow:
@@ -408,15 +427,16 @@ button {
 
     left: 14px;
     right: 82px;
-    bottom: 105px;
+    bottom: 80px;
 
     z-index: 40;
 
     pointer-events: none;
 
     text-shadow:
-        0 1px 4px #000;
+        0 1px 5px #000;
 }
+
 
 .video-info .username {
     color: #fff;
@@ -426,6 +446,7 @@ button {
 
     margin-bottom: 7px;
 }
+
 
 .video-caption {
     color: #fff;
@@ -449,7 +470,7 @@ button {
     bottom: 0;
 
     width: 100%;
-    height: var(--nav-height);
+    height: 64px;
 
     z-index: 1000;
 
@@ -458,30 +479,29 @@ button {
     justify-content: space-around;
 
     padding:
-        5px
-        max(8px, env(safe-area-inset-left))
-        calc(5px + env(safe-area-inset-bottom))
-        max(8px, env(safe-area-inset-right));
+        4px 7px
+        env(safe-area-inset-bottom);
 
-    background: rgba(0,0,0,.94);
+    background:
+        rgba(0, 0, 0, .94);
 
     border-top:
-        1px solid rgba(255,255,255,.08);
+        1px solid rgba(255, 255, 255, .08);
 
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
 }
+
 
 .wwc-nav-btn {
     width: 58px;
     height: 54px;
 
     border: 0;
-    outline: none;
 
     background: transparent;
 
-    color: rgba(255,255,255,.70);
+    color: rgba(255, 255, 255, .70);
 
     display: flex;
     flex-direction: column;
@@ -493,19 +513,28 @@ button {
     font-size: 11px;
 
     cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
+
+    transition:
+        color .2s ease,
+        transform .15s ease;
 }
 
+
 .wwc-nav-btn span:first-child {
-    font-size: 21px;
+    font-size: 22px;
     line-height: 23px;
 }
+
 
 .wwc-nav-btn.active {
     color: #fff;
 }
 
+
 .wwc-nav-btn:active {
-    transform: scale(.94);
+    transform: scale(.90);
 }
 
 
@@ -533,11 +562,15 @@ button {
     cursor: pointer;
 
     box-shadow:
-        0 2px 10px rgba(255,255,255,.15);
+        0 3px 12px rgba(0, 0, 0, .35);
+
+    transition:
+        transform .15s ease;
 }
 
+
 .wwc-create-btn:active {
-    transform: scale(.90);
+    transform: scale(.88);
 }
 
 
@@ -549,31 +582,32 @@ button {
     position: fixed;
 
     left: 50%;
-    bottom: calc(72px + env(safe-area-inset-bottom));
+    bottom: 72px;
 
     width: min(92%, 360px);
 
-    max-height: calc(100dvh - 110px);
+    max-height:
+        calc(100vh - 110px);
 
     overflow-y: auto;
 
     padding: 16px;
 
-    background: rgba(20,20,20,.98);
+    background:
+        rgba(20, 20, 20, .98);
 
     border:
-        1px solid rgba(255,255,255,.12);
+        1px solid rgba(255, 255, 255, .12);
 
     border-radius: 20px;
 
     box-shadow:
-        0 12px 40px rgba(0,0,0,.60);
+        0 12px 40px rgba(0, 0, 0, .65);
 
     z-index: 3000;
 
     opacity: 0;
     visibility: hidden;
-
     pointer-events: none;
 
     transform:
@@ -588,9 +622,11 @@ button {
     scrollbar-width: none;
 }
 
+
 .profile-menu::-webkit-scrollbar {
     display: none;
 }
+
 
 .profile-menu.show {
     opacity: 1;
@@ -604,8 +640,14 @@ button {
         translateY(0);
 }
 
+
+/* =========================================================
+   PROFILE MENU HEADER
+   ========================================================= */
+
 .profile-menu-header {
     display: flex;
+
     align-items: center;
     justify-content: space-between;
 
@@ -614,8 +656,10 @@ button {
     margin-bottom: 8px;
 
     border-bottom:
-        1px solid rgba(255,255,255,.10);
+        1px solid
+        rgba(255, 255, 255, .10);
 }
+
 
 .profile-menu-title {
     color: #fff;
@@ -624,6 +668,7 @@ button {
     font-weight: 700;
 }
 
+
 .profile-menu-close {
     width: 36px;
     height: 36px;
@@ -631,7 +676,8 @@ button {
     border: 0;
     border-radius: 50%;
 
-    background: rgba(255,255,255,.10);
+    background:
+        rgba(255, 255, 255, .10);
 
     color: #fff;
 
@@ -644,8 +690,19 @@ button {
     justify-content: center;
 }
 
+
+.profile-menu-close:active {
+    transform: scale(.88);
+}
+
+
+/* =========================================================
+   PROFILE MENU BUTTONS
+   ========================================================= */
+
 .profile-menu-btn {
     width: 100%;
+
     min-height: 52px;
 
     margin-top: 8px;
@@ -655,7 +712,8 @@ button {
     border: 0;
     border-radius: 12px;
 
-    background: rgba(255,255,255,.08);
+    background:
+        rgba(255, 255, 255, .08);
 
     color: #fff;
 
@@ -668,14 +726,21 @@ button {
 
     display: flex;
     align-items: center;
+
+    transition:
+        background .2s ease,
+        transform .15s ease;
 }
+
 
 .profile-menu-btn:active {
-    background: rgba(255,255,255,.15);
+    transform: scale(.98);
 }
 
+
 .profile-menu-btn.logout-menu-btn {
-    background: rgba(254,44,85,.15);
+    background:
+        rgba(254, 44, 85, .15);
 
     color: #ff6684;
 }
@@ -689,32 +754,38 @@ button {
     position: fixed;
 
     left: 50%;
-    bottom: calc(70px + env(safe-area-inset-bottom));
-
-    transform: translateX(-50%);
+    bottom: 72px;
 
     width: min(92%, 420px);
 
     padding: 15px;
 
-    background: rgba(20,20,20,.98);
+    background:
+        rgba(20, 20, 20, .98);
 
     border:
-        1px solid rgba(255,255,255,.10);
+        1px solid
+        rgba(255, 255, 255, .10);
 
     border-radius: 16px;
-
-    box-shadow:
-        0 10px 35px rgba(0,0,0,.60);
 
     z-index: 4000;
 
     display: none;
+
+    box-shadow:
+        0 12px 40px
+        rgba(0, 0, 0, .65);
+
+    transform:
+        translateX(-50%);
 }
+
 
 .comment-box.show {
     display: block;
 }
+
 
 .comment-title {
     color: #fff;
@@ -725,24 +796,34 @@ button {
     margin-bottom: 10px;
 }
 
+
 .comment-box textarea {
     width: 100%;
-    min-height: 80px;
+
+    min-height: 85px;
 
     resize: none;
 
     border: 0;
     outline: none;
 
-    border-radius: 8px;
+    border-radius: 9px;
 
-    padding: 10px;
+    padding: 11px;
 
     background: #fff;
     color: #111;
 
     font-size: 15px;
+
+    line-height: 20px;
 }
+
+
+.comment-box textarea::placeholder {
+    color: #777;
+}
+
 
 .comment-buttons {
     display: flex;
@@ -754,21 +835,26 @@ button {
     margin-top: 10px;
 }
 
+
 .comment-buttons button {
     border: 0;
+
     border-radius: 8px;
 
     padding: 9px 15px;
 
-    cursor: pointer;
-
+    font-size: 14px;
     font-weight: 600;
+
+    cursor: pointer;
 }
+
 
 #commentSend {
-    background: var(--accent);
+    background: #fe2c55;
     color: #fff;
 }
+
 
 #commentCancel {
     background: #555;
@@ -777,11 +863,38 @@ button {
 
 
 /* =========================================================
-   HIDDEN VIDEO INPUT
+   HIDDEN VIDEO UPLOAD INPUT
    ========================================================= */
 
 #videoUpload {
     display: none;
+}
+
+
+/* =========================================================
+   TOUCH SAFETY
+   ========================================================= */
+
+button,
+.wwc-nav-btn,
+.wwc-create-btn,
+.action-btn,
+.follow-btn {
+    -webkit-tap-highlight-color: transparent;
+
+    touch-action: manipulation;
+
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+
+/* =========================================================
+   VIDEO SAFETY
+   ========================================================= */
+
+video {
+    max-width: 100%;
 }
 
 
@@ -791,18 +904,20 @@ button {
 
 @media (max-width: 600px) {
 
-    :root {
-        --top-height: 58px;
-        --nav-height: 62px;
+    .wwc-top-bar {
+        height: 58px;
     }
+
 
     .wwc-top-tabs {
         gap: 18px;
     }
 
+
     .wwc-top-tab {
         font-size: 15px;
     }
+
 
     .wwc-search-btn {
         top: 8px;
@@ -810,7 +925,10 @@ button {
 
         width: 40px;
         height: 40px;
+
+        font-size: 20px;
     }
+
 
     .video-item .profile-area {
         right: 9px;
@@ -821,10 +939,12 @@ button {
         gap: 6px;
     }
 
+
     .video-item .profile-photo {
         width: 50px;
         height: 50px;
     }
+
 
     .video-item .follow-btn {
         width: 64px;
@@ -833,36 +953,47 @@ button {
         font-size: 11px;
     }
 
+
     .video-item .actions {
         right: 9px;
-        bottom: 78px;
+        bottom: 75px;
 
         width: 55px;
 
         gap: 9px;
     }
 
+
     .video-item .action-btn {
         width: 48px;
         height: 48px;
 
-        font-size: 22px;
+        font-size: 23px;
     }
+
 
     .video-info {
         left: 12px;
-        right: 74px;
-        bottom: 78px;
+        right: 73px;
+        bottom: 77px;
     }
+
 
     .video-info .username {
         font-size: 15px;
     }
 
+
     .video-caption {
         font-size: 13px;
         line-height: 18px;
     }
+
+
+    .wwc-bottom-nav {
+        height: 62px;
+    }
+
 
     .wwc-nav-btn {
         width: 54px;
@@ -871,9 +1002,11 @@ button {
         font-size: 10px;
     }
 
+
     .wwc-nav-btn span:first-child {
         font-size: 21px;
     }
+
 
     .wwc-create-btn {
         width: 50px;
@@ -882,9 +1015,9 @@ button {
         font-size: 26px;
     }
 
+
     .profile-menu {
-        bottom:
-            calc(68px + env(safe-area-inset-bottom));
+        bottom: 68px;
 
         width: calc(100% - 20px);
 
@@ -893,14 +1026,23 @@ button {
         padding: 14px;
     }
 
+
     .profile-menu-title {
         font-size: 18px;
     }
+
 
     .profile-menu-btn {
         min-height: 50px;
 
         font-size: 15px;
+    }
+
+
+    .comment-box {
+        bottom: 68px;
+
+        width: calc(100% - 20px);
     }
 }
 
@@ -911,15 +1053,29 @@ button {
 
 @media (max-width: 380px) {
 
+    .wwc-top-tabs {
+        gap: 14px;
+    }
+
+
+    .wwc-top-tab {
+        font-size: 14px;
+    }
+
+
     .video-item .profile-area {
-        right: 7px;
+        right: 6px;
         bottom: 325px;
     }
 
+
     .video-item .actions {
-        right: 7px;
-        gap: 8px;
+        right: 6px;
+        bottom: 73px;
+
+        gap: 7px;
     }
+
 
     .video-item .action-btn {
         width: 45px;
@@ -928,40 +1084,62 @@ button {
         font-size: 21px;
     }
 
+
     .video-info {
-        right: 68px;
+        left: 10px;
+        right: 67px;
     }
+
 
     .profile-menu {
         width: calc(100% - 14px);
+
+        bottom: 66px;
     }
 }
 
 
 /* =========================================================
-   ACCESSIBILITY / SAFETY
+   LARGE SCREEN
    ========================================================= */
 
-button:disabled {
-    opacity: .55;
-    cursor: not-allowed;
-}
+@media (min-width: 900px) {
 
-img {
-    max-width: 100%;
-}
+    .video-item .profile-area {
+        right: 25px;
+    }
 
-video {
-    max-width: 100%;
-}
 
-input,
-textarea {
-    -webkit-appearance: none;
-    appearance: none;
+    .video-item .actions {
+        right: 25px;
+    }
+
+
+    .video-info {
+        left: 25px;
+        right: 110px;
+    }
+
 }
 
 
 /* =========================================================
-   END OF WWC STYLE
+   SAFE AREA
+   ========================================================= */
+
+@supports (padding: env(safe-area-inset-bottom)) {
+
+    .wwc-bottom-nav {
+        padding-bottom:
+            calc(
+                4px +
+                env(safe-area-inset-bottom)
+            );
+    }
+
+}
+
+
+/* =========================================================
+   END OF STYLE.CSS
    ========================================================= */
