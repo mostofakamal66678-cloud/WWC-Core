@@ -1,7 +1,13 @@
 /* =========================================================
    WORLD WIDE CONNECT
    WWC-CORE
-   MAIN STYLE
+   FINAL MAIN STYLE
+   TikTok-style Vertical Video Feed
+   ========================================================= */
+
+
+/* =========================================================
+   RESET
    ========================================================= */
 
 * {
@@ -30,6 +36,10 @@ input {
     font-family: inherit;
 }
 
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
 
 /* =========================================================
    VIDEO FEED
@@ -37,13 +47,17 @@ input {
 
 #video-feed {
     position: fixed;
-    inset: 0;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 
     width: 100%;
     height: 100vh;
     height: 100dvh;
 
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
 
     background: #000;
@@ -95,6 +109,7 @@ input {
 
 .feed-video {
     position: absolute;
+
     inset: 0;
 
     width: 100%;
@@ -108,6 +123,8 @@ input {
 
     user-select: none;
     -webkit-user-select: none;
+
+    -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -133,22 +150,21 @@ input {
     background:
         linear-gradient(
             to bottom,
-            rgba(0, 0, 0, .80),
+            rgba(0, 0, 0, .78),
             rgba(0, 0, 0, .35),
-            transparent
+            rgba(0, 0, 0, 0)
         );
 
     pointer-events: none;
 }
 
-
 .wwc-top-tabs {
     display: flex;
+
     align-items: center;
 
     gap: 24px;
 }
-
 
 .wwc-top-tab {
     border: 0;
@@ -160,26 +176,17 @@ input {
     font-size: 16px;
     font-weight: 600;
 
-    padding: 8px 4px;
-
     cursor: pointer;
 
     pointer-events: auto;
 
-    transition:
-        color .2s ease,
-        transform .15s ease;
+    padding: 8px 4px;
 }
-
 
 .wwc-top-tab.active {
     color: #fff;
+
     font-weight: 700;
-}
-
-
-.wwc-top-tab:active {
-    transform: scale(.94);
 }
 
 
@@ -190,39 +197,38 @@ input {
 .wwc-search-btn {
     position: absolute;
 
-    top: 10px;
-    right: 14px;
+    right: 15px;
+    top: 11px;
 
-    width: 44px;
-    height: 44px;
+    width: 42px;
+    height: 42px;
 
     border: 0;
     border-radius: 50%;
 
-    background: rgba(0, 0, 0, .48);
+    background: rgba(0, 0, 0, .45);
 
     color: #fff;
 
     font-size: 21px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
     cursor: pointer;
 
     pointer-events: auto;
 
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     transition:
-        transform .15s ease,
-        background .2s ease;
+        background .15s ease,
+        transform .15s ease;
 }
 
 .wwc-search-btn:active {
-    transform: scale(.88);
+    transform: scale(.9);
+
+    background: rgba(255, 255, 255, .18);
 }
 
 
@@ -234,9 +240,9 @@ input {
     position: absolute;
 
     right: 15px;
-    bottom: 340px;
+    bottom: 350px;
 
-    width: 72px;
+    width: 70px;
 
     display: flex;
     flex-direction: column;
@@ -248,31 +254,38 @@ input {
 }
 
 
+/* =========================================================
+   PROFILE PHOTO
+   ========================================================= */
+
 .video-item .profile-photo {
-    width: 56px;
-    height: 56px;
+    width: 54px;
+    height: 54px;
 
     border: 2px solid #fff;
+
     border-radius: 50%;
 
     object-fit: cover;
 
-    background: #333;
+    background: #444;
 
     cursor: pointer;
 
-    box-shadow:
-        0 2px 10px rgba(0, 0, 0, .45);
+    user-select: none;
+    -webkit-user-select: none;
 
-    transition:
-        transform .15s ease;
+    transition: transform .15s ease;
 }
-
 
 .video-item .profile-photo:active {
     transform: scale(.9);
 }
 
+
+/* =========================================================
+   USERNAME
+   ========================================================= */
 
 .video-item .profile-area .username {
     width: 100%;
@@ -285,7 +298,9 @@ input {
     text-align: center;
 
     white-space: nowrap;
+
     overflow: hidden;
+
     text-overflow: ellipsis;
 
     text-shadow:
@@ -300,13 +315,14 @@ input {
    ========================================================= */
 
 .video-item .follow-btn {
-    width: 70px;
+    width: 68px;
     height: 32px;
 
     border: 0;
     border-radius: 18px;
 
     background: #fe2c55;
+
     color: #fff;
 
     font-size: 12px;
@@ -314,25 +330,21 @@ input {
 
     cursor: pointer;
 
-    box-shadow:
-        0 2px 8px rgba(0, 0, 0, .35);
-
     transition:
         transform .15s ease,
-        background .2s ease;
+        background .15s ease;
 }
-
 
 .video-item .follow-btn:active {
-    transform: scale(.91);
+    transform: scale(.92);
 }
 
-
 .video-item .follow-btn.following {
-    background: rgba(255, 255, 255, .18);
+    background: rgba(255, 255, 255, .20);
 
-    border: 1px solid
-        rgba(255, 255, 255, .65);
+    border: 1px solid rgba(255, 255, 255, .70);
+
+    color: #fff;
 }
 
 
@@ -343,8 +355,8 @@ input {
 .video-item .actions {
     position: absolute;
 
-    right: 14px;
-    bottom: 78px;
+    right: 15px;
+    bottom: 105px;
 
     width: 58px;
 
@@ -352,11 +364,15 @@ input {
     flex-direction: column;
     align-items: center;
 
-    gap: 11px;
+    gap: 14px;
 
     z-index: 60;
 }
 
+
+/* =========================================================
+   ACTION BUTTON
+   ========================================================= */
 
 .video-item .action-btn {
     width: 50px;
@@ -369,7 +385,7 @@ input {
 
     color: #fff;
 
-    font-size: 24px;
+    font-size: 25px;
 
     display: flex;
     flex-direction: column;
@@ -380,29 +396,41 @@ input {
 
     cursor: pointer;
 
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-
     transition:
         transform .15s ease,
-        background .2s ease;
+        background .15s ease;
 }
-
 
 .video-item .action-btn:active {
     transform: scale(.86);
 }
 
 
+/* =========================================================
+   LIKE
+   ========================================================= */
+
 .video-item .like-btn.liked {
     background: rgba(254, 44, 85, .88);
 }
 
+.video-item .like-btn.liked::first-letter {
+    color: #fff;
+}
+
+
+/* =========================================================
+   SAVE
+   ========================================================= */
 
 .video-item .save-btn.saved {
     background: rgba(255, 255, 255, .22);
 }
 
+
+/* =========================================================
+   ACTION COUNTS
+   ========================================================= */
 
 .like-count,
 .save-count {
@@ -425,36 +453,36 @@ input {
 .video-info {
     position: absolute;
 
-    left: 14px;
-    right: 82px;
-    bottom: 80px;
+    left: 15px;
+    right: 85px;
+    bottom: 105px;
 
     z-index: 40;
 
     pointer-events: none;
 
     text-shadow:
-        0 1px 5px #000;
+        0 1px 4px #000;
 }
-
 
 .video-info .username {
     color: #fff;
 
     font-size: 16px;
+
     font-weight: 700;
 
     margin-bottom: 7px;
 }
 
-
 .video-caption {
     color: #fff;
 
     font-size: 14px;
+
     line-height: 20px;
 
-    max-width: 92%;
+    max-width: 90%;
 }
 
 
@@ -475,23 +503,29 @@ input {
     z-index: 1000;
 
     display: flex;
+
     align-items: center;
     justify-content: space-around;
 
-    padding:
-        4px 7px
-        env(safe-area-inset-bottom);
+    padding: 5px 8px;
 
-    background:
-        rgba(0, 0, 0, .94);
+    background: rgba(0, 0, 0, .95);
 
     border-top:
         1px solid rgba(255, 255, 255, .08);
 
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(10px);
+
+    -webkit-backdrop-filter: blur(10px);
+
+    padding-bottom:
+        max(5px, env(safe-area-inset-bottom));
 }
 
+
+/* =========================================================
+   NAV BUTTON
+   ========================================================= */
 
 .wwc-nav-btn {
     width: 58px;
@@ -501,10 +535,11 @@ input {
 
     background: transparent;
 
-    color: rgba(255, 255, 255, .70);
+    color: rgba(255, 255, 255, .72);
 
     display: flex;
     flex-direction: column;
+
     align-items: center;
     justify-content: center;
 
@@ -514,27 +549,23 @@ input {
 
     cursor: pointer;
 
-    -webkit-tap-highlight-color: transparent;
-
     transition:
-        color .2s ease,
-        transform .15s ease;
+        transform .15s ease,
+        color .15s ease;
 }
-
-
-.wwc-nav-btn span:first-child {
-    font-size: 22px;
-    line-height: 23px;
-}
-
-
-.wwc-nav-btn.active {
-    color: #fff;
-}
-
 
 .wwc-nav-btn:active {
     transform: scale(.90);
+}
+
+.wwc-nav-btn span:first-child {
+    font-size: 22px;
+
+    line-height: 23px;
+}
+
+.wwc-nav-btn.active {
+    color: #fff;
 }
 
 
@@ -547,27 +578,30 @@ input {
     height: 38px;
 
     border: 0;
+
     border-radius: 10px;
 
     background: #fff;
+
     color: #000;
 
     font-size: 28px;
+
     line-height: 28px;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     cursor: pointer;
 
     box-shadow:
-        0 3px 12px rgba(0, 0, 0, .35);
+        0 2px 12px rgba(0, 0, 0, .35);
 
     transition:
         transform .15s ease;
 }
-
 
 .wwc-create-btn:active {
     transform: scale(.88);
@@ -582,6 +616,7 @@ input {
     position: fixed;
 
     left: 50%;
+
     bottom: 72px;
 
     width: min(92%, 360px);
@@ -593,8 +628,7 @@ input {
 
     padding: 16px;
 
-    background:
-        rgba(20, 20, 20, .98);
+    background: rgba(20, 20, 20, .98);
 
     border:
         1px solid rgba(255, 255, 255, .12);
@@ -602,12 +636,14 @@ input {
     border-radius: 20px;
 
     box-shadow:
-        0 12px 40px rgba(0, 0, 0, .65);
+        0 12px 40px rgba(0, 0, 0, .60);
 
     z-index: 3000;
 
     opacity: 0;
+
     visibility: hidden;
+
     pointer-events: none;
 
     transform:
@@ -615,18 +651,16 @@ input {
         translateY(20px);
 
     transition:
-        opacity .2s ease,
-        transform .2s ease,
-        visibility .2s ease;
+        opacity .20s ease,
+        transform .20s ease,
+        visibility .20s ease;
 
     scrollbar-width: none;
 }
 
-
 .profile-menu::-webkit-scrollbar {
     display: none;
 }
-
 
 .profile-menu.show {
     opacity: 1;
@@ -649,6 +683,7 @@ input {
     display: flex;
 
     align-items: center;
+
     justify-content: space-between;
 
     padding-bottom: 14px;
@@ -656,24 +691,23 @@ input {
     margin-bottom: 8px;
 
     border-bottom:
-        1px solid
-        rgba(255, 255, 255, .10);
+        1px solid rgba(255, 255, 255, .10);
 }
-
 
 .profile-menu-title {
     color: #fff;
 
     font-size: 20px;
+
     font-weight: 700;
 }
-
 
 .profile-menu-close {
     width: 36px;
     height: 36px;
 
     border: 0;
+
     border-radius: 50%;
 
     background:
@@ -686,13 +720,9 @@ input {
     cursor: pointer;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
-}
-
-
-.profile-menu-close:active {
-    transform: scale(.88);
 }
 
 
@@ -710,6 +740,7 @@ input {
     padding: 0 16px;
 
     border: 0;
+
     border-radius: 12px;
 
     background:
@@ -718,6 +749,7 @@ input {
     color: #fff;
 
     font-size: 16px;
+
     font-weight: 600;
 
     text-align: left;
@@ -725,18 +757,17 @@ input {
     cursor: pointer;
 
     display: flex;
+
     align-items: center;
 
     transition:
-        background .2s ease,
+        background .15s ease,
         transform .15s ease;
 }
-
 
 .profile-menu-btn:active {
     transform: scale(.98);
 }
-
 
 .profile-menu-btn.logout-menu-btn {
     background:
@@ -754,7 +785,11 @@ input {
     position: fixed;
 
     left: 50%;
-    bottom: 72px;
+
+    bottom: 70px;
+
+    transform:
+        translateX(-50%);
 
     width: min(92%, 420px);
 
@@ -764,54 +799,54 @@ input {
         rgba(20, 20, 20, .98);
 
     border:
-        1px solid
-        rgba(255, 255, 255, .10);
+        1px solid rgba(255, 255, 255, .10);
 
     border-radius: 16px;
+
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, .55);
 
     z-index: 4000;
 
     display: none;
-
-    box-shadow:
-        0 12px 40px
-        rgba(0, 0, 0, .65);
-
-    transform:
-        translateX(-50%);
 }
-
 
 .comment-box.show {
     display: block;
 }
 
-
 .comment-title {
     color: #fff;
 
     font-size: 18px;
-    font-weight: 700;
+
+    font-weight: bold;
 
     margin-bottom: 10px;
 }
 
 
+/* =========================================================
+   COMMENT INPUT
+   ========================================================= */
+
 .comment-box textarea {
     width: 100%;
 
-    min-height: 85px;
+    min-height: 80px;
 
     resize: none;
 
     border: 0;
+
     outline: none;
 
-    border-radius: 9px;
+    border-radius: 8px;
 
-    padding: 11px;
+    padding: 10px;
 
     background: #fff;
+
     color: #111;
 
     font-size: 15px;
@@ -819,11 +854,14 @@ input {
     line-height: 20px;
 }
 
-
 .comment-box textarea::placeholder {
     color: #777;
 }
 
+
+/* =========================================================
+   COMMENT BUTTONS
+   ========================================================= */
 
 .comment-buttons {
     display: flex;
@@ -835,7 +873,6 @@ input {
     margin-top: 10px;
 }
 
-
 .comment-buttons button {
     border: 0;
 
@@ -843,58 +880,34 @@ input {
 
     padding: 9px 15px;
 
-    font-size: 14px;
-    font-weight: 600;
-
     cursor: pointer;
-}
 
+    font-weight: 600;
+}
 
 #commentSend {
     background: #fe2c55;
+
     color: #fff;
 }
 
-
 #commentCancel {
     background: #555;
+
     color: #fff;
+}
+
+.comment-buttons button:active {
+    transform: scale(.94);
 }
 
 
 /* =========================================================
-   HIDDEN VIDEO UPLOAD INPUT
+   HIDDEN VIDEO INPUT
    ========================================================= */
 
 #videoUpload {
     display: none;
-}
-
-
-/* =========================================================
-   TOUCH SAFETY
-   ========================================================= */
-
-button,
-.wwc-nav-btn,
-.wwc-create-btn,
-.action-btn,
-.follow-btn {
-    -webkit-tap-highlight-color: transparent;
-
-    touch-action: manipulation;
-
-    user-select: none;
-    -webkit-user-select: none;
-}
-
-
-/* =========================================================
-   VIDEO SAFETY
-   ========================================================= */
-
-video {
-    max-width: 100%;
 }
 
 
@@ -920,18 +933,17 @@ video {
 
 
     .wwc-search-btn {
-        top: 8px;
-        right: 9px;
+        right: 10px;
+        top: 9px;
 
         width: 40px;
         height: 40px;
-
-        font-size: 20px;
     }
 
 
     .video-item .profile-area {
-        right: 9px;
+        right: 10px;
+
         bottom: 335px;
 
         width: 65px;
@@ -948,6 +960,7 @@ video {
 
     .video-item .follow-btn {
         width: 64px;
+
         height: 30px;
 
         font-size: 11px;
@@ -955,12 +968,13 @@ video {
 
 
     .video-item .actions {
-        right: 9px;
-        bottom: 75px;
+        right: 10px;
+
+        bottom: 78px;
 
         width: 55px;
 
-        gap: 9px;
+        gap: 10px;
     }
 
 
@@ -974,8 +988,10 @@ video {
 
     .video-info {
         left: 12px;
-        right: 73px;
-        bottom: 77px;
+
+        right: 75px;
+
+        bottom: 78px;
     }
 
 
@@ -986,6 +1002,7 @@ video {
 
     .video-caption {
         font-size: 13px;
+
         line-height: 18px;
     }
 
@@ -997,6 +1014,7 @@ video {
 
     .wwc-nav-btn {
         width: 54px;
+
         height: 54px;
 
         font-size: 10px;
@@ -1010,6 +1028,7 @@ video {
 
     .wwc-create-btn {
         width: 50px;
+
         height: 36px;
 
         font-size: 26px;
@@ -1019,7 +1038,8 @@ video {
     .profile-menu {
         bottom: 68px;
 
-        width: calc(100% - 20px);
+        width:
+            calc(100% - 20px);
 
         border-radius: 18px;
 
@@ -1042,8 +1062,10 @@ video {
     .comment-box {
         bottom: 68px;
 
-        width: calc(100% - 20px);
+        width:
+            calc(100% - 20px);
     }
+
 }
 
 
@@ -1053,32 +1075,23 @@ video {
 
 @media (max-width: 380px) {
 
-    .wwc-top-tabs {
-        gap: 14px;
-    }
-
-
-    .wwc-top-tab {
-        font-size: 14px;
-    }
-
-
     .video-item .profile-area {
-        right: 6px;
+        right: 7px;
+
         bottom: 325px;
     }
 
 
     .video-item .actions {
-        right: 6px;
-        bottom: 73px;
+        right: 7px;
 
-        gap: 7px;
+        gap: 8px;
     }
 
 
     .video-item .action-btn {
         width: 45px;
+
         height: 45px;
 
         font-size: 21px;
@@ -1086,38 +1099,15 @@ video {
 
 
     .video-info {
-        left: 10px;
-        right: 67px;
+        right: 68px;
     }
 
 
     .profile-menu {
-        width: calc(100% - 14px);
+        width:
+            calc(100% - 14px);
 
         bottom: 66px;
-    }
-}
-
-
-/* =========================================================
-   LARGE SCREEN
-   ========================================================= */
-
-@media (min-width: 900px) {
-
-    .video-item .profile-area {
-        right: 25px;
-    }
-
-
-    .video-item .actions {
-        right: 25px;
-    }
-
-
-    .video-info {
-        left: 25px;
-        right: 110px;
     }
 
 }
@@ -1132,7 +1122,7 @@ video {
     .wwc-bottom-nav {
         padding-bottom:
             calc(
-                4px +
+                5px +
                 env(safe-area-inset-bottom)
             );
     }
@@ -1141,5 +1131,30 @@ video {
 
 
 /* =========================================================
-   END OF STYLE.CSS
+   TOUCH SAFETY
+   ========================================================= */
+
+button,
+.wwc-nav-btn,
+.wwc-create-btn,
+.action-btn,
+.follow-btn {
+    touch-action: manipulation;
+}
+
+
+/* =========================================================
+   ACCESSIBILITY
+   ========================================================= */
+
+button:focus-visible {
+    outline:
+        2px solid #fff;
+
+    outline-offset: 2px;
+}
+
+
+/* =========================================================
+   END
    ========================================================= */
