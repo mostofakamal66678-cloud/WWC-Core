@@ -2,231 +2,1360 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>World wide connect - Register / Login</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta
+    name="theme-color"
+    content="#111318"
+  >
+
+  <title>WWC - Login / Register</title>
 
   <style>
+
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
     }
 
     body {
-      margin: 0;
       min-height: 100vh;
+      min-height: 100dvh;
+
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #111318;
+
+      padding: 20px;
+
+      background:
+        radial-gradient(
+          circle at top,
+          #252936 0%,
+          #111318 45%,
+          #08090c 100%
+        );
+
       color: #fff;
-      font-family: Arial, sans-serif;
+
+      font-family:
+        Arial,
+        sans-serif;
     }
+
+
+    /* =========================================
+       AUTH CARD
+    ========================================= */
 
     .auth-box {
-      width: 92%;
-      max-width: 420px;
+
+      width: 100%;
+      max-width: 430px;
+
       padding: 30px 22px;
-      background: #1d2027;
-      border-radius: 20px;
+
+      background: rgba(29,32,39,.96);
+
+      border:
+        1px solid rgba(255,255,255,.10);
+
+      border-radius: 22px;
+
+      box-shadow:
+        0 20px 60px rgba(0,0,0,.45);
+
       text-align: center;
-      box-shadow: 0 10px 35px rgba(0,0,0,.35);
     }
+
+
+    .logo {
+
+      width: 70px;
+      height: 70px;
+
+      margin: 0 auto 15px;
+
+      border-radius: 20px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      background: #fff;
+
+      color: #111;
+
+      font-size: 35px;
+
+      box-shadow:
+        0 8px 25px rgba(255,255,255,.12);
+    }
+
 
     h1 {
-      margin: 0 0 8px;
-      font-size: 28px;
+
+      margin-bottom: 7px;
+
+      font-size: 27px;
+      font-weight: 800;
     }
+
 
     .subtitle {
+
+      margin-bottom: 25px;
+
       color: #aaa;
-      margin-bottom: 28px;
+
+      font-size: 14px;
+      line-height: 20px;
     }
 
-    button {
+
+    /* =========================================
+       GOOGLE BUTTON
+    ========================================= */
+
+    #googleBtn {
+
       width: 100%;
+
       padding: 14px;
-      margin-top: 12px;
+
       border: 0;
+      border-radius: 11px;
+
+      background: #fff;
+
+      color: #222;
+
+      font-size: 15px;
+      font-weight: 700;
+
+      cursor: pointer;
+
+      transition:
+        transform .15s ease,
+        opacity .15s ease;
+    }
+
+
+    #googleBtn:active {
+
+      transform: scale(.98);
+    }
+
+
+    #googleBtn:disabled {
+
+      opacity: .55;
+
+      cursor: not-allowed;
+    }
+
+
+    /* =========================================
+       DIVIDER
+    ========================================= */
+
+    .divider {
+
+      display: flex;
+      align-items: center;
+
+      gap: 10px;
+
+      margin: 22px 0;
+
+      color: #777;
+
+      font-size: 12px;
+    }
+
+
+    .divider::before,
+    .divider::after {
+
+      content: "";
+
+      flex: 1;
+
+      height: 1px;
+
+      background: #333;
+    }
+
+
+    /* =========================================
+       FORM
+    ========================================= */
+
+    .form {
+
+      display: flex;
+
+      flex-direction: column;
+
+      gap: 12px;
+    }
+
+
+    .input-group {
+
+      text-align: left;
+    }
+
+
+    .input-group label {
+
+      display: block;
+
+      margin-bottom: 6px;
+
+      color: #ccc;
+
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+
+    .input-group input {
+
+      width: 100%;
+
+      padding: 13px 14px;
+
+      border:
+        1px solid #3a3d45;
+
       border-radius: 10px;
-      font-size: 16px;
-      font-weight: bold;
+
+      outline: none;
+
+      background: #14161b;
+
+      color: #fff;
+
+      font-size: 15px;
+
+      transition:
+        border-color .15s ease,
+        background .15s ease;
+    }
+
+
+    .input-group input:focus {
+
+      border-color: #777;
+
+      background: #181a20;
+    }
+
+
+    .input-group input::placeholder {
+
+      color: #666;
+    }
+
+
+    /* =========================================
+       MAIN AUTH BUTTON
+    ========================================= */
+
+    #authBtn {
+
+      width: 100%;
+
+      margin-top: 4px;
+
+      padding: 14px;
+
+      border: 0;
+
+      border-radius: 10px;
+
+      background: #4f46e5;
+
+      color: #fff;
+
+      font-size: 15px;
+      font-weight: 700;
+
+      cursor: pointer;
+
+      transition:
+        transform .15s ease,
+        opacity .15s ease;
+    }
+
+
+    #authBtn:active {
+
+      transform: scale(.98);
+    }
+
+
+    #authBtn:disabled {
+
+      opacity: .55;
+
+      cursor: not-allowed;
+    }
+
+
+    /* =========================================
+       MODE SWITCH
+    ========================================= */
+
+    .mode-text {
+
+      margin-top: 18px;
+
+      color: #999;
+
+      font-size: 13px;
+    }
+
+
+    #modeBtn {
+
+      border: 0;
+
+      background: transparent;
+
+      color: #fff;
+
+      font-weight: 700;
+
+      cursor: pointer;
+
+      text-decoration: underline;
+
+      margin-left: 4px;
+    }
+
+
+    /* =========================================
+       MESSAGE
+    ========================================= */
+
+    #message {
+
+      min-height: 24px;
+
+      margin-top: 17px;
+
+      color: #bbb;
+
+      font-size: 13px;
+
+      line-height: 19px;
+    }
+
+
+    #message.success {
+
+      color: #67e8a5;
+    }
+
+
+    #message.error {
+
+      color: #ff7188;
+    }
+
+
+    /* =========================================
+       BACK HOME
+    ========================================= */
+
+    .back-home {
+
+      display: inline-block;
+
+      margin-top: 18px;
+
+      color: #888;
+
+      font-size: 12px;
+
+      text-decoration: none;
+
       cursor: pointer;
     }
 
-    #googleBtn {
-      background: #fff;
-      color: #222;
-    }
 
-    #emailBtn {
-      background: #4f46e5;
+    .back-home:hover {
+
       color: #fff;
     }
 
-    #message {
-      min-height: 24px;
-      margin-top: 18px;
-      color: #bbb;
-      font-size: 14px;
+
+    /* =========================================
+       MOBILE
+    ========================================= */
+
+    @media (max-width: 480px) {
+
+      body {
+
+        padding: 12px;
+      }
+
+
+      .auth-box {
+
+        padding: 27px 18px;
+
+        border-radius: 19px;
+      }
+
+
+      h1 {
+
+        font-size: 24px;
+      }
+
+
+      .logo {
+
+        width: 62px;
+        height: 62px;
+
+        font-size: 31px;
+      }
+
     }
 
-    .small {
-      margin-top: 20px;
-      color: #888;
-      font-size: 13px;
-    }
   </style>
 </head>
 
+
 <body>
 
-  <div class="auth-box">
 
-    <h1>🌍 World wide connect</h1>
+  <main class="auth-box">
 
-    <div class="subtitle">
-      Register / Login করুন
+
+    <!-- LOGO -->
+
+    <div class="logo">
+      🌍
     </div>
 
-    <button type="button" id="googleBtn">
+
+    <h1>
+      World Wide Connect
+    </h1>
+
+
+    <div
+      id="subtitle"
+      class="subtitle"
+    >
+      আপনার WWC Account-এ Login করুন
+    </div>
+
+
+    <!-- GOOGLE -->
+
+    <button
+      id="googleBtn"
+      type="button"
+    >
       Continue with Google
     </button>
 
-    <button type="button" id="emailBtn">
-      Email / Password
-    </button>
 
-    <div id="message"></div>
+    <!-- DIVIDER -->
 
-    <div class="small">
-      Google দিয়ে দ্রুত ও সহজে অ্যাকাউন্ট তৈরি করুন।
+    <div class="divider">
+      অথবা
     </div>
 
-  </div>
+
+    <!-- EMAIL FORM -->
+
+    <form
+      id="authForm"
+      class="form"
+    >
+
+
+      <div class="input-group">
+
+        <label for="email">
+          Email
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          placeholder="আপনার Email লিখুন"
+          autocomplete="email"
+          required
+        >
+
+      </div>
+
+
+      <div class="input-group">
+
+        <label for="password">
+          Password
+        </label>
+
+        <input
+          id="password"
+          type="password"
+          placeholder="কমপক্ষে ৬ অক্ষর"
+          autocomplete="current-password"
+          minlength="6"
+          required
+        >
+
+      </div>
+
+
+      <!-- REGISTER NAME -->
+
+      <div
+        id="nameGroup"
+        class="input-group"
+        style="display:none;"
+      >
+
+        <label for="name">
+          Name
+        </label>
+
+        <input
+          id="name"
+          type="text"
+          placeholder="আপনার নাম"
+          autocomplete="name"
+          maxlength="50"
+        >
+
+      </div>
+
+
+      <button
+        id="authBtn"
+        type="submit"
+      >
+        Login
+      </button>
+
+    </form>
+
+
+    <!-- MODE -->
+
+    <div class="mode-text">
+
+      <span id="modeText">
+        নতুন Account তৈরি করতে চান?
+      </span>
+
+      <button
+        id="modeBtn"
+        type="button"
+      >
+        Register
+      </button>
+
+    </div>
+
+
+    <!-- MESSAGE -->
+
+    <div
+      id="message"
+      aria-live="polite"
+    ></div>
+
+
+    <!-- BACK -->
+
+    <a
+      class="back-home"
+      href="./index.html"
+    >
+      ← Home-এ ফিরে যান
+    </a>
+
+
+  </main>
+
+
+
+  <!-- =====================================================
+       FIREBASE AUTH
+  ====================================================== -->
 
   <script type="module">
 
     import {
       getApps,
       initializeApp
-    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    } from
+    "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
 
     import {
       getAuth,
       GoogleAuthProvider,
       signInWithPopup,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      updateProfile,
       setPersistence,
       browserLocalPersistence
-    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+    } from
+    "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
 
-    // ================================
-    // FIREBASE CONFIG
-    // ================================
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc
+    } from
+    "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+
+    /* =========================================
+       FIREBASE CONFIG
+    ========================================= */
 
     const firebaseConfig = {
-      apiKey: "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
-      authDomain: "world-wide-connect-62c87.firebaseapp.com",
-      projectId: "world-wide-connect-62c87",
-      storageBucket: "world-wide-connect-62c87.firebasestorage.app",
-      messagingSenderId: "93178453668",
-      appId: "1:93178453668:web:2184630caa8e61f7445031",
-      measurementId: "G-PKFJ5NEMGQ"
+
+      apiKey:
+        "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
+
+      authDomain:
+        "world-wide-connect-62c87.firebaseapp.com",
+
+      projectId:
+        "world-wide-connect-62c87",
+
+      storageBucket:
+        "world-wide-connect-62c87.firebasestorage.app",
+
+      messagingSenderId:
+        "93178453668",
+
+      appId:
+        "1:93178453668:web:2184630caa8e61f7445031",
+
+      measurementId:
+        "G-PKFJ5NEMGQ"
+
     };
 
 
-    // ================================
-    // FIREBASE START
-    // ================================
+    /* =========================================
+       FIREBASE START
+    ========================================= */
 
-    const app = getApps().length
-      ? getApps()[0]
-      : initializeApp(firebaseConfig);
-
-    const auth = getAuth(app);
-
-    const provider = new GoogleAuthProvider();
-
-    const googleBtn = document.getElementById("googleBtn");
-    const emailBtn = document.getElementById("emailBtn");
-    const message = document.getElementById("message");
+    const app =
+      getApps().length
+        ? getApps()[0]
+        : initializeApp(firebaseConfig);
 
 
-    // ================================
-    // AUTH PERSISTENCE
-    // ================================
-
-    await setPersistence(
-      auth,
-      browserLocalPersistence
-    );
+    const auth =
+      getAuth(app);
 
 
-    // ================================
-    // EMAIL / PASSWORD PAGE
-    // ================================
-
-    emailBtn.addEventListener("click", () => {
-
-      window.location.href = "./login.html";
-
-    });
+    const db =
+      getFirestore(app);
 
 
-    // ================================
-    // GOOGLE LOGIN
-    // ================================
+    const googleProvider =
+      new GoogleAuthProvider();
 
-    googleBtn.addEventListener("click", async () => {
 
-      googleBtn.disabled = true;
+    /* =========================================
+       ELEMENTS
+    ========================================= */
 
-      message.textContent =
-        "Google Sign-In শুরু হচ্ছে...";
+    const googleBtn =
+      document.getElementById("googleBtn");
+
+    const authForm =
+      document.getElementById("authForm");
+
+    const authBtn =
+      document.getElementById("authBtn");
+
+    const modeBtn =
+      document.getElementById("modeBtn");
+
+    const modeText =
+      document.getElementById("modeText");
+
+    const subtitle =
+      document.getElementById("subtitle");
+
+    const message =
+      document.getElementById("message");
+
+    const nameGroup =
+      document.getElementById("nameGroup");
+
+    const nameInput =
+      document.getElementById("name");
+
+    const emailInput =
+      document.getElementById("email");
+
+    const passwordInput =
+      document.getElementById("password");
+
+
+    /* =========================================
+       STATE
+    ========================================= */
+
+    let registerMode = false;
+
+
+    /* =========================================
+       AUTH PERSISTENCE
+    ========================================= */
+
+    try {
+
+      await setPersistence(
+        auth,
+        browserLocalPersistence
+      );
+
+    } catch (error) {
+
+      console.error(
+        "Persistence error:",
+        error
+      );
+
+    }
+
+
+    /* =========================================
+       MESSAGE HELPER
+    ========================================= */
+
+    function showMessage(
+      text,
+      type = ""
+    ) {
+
+      message.textContent = text;
+
+      message.className = type;
+    }
+
+
+    /* =========================================
+       USER PROFILE
+    ========================================= */
+
+    async function createUserProfile(
+      user,
+      extraData = {}
+    ) {
 
       try {
 
-        await signInWithPopup(
-          auth,
-          provider
+        const userRef =
+          doc(
+            db,
+            "users",
+            user.uid
+          );
+
+
+        const existing =
+          await getDoc(userRef);
+
+
+        if (existing.exists()) {
+
+          return;
+        }
+
+
+        let username =
+          extraData.username
+          || user.displayName
+          || "wwc_user";
+
+
+        username =
+          String(username)
+            .toLowerCase()
+            .trim()
+            .replace(
+              /[^a-z0-9_]/g,
+              "_"
+            )
+            .replace(
+              /^_+|_+$/g,
+              ""
+            );
+
+
+        if (!username) {
+
+          username =
+            "wwc_user";
+        }
+
+
+        username =
+          username +
+          "_" +
+          user.uid.substring(0, 6);
+
+
+        await setDoc(
+          userRef,
+          {
+
+            uid:
+              user.uid,
+
+            name:
+              extraData.name
+              || user.displayName
+              || "WWC User",
+
+            username:
+              username,
+
+            email:
+              user.email || "",
+
+            photoURL:
+              user.photoURL
+              || "./images/profile.png",
+
+            bio:
+              "Welcome to World Wide Connect 🌍",
+
+            followers:
+              0,
+
+            following:
+              0,
+
+            likes:
+              0,
+
+            followerIds:
+              [],
+
+            followingIds:
+              [],
+
+            createdAt:
+              new Date().toISOString()
+
+          }
         );
 
-        message.textContent =
-          "✅ Google Login সফল হয়েছে!";
-
-        setTimeout(() => {
-
-          window.location.href = "./index.html";
-
-        }, 700);
 
       } catch (error) {
 
         console.error(
-          "Google Login Error:",
+          "Profile creation error:",
           error
         );
 
-        googleBtn.disabled = false;
+        /*
+         * Login/Register সফল হলেও
+         * profile তৈরির error-এর জন্য
+         * পুরো login বন্ধ করা হবে না।
+         */
 
-        if (
-          error.code ===
-          "auth/popup-closed-by-user"
-        ) {
+      }
 
-          message.textContent =
-            "⚠️ Google Login বন্ধ করা হয়েছে।";
+    }
 
-        } else {
 
-          message.textContent =
-            "❌ Google Login ব্যর্থ হয়েছে। আবার চেষ্টা করুন।";
+    /* =========================================
+       REDIRECT
+    ========================================= */
+
+    function goHome() {
+
+      window.location.replace(
+        "./index.html"
+      );
+
+    }
+
+
+    /* =========================================
+       GOOGLE LOGIN
+    ========================================= */
+
+    googleBtn.addEventListener(
+      "click",
+      async () => {
+
+        googleBtn.disabled = true;
+        authBtn.disabled = true;
+        modeBtn.disabled = true;
+
+        showMessage(
+          "⏳ Google Login শুরু হচ্ছে..."
+        );
+
+
+        try {
+
+          const result =
+            await signInWithPopup(
+              auth,
+              googleProvider
+            );
+
+
+          await createUserProfile(
+            result.user
+          );
+
+
+          showMessage(
+            "✅ Google Login সফল হয়েছে।",
+            "success"
+          );
+
+
+          setTimeout(
+            goHome,
+            500
+          );
+
+
+        } catch (error) {
+
+          console.error(
+            "Google Login Error:",
+            error
+          );
+
+
+          googleBtn.disabled = false;
+          authBtn.disabled = false;
+          modeBtn.disabled = false;
+
+
+          showMessage(
+            getFirebaseErrorMessage(
+              error
+            ),
+            "error"
+          );
 
         }
 
       }
+    );
 
-    });
+
+    /* =========================================
+       LOGIN / REGISTER MODE
+    ========================================= */
+
+    modeBtn.addEventListener(
+      "click",
+      () => {
+
+        registerMode =
+          !registerMode;
+
+
+        if (registerMode) {
+
+          nameGroup.style.display =
+            "block";
+
+          nameInput.required =
+            true;
+
+          passwordInput.autocomplete =
+            "new-password";
+
+          authBtn.textContent =
+            "Create Account";
+
+          modeText.textContent =
+            "আগে থেকেই Account আছে?";
+
+          modeBtn.textContent =
+            "Login";
+
+          subtitle.textContent =
+            "নতুন WWC Account তৈরি করুন";
+
+
+        } else {
+
+          nameGroup.style.display =
+            "none";
+
+          nameInput.required =
+            false;
+
+          passwordInput.autocomplete =
+            "current-password";
+
+          authBtn.textContent =
+            "Login";
+
+          modeText.textContent =
+            "নতুন Account তৈরি করতে চান?";
+
+          modeBtn.textContent =
+            "Register";
+
+          subtitle.textContent =
+            "আপনার WWC Account-এ Login করুন";
+
+        }
+
+
+        showMessage("");
+
+      }
+    );
+
+
+    /* =========================================
+       EMAIL AUTH
+    ========================================= */
+
+    authForm.addEventListener(
+      "submit",
+      async (event) => {
+
+        event.preventDefault();
+
+
+        const email =
+          emailInput.value
+            .trim();
+
+
+        const password =
+          passwordInput.value;
+
+
+        const name =
+          nameInput.value
+            .trim();
+
+
+        if (!email) {
+
+          showMessage(
+            "⚠️ Email লিখুন।",
+            "error"
+          );
+
+          return;
+        }
+
+
+        if (
+          password.length < 6
+        ) {
+
+          showMessage(
+            "⚠️ Password কমপক্ষে ৬ অক্ষরের হতে হবে।",
+            "error"
+          );
+
+          return;
+        }
+
+
+        if (
+          registerMode &&
+          !name
+        ) {
+
+          showMessage(
+            "⚠️ আপনার নাম লিখুন।",
+            "error"
+          );
+
+          return;
+        }
+
+
+        authBtn.disabled = true;
+        googleBtn.disabled = true;
+        modeBtn.disabled = true;
+
+
+        if (registerMode) {
+
+          showMessage(
+            "⏳ Account তৈরি হচ্ছে..."
+          );
+
+        } else {
+
+          showMessage(
+            "⏳ Login হচ্ছে..."
+          );
+
+        }
+
+
+        try {
+
+          if (registerMode) {
+
+            /* =================================
+               CREATE ACCOUNT
+            ================================= */
+
+            const result =
+              await createUserWithEmailAndPassword(
+                auth,
+                email,
+                password
+              );
+
+
+            /* =================================
+               UPDATE DISPLAY NAME
+            ================================= */
+
+            await updateProfile(
+              result.user,
+              {
+                displayName: name
+              }
+            );
+
+
+            /* =================================
+               CREATE FIRESTORE PROFILE
+            ================================= */
+
+            await createUserProfile(
+              result.user,
+              {
+                name: name
+              }
+            );
+
+
+            showMessage(
+              "✅ Account সফলভাবে তৈরি হয়েছে।",
+              "success"
+            );
+
+
+          } else {
+
+            /* =================================
+               LOGIN
+            ================================= */
+
+            const result =
+              await signInWithEmailAndPassword(
+                auth,
+                email,
+                password
+              );
+
+
+            /* =================================
+               ENSURE PROFILE EXISTS
+            ================================= */
+
+            await createUserProfile(
+              result.user
+            );
+
+
+            showMessage(
+              "✅ Login সফল হয়েছে।",
+              "success"
+            );
+
+          }
+
+
+          /* =================================
+             GO HOME
+          ================================= */
+
+          setTimeout(
+            goHome,
+            600
+          );
+
+
+        } catch (error) {
+
+          console.error(
+            "Email Auth Error:",
+            error
+          );
+
+
+          authBtn.disabled = false;
+          googleBtn.disabled = false;
+          modeBtn.disabled = false;
+
+
+          showMessage(
+            getFirebaseErrorMessage(
+              error
+            ),
+            "error"
+          );
+
+        }
+
+      }
+    );
+
+
+    /* =========================================
+       FIREBASE ERROR MESSAGE
+    ========================================= */
+
+    function getFirebaseErrorMessage(
+      error
+    ) {
+
+      const code =
+        error?.code || "";
+
+
+      switch (code) {
+
+        case "auth/email-already-in-use":
+
+          return "❌ এই Email দিয়ে আগে থেকেই Account আছে।";
+
+
+        case "auth/invalid-email":
+
+          return "❌ Email address সঠিক নয়।";
+
+
+        case "auth/weak-password":
+
+          return "❌ Password আরও শক্তিশালী দিন।";
+
+
+        case "auth/invalid-credential":
+
+          return "❌ Email অথবা Password ভুল।";
+
+
+        case "auth/user-not-found":
+
+          return "❌ এই Email দিয়ে কোনো Account পাওয়া যায়নি।";
+
+
+        case "auth/wrong-password":
+
+          return "❌ Password ভুল।";
+
+
+        case "auth/popup-closed-by-user":
+
+          return "⚠️ Google Login বন্ধ করা হয়েছে।";
+
+
+        case "auth/popup-blocked":
+
+          return "❌ Browser Google Login popup বন্ধ করে দিয়েছে।";
+
+
+        case "auth/unauthorized-domain":
+
+          return "❌ এই Website Domain Firebase Authentication-এ অনুমোদিত নয়।";
+
+
+        case "auth/operation-not-allowed":
+
+          return "❌ Firebase Console-এ এই Login Method চালু করা নেই।";
+
+
+        case "auth/network-request-failed":
+
+          return "❌ Internet connection পরীক্ষা করুন।";
+
+
+        case "auth/too-many-requests":
+
+          return "⚠️ অনেকবার চেষ্টা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।";
+
+
+        default:
+
+          return (
+            "❌ Login/Register ব্যর্থ হয়েছে।"
+          );
+
+      }
+
+    }
+
+
+    /* =========================================
+       ENTER KEY / ESCAPE
+    ========================================= */
+
+    document.addEventListener(
+      "keydown",
+      event => {
+
+        if (
+          event.key === "Escape"
+        ) {
+
+          window.location.href =
+            "./index.html";
+
+        }
+
+      }
+    );
+
+
+    /* =========================================
+       LOG
+    ========================================= */
+
+    console.log(
+      "🌍 WWC Auth System loaded"
+    );
 
   </script>
 
