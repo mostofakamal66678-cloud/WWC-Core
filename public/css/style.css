@@ -1,39 +1,50 @@
 /* =========================================================
    WORLD WIDE CONNECT
    WWC-CORE
-   MAIN VIDEO FEED STYLE
+   MAIN STYLE
    ========================================================= */
 
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --bg: #000;
+    --card: #151515;
+    --text: #fff;
+    --muted: #aaa;
+    --border: rgba(255,255,255,.12);
+    --accent: #fe2c55;
+    --nav-height: 64px;
+    --top-height: 60px;
 }
 
 html,
 body {
-  width: 100%;
-  height: 100%;
-  background: #000;
-  color: #fff;
-  font-family: Arial, sans-serif;
-  overflow: hidden;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+    overflow: hidden;
 }
 
 body {
-  overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
 }
 
 button,
+input,
 textarea,
-input {
-  font-family: inherit;
+select {
+    font-family: inherit;
 }
 
 button {
-  -webkit-tap-highlight-color: transparent;
+    -webkit-tap-highlight-color: transparent;
 }
-
 
 
 /* =========================================================
@@ -41,32 +52,30 @@ button {
    ========================================================= */
 
 #video-feed {
-  position: fixed;
-  inset: 0;
+    position: fixed;
+    inset: 0;
 
-  width: 100%;
-  height: 100vh;
-  height: 100dvh;
+    width: 100%;
+    height: 100%;
+    height: 100dvh;
 
-  overflow-y: auto;
-  overflow-x: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 
-  background: #000;
+    background: #000;
 
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
 
-  scrollbar-width: none;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
 
-  -webkit-overflow-scrolling: touch;
-
-  touch-action: pan-y;
-
-  overscroll-behavior-y: contain;
+    overscroll-behavior-y: contain;
+    touch-action: pan-y;
 }
 
 #video-feed::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 
@@ -75,23 +84,23 @@ button {
    ========================================================= */
 
 .video-item {
-  position: relative;
+    position: relative;
 
-  width: 100%;
-  height: 100vh;
-  height: 100dvh;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
 
-  min-height: 100vh;
-  min-height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
 
-  overflow: hidden;
+    overflow: hidden;
 
-  background: #000;
+    background: #000;
 
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
 
-  touch-action: pan-y;
+    touch-action: pan-y;
 }
 
 
@@ -100,45 +109,45 @@ button {
    ========================================================= */
 
 .feed-video {
-  position: absolute;
-  inset: 0;
+    position: absolute;
+    inset: 0;
 
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 
-  object-fit: cover;
+    object-fit: cover;
 
-  background: #000;
+    background: #000;
 
-  z-index: 1;
+    z-index: 1;
 
-  user-select: none;
-  -webkit-user-select: none;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 
 /* =========================================================
-   DARK VIDEO OVERLAY
+   VIDEO DARK GRADIENT
    ========================================================= */
 
 .video-item::after {
-  content: "";
+    content: "";
 
-  position: absolute;
-  inset: 0;
+    position: absolute;
+    inset: 0;
 
-  z-index: 2;
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0,0,0,.55),
+            transparent 18%,
+            transparent 60%,
+            rgba(0,0,0,.65)
+        );
 
-  pointer-events: none;
+    pointer-events: none;
 
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(0,0,0,.35),
-      transparent 18%,
-      transparent 65%,
-      rgba(0,0,0,.55)
-    );
+    z-index: 2;
 }
 
 
@@ -147,110 +156,82 @@ button {
    ========================================================= */
 
 .wwc-top-bar {
-  position: fixed;
+    position: fixed;
 
-  top: 0;
-  left: 0;
-  right: 0;
+    top: 0;
+    left: 0;
 
-  height: 64px;
+    width: 100%;
+    height: var(--top-height);
 
-  z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    z-index: 500;
 
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(0,0,0,.75),
-      rgba(0,0,0,0)
-    );
-
-  pointer-events: none;
+    pointer-events: none;
 }
 
 .wwc-top-tabs {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 
-  gap: 24px;
+    gap: 24px;
 }
 
 .wwc-top-tab {
-  border: 0;
-  outline: none;
+    border: 0;
+    outline: none;
 
-  background: transparent;
+    background: transparent;
 
-  color: rgba(255,255,255,.65);
+    color: rgba(255,255,255,.65);
 
-  font-size: 16px;
-  font-weight: 600;
+    font-size: 16px;
+    font-weight: 600;
 
-  cursor: pointer;
+    padding: 8px 4px;
 
-  pointer-events: auto;
+    cursor: pointer;
 
-  padding: 8px 4px;
-
-  transition:
-    color .2s ease,
-    transform .15s ease;
-}
-
-.wwc-top-tab:active {
-  transform: scale(.94);
+    pointer-events: auto;
 }
 
 .wwc-top-tab.active {
-  color: #fff;
-  font-weight: 700;
+    color: #fff;
+    font-weight: 700;
 }
 
-
-/* =========================================================
-   SEARCH
-   ========================================================= */
-
 .wwc-search-btn {
-  position: absolute;
+    position: absolute;
 
-  right: 15px;
-  top: 10px;
+    top: 9px;
+    right: 12px;
 
-  width: 44px;
-  height: 44px;
+    width: 42px;
+    height: 42px;
 
-  border: 0;
-  border-radius: 50%;
+    border: 0;
+    border-radius: 50%;
 
-  background: rgba(0,0,0,.45);
+    background: rgba(0,0,0,.45);
 
-  color: #fff;
+    color: #fff;
 
-  font-size: 21px;
+    font-size: 21px;
 
-  cursor: pointer;
+    cursor: pointer;
 
-  pointer-events: auto;
+    pointer-events: auto;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  transition:
-    transform .15s ease,
-    background .2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .wwc-search-btn:active {
-  transform: scale(.88);
-}
-
-.wwc-search-btn:hover {
-  background: rgba(255,255,255,.15);
+    transform: scale(.92);
 }
 
 
@@ -259,126 +240,89 @@ button {
    ========================================================= */
 
 .video-item .profile-area {
-  position: absolute;
+    position: absolute;
 
-  right: 15px;
-  bottom: 345px;
+    right: 14px;
+    bottom: 350px;
 
-  width: 70px;
+    width: 70px;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-  gap: 7px;
+    gap: 7px;
 
-  z-index: 100;
+    z-index: 50;
 }
 
+.video-item .profile-photo {
+    width: 54px;
+    height: 54px;
 
-/* =========================================================
-   PROFILE BUTTON
-   ========================================================= */
+    border-radius: 50%;
 
-.video-profile-btn {
-  width: 58px;
-  height: 58px;
+    border: 2px solid #fff;
 
-  padding: 0;
+    object-fit: cover;
 
-  border: 2px solid #fff;
-  border-radius: 50%;
+    background: #333;
 
-  background: #333;
+    cursor: pointer;
 
-  overflow: hidden;
-
-  cursor: pointer;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  transition:
-    transform .15s ease;
+    box-shadow:
+        0 2px 10px rgba(0,0,0,.5);
 }
 
-.video-profile-btn:active {
-  transform: scale(.88);
+.video-item .profile-area .username {
+    width: 100%;
+
+    color: #fff;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    text-align: center;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    text-shadow:
+        0 1px 4px #000;
+
+    cursor: pointer;
 }
-
-.video-profile-btn .profile-photo {
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-
-  display: block;
-}
-
-
-/* =========================================================
-   VIDEO USERNAME
-   ========================================================= */
-
-.video-username-btn {
-  width: 100%;
-
-  padding: 0;
-
-  border: 0;
-  background: transparent;
-
-  color: #fff;
-
-  font-size: 12px;
-  font-weight: 700;
-
-  text-align: center;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  text-shadow: 0 1px 4px #000;
-
-  cursor: pointer;
-}
-
-
-/* =========================================================
-   FOLLOW BUTTON
-   ========================================================= */
 
 .video-item .follow-btn {
-  width: 68px;
-  height: 32px;
+    width: 68px;
+    height: 32px;
 
-  border: 0;
-  border-radius: 18px;
+    border: 0;
+    border-radius: 18px;
 
-  background: #fe2c55;
+    background: var(--accent);
 
-  color: #fff;
+    color: #fff;
 
-  font-size: 12px;
-  font-weight: 700;
+    font-size: 12px;
+    font-weight: 700;
 
-  cursor: pointer;
+    cursor: pointer;
 
-  transition:
-    transform .15s ease,
-    background .2s ease;
+    transition:
+        transform .15s ease,
+        background .15s ease;
 }
 
 .video-item .follow-btn:active {
-  transform: scale(.90);
+    transform: scale(.92);
 }
 
 .video-item .follow-btn.following {
-  background: rgba(255,255,255,.20);
+    background: rgba(255,255,255,.20);
 
-  border: 1px solid rgba(255,255,255,.7);
+    border: 1px solid rgba(255,255,255,.75);
 }
 
 
@@ -387,85 +331,71 @@ button {
    ========================================================= */
 
 .video-item .actions {
-  position: absolute;
+    position: absolute;
 
-  right: 15px;
-  bottom: 105px;
+    right: 14px;
+    bottom: 105px;
 
-  width: 58px;
+    width: 58px;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-  gap: 13px;
+    gap: 13px;
 
-  z-index: 120;
+    z-index: 60;
 }
 
-
-/* =========================================================
-   ACTION BUTTON
-   ========================================================= */
-
 .video-item .action-btn {
-  width: 52px;
-  height: 52px;
+    width: 50px;
+    height: 50px;
 
-  border: 0;
-  border-radius: 50%;
+    border: 0;
+    border-radius: 50%;
 
-  background: rgba(0,0,0,.40);
+    background: rgba(0,0,0,.42);
 
-  color: #fff;
+    color: #fff;
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+    font-size: 24px;
 
-  gap: 1px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
-  font-size: 24px;
+    gap: 1px;
 
-  cursor: pointer;
+    cursor: pointer;
 
-  transition:
-    transform .15s ease,
-    background .2s ease;
+    transition:
+        transform .15s ease,
+        background .15s ease;
 }
 
 .video-item .action-btn:active {
-  transform: scale(.86);
+    transform: scale(.86);
 }
 
-.action-icon {
-  line-height: 25px;
+.video-item .like-btn.liked {
+    background: rgba(254,44,85,.88);
 }
 
-.like-btn.liked {
-  background: rgba(254,44,85,.85);
-}
-
-.save-btn.saved {
-  background: rgba(255,255,255,.25);
+.video-item .save-btn.saved {
+    background: rgba(255,255,255,.25);
 }
 
 .like-count,
-.comment-count,
 .save-count {
-  color: #fff;
+    color: #fff;
 
-  font-size: 11px;
-  line-height: 12px;
+    font-size: 11px;
+    line-height: 12px;
+    font-weight: 600;
 
-  font-weight: 600;
-
-  text-shadow: 0 1px 3px #000;
-}
-
-.share-label {
-  display: none;
+    text-shadow:
+        0 1px 3px #000;
 }
 
 
@@ -474,55 +404,36 @@ button {
    ========================================================= */
 
 .video-info {
-  position: absolute;
+    position: absolute;
 
-  left: 15px;
-  right: 85px;
-  bottom: 105px;
+    left: 14px;
+    right: 82px;
+    bottom: 105px;
 
-  z-index: 100;
+    z-index: 40;
 
-  pointer-events: auto;
+    pointer-events: none;
 
-  text-shadow: 0 1px 4px #000;
+    text-shadow:
+        0 1px 4px #000;
 }
 
-.video-info-username {
-  display: block;
+.video-info .username {
+    color: #fff;
 
-  padding: 0;
+    font-size: 16px;
+    font-weight: 700;
 
-  margin-bottom: 7px;
-
-  border: 0;
-
-  background: transparent;
-
-  color: #fff;
-
-  font-size: 16px;
-  font-weight: 700;
-
-  cursor: pointer;
-
-  text-align: left;
+    margin-bottom: 7px;
 }
 
 .video-caption {
-  color: #fff;
+    color: #fff;
 
-  font-size: 14px;
-  line-height: 20px;
+    font-size: 14px;
+    line-height: 20px;
 
-  max-width: 90%;
-
-  margin-bottom: 5px;
-}
-
-.video-music {
-  color: rgba(255,255,255,.85);
-
-  font-size: 12px;
+    max-width: 92%;
 }
 
 
@@ -531,74 +442,70 @@ button {
    ========================================================= */
 
 .wwc-bottom-nav {
-  position: fixed;
+    position: fixed;
 
-  left: 0;
-  right: 0;
-  bottom: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 
-  width: 100%;
-  height: 64px;
+    width: 100%;
+    height: var(--nav-height);
 
-  z-index: 1000;
+    z-index: 1000;
 
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
 
-  padding: 5px 8px;
+    padding:
+        5px
+        max(8px, env(safe-area-inset-left))
+        calc(5px + env(safe-area-inset-bottom))
+        max(8px, env(safe-area-inset-right));
 
-  background: rgba(0,0,0,.94);
+    background: rgba(0,0,0,.94);
 
-  border-top:
-    1px solid rgba(255,255,255,.08);
+    border-top:
+        1px solid rgba(255,255,255,.08);
 
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
-
-
-/* =========================================================
-   NAV BUTTON
-   ========================================================= */
 
 .wwc-nav-btn {
-  width: 58px;
-  height: 54px;
+    width: 58px;
+    height: 54px;
 
-  border: 0;
+    border: 0;
+    outline: none;
 
-  background: transparent;
+    background: transparent;
 
-  color: rgba(255,255,255,.72);
+    color: rgba(255,255,255,.70);
 
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
-  gap: 3px;
+    gap: 3px;
 
-  font-size: 11px;
+    font-size: 11px;
 
-  cursor: pointer;
-
-  transition:
-    color .2s ease,
-    transform .15s ease;
-}
-
-.wwc-nav-btn:active {
-  transform: scale(.90);
+    cursor: pointer;
 }
 
 .wwc-nav-btn span:first-child {
-  font-size: 22px;
-  line-height: 23px;
+    font-size: 21px;
+    line-height: 23px;
 }
 
 .wwc-nav-btn.active {
-  color: #fff;
+    color: #fff;
+}
+
+.wwc-nav-btn:active {
+    transform: scale(.94);
 }
 
 
@@ -607,31 +514,30 @@ button {
    ========================================================= */
 
 .wwc-create-btn {
-  width: 52px;
-  height: 38px;
+    width: 52px;
+    height: 38px;
 
-  border: 0;
-  border-radius: 10px;
+    border: 0;
+    border-radius: 10px;
 
-  background: #fff;
+    background: #fff;
+    color: #000;
 
-  color: #000;
+    font-size: 28px;
+    line-height: 28px;
 
-  font-size: 28px;
-  line-height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    cursor: pointer;
 
-  cursor: pointer;
-
-  transition:
-    transform .15s ease;
+    box-shadow:
+        0 2px 10px rgba(255,255,255,.15);
 }
 
 .wwc-create-btn:active {
-  transform: scale(.88);
+    transform: scale(.90);
 }
 
 
@@ -640,132 +546,138 @@ button {
    ========================================================= */
 
 .profile-menu {
-  position: fixed;
+    position: fixed;
 
-  left: 50%;
-  bottom: 72px;
+    left: 50%;
+    bottom: calc(72px + env(safe-area-inset-bottom));
 
-  width: min(92%, 360px);
+    width: min(92%, 360px);
 
-  max-height:
-    calc(100vh - 110px);
+    max-height: calc(100dvh - 110px);
 
-  overflow-y: auto;
+    overflow-y: auto;
 
-  padding: 16px;
+    padding: 16px;
 
-  background: rgba(20,20,20,.98);
+    background: rgba(20,20,20,.98);
 
-  border:
-    1px solid rgba(255,255,255,.12);
+    border:
+        1px solid rgba(255,255,255,.12);
 
-  border-radius: 20px;
+    border-radius: 20px;
 
-  box-shadow:
-    0 12px 40px rgba(0,0,0,.60);
+    box-shadow:
+        0 12px 40px rgba(0,0,0,.60);
 
-  z-index: 3000;
+    z-index: 3000;
 
-  opacity: 0;
-  visibility: hidden;
+    opacity: 0;
+    visibility: hidden;
 
-  pointer-events: none;
+    pointer-events: none;
 
-  transform:
-    translateX(-50%)
-    translateY(20px);
+    transform:
+        translateX(-50%)
+        translateY(20px);
 
-  transition:
-    opacity .2s ease,
-    transform .2s ease,
-    visibility .2s ease;
+    transition:
+        opacity .2s ease,
+        transform .2s ease,
+        visibility .2s ease;
 
-  scrollbar-width: none;
+    scrollbar-width: none;
 }
 
 .profile-menu::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 .profile-menu.show {
-  opacity: 1;
-  visibility: visible;
+    opacity: 1;
 
-  pointer-events: auto;
+    visibility: visible;
 
-  transform:
-    translateX(-50%)
-    translateY(0);
+    pointer-events: auto;
+
+    transform:
+        translateX(-50%)
+        translateY(0);
 }
 
 .profile-menu-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-  padding-bottom: 14px;
-  margin-bottom: 8px;
+    padding-bottom: 14px;
 
-  border-bottom:
-    1px solid rgba(255,255,255,.10);
+    margin-bottom: 8px;
+
+    border-bottom:
+        1px solid rgba(255,255,255,.10);
 }
 
 .profile-menu-title {
-  color: #fff;
+    color: #fff;
 
-  font-size: 20px;
-  font-weight: 700;
+    font-size: 20px;
+    font-weight: 700;
 }
 
 .profile-menu-close {
-  width: 36px;
-  height: 36px;
+    width: 36px;
+    height: 36px;
 
-  border: 0;
-  border-radius: 50%;
+    border: 0;
+    border-radius: 50%;
 
-  background: rgba(255,255,255,.10);
+    background: rgba(255,255,255,.10);
 
-  color: #fff;
+    color: #fff;
 
-  font-size: 17px;
+    font-size: 17px;
 
-  cursor: pointer;
+    cursor: pointer;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .profile-menu-btn {
-  width: 100%;
-  min-height: 52px;
+    width: 100%;
+    min-height: 52px;
 
-  margin-top: 8px;
-  padding: 0 16px;
+    margin-top: 8px;
 
-  border: 0;
-  border-radius: 12px;
+    padding: 0 16px;
 
-  background: rgba(255,255,255,.08);
+    border: 0;
+    border-radius: 12px;
 
-  color: #fff;
+    background: rgba(255,255,255,.08);
 
-  font-size: 16px;
-  font-weight: 600;
+    color: #fff;
 
-  text-align: left;
+    font-size: 16px;
+    font-weight: 600;
 
-  cursor: pointer;
+    text-align: left;
 
-  display: flex;
-  align-items: center;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+}
+
+.profile-menu-btn:active {
+    background: rgba(255,255,255,.15);
 }
 
 .profile-menu-btn.logout-menu-btn {
-  background: rgba(254,44,85,.15);
+    background: rgba(254,44,85,.15);
 
-  color: #ff6684;
+    color: #ff6684;
 }
 
 
@@ -774,182 +686,102 @@ button {
    ========================================================= */
 
 .comment-box {
-  position: fixed;
+    position: fixed;
 
-  left: 50%;
-  bottom: 70px;
+    left: 50%;
+    bottom: calc(70px + env(safe-area-inset-bottom));
 
-  width: min(94%, 430px);
+    transform: translateX(-50%);
 
-  max-height: 70vh;
+    width: min(92%, 420px);
 
-  transform:
-    translateX(-50%)
-    translateY(20px);
+    padding: 15px;
 
-  padding: 15px;
+    background: rgba(20,20,20,.98);
 
-  background: rgba(20,20,20,.98);
+    border:
+        1px solid rgba(255,255,255,.10);
 
-  border:
-    1px solid rgba(255,255,255,.10);
+    border-radius: 16px;
 
-  border-radius: 18px;
+    box-shadow:
+        0 10px 35px rgba(0,0,0,.60);
 
-  box-shadow:
-    0 12px 40px rgba(0,0,0,.65);
+    z-index: 4000;
 
-  z-index: 4000;
-
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-
-  transition:
-    opacity .2s ease,
-    transform .2s ease,
-    visibility .2s ease;
-
-  display: flex;
-  flex-direction: column;
+    display: none;
 }
 
 .comment-box.show {
-  opacity: 1;
-
-  visibility: visible;
-
-  pointer-events: auto;
-
-  transform:
-    translateX(-50%)
-    translateY(0);
+    display: block;
 }
 
+.comment-title {
+    color: #fff;
 
-/* =========================================================
-   COMMENT HEADER
-   ========================================================= */
+    font-size: 18px;
+    font-weight: 700;
 
-.comment-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding-bottom: 12px;
-
-  border-bottom:
-    1px solid rgba(255,255,255,.10);
+    margin-bottom: 10px;
 }
 
-.comment-header strong {
-  font-size: 18px;
+.comment-box textarea {
+    width: 100%;
+    min-height: 80px;
+
+    resize: none;
+
+    border: 0;
+    outline: none;
+
+    border-radius: 8px;
+
+    padding: 10px;
+
+    background: #fff;
+    color: #111;
+
+    font-size: 15px;
 }
 
-#commentClose {
-  width: 34px;
-  height: 34px;
+.comment-buttons {
+    display: flex;
 
-  border: 0;
-  border-radius: 50%;
+    justify-content: flex-end;
 
-  background: rgba(255,255,255,.10);
+    gap: 8px;
 
-  color: #fff;
-
-  cursor: pointer;
+    margin-top: 10px;
 }
 
+.comment-buttons button {
+    border: 0;
+    border-radius: 8px;
 
-/* =========================================================
-   COMMENT LIST
-   ========================================================= */
+    padding: 9px 15px;
 
-.comment-list {
-  max-height: 280px;
+    cursor: pointer;
 
-  overflow-y: auto;
-
-  padding: 10px 0;
-
-  scrollbar-width: none;
-}
-
-.comment-list::-webkit-scrollbar {
-  display: none;
-}
-
-.comment-empty {
-  padding: 25px 10px;
-
-  text-align: center;
-
-  color: #888;
-
-  font-size: 14px;
-}
-
-
-/* =========================================================
-   COMMENT INPUT
-   ========================================================= */
-
-.comment-input-area {
-  display: flex;
-
-  gap: 8px;
-
-  padding-top: 10px;
-
-  border-top:
-    1px solid rgba(255,255,255,.08);
-}
-
-#commentInput {
-  flex: 1;
-
-  min-width: 0;
-
-  resize: none;
-
-  padding: 10px;
-
-  border: 0;
-  outline: none;
-
-  border-radius: 10px;
-
-  background: #fff;
-
-  color: #111;
-
-  font-size: 14px;
+    font-weight: 600;
 }
 
 #commentSend {
-  align-self: flex-end;
+    background: var(--accent);
+    color: #fff;
+}
 
-  border: 0;
-  border-radius: 10px;
-
-  padding: 10px 14px;
-
-  background: #fe2c55;
-
-  color: #fff;
-
-  font-weight: 700;
-
-  cursor: pointer;
+#commentCancel {
+    background: #555;
+    color: #fff;
 }
 
 
 /* =========================================================
-   UPLOAD INPUT
+   HIDDEN VIDEO INPUT
    ========================================================= */
 
 #videoUpload {
-  display: none;
+    display: none;
 }
 
 
@@ -959,126 +791,117 @@ button {
 
 @media (max-width: 600px) {
 
-  .wwc-top-bar {
-    height: 58px;
-  }
+    :root {
+        --top-height: 58px;
+        --nav-height: 62px;
+    }
 
-  .wwc-top-tabs {
-    gap: 18px;
-  }
+    .wwc-top-tabs {
+        gap: 18px;
+    }
 
-  .wwc-top-tab {
-    font-size: 15px;
-  }
+    .wwc-top-tab {
+        font-size: 15px;
+    }
 
-  .wwc-search-btn {
-    right: 10px;
-    top: 8px;
+    .wwc-search-btn {
+        top: 8px;
+        right: 9px;
 
-    width: 40px;
-    height: 40px;
-  }
+        width: 40px;
+        height: 40px;
+    }
 
-  .video-item .profile-area {
-    right: 10px;
-    bottom: 330px;
+    .video-item .profile-area {
+        right: 9px;
+        bottom: 335px;
 
-    width: 65px;
-  }
+        width: 65px;
 
-  .video-profile-btn {
-    width: 50px;
-    height: 50px;
-  }
+        gap: 6px;
+    }
 
-  .video-item .follow-btn {
-    width: 64px;
-    height: 30px;
+    .video-item .profile-photo {
+        width: 50px;
+        height: 50px;
+    }
 
-    font-size: 11px;
-  }
+    .video-item .follow-btn {
+        width: 64px;
+        height: 30px;
 
-  .video-item .actions {
-    right: 10px;
-    bottom: 78px;
+        font-size: 11px;
+    }
 
-    width: 55px;
+    .video-item .actions {
+        right: 9px;
+        bottom: 78px;
 
-    gap: 10px;
-  }
+        width: 55px;
 
-  .video-item .action-btn {
-    width: 48px;
-    height: 48px;
+        gap: 9px;
+    }
 
-    font-size: 23px;
-  }
+    .video-item .action-btn {
+        width: 48px;
+        height: 48px;
 
-  .video-info {
-    left: 12px;
-    right: 75px;
+        font-size: 22px;
+    }
 
-    bottom: 78px;
-  }
+    .video-info {
+        left: 12px;
+        right: 74px;
+        bottom: 78px;
+    }
 
-  .video-caption {
-    font-size: 13px;
-    line-height: 18px;
-  }
+    .video-info .username {
+        font-size: 15px;
+    }
 
-  .video-music {
-    font-size: 11px;
-  }
+    .video-caption {
+        font-size: 13px;
+        line-height: 18px;
+    }
 
-  .wwc-bottom-nav {
-    height: 62px;
-  }
+    .wwc-nav-btn {
+        width: 54px;
+        height: 54px;
 
-  .wwc-nav-btn {
-    width: 54px;
-    height: 54px;
+        font-size: 10px;
+    }
 
-    font-size: 10px;
-  }
+    .wwc-nav-btn span:first-child {
+        font-size: 21px;
+    }
 
-  .wwc-nav-btn span:first-child {
-    font-size: 21px;
-  }
+    .wwc-create-btn {
+        width: 50px;
+        height: 36px;
 
-  .wwc-create-btn {
-    width: 50px;
-    height: 36px;
+        font-size: 26px;
+    }
 
-    font-size: 26px;
-  }
+    .profile-menu {
+        bottom:
+            calc(68px + env(safe-area-inset-bottom));
 
-  .profile-menu {
-    bottom: 68px;
+        width: calc(100% - 20px);
 
-    width:
-      calc(100% - 20px);
+        border-radius: 18px;
 
-    border-radius: 18px;
+        padding: 14px;
+    }
 
-    padding: 14px;
-  }
+    .profile-menu-title {
+        font-size: 18px;
+    }
 
-  .profile-menu-title {
-    font-size: 18px;
-  }
+    .profile-menu-btn {
+        min-height: 50px;
 
-  .profile-menu-btn {
-    min-height: 50px;
-
-    font-size: 15px;
-  }
-
-  .comment-box {
-    bottom: 67px;
-
-    width:
-      calc(100% - 20px);
-  }
+        font-size: 15px;
+    }
 }
 
 
@@ -1088,84 +911,57 @@ button {
 
 @media (max-width: 380px) {
 
-  .video-item .profile-area {
-    right: 7px;
-    bottom: 320px;
-  }
+    .video-item .profile-area {
+        right: 7px;
+        bottom: 325px;
+    }
 
-  .video-item .actions {
-    right: 7px;
+    .video-item .actions {
+        right: 7px;
+        gap: 8px;
+    }
 
-    gap: 8px;
-  }
+    .video-item .action-btn {
+        width: 45px;
+        height: 45px;
 
-  .video-item .action-btn {
-    width: 45px;
-    height: 45px;
+        font-size: 21px;
+    }
 
-    font-size: 21px;
-  }
+    .video-info {
+        right: 68px;
+    }
 
-  .video-info {
-    right: 68px;
-  }
-
-  .profile-menu {
-    width:
-      calc(100% - 14px);
-
-    bottom: 66px;
-  }
+    .profile-menu {
+        width: calc(100% - 14px);
+    }
 }
 
 
 /* =========================================================
-   SAFE AREA — MOBILE
+   ACCESSIBILITY / SAFETY
    ========================================================= */
 
-@supports (padding: env(safe-area-inset-bottom)) {
+button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
 
-  .wwc-bottom-nav {
-    padding-bottom:
-      env(safe-area-inset-bottom);
+img {
+    max-width: 100%;
+}
 
-    height:
-      calc(
-        64px +
-        env(safe-area-inset-bottom)
-      );
-  }
+video {
+    max-width: 100%;
+}
 
-  .video-item .actions {
-    bottom:
-      calc(
-        105px +
-        env(safe-area-inset-bottom)
-      );
-  }
-
-  .video-info {
-    bottom:
-      calc(
-        105px +
-        env(safe-area-inset-bottom)
-      );
-  }
+input,
+textarea {
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 
 /* =========================================================
-   ACCESSIBILITY
-   ========================================================= */
-
-button:focus-visible {
-  outline:
-    2px solid #fff;
-
-  outline-offset: 2px;
-}
-
-
-/* =========================================================
-   END
+   END OF WWC STYLE
    ========================================================= */
