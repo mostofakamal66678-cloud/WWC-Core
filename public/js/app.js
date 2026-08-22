@@ -1,2193 +1,2096 @@
 /* =========================================================
    WORLD WIDE CONNECT
    WWC-CORE
-   COMPLETE APP.JS
+   MAIN APP.JS
+   FIREBASE SOCIAL VIDEO SYSTEM
    ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+import {
+  getApps,
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
-    "use strict";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  deleteDoc,
+  collection,
+  addDoc,
+  serverTimestamp,
+  increment,
+  arrayUnion,
+  arrayRemove,
+  query,
+  orderBy,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
-    /* =====================================================
-       BASIC HELPERS
-    ===================================================== */
 
-    const $ = (selector, parent = document) =>
-        parent.querySelector(selector);
+/* =========================================================
+   FIREBASE CONFIG
+   ========================================================= */
 
-    const $$ = (selector, parent = document) =>
-        Array.from(parent.querySelectorAll(selector));
+const firebaseConfig = {
+  apiKey: "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
+  authDomain: "world-wide-connect-62c87.firebaseapp.com",
+  projectId: "world-wide-connect-62c87",
+  storageBucket: "world-wide-connect-62c87.firebasestorage.app",
+  messagingSenderId: "93178453668",
+  appId: "1:93178453668:web:2184630caa8e61f7445031",
+  measurementId: "G-PKFJ5NEMGQ"
+};
 
 
-    const videoFeed = $("#video-feed");
+/* =========================================================
+   FIREBASE INITIALIZE
+   ========================================================= */
 
+const app = getApps().length
+  ? getApps()[0]
+  : initializeApp(firebaseConfig);
 
-    /* =====================================================
-       STORAGE HELPERS
-    ===================================================== */
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-    function getStorage(key, fallback) {
 
-        try {
+/* =========================================================
+   GLOBAL STATE
+   ========================================================= */
 
-            const value = localStorage.getItem(key);
+let currentUser = null;
 
-            if (value === null) {
-                return fallback;
-            }
+let currentProfile = null;
 
-            return JSON.parse(value);
+let activeCommentVideoId = null;
 
-        } catch (error) {
 
-            console.error("Storage read error:", error);
+/* =========================================================
+   DEFAULT PHOTO
+   ========================================================= */
 
-            return fallback;
-        }
-    }
+const DEFAULT_PHOTO = "./images/profile.png";
 
 
-    function setStorage(key, value) {
+/* =========================================================
+   PAGE HELPER
+   ========================================================= */
 
-        try {
+function openPage(file) {
+  window.location.href = "./" + file;
+}
 
-            localStorage.setItem(
-                key,
-                JSON.stringify(value)
-            );
 
-        } catch (error) {
+/* =========================================================
+   AUTH STATE
+   ========================================================= */
 
-            console.error("Storage save error:", error);
-        }
-    }
+onAuthStateChanged(auth, async (user) => {
 
+  currentUser = user;
 
-    /* =====================================================
-       VIDEO DATA
-    ===================================================== */
-
-    function getVideoId(item) {
-
-        return (
-            item?.dataset?.videoId ||
-            "video-" + Math.random().toString(36).slice(2)
-        );
-
-    }
-
-
-    /* =====================================================
-       LIKE
-    ===================================================== */
-
-    function initializeLike(button) {
-
-        if (!button) return;
-
-        if (button.dataset.wwcReady === "like") {
-            return;
-        }
-
-        button.dataset.wwcReady = "like";
-
-
-        button.addEventListener("click", event => {
-
-            event.preventDefault();
-            event.stopPropagation();
-
-
-            const item =
-                button.closest(".video-item");
-
-            if (!item) return;
-
-
-            const videoId =
-                getVideoId(item);
-
-
-            const likes =
-                getStorage("wwc_likes", {});
-
-
-            const current =
-                Number(likes[videoId] || 0);
-
-
-            const liked =
-                button.classList.contains("liked");
-
-
-            const count =
-                liked
-                    ? Math.max(0, current - 1)
-                    : current + 1;
-
-
-            likes[videoId] = count;
-
-            setStorage(
-                "wwc_likes",
-                likes
-            );
-
-
-            button.classList.toggle(
-                "liked",
-                !liked
-            );
-
-
-            button.setAttribute(
-                "aria-pressed",
-                String(!liked)
-            );
-
-
-            const countElement =
-                $(".like-count", button);
-
-
-            if (countElement) {
-
-                countElement.textContent =
-                    count;
-
-            }
-
-        });
-
-    }
-
-
-    function loadLikeState(button) {
-
-        if (!button) return;
-
-        const item =
-            button.closest(".video-item");
-
-        if (!item) return;
-
-
-        const videoId =
-            getVideoId(item);
-
-
-        const likes =
-            getStorage("wwc_likes", {});
-
-
-        const count =
-            Number(likes[videoId] || 0);
-
-
-        const countElement =
-            $(".like-count", button);
-
-
-        if (countElement) {
-
-            countElement.textContent =
-                count;
-
-        }
-
-
-        const likedVideos =
-            getStorage(
-                "wwc_liked_videos",
-                []
-            );
-
-
-        const liked =
-            likedVideos.includes(videoId);
-
-
-        button.classList.toggle(
-            "liked",
-            liked
-        );
-
-        button.setAttribute(
-            "aria-pressed",
-            String(liked)
-        );
-
-    }
-
-
-    /* =====================================================
-       COMMENT
-    ===================================================== */
-
-    let activeCommentItem = null;
-
-
-    const commentBox =
-        $("#commentBox");
-
-    const commentInput =
-        $("#commentInput");
-
-    const commentSend =
-        $("#commentSend");
-
-    const commentCancel =
-        $("#commentCancel");
-
-
-    function getComments(videoId) {
-
-        return getStorage(
-            "wwc_comments_" + videoId,
-            []
-        );
-
-    }
-
-
-    function saveComments(
-        videoId,
-        comments
-    ) {
-
-        setStorage(
-            "wwc_comments_" + videoId,
-            comments
-        );
-
-    }
-
-
-    function openCommentBox(item) {
-
-        if (!commentBox || !item) {
-            return;
-        }
-
-
-        activeCommentItem = item;
-
-
-        commentBox.classList.add(
-            "show"
-        );
-
-
-        if (commentInput) {
-
-            commentInput.value = "";
-
-            setTimeout(() => {
-
-                commentInput.focus();
-
-            }, 100);
-
-        }
-
-    }
-
-
-    function closeCommentBox() {
-
-        if (!commentBox) {
-            return;
-        }
-
-
-        commentBox.classList.remove(
-            "show"
-        );
-
-
-        activeCommentItem = null;
-
-
-        if (commentInput) {
-            commentInput.value = "";
-        }
-
-    }
-
-
-    function initializeComment(button) {
-
-        if (!button) return;
-
-        if (button.dataset.wwcReady === "comment") {
-            return;
-        }
-
-        button.dataset.wwcReady = "comment";
-
-
-        button.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-
-                const item =
-                    button.closest(".video-item");
-
-
-                if (!item) return;
-
-
-                openCommentBox(item);
-
-            }
-        );
-
-    }
-
-
-    if (commentCancel) {
-
-        commentCancel.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-
-                closeCommentBox();
-
-            }
-        );
-
-    }
-
-
-    if (commentSend) {
-
-        commentSend.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-
-
-                if (!activeCommentItem) {
-                    return;
-                }
-
-
-                if (!commentInput) {
-                    return;
-                }
-
-
-                const text =
-                    commentInput.value.trim();
-
-
-                if (!text) {
-
-                    alert(
-                        "Please write a comment."
-                    );
-
-                    return;
-                }
-
-
-                const videoId =
-                    getVideoId(
-                        activeCommentItem
-                    );
-
-
-                const comments =
-                    getComments(videoId);
-
-
-                comments.push({
-
-                    text: text,
-
-                    time:
-                        new Date()
-                            .toISOString()
-
-                });
-
-
-                saveComments(
-                    videoId,
-                    comments
-                );
-
-
-                commentInput.value = "";
-
-
-                alert(
-                    "Comment added successfully."
-                );
-
-
-                closeCommentBox();
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       SAVE
-    ===================================================== */
-
-    function initializeSave(button) {
-
-        if (!button) return;
-
-        if (button.dataset.wwcReady === "save") {
-            return;
-        }
-
-        button.dataset.wwcReady = "save";
-
-
-        button.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-
-                const item =
-                    button.closest(".video-item");
-
-
-                if (!item) return;
-
-
-                const videoId =
-                    getVideoId(item);
-
-
-                const savedVideos =
-                    getStorage(
-                        "wwc_saved_videos",
-                        []
-                    );
-
-
-                const index =
-                    savedVideos.indexOf(
-                        videoId
-                    );
-
-
-                let saved;
-
-
-                if (index === -1) {
-
-                    savedVideos.push(
-                        videoId
-                    );
-
-                    saved = true;
-
-                } else {
-
-                    savedVideos.splice(
-                        index,
-                        1
-                    );
-
-                    saved = false;
-
-                }
-
-
-                setStorage(
-                    "wwc_saved_videos",
-                    savedVideos
-                );
-
-
-                button.classList.toggle(
-                    "saved",
-                    saved
-                );
-
-
-                button.setAttribute(
-                    "aria-pressed",
-                    String(saved)
-                );
-
-
-                const count =
-                    $(".save-count", button);
-
-
-                if (count) {
-
-                    count.textContent =
-                        saved ? "1" : "0";
-
-                }
-
-            }
-        );
-
-    }
-
-
-    function loadSaveState(button) {
-
-        if (!button) return;
-
-
-        const item =
-            button.closest(".video-item");
-
-        if (!item) return;
-
-
-        const videoId =
-            getVideoId(item);
-
-
-        const savedVideos =
-            getStorage(
-                "wwc_saved_videos",
-                []
-            );
-
-
-        const saved =
-            savedVideos.includes(
-                videoId
-            );
-
-
-        button.classList.toggle(
-            "saved",
-            saved
-        );
-
-
-        button.setAttribute(
-            "aria-pressed",
-            String(saved)
-        );
-
-
-        const count =
-            $(".save-count", button);
-
-
-        if (count) {
-
-            count.textContent =
-                saved ? "1" : "0";
-
-        }
-
-    }
-
-
-    /* =====================================================
-       SHARE
-    ===================================================== */
-
-    async function shareVideo(item) {
-
-        if (!item) return;
-
-
-        const videoId =
-            getVideoId(item);
-
-
-        const url =
-            window.location.href.split("#")[0] +
-            "#video=" +
-            encodeURIComponent(
-                videoId
-            );
-
-
-        const username =
-            $(".username", item)
-                ?.textContent
-                ?.trim() ||
-            "@wwc_user";
-
-
-        const shareData = {
-
-            title:
-                "World Wide Connect",
-
-            text:
-                "Check out this video from " +
-                username,
-
-            url: url
-
-        };
-
-
-        try {
-
-            if (
-                navigator.share &&
-                typeof navigator.share === "function"
-            ) {
-
-                await navigator.share(
-                    shareData
-                );
-
-                return;
-            }
-
-
-            if (
-                navigator.clipboard &&
-                navigator.clipboard.writeText
-            ) {
-
-                await navigator.clipboard.writeText(
-                    url
-                );
-
-                alert(
-                    "Video link copied."
-                );
-
-                return;
-            }
-
-
-            window.prompt(
-                "Copy this video link:",
-                url
-            );
-
-        } catch (error) {
-
-            if (
-                error &&
-                error.name === "AbortError"
-            ) {
-
-                return;
-
-            }
-
-
-            console.error(
-                "Share error:",
-                error
-            );
-
-        }
-
-    }
-
-
-    function initializeShare(button) {
-
-        if (!button) return;
-
-        if (button.dataset.wwcReady === "share") {
-            return;
-        }
-
-        button.dataset.wwcReady = "share";
-
-
-        button.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-
-                const item =
-                    button.closest(
-                        ".video-item"
-                    );
-
-
-                shareVideo(item);
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       FOLLOW
-    ===================================================== */
-
-    function initializeFollow(button) {
-
-        if (!button) return;
-
-        if (button.dataset.wwcReady === "follow") {
-            return;
-        }
-
-        button.dataset.wwcReady = "follow";
-
-
-        button.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-
-                const item =
-                    button.closest(
-                        ".video-item"
-                    );
-
-
-                if (!item) return;
-
-
-                const usernameElement =
-                    $(".username", item);
-
-
-                const username =
-                    usernameElement
-                        ?.textContent
-                        ?.trim() ||
-                    "@wwc_user";
-
-
-                const following =
-                    getStorage(
-                        "wwc_following",
-                        []
-                    );
-
-
-                const index =
-                    following.indexOf(
-                        username
-                    );
-
-
-                if (index === -1) {
-
-                    following.push(
-                        username
-                    );
-
-                    button.textContent =
-                        "Following";
-
-                    button.classList.add(
-                        "following"
-                    );
-
-                } else {
-
-                    following.splice(
-                        index,
-                        1
-                    );
-
-                    button.textContent =
-                        "Follow";
-
-                    button.classList.remove(
-                        "following"
-                    );
-
-                }
-
-
-                setStorage(
-                    "wwc_following",
-                    following
-                );
-
-            }
-        );
-
-    }
-
-
-    function loadFollowState(button) {
-
-        if (!button) return;
-
-
-        const item =
-            button.closest(
-                ".video-item"
-            );
-
-
-        if (!item) return;
-
-
-        const username =
-            $(".username", item)
-                ?.textContent
-                ?.trim() ||
-            "@wwc_user";
-
-
-        const following =
-            getStorage(
-                "wwc_following",
-                []
-            );
-
-
-        const isFollowing =
-            following.includes(
-                username
-            );
-
-
-        button.textContent =
-            isFollowing
-                ? "Following"
-                : "Follow";
-
-
-        button.classList.toggle(
-            "following",
-            isFollowing
-        );
-
-    }
-
-
-    /* =====================================================
-       INITIALIZE VIDEO BUTTONS
-    ===================================================== */
-
-    function initializeVideoButtons() {
-
-        $$(".video-item").forEach(
-            item => {
-
-                const like =
-                    $(".like-btn", item);
-
-                const comment =
-                    $(".comment-btn", item);
-
-                const save =
-                    $(".save-btn", item);
-
-                const share =
-                    $(".share-btn", item);
-
-                const follow =
-                    $(".follow-btn", item);
-
-
-                initializeLike(like);
-                initializeComment(comment);
-                initializeSave(save);
-                initializeShare(share);
-                initializeFollow(follow);
-
-
-                loadLikeState(like);
-                loadSaveState(save);
-                loadFollowState(follow);
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       VIDEO AUTOPLAY / PAUSE
-    ===================================================== */
-
-    function setupVideoPlayback() {
-
-        const videos =
-            $$(".feed-video");
-
-
-        if (!videos.length) {
-            return;
-        }
-
-
-        const observer =
-            new IntersectionObserver(
-                entries => {
-
-                    entries.forEach(
-                        entry => {
-
-                            const video =
-                                entry.target;
-
-
-                            if (
-                                entry.isIntersecting &&
-                                entry.intersectionRatio >= 0.60
-                            ) {
-
-                                videos.forEach(
-                                    other => {
-
-                                        if (
-                                            other !== video
-                                        ) {
-
-                                            other.pause();
-
-                                        }
-
-                                    }
-                                );
-
-
-                                video.muted = true;
-
-
-                                video.play()
-                                    .catch(() => {});
-
-
-                            } else {
-
-                                video.pause();
-
-                            }
-
-                        }
-                    );
-
-                },
-                {
-                    threshold: [0.60]
-                }
-            );
-
-
-        videos.forEach(
-            video => {
-
-                observer.observe(
-                    video
-                );
-
-
-                video.addEventListener(
-                    "ended",
-                    () => {
-
-                        const item =
-                            video.closest(
-                                ".video-item"
-                            );
-
-
-                        const next =
-                            item?.nextElementSibling;
-
-
-                        if (
-                            next &&
-                            next.classList.contains(
-                                "video-item"
-                            )
-                        ) {
-
-                            next.scrollIntoView({
-                                behavior: "smooth",
-                                block: "start"
-                            });
-
-                        }
-
-                    }
-                );
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       FOR YOU
-    ===================================================== */
-
-    function showForYouFeed() {
-
-        if (!videoFeed) return;
-
-
-        $$(".video-item").forEach(
-            item => {
-
-                item.style.display =
-                    "block";
-
-            }
-        );
-
-
-        const videos =
-            $$(".feed-video");
-
-
-        videos.forEach(
-            video => {
-
-                video.pause();
-
-            }
-        );
-
-
-        const first =
-            videos[0];
-
-
-        if (first) {
-
-            first.muted = true;
-
-            first.play()
-                .catch(() => {});
-
-        }
-
-    }
-
-
-    /* =====================================================
-       FOLLOWING
-    ===================================================== */
-
-    function showFollowingFeed() {
-
-        if (!videoFeed) return;
-
-
-        const following =
-            getStorage(
-                "wwc_following",
-                []
-            );
-
-
-        if (!following.length) {
-
-            alert(
-                "You are not following anyone yet."
-            );
-
-            showForYouFeed();
-
-            return;
-        }
-
-
-        let visibleCount = 0;
-
-
-        $$(".video-item").forEach(
-            item => {
-
-                const username =
-                    $(".username", item)
-                        ?.textContent
-                        ?.trim() ||
-                    "";
-
-
-                const match =
-                    following.includes(
-                        username
-                    );
-
-
-                item.style.display =
-                    match
-                        ? "block"
-                        : "none";
-
-
-                if (match) {
-                    visibleCount++;
-                }
-
-            }
-        );
-
-
-        if (!visibleCount) {
-
-            alert(
-                "No videos from followed users yet."
-            );
-
-            showForYouFeed();
-
-        }
-
-    }
-
-
-    /* =====================================================
-       TOP TABS
-    ===================================================== */
-
-    $$(".wwc-top-tab").forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                event => {
-
-                    event.preventDefault();
-                    event.stopPropagation();
-
-
-                    $$(".wwc-top-tab")
-                        .forEach(
-                            tab => {
-                                tab.classList.remove(
-                                    "active"
-                                );
-                            }
-                        );
-
-
-                    button.classList.add(
-                        "active"
-                    );
-
-
-                    const text =
-                        button.textContent
-                            .trim()
-                            .toLowerCase();
-
-
-                    if (
-                        text ===
-                        "following"
-                    ) {
-
-                        showFollowingFeed();
-
-                    } else {
-
-                        showForYouFeed();
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-
-    /* =====================================================
-       SEARCH
-    ===================================================== */
-
-    const searchBtn =
-        $("#searchBtn");
-
-
-    let searchBox = null;
-
-
-    function openSearch() {
-
-        if (searchBox) {
-
-            searchBox.classList.add(
-                "show"
-            );
-
-            const input =
-                $("#wwcSearchInput");
-
-            input?.focus();
-
-            return;
-        }
-
-
-        searchBox =
-            document.createElement(
-                "div"
-            );
-
-
-        searchBox.id =
-            "wwcSearchBox";
-
-
-        searchBox.style.cssText = `
-            position:fixed;
-            top:70px;
-            left:50%;
-            transform:translateX(-50%);
-            width:min(92%,420px);
-            padding:12px;
-            background:rgba(20,20,20,.98);
-            border:1px solid rgba(255,255,255,.15);
-            border-radius:16px;
-            z-index:5000;
-            box-shadow:0 10px 40px rgba(0,0,0,.6);
-        `;
-
-
-        searchBox.innerHTML = `
-            <div style="
-                display:flex;
-                gap:8px;
-                align-items:center;
-            ">
-
-                <input
-                    id="wwcSearchInput"
-                    type="search"
-                    placeholder="Search videos or users..."
-                    autocomplete="off"
-                    style="
-                        flex:1;
-                        height:44px;
-                        border:0;
-                        outline:0;
-                        border-radius:10px;
-                        padding:0 12px;
-                        font-size:15px;
-                    "
-                >
-
-                <button
-                    id="wwcSearchClose"
-                    type="button"
-                    style="
-                        width:44px;
-                        height:44px;
-                        border:0;
-                        border-radius:10px;
-                        background:#333;
-                        color:#fff;
-                        font-size:18px;
-                    "
-                >
-                    ✕
-                </button>
-
-            </div>
-
-            <div
-                id="wwcSearchResult"
-                style="
-                    color:#aaa;
-                    padding:10px 4px 2px;
-                    text-align:center;
-                "
-            >
-                Type something to search
-            </div>
-        `;
-
-
-        document.body.appendChild(
-            searchBox
-        );
-
-
-        const input =
-            $("#wwcSearchInput");
-
-
-        const close =
-            $("#wwcSearchClose");
-
-
-        if (close) {
-
-            close.addEventListener(
-                "click",
-                event => {
-
-                    event.preventDefault();
-
-                    closeSearch();
-
-                }
-            );
-
-        }
-
-
-        if (input) {
-
-            input.addEventListener(
-                "input",
-                () => {
-
-                    performSearch(
-                        input.value
-                    );
-
-                }
-            );
-
-
-            input.focus();
-
-        }
-
-    }
-
-
-    function closeSearch() {
-
-        if (!searchBox) {
-            return;
-        }
-
-
-        searchBox.remove();
-
-        searchBox = null;
-
-
-        $$(".video-item").forEach(
-            item => {
-
-                item.style.display =
-                    "block";
-
-            }
-        );
-
-    }
-
-
-    function performSearch(query) {
-
-        const result =
-            $("#wwcSearchResult");
-
-
-        if (!query.trim()) {
-
-            $$(".video-item").forEach(
-                item => {
-
-                    item.style.display =
-                        "block";
-
-                }
-            );
-
-
-            if (result) {
-
-                result.textContent =
-                    "Type something to search";
-
-            }
-
-            return;
-        }
-
-
-        const q =
-            query
-                .trim()
-                .toLowerCase();
-
-
-        let found = 0;
-
-
-        $$(".video-item").forEach(
-            item => {
-
-                const username =
-                    $(".username", item)
-                        ?.textContent
-                        ?.toLowerCase() ||
-                    "";
-
-
-                const caption =
-                    $(".video-caption", item)
-                        ?.textContent
-                        ?.toLowerCase() ||
-                    "";
-
-
-                const match =
-                    username.includes(q) ||
-                    caption.includes(q);
-
-
-                item.style.display =
-                    match
-                        ? "block"
-                        : "none";
-
-
-                if (match) {
-                    found++;
-                }
-
-            }
-        );
-
-
-        if (result) {
-
-            result.textContent =
-                found +
-                (
-                    found === 1
-                        ? " video found"
-                        : " videos found"
-                );
-
-        }
-
-    }
-
-
-    if (searchBtn) {
-
-        searchBtn.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-
-                if (searchBox) {
-
-                    closeSearch();
-
-                } else {
-
-                    openSearch();
-
-                }
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       BOTTOM NAVIGATION
-    ===================================================== */
-
-    const homeBtn =
-        $("#homeBtn");
-
-    const friendsBtn =
-        $("#friendsBtn");
-
-    const inboxBtn =
-        $("#inboxBtn");
-
-    const profileBtn =
-        $("#profileBtn");
-
-
-    function setActiveNav(button) {
-
-        $$(".wwc-nav-btn")
-            .forEach(
-                btn => {
-
-                    btn.classList.remove(
-                        "active"
-                    );
-
-                }
-            );
-
-
-        if (button) {
-
-            button.classList.add(
-                "active"
-            );
-
-        }
-
-    }
-
-
-    if (homeBtn) {
-
-        homeBtn.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-
-                setActiveNav(
-                    homeBtn
-                );
-
-
-                $$(".wwc-top-tab")
-                    .forEach(
-                        tab => {
-
-                            tab.classList.remove(
-                                "active"
-                            );
-
-                        }
-                    );
-
-
-                const forYou =
-                    $$(".wwc-top-tab")
-                        .find(
-                            tab =>
-                                tab.textContent
-                                    .trim()
-                                    .toLowerCase() ===
-                                "for you"
-                        );
-
-
-                if (forYou) {
-
-                    forYou.classList.add(
-                        "active"
-                    );
-
-                }
-
-
-                showForYouFeed();
-
-
-                if (videoFeed) {
-
-                    videoFeed.scrollTo({
-                        top: 0,
-                        behavior: "smooth"
-                    });
-
-                }
-
-            }
-        );
-
-    }
-
-
-    if (friendsBtn) {
-
-        friendsBtn.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-
-                setActiveNav(
-                    friendsBtn
-                );
-
-
-                alert(
-                    "Friends feature is ready for the next step."
-                );
-
-            }
-        );
-
-    }
-
-
-    if (inboxBtn) {
-
-        inboxBtn.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-
-                setActiveNav(
-                    inboxBtn
-                );
-
-
-                alert(
-                    "Inbox feature is ready for the next step."
-                );
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       PROFILE MENU
-    ===================================================== */
-
-    const profileMenu =
-        $("#profileMenu");
-
-    const profileMenuClose =
-        $("#profileMenuClose");
-
-
-    function openProfileMenu() {
-
-        if (!profileMenu) {
-            return;
-        }
-
-
-        profileMenu.classList.add(
-            "show"
-        );
-
-
-        profileMenu.setAttribute(
-            "aria-hidden",
-            "false"
-        );
-
-    }
-
-
-    function closeProfileMenu() {
-
-        if (!profileMenu) {
-            return;
-        }
-
-
-        profileMenu.classList.remove(
-            "show"
-        );
-
-
-        profileMenu.setAttribute(
-            "aria-hidden",
-            "true"
-        );
-
-    }
-
-
-    if (profileBtn) {
-
-        profileBtn.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-
-                setActiveNav(
-                    profileBtn
-                );
-
-
-                if (
-                    profileMenu &&
-                    profileMenu.classList.contains(
-                        "show"
-                    )
-                ) {
-
-                    closeProfileMenu();
-
-                } else {
-
-                    openProfileMenu();
-
-                }
-
-            }
-        );
-
-    }
-
-
-    if (profileMenuClose) {
-
-        profileMenuClose.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-                closeProfileMenu();
-
-            }
-        );
-
-    }
-
-
-    document.addEventListener(
-        "click",
-        event => {
-
-            if (!profileMenu) {
-                return;
-            }
-
-
-            if (
-                profileMenu.classList.contains(
-                    "show"
-                ) &&
-                !profileMenu.contains(
-                    event.target
-                ) &&
-                !profileBtn?.contains(
-                    event.target
-                )
-            ) {
-
-                closeProfileMenu();
-
-            }
-
-        }
-    );
-
-
-    /* =====================================================
-       PROFILE MENU BUTTON
-    ===================================================== */
-
-    const profileBtnMenu =
-        $("#profileBtnMenu");
-
-
-    if (profileBtnMenu) {
-
-        profileBtnMenu.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-
-                window.location.href =
-                    "./profile.html";
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       LOGIN / REGISTER
-    ===================================================== */
-
-    const loginBtn =
-        $("#loginBtn");
-
-
-    if (loginBtn) {
-
-        loginBtn.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-
-                window.location.href =
-                    "./auth.html";
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       LOGOUT
-    ===================================================== */
-
-    const logoutBtn =
-        $("#logoutBtn");
-
-
-    if (logoutBtn) {
-
-        logoutBtn.addEventListener(
-            "click",
-            async event => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-
-                /*
-                 * Firebase Auth থাকলে
-                 * auth.html থেকে session
-                 * handle করা যাবে।
-                 */
-
-                try {
-
-                    localStorage.removeItem(
-                        "wwc_user"
-                    );
-
-                } catch (error) {
-
-                    console.error(
-                        error
-                    );
-
-                }
-
-
-                window.location.href =
-                    "./auth.html";
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       UPLOAD
-    ===================================================== */
-
-    const uploadBtn =
-        $("#uploadBtn");
-
-    const videoUpload =
-        $("#videoUpload");
-
-
-    if (uploadBtn && videoUpload) {
-
-        uploadBtn.addEventListener(
-            "click",
-            event => {
-
-                event.preventDefault();
-                event.stopPropagation();
-
-
-                videoUpload.click();
-
-            }
-        );
-
-
-        videoUpload.addEventListener(
-            "change",
-            event => {
-
-                const file =
-                    event.target.files?.[0];
-
-
-                if (!file) {
-                    return;
-                }
-
-
-                if (
-                    !file.type.startsWith(
-                        "video/"
-                    )
-                ) {
-
-                    alert(
-                        "Please select a video file."
-                    );
-
-
-                    videoUpload.value =
-                        "";
-
-
-                    return;
-
-                }
-
-
-                const videoURL =
-                    URL.createObjectURL(
-                        file
-                    );
-
-
-                if (!videoFeed) {
-                    return;
-                }
-
-
-                const item =
-                    document.createElement(
-                        "section"
-                    );
-
-
-                item.className =
-                    "video-item";
-
-
-                item.dataset.videoId =
-                    "uploaded-" +
-                    Date.now();
-
-
-                item.innerHTML = `
-
-                    <video
-                        class="feed-video"
-                        autoplay
-                        muted
-                        playsinline
-                        controls
-                    >
-
-                        <source
-                            src="${videoURL}"
-                            type="${file.type}"
-                        >
-
-                    </video>
-
-
-                    <div class="profile-area">
-
-                        <img
-                            class="profile-photo"
-                            src="./images/profile.png"
-                            alt="Profile"
-                        >
-
-                        <div class="username">
-                            @wwc_user
-                        </div>
-
-                        <button
-                            class="follow-btn"
-                            type="button"
-                        >
-                            Follow
-                        </button>
-
-                    </div>
-
-
-                    <div class="actions">
-
-                        <button
-                            class="action-btn like-btn"
-                            type="button"
-                            aria-pressed="false"
-                        >
-                            ❤️
-                            <span class="like-count">
-                                0
-                            </span>
-                        </button>
-
-
-                        <button
-                            class="action-btn comment-btn"
-                            type="button"
-                        >
-                            💬
-                        </button>
-
-
-                        <button
-                            class="action-btn save-btn"
-                            type="button"
-                            aria-pressed="false"
-                        >
-                            🔖
-                            <span class="save-count">
-                                0
-                            </span>
-                        </button>
-
-
-                        <button
-                            class="action-btn share-btn"
-                            type="button"
-                        >
-                            ↗️
-                        </button>
-
-                    </div>
-
-
-                    <div class="video-info">
-
-                        <div class="username">
-                            @wwc_user
-                        </div>
-
-                        <div class="video-caption">
-                            My new video 🌎
-                        </div>
-
-                    </div>
-
-                `;
-
-
-                videoFeed.appendChild(
-                    item
-                );
-
-
-                initializeVideoButtons();
-
-
-                setupVideoPlayback();
-
-
-                item.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
-
-
-                videoUpload.value =
-                    "";
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       ESCAPE KEY
-    ===================================================== */
-
-    document.addEventListener(
-        "keydown",
-        event => {
-
-            if (
-                event.key !==
-                "Escape"
-            ) {
-
-                return;
-
-            }
-
-
-            closeSearch();
-
-            closeCommentBox();
-
-            closeProfileMenu();
-
-        }
-    );
-
-
-    /* =====================================================
-       INITIALIZE EVERYTHING
-    ===================================================== */
-
-    initializeVideoButtons();
-
-    setupVideoPlayback();
-
-    showForYouFeed();
-
-
-    /* =====================================================
-       INITIAL AUTOPLAY
-    ===================================================== */
-
-    const firstVideo =
-        $(".feed-video");
-
-
-    if (firstVideo) {
-
-        setTimeout(
-            () => {
-
-                firstVideo.muted =
-                    true;
-
-
-                firstVideo
-                    .play()
-                    .catch(
-                        () => {}
-                    );
-
-            },
-            300
-        );
-
-    }
-
-
-    /* =====================================================
-       READY
-    ===================================================== */
+  if (user) {
 
     console.log(
-        "WWC-Core: App initialized successfully."
+      "🌍 WWC logged in:",
+      user.email || user.uid
     );
 
+    await createOrLoadUserProfile(user);
+
+  } else {
+
+    console.log("WWC guest mode");
+
+  }
+
 });
+
+
+/* =========================================================
+   CREATE / LOAD USER PROFILE
+   ========================================================= */
+
+async function createOrLoadUserProfile(user) {
+
+  try {
+
+    const userRef = doc(
+      db,
+      "users",
+      user.uid
+    );
+
+    const snapshot = await getDoc(userRef);
+
+    if (!snapshot.exists()) {
+
+      currentProfile = {
+
+        uid: user.uid,
+
+        name:
+          user.displayName ||
+          "WWC User",
+
+        username:
+          "wwc_" +
+          user.uid.substring(0, 6),
+
+        email:
+          user.email || "",
+
+        photoURL:
+          user.photoURL ||
+          DEFAULT_PHOTO,
+
+        bio:
+          "Welcome to World Wide Connect 🌍",
+
+        followers: 0,
+
+        following: 0,
+
+        likes: 0,
+
+        followingIds: [],
+
+        followerIds: [],
+
+        createdAt:
+          serverTimestamp()
+
+      };
+
+      await setDoc(
+        userRef,
+        currentProfile
+      );
+
+    } else {
+
+      currentProfile =
+        snapshot.data();
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "❌ User profile error:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   AUTH REQUIRED
+   ========================================================= */
+
+function requireLogin() {
+
+  if (currentUser) {
+    return true;
+  }
+
+  alert(
+    "🔐 এই কাজটি করতে আগে Login করুন।"
+  );
+
+  openPage("auth.html");
+
+  return false;
+
+}
+
+
+/* =========================================================
+   HOME
+   ========================================================= */
+
+const homeBtn =
+  document.getElementById("homeBtn");
+
+if (homeBtn) {
+
+  homeBtn.addEventListener(
+    "click",
+    () => {
+
+      openPage("index.html");
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   FRIENDS
+   ========================================================= */
+
+const friendsBtn =
+  document.getElementById("friendsBtn");
+
+if (friendsBtn) {
+
+  friendsBtn.addEventListener(
+    "click",
+    () => {
+
+      openPage("friends.html");
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   UPLOAD
+   ========================================================= */
+
+const uploadBtn =
+  document.getElementById("uploadBtn");
+
+if (uploadBtn) {
+
+  uploadBtn.addEventListener(
+    "click",
+    () => {
+
+      if (!requireLogin()) {
+        return;
+      }
+
+      openPage("upload.html");
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   INBOX
+   ========================================================= */
+
+const inboxBtn =
+  document.getElementById("inboxBtn");
+
+if (inboxBtn) {
+
+  inboxBtn.addEventListener(
+    "click",
+    () => {
+
+      if (!requireLogin()) {
+        return;
+      }
+
+      openPage("inbox.html");
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   PROFILE
+   ========================================================= */
+
+const profileBtn =
+  document.getElementById("profileBtn");
+
+if (profileBtn) {
+
+  profileBtn.addEventListener(
+    "click",
+    () => {
+
+      if (!requireLogin()) {
+        return;
+      }
+
+      openPage("profile.html");
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+const searchBtn =
+  document.getElementById("searchBtn");
+
+if (searchBtn) {
+
+  searchBtn.addEventListener(
+    "click",
+    () => {
+
+      const search =
+        prompt(
+          "🔍 Username লিখুন"
+        );
+
+      if (!search) {
+        return;
+      }
+
+      const username =
+        search
+          .trim()
+          .replace(/^@/, "");
+
+      if (!username) {
+        return;
+      }
+
+      openPage(
+        "profile.html?username=" +
+        encodeURIComponent(username)
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   PROFILE MENU
+   ========================================================= */
+
+const profileMenu =
+  document.getElementById("profileMenu");
+
+const profileMenuClose =
+  document.getElementById("profileMenuClose");
+
+const profileBtnMenu =
+  document.getElementById("profileBtnMenu");
+
+const loginBtn =
+  document.getElementById("loginBtn");
+
+const logoutBtn =
+  document.getElementById("logoutBtn");
+
+
+function closeProfileMenu() {
+
+  if (!profileMenu) {
+    return;
+  }
+
+  profileMenu.classList.remove(
+    "show"
+  );
+
+  profileMenu.setAttribute(
+    "aria-hidden",
+    "true"
+  );
+
+}
+
+
+function openProfileMenu() {
+
+  if (!profileMenu) {
+    return;
+  }
+
+  profileMenu.classList.add(
+    "show"
+  );
+
+  profileMenu.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+
+}
+
+
+if (profileMenuClose) {
+
+  profileMenuClose.addEventListener(
+    "click",
+    closeProfileMenu
+  );
+
+}
+
+
+if (profileBtnMenu) {
+
+  profileBtnMenu.addEventListener(
+    "click",
+    () => {
+
+      closeProfileMenu();
+
+      if (!requireLogin()) {
+        return;
+      }
+
+      openPage("profile.html");
+
+    }
+  );
+
+}
+
+
+if (loginBtn) {
+
+  loginBtn.addEventListener(
+    "click",
+    () => {
+
+      closeProfileMenu();
+
+      openPage("auth.html");
+
+    }
+  );
+
+}
+
+
+if (logoutBtn) {
+
+  logoutBtn.addEventListener(
+    "click",
+    async () => {
+
+      try {
+
+        await signOut(auth);
+
+        closeProfileMenu();
+
+        alert(
+          "✅ Logout সফল হয়েছে"
+        );
+
+        openPage("auth.html");
+
+      } catch (error) {
+
+        console.error(
+          "Logout error:",
+          error
+        );
+
+        alert(
+          "❌ Logout করা যায়নি।"
+        );
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   VIDEO PROFILE CLICK
+   ========================================================= */
+
+document
+  .querySelectorAll(
+    ".video-item .profile-photo"
+  )
+  .forEach(photo => {
+
+    photo.addEventListener(
+      "click",
+      event => {
+
+        event.stopPropagation();
+
+        const item =
+          photo.closest(
+            ".video-item"
+          );
+
+        if (!item) {
+          return;
+        }
+
+        const usernameElement =
+          item.querySelector(
+            ".profile-area .username"
+          );
+
+        if (!usernameElement) {
+          return;
+        }
+
+        const username =
+          usernameElement.textContent
+            .trim()
+            .replace(/^@/, "");
+
+        if (!username) {
+          return;
+        }
+
+        openPage(
+          "profile.html?username=" +
+          encodeURIComponent(username)
+        );
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   VIDEO USERNAME CLICK
+   ========================================================= */
+
+document
+  .querySelectorAll(
+    ".video-item .profile-area .username"
+  )
+  .forEach(usernameElement => {
+
+    usernameElement.addEventListener(
+      "click",
+      event => {
+
+        event.stopPropagation();
+
+        const username =
+          usernameElement.textContent
+            .trim()
+            .replace(/^@/, "");
+
+        if (!username) {
+          return;
+        }
+
+        openPage(
+          "profile.html?username=" +
+          encodeURIComponent(username)
+        );
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   FOLLOW / UNFOLLOW
+   ========================================================= */
+
+document
+  .querySelectorAll(
+    ".video-item .follow-btn"
+  )
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      async event => {
+
+        event.stopPropagation();
+
+        if (!requireLogin()) {
+          return;
+        }
+
+        const item =
+          button.closest(
+            ".video-item"
+          );
+
+        if (!item) {
+          return;
+        }
+
+        const usernameElement =
+          item.querySelector(
+            ".profile-area .username"
+          );
+
+        if (!usernameElement) {
+          return;
+        }
+
+        const username =
+          usernameElement.textContent
+            .trim()
+            .replace(/^@/, "");
+
+        if (!username) {
+          return;
+        }
+
+        await toggleFollowByUsername(
+          username,
+          button
+        );
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   FIND USER BY USERNAME
+   ========================================================= */
+
+async function findUserByUsername(
+  username
+) {
+
+  const cleanUsername =
+    username
+      .replace(/^@/, "")
+      .trim()
+      .toLowerCase();
+
+  if (!cleanUsername) {
+    return null;
+  }
+
+  /*
+   * Current system uses user UID as document ID.
+   * Therefore we first load users and compare username.
+   *
+   * Later we can optimize this with a username index.
+   */
+
+  const usersRef =
+    collection(
+      db,
+      "users"
+    );
+
+  const snapshot =
+    await getDocs(usersRef);
+
+  for (
+    const userDoc of snapshot.docs
+  ) {
+
+    const data =
+      userDoc.data();
+
+    const userUsername =
+      String(
+        data.username || ""
+      )
+        .replace(/^@/, "")
+        .toLowerCase();
+
+    if (
+      userUsername ===
+      cleanUsername
+    ) {
+
+      return {
+
+        uid:
+          userDoc.id,
+
+        ...data
+
+      };
+
+    }
+
+  }
+
+  return null;
+
+}
+
+
+/* =========================================================
+   FOLLOW FUNCTION
+   ========================================================= */
+
+async function toggleFollowByUsername(
+  username,
+  button
+) {
+
+  if (!currentUser) {
+    return;
+  }
+
+  button.disabled = true;
+
+  try {
+
+    const targetUser =
+      await findUserByUsername(
+        username
+      );
+
+    if (!targetUser) {
+
+      alert(
+        "❌ User পাওয়া যায়নি।"
+      );
+
+      return;
+
+    }
+
+    if (
+      targetUser.uid ===
+      currentUser.uid
+    ) {
+
+      return;
+
+    }
+
+
+    const myRef =
+      doc(
+        db,
+        "users",
+        currentUser.uid
+      );
+
+    const targetRef =
+      doc(
+        db,
+        "users",
+        targetUser.uid
+      );
+
+
+    const mySnapshot =
+      await getDoc(myRef);
+
+    const targetSnapshot =
+      await getDoc(targetRef);
+
+
+    if (
+      !mySnapshot.exists() ||
+      !targetSnapshot.exists()
+    ) {
+
+      return;
+
+    }
+
+
+    const myData =
+      mySnapshot.data();
+
+    const targetData =
+      targetSnapshot.data();
+
+
+    const followingIds =
+      Array.isArray(
+        myData.followingIds
+      )
+        ? myData.followingIds
+        : [];
+
+
+    const followerIds =
+      Array.isArray(
+        targetData.followerIds
+      )
+        ? targetData.followerIds
+        : [];
+
+
+    const alreadyFollowing =
+      followingIds.includes(
+        targetUser.uid
+      );
+
+
+    if (alreadyFollowing) {
+
+      await updateDoc(
+        myRef,
+        {
+
+          followingIds:
+            arrayRemove(
+              targetUser.uid
+            ),
+
+          following:
+            increment(-1)
+
+        }
+      );
+
+
+      await updateDoc(
+        targetRef,
+        {
+
+          followerIds:
+            arrayRemove(
+              currentUser.uid
+            ),
+
+          followers:
+            increment(-1)
+
+        }
+      );
+
+
+      button.classList.remove(
+        "following"
+      );
+
+      button.textContent =
+        "Follow";
+
+
+    } else {
+
+      await updateDoc(
+        myRef,
+        {
+
+          followingIds:
+            arrayUnion(
+              targetUser.uid
+            ),
+
+          following:
+            increment(1)
+
+        }
+      );
+
+
+      await updateDoc(
+        targetRef,
+        {
+
+          followerIds:
+            arrayUnion(
+              currentUser.uid
+            ),
+
+          followers:
+            increment(1)
+
+        }
+      );
+
+
+      button.classList.add(
+        "following"
+      );
+
+      button.textContent =
+        "Following";
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      "Follow error:",
+      error
+    );
+
+    alert(
+      "❌ Follow পরিবর্তন করা যায়নি।"
+    );
+
+  } finally {
+
+    button.disabled = false;
+
+  }
+
+}
+
+
+/* =========================================================
+   LIKE
+   ========================================================= */
+
+document
+  .querySelectorAll(
+    ".like-btn"
+  )
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      async event => {
+
+        event.stopPropagation();
+
+        if (!requireLogin()) {
+          return;
+        }
+
+        const item =
+          button.closest(
+            ".video-item"
+          );
+
+        if (!item) {
+          return;
+        }
+
+        const videoId =
+          item.dataset.videoId;
+
+        if (!videoId) {
+          return;
+        }
+
+        await toggleLike(
+          videoId,
+          button
+        );
+
+      }
+    );
+
+  });
+
+
+async function toggleLike(
+  videoId,
+  button
+) {
+
+  if (!currentUser) {
+    return;
+  }
+
+  button.disabled = true;
+
+  try {
+
+    const likeRef =
+      doc(
+        db,
+        "videos",
+        videoId,
+        "likes",
+        currentUser.uid
+      );
+
+    const videoRef =
+      doc(
+        db,
+        "videos",
+        videoId
+      );
+
+    const likeSnapshot =
+      await getDoc(likeRef);
+
+    const videoSnapshot =
+      await getDoc(videoRef);
+
+
+    if (!likeSnapshot.exists()) {
+
+      await setDoc(
+        likeRef,
+        {
+
+          uid:
+            currentUser.uid,
+
+          createdAt:
+            serverTimestamp()
+
+        }
+      );
+
+
+      if (videoSnapshot.exists()) {
+
+        await updateDoc(
+          videoRef,
+          {
+            likeCount:
+              increment(1)
+          }
+        );
+
+      } else {
+
+        await setDoc(
+          videoRef,
+          {
+
+            videoId:
+              videoId,
+
+            likeCount:
+              1,
+
+            saveCount:
+              0,
+
+            commentCount:
+              0,
+
+            createdAt:
+              serverTimestamp()
+
+          }
+        );
+
+      }
+
+
+      button.classList.add(
+        "liked"
+      );
+
+      button.setAttribute(
+        "aria-pressed",
+        "true"
+      );
+
+
+    } else {
+
+      await deleteDoc(
+        likeRef
+      );
+
+
+      if (
+        videoSnapshot.exists()
+      ) {
+
+        await updateDoc(
+          videoRef,
+          {
+
+            likeCount:
+              increment(-1)
+
+          }
+        );
+
+      }
+
+
+      button.classList.remove(
+        "liked"
+      );
+
+      button.setAttribute(
+        "aria-pressed",
+        "false"
+      );
+
+    }
+
+
+    await refreshVideoCounts(
+      videoId,
+      button
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Like error:",
+      error
+    );
+
+    alert(
+      "❌ Like পরিবর্তন করা যায়নি।"
+    );
+
+  } finally {
+
+    button.disabled = false;
+
+  }
+
+}
+
+
+/* =========================================================
+   SAVE
+   ========================================================= */
+
+document
+  .querySelectorAll(
+    ".save-btn"
+  )
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      async event => {
+
+        event.stopPropagation();
+
+        if (!requireLogin()) {
+          return;
+        }
+
+        const item =
+          button.closest(
+            ".video-item"
+          );
+
+        if (!item) {
+          return;
+        }
+
+        const videoId =
+          item.dataset.videoId;
+
+        if (!videoId) {
+          return;
+        }
+
+        await toggleSave(
+          videoId,
+          button
+        );
+
+      }
+    );
+
+  });
+
+
+async function toggleSave(
+  videoId,
+  button
+) {
+
+  if (!currentUser) {
+    return;
+  }
+
+  button.disabled = true;
+
+  try {
+
+    const saveRef =
+      doc(
+        db,
+        "videos",
+        videoId,
+        "saves",
+        currentUser.uid
+      );
+
+    const videoRef =
+      doc(
+        db,
+        "videos",
+        videoId
+      );
+
+    const saveSnapshot =
+      await getDoc(saveRef);
+
+    const videoSnapshot =
+      await getDoc(videoRef);
+
+
+    if (!saveSnapshot.exists()) {
+
+      await setDoc(
+        saveRef,
+        {
+
+          uid:
+            currentUser.uid,
+
+          createdAt:
+            serverTimestamp()
+
+        }
+      );
+
+
+      if (
+        videoSnapshot.exists()
+      ) {
+
+        await updateDoc(
+          videoRef,
+          {
+
+            saveCount:
+              increment(1)
+
+          }
+        );
+
+      } else {
+
+        await setDoc(
+          videoRef,
+          {
+
+            videoId:
+              videoId,
+
+            likeCount:
+              0,
+
+            saveCount:
+              1,
+
+            commentCount:
+              0,
+
+            createdAt:
+              serverTimestamp()
+
+          }
+        );
+
+      }
+
+
+      button.classList.add(
+        "saved"
+      );
+
+      button.setAttribute(
+        "aria-pressed",
+        "true"
+      );
+
+
+    } else {
+
+      await deleteDoc(
+        saveRef
+      );
+
+
+      if (
+        videoSnapshot.exists()
+      ) {
+
+        await updateDoc(
+          videoRef,
+          {
+
+            saveCount:
+              increment(-1)
+
+          }
+        );
+
+      }
+
+
+      button.classList.remove(
+        "saved"
+      );
+
+      button.setAttribute(
+        "aria-pressed",
+        "false"
+      );
+
+    }
+
+
+    await refreshVideoCounts(
+      videoId,
+      button
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Save error:",
+      error
+    );
+
+    alert(
+      "❌ Save পরিবর্তন করা যায়নি।"
+    );
+
+  } finally {
+
+    button.disabled = false;
+
+  }
+
+}
+
+
+/* =========================================================
+   REFRESH VIDEO COUNTS
+   ========================================================= */
+
+async function refreshVideoCounts(
+  videoId,
+  itemButton
+) {
+
+  const videoRef =
+    doc(
+      db,
+      "videos",
+      videoId
+    );
+
+  const snapshot =
+    await getDoc(videoRef);
+
+  if (!snapshot.exists()) {
+    return;
+  }
+
+  const data =
+    snapshot.data();
+
+
+  const videoItem =
+    itemButton.closest(
+      ".video-item"
+    );
+
+  if (!videoItem) {
+    return;
+  }
+
+
+  const likeCount =
+    videoItem.querySelector(
+      ".like-count"
+    );
+
+  const saveCount =
+    videoItem.querySelector(
+      ".save-count"
+    );
+
+
+  if (likeCount) {
+
+    likeCount.textContent =
+      data.likeCount || 0;
+
+  }
+
+
+  if (saveCount) {
+
+    saveCount.textContent =
+      data.saveCount || 0;
+
+  }
+
+}
+
+
+/* =========================================================
+   COMMENT BUTTON
+   ========================================================= */
+
+document
+  .querySelectorAll(
+    ".comment-btn"
+  )
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      async event => {
+
+        event.stopPropagation();
+
+        if (!requireLogin()) {
+          return;
+        }
+
+        const item =
+          button.closest(
+            ".video-item"
+          );
+
+        if (!item) {
+          return;
+        }
+
+        activeCommentVideoId =
+          item.dataset.videoId;
+
+        openCommentBox();
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   COMMENT ELEMENTS
+   ========================================================= */
+
+const commentBox =
+  document.getElementById(
+    "commentBox"
+  );
+
+const commentInput =
+  document.getElementById(
+    "commentInput"
+  );
+
+const commentCancel =
+  document.getElementById(
+    "commentCancel"
+  );
+
+const commentSend =
+  document.getElementById(
+    "commentSend"
+  );
+
+
+function openCommentBox() {
+
+  if (!commentBox) {
+    return;
+  }
+
+  commentBox.classList.add(
+    "show"
+  );
+
+  if (commentInput) {
+
+    commentInput.value =
+      "";
+
+    setTimeout(
+      () => {
+        commentInput.focus();
+      },
+      100
+    );
+
+  }
+
+}
+
+
+function closeCommentBox() {
+
+  if (!commentBox) {
+    return;
+  }
+
+  commentBox.classList.remove(
+    "show"
+  );
+
+  activeCommentVideoId =
+    null;
+
+}
+
+
+if (commentCancel) {
+
+  commentCancel.addEventListener(
+    "click",
+    closeCommentBox
+  );
+
+}
+
+
+/* =========================================================
+   SEND COMMENT
+   ========================================================= */
+
+if (commentSend) {
+
+  commentSend.addEventListener(
+    "click",
+    async () => {
+
+      if (!requireLogin()) {
+        return;
+      }
+
+      if (!activeCommentVideoId) {
+        return;
+      }
+
+      const text =
+        commentInput
+          ?.value
+          .trim();
+
+      if (!text) {
+
+        alert(
+          "⚠️ Comment লিখুন।"
+        );
+
+        return;
+
+      }
+
+
+      commentSend.disabled =
+        true;
+
+
+      try {
+
+        const commentsRef =
+          collection(
+            db,
+            "videos",
+            activeCommentVideoId,
+            "comments"
+          );
+
+
+        await addDoc(
+          commentsRef,
+          {
+
+            uid:
+              currentUser.uid,
+
+            name:
+              currentProfile?.name ||
+              currentUser.displayName ||
+              "WWC User",
+
+            username:
+              currentProfile?.username ||
+              "wwc_user",
+
+            photoURL:
+              currentProfile?.photoURL ||
+              currentUser.photoURL ||
+              DEFAULT_PHOTO,
+
+            text:
+              text,
+
+            createdAt:
+              serverTimestamp()
+
+          }
+        );
+
+
+        const videoRef =
+          doc(
+            db,
+            "videos",
+            activeCommentVideoId
+          );
+
+
+        const videoSnapshot =
+          await getDoc(videoRef);
+
+
+        if (
+          videoSnapshot.exists()
+        ) {
+
+          await updateDoc(
+            videoRef,
+            {
+
+              commentCount:
+                increment(1)
+
+            }
+          );
+
+        } else {
+
+          await setDoc(
+            videoRef,
+            {
+
+              videoId:
+                activeCommentVideoId,
+
+              likeCount:
+                0,
+
+              saveCount:
+                0,
+
+              commentCount:
+                1,
+
+              createdAt:
+                serverTimestamp()
+
+            }
+          );
+
+        }
+
+
+        alert(
+          "✅ Comment পাঠানো হয়েছে।"
+        );
+
+
+        if (commentInput) {
+
+          commentInput.value =
+            "";
+
+        }
+
+        closeCommentBox();
+
+
+      } catch (error) {
+
+        console.error(
+          "Comment error:",
+          error
+        );
+
+        alert(
+          "❌ Comment পাঠানো যায়নি।"
+        );
+
+      } finally {
+
+        commentSend.disabled =
+          false;
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   SHARE
+   ========================================================= */
+
+document
+  .querySelectorAll(
+    ".share-btn"
+  )
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      async event => {
+
+        event.stopPropagation();
+
+        const item =
+          button.closest(
+            ".video-item"
+          );
+
+        const videoId =
+          item?.dataset.videoId ||
+          "";
+
+        const url =
+          window.location.href
+            .split("#")[0] +
+          "#" +
+          videoId;
+
+
+        try {
+
+          if (
+            navigator.share
+          ) {
+
+            await navigator.share({
+
+              title:
+                "World Wide Connect",
+
+              text:
+                "এই ভিডিওটি দেখুন 🌍",
+
+              url:
+                url
+
+            });
+
+          } else if (
+            navigator.clipboard
+          ) {
+
+            await navigator.clipboard.writeText(
+              url
+            );
+
+            alert(
+              "✅ Video link কপি হয়েছে।"
+            );
+
+          } else {
+
+            prompt(
+              "Video link:",
+              url
+            );
+
+          }
+
+        } catch (error) {
+
+          console.log(
+            "Share cancelled"
+          );
+
+        }
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   VIDEO AUTO PLAY
+   ========================================================= */
+
+const videoFeed =
+  document.getElementById(
+    "video-feed"
+  );
+
+const videos =
+  document.querySelectorAll(
+    ".feed-video"
+  );
+
+
+if (
+  videoFeed &&
+  videos.length
+) {
+
+  const observer =
+    new IntersectionObserver(
+      entries => {
+
+        entries.forEach(
+          entry => {
+
+            const video =
+              entry.target;
+
+            if (
+              entry.isIntersecting &&
+              entry.intersectionRatio >= 0.65
+            ) {
+
+              videos.forEach(
+                otherVideo => {
+
+                  if (
+                    otherVideo !== video
+                  ) {
+
+                    otherVideo.pause();
+
+                  }
+
+                }
+              );
+
+              video.play().catch(
+                () => {}
+              );
+
+            } else {
+
+              video.pause();
+
+            }
+
+          }
+        );
+
+      },
+      {
+
+        root:
+          videoFeed,
+
+        threshold:
+          0.65
+
+      }
+    );
+
+
+  videos.forEach(
+    video => {
+
+      observer.observe(
+        video
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   NEXT VIDEO AFTER END
+   ========================================================= */
+
+videos.forEach(
+  video => {
+
+    video.addEventListener(
+      "ended",
+      () => {
+
+        const currentItem =
+          video.closest(
+            ".video-item"
+          );
+
+        if (!currentItem) {
+          return;
+        }
+
+        const nextItem =
+          currentItem.nextElementSibling;
+
+        if (
+          nextItem &&
+          nextItem.classList.contains(
+            "video-item"
+          )
+        ) {
+
+          nextItem.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+          });
+
+        }
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   VIDEO CLICK PLAY / PAUSE
+   ========================================================= */
+
+videos.forEach(
+  video => {
+
+    video.addEventListener(
+      "click",
+      event => {
+
+        if (
+          event.target.closest(
+            "button"
+          )
+        ) {
+          return;
+        }
+
+        if (video.paused) {
+
+          video.play().catch(
+            () => {}
+          );
+
+        } else {
+
+          video.pause();
+
+        }
+
+      }
+    );
+
+  }
+);
+
+
+/* =========================================================
+   TOP TABS
+   ========================================================= */
+
+document
+  .querySelectorAll(
+    ".wwc-top-tab"
+  )
+  .forEach(tab => {
+
+    tab.addEventListener(
+      "click",
+      () => {
+
+        document
+          .querySelectorAll(
+            ".wwc-top-tab"
+          )
+          .forEach(
+            item => {
+
+              item.classList.remove(
+                "active"
+              );
+
+            }
+          );
+
+        tab.classList.add(
+          "active"
+        );
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   CLOSE MENU WHEN CLICK OUTSIDE
+   ========================================================= */
+
+document.addEventListener(
+  "click",
+  event => {
+
+    if (
+      profileMenu &&
+      profileMenu.classList.contains(
+        "show"
+      ) &&
+      !profileMenu.contains(
+        event.target
+      )
+    ) {
+
+      closeProfileMenu();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   ESCAPE KEY
+   ========================================================= */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "Escape"
+    ) {
+
+      closeProfileMenu();
+
+      closeCommentBox();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   COMMENT ENTER KEY
+   ========================================================= */
+
+if (commentInput) {
+
+  commentInput.addEventListener(
+    "keydown",
+    event => {
+
+      if (
+        event.key === "Enter" &&
+        !event.shiftKey
+      ) {
+
+        event.preventDefault();
+
+        if (commentSend) {
+
+          commentSend.click();
+
+        }
+
+      }
+
+    }
+  );
+
+}
+
+
+/* =========================================================
+   INITIAL LOG
+   ========================================================= */
+
+console.log(
+  "🌍 WWC-Core Firebase app.js loaded successfully"
+);
