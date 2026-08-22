@@ -24,28 +24,26 @@
       box-sizing: border-box;
     }
 
-
     body {
 
       margin: 0;
       padding: 20px;
 
-      font-family: Arial, sans-serif;
+      min-height: 100vh;
 
       background: #000;
       color: #fff;
 
-      min-height: 100vh;
+      font-family: Arial, sans-serif;
 
     }
-
 
     .upload-box {
 
       width: 100%;
       max-width: 550px;
 
-      margin: 25px auto;
+      margin: 20px auto;
 
       padding: 22px;
 
@@ -57,11 +55,9 @@
 
     }
 
-
     .top-bar {
 
       display: flex;
-
       align-items: center;
 
       gap: 12px;
@@ -70,14 +66,12 @@
 
     }
 
-
     .back-btn {
 
       width: 42px;
       height: 42px;
 
       border: 0;
-
       border-radius: 50%;
 
       background: #292929;
@@ -90,15 +84,12 @@
 
     }
 
-
     .title {
 
       font-size: 21px;
-
       font-weight: bold;
 
     }
-
 
     .login-status {
 
@@ -120,15 +111,11 @@
 
     }
 
-
     .field {
 
       margin-bottom: 18px;
 
-      text-align: left;
-
     }
-
 
     .field label {
 
@@ -142,23 +129,25 @@
 
     }
 
-
-    .field input,
     .field textarea {
 
       width: 100%;
 
+      min-height: 100px;
+
       padding: 13px;
 
-      background: #111;
+      resize: vertical;
 
-      color: #fff;
+      outline: none;
 
       border: 1px solid #444;
 
       border-radius: 10px;
 
-      outline: none;
+      background: #111;
+
+      color: #fff;
 
       font-size: 15px;
 
@@ -166,23 +155,11 @@
 
     }
 
-
-    .field input:focus,
     .field textarea:focus {
 
       border-color: #fe2c55;
 
     }
-
-
-    .field textarea {
-
-      min-height: 100px;
-
-      resize: vertical;
-
-    }
-
 
     .file-box {
 
@@ -194,10 +171,7 @@
 
       border-radius: 12px;
 
-      margin-bottom: 18px;
-
     }
-
 
     .file-box input {
 
@@ -208,7 +182,6 @@
       font-size: 14px;
 
     }
-
 
     .preview {
 
@@ -227,7 +200,6 @@
       object-fit: contain;
 
     }
-
 
     .upload-btn {
 
@@ -251,7 +223,6 @@
 
     }
 
-
     .upload-btn:disabled {
 
       opacity: .55;
@@ -259,7 +230,6 @@
       cursor: not-allowed;
 
     }
-
 
     .progress-box {
 
@@ -269,7 +239,6 @@
 
     }
 
-
     progress {
 
       width: 100%;
@@ -277,7 +246,6 @@
       height: 20px;
 
     }
-
 
     .progress-text {
 
@@ -290,7 +258,6 @@
       font-size: 14px;
 
     }
-
 
     .status {
 
@@ -308,27 +275,17 @@
 
     }
 
-
     .success {
-
       color: #4ade80;
-
     }
-
 
     .error {
-
       color: #ff6684;
-
     }
-
 
     .info {
-
       color: #aaa;
-
     }
-
 
     .login-link {
 
@@ -349,7 +306,6 @@
       font-weight: bold;
 
     }
-
 
     .done-btn {
 
@@ -374,7 +330,6 @@
       cursor: pointer;
 
     }
-
 
     @media (max-width: 500px) {
 
@@ -401,1416 +356,1175 @@
 <body>
 
 
-  <main class="upload-box">
+<main class="upload-box">
 
 
-    <!-- TOP BAR -->
-
-    <div class="top-bar">
-
-      <button
-        type="button"
-        id="backBtn"
-        class="back-btn"
-      >
-        ←
-      </button>
-
-      <div class="title">
-        🎬 Upload Video
-      </div>
-
-    </div>
-
-
-    <!-- LOGIN STATUS -->
-
-    <div
-      id="loginStatus"
-      class="login-status"
-    >
-      ⏳ Login Check হচ্ছে...
-    </div>
-
-
-    <!-- CAPTION -->
-
-    <div class="field">
-
-      <label for="caption">
-        📝 Video Caption
-      </label>
-
-      <textarea
-        id="caption"
-        maxlength="300"
-        placeholder="আপনার Video সম্পর্কে কিছু লিখুন..."
-        disabled
-      ></textarea>
-
-    </div>
-
-
-    <!-- VIDEO FILE -->
-
-    <div class="field">
-
-      <label>
-        🎥 Video নির্বাচন করুন
-      </label>
-
-      <div class="file-box">
-
-        <input
-          type="file"
-          id="videoFile"
-          accept="video/*"
-          disabled
-        >
-
-        <video
-          id="preview"
-          class="preview"
-          controls
-          playsinline
-        ></video>
-
-      </div>
-
-    </div>
-
-
-    <!-- UPLOAD BUTTON -->
+  <div class="top-bar">
 
     <button
       type="button"
-      id="uploadBtn"
-      class="upload-btn"
+      id="backBtn"
+      class="back-btn"
+    >
+      ←
+    </button>
+
+    <div class="title">
+      🎬 Upload Video
+    </div>
+
+  </div>
+
+
+  <div
+    id="loginStatus"
+    class="login-status"
+  >
+    ⏳ Login Check হচ্ছে...
+  </div>
+
+
+  <div class="field">
+
+    <label for="caption">
+      📝 Video Caption
+    </label>
+
+    <textarea
+      id="caption"
+      maxlength="300"
+      placeholder="আপনার Video সম্পর্কে কিছু লিখুন..."
       disabled
-    >
-      ⬆️ Upload Video
-    </button>
+    ></textarea>
+
+  </div>
 
 
-    <!-- PROGRESS -->
+  <div class="field">
 
-    <div
-      id="progressBox"
-      class="progress-box"
-    >
+    <label>
+      🎥 Video নির্বাচন করুন
+    </label>
 
-      <progress
-        id="progressBar"
-        value="0"
-        max="100"
-      ></progress>
+    <div class="file-box">
 
-      <div
-        id="progressText"
-        class="progress-text"
+      <input
+        type="file"
+        id="videoFile"
+        accept="video/*"
+        disabled
       >
-        0%
-      </div>
+
+      <video
+        id="preview"
+        class="preview"
+        controls
+        playsinline
+      ></video>
 
     </div>
 
+  </div>
 
-    <!-- STATUS -->
+
+  <button
+    type="button"
+    id="uploadBtn"
+    class="upload-btn"
+    disabled
+  >
+    ⬆️ Publish Video
+  </button>
+
+
+  <div
+    id="progressBox"
+    class="progress-box"
+  >
+
+    <progress
+      id="progressBar"
+      value="0"
+      max="100"
+    ></progress>
 
     <div
-      id="status"
-      class="status"
-    ></div>
-
-
-    <!-- DONE -->
-
-    <button
-      type="button"
-      id="doneBtn"
-      class="done-btn"
+      id="progressText"
+      class="progress-text"
     >
-      ✅ Upload শেষ — Home-এ যান
-    </button>
+      0%
+    </div>
 
+  </div>
 
-  </main>
 
+  <div
+    id="status"
+    class="status"
+  ></div>
 
 
-  <!-- =====================================================
-       FIREBASE
-  ====================================================== -->
+  <button
+    type="button"
+    id="doneBtn"
+    class="done-btn"
+  >
+    ✅ Publish হয়েছে — Home-এ যান
+  </button>
 
-  <script type="module">
 
+</main>
 
-    // =====================================================
-    // FIREBASE APP
-    // =====================================================
 
-    import {
 
-      getApps,
-      initializeApp
+<script type="module">
 
-    } from
-      "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
+/* =====================================================
+   FIREBASE
+   ===================================================== */
 
-    // =====================================================
-    // FIREBASE AUTH
-    // =====================================================
+import {
+  getApps,
+  initializeApp
+} from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
-    import {
 
-      getAuth,
-      onAuthStateChanged,
-      setPersistence,
-      browserLocalPersistence
+import {
+  getAuth,
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence
+} from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
-    } from
-      "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  addDoc,
+  serverTimestamp
+} from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
-    // =====================================================
-    // FIREBASE STORAGE
-    // =====================================================
 
-    import {
 
-      getStorage,
-      ref,
-      uploadBytesResumable,
-      getDownloadURL
+/* =====================================================
+   FIREBASE CONFIG
+   ===================================================== */
 
-    } from
-      "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
+const firebaseConfig = {
 
+  apiKey:
+    "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
 
-    // =====================================================
-    // FIREBASE FIRESTORE
-    // =====================================================
+  authDomain:
+    "world-wide-connect-62c87.firebaseapp.com",
 
-    import {
+  projectId:
+    "world-wide-connect-62c87",
 
-      getFirestore,
-      doc,
-      getDoc,
-      setDoc,
-      updateDoc,
-      arrayUnion
+  storageBucket:
+    "world-wide-connect-62c87.firebasestorage.app",
 
-    } from
-      "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+  messagingSenderId:
+    "93178453668",
 
+  appId:
+    "1:93178453668:web:2184630caa8e61f7445031",
 
+  measurementId:
+    "G-PKFJ5NEMGQ"
 
-    // =====================================================
-    // FIREBASE CONFIG
-    // =====================================================
+};
 
-    const firebaseConfig = {
 
-      apiKey:
-        "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
 
-      authDomain:
-        "world-wide-connect-62c87.firebaseapp.com",
+/* =====================================================
+   FIREBASE START
+   ===================================================== */
 
-      projectId:
-        "world-wide-connect-62c87",
+const app =
+  getApps().length
+    ? getApps()[0]
+    : initializeApp(firebaseConfig);
 
-      storageBucket:
-        "world-wide-connect-62c87.firebasestorage.app",
 
-      messagingSenderId:
-        "93178453668",
+const auth =
+  getAuth(app);
 
-      appId:
-        "1:93178453668:web:2184630caa8e61f7445031",
 
-      measurementId:
-        "G-PKFJ5NEMGQ"
+const db =
+  getFirestore(app);
 
-    };
 
 
+/* =====================================================
+   CLOUDINARY
+   ===================================================== */
 
-    // =====================================================
-    // FIREBASE START
-    // =====================================================
+const CLOUDINARY_CLOUD_NAME =
+  "fsalagrz";
 
-    const app =
 
-      getApps().length
+const CLOUDINARY_UPLOAD_PRESET =
+  "wwc_upload";
 
-        ? getApps()[0]
 
-        : initializeApp(firebaseConfig);
+const CLOUDINARY_UPLOAD_URL =
+  `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/video/upload`;
 
 
-    const auth =
-      getAuth(app);
 
+/* =====================================================
+   ELEMENTS
+   ===================================================== */
 
-    const db =
-      getFirestore(app);
+const backBtn =
+  document.getElementById("backBtn");
 
+const loginStatus =
+  document.getElementById("loginStatus");
 
-    const storage =
-      getStorage(app);
+const caption =
+  document.getElementById("caption");
 
+const videoFile =
+  document.getElementById("videoFile");
 
+const preview =
+  document.getElementById("preview");
 
-    // =====================================================
-    // ELEMENTS
-    // =====================================================
+const uploadBtn =
+  document.getElementById("uploadBtn");
 
-    const backBtn =
-      document.getElementById("backBtn");
+const progressBox =
+  document.getElementById("progressBox");
 
+const progressBar =
+  document.getElementById("progressBar");
 
-    const loginStatus =
-      document.getElementById("loginStatus");
+const progressText =
+  document.getElementById("progressText");
 
+const status =
+  document.getElementById("status");
 
-    const caption =
-      document.getElementById("caption");
+const doneBtn =
+  document.getElementById("doneBtn");
 
 
-    const videoFile =
-      document.getElementById("videoFile");
 
+/* =====================================================
+   VARIABLES
+   ===================================================== */
 
-    const preview =
-      document.getElementById("preview");
+let currentUser = null;
 
+let selectedFile = null;
 
-    const uploadBtn =
-      document.getElementById("uploadBtn");
+let previewURL = null;
 
 
-    const progressBox =
-      document.getElementById("progressBox");
 
+/* =====================================================
+   BACK
+   ===================================================== */
 
-    const progressBar =
-      document.getElementById("progressBar");
+backBtn.addEventListener(
+  "click",
+  () => {
 
+    history.back();
 
-    const progressText =
-      document.getElementById("progressText");
+  }
+);
 
 
-    const status =
-      document.getElementById("status");
 
+/* =====================================================
+   STATUS
+   ===================================================== */
 
-    const doneBtn =
-      document.getElementById("doneBtn");
+function showStatus(
+  text,
+  type = "info"
+) {
 
+  status.textContent = text;
 
+  status.className =
+    "status " + type;
 
-    // =====================================================
-    // VARIABLES
-    // =====================================================
+}
 
-    let currentUser =
-      null;
 
 
-    let selectedFile =
-      null;
+/* =====================================================
+   FORM ENABLE
+   ===================================================== */
 
+function enableForm(
+  enabled
+) {
 
+  caption.disabled =
+    !enabled;
 
-    // =====================================================
-    // BACK BUTTON
-    // =====================================================
+  videoFile.disabled =
+    !enabled;
 
-    backBtn.addEventListener(
+  uploadBtn.disabled =
+    !enabled;
 
-      "click",
+}
 
-      () => {
 
-        history.back();
 
-      }
+/* =====================================================
+   VIDEO PREVIEW
+   ===================================================== */
 
-    );
+videoFile.addEventListener(
+  "change",
+  () => {
 
+    selectedFile =
+      videoFile.files[0]
+      || null;
 
 
-    // =====================================================
-    // STATUS FUNCTION
-    // =====================================================
+    preview.pause();
 
-    function showStatus(
-      text,
-      type = "info"
-    ) {
+    preview.removeAttribute("src");
 
-      status.textContent =
-        text;
+    preview.style.display =
+      "none";
 
-      status.className =
-        "status " + type;
+
+    if (previewURL) {
+
+      URL.revokeObjectURL(
+        previewURL
+      );
+
+      previewURL = null;
 
     }
 
 
+    if (!selectedFile) {
 
-    // =====================================================
-    // ENABLE / DISABLE FORM
-    // =====================================================
+      showStatus(
+        "⚠️ একটি Video নির্বাচন করুন।",
+        "info"
+      );
 
-    function enableUploadForm(
-      enabled
-    ) {
-
-      caption.disabled =
-        !enabled;
-
-
-      videoFile.disabled =
-        !enabled;
-
-
-      uploadBtn.disabled =
-        !enabled;
+      return;
 
     }
 
 
+    if (
+      !selectedFile.type.startsWith(
+        "video/"
+      )
+    ) {
 
-    // =====================================================
-    // VIDEO PREVIEW
-    // =====================================================
+      selectedFile = null;
 
-    videoFile.addEventListener(
+      videoFile.value = "";
 
-      "change",
+      showStatus(
+        "❌ শুধু Video file নির্বাচন করুন।",
+        "error"
+      );
 
-      () => {
+      return;
 
-        selectedFile =
-          videoFile.files[0]
-          || null;
-
-
-        preview.pause();
-
-
-        preview.removeAttribute(
-          "src"
-        );
+    }
 
 
-        preview.style.display =
-          "none";
+    /*
+      Browser থেকে Cloudinary upload।
+      নিরাপত্তা ও mobile performance-এর জন্য
+      100 MB limit রাখা হয়েছে।
+    */
+
+    if (
+      selectedFile.size >
+      100 * 1024 * 1024
+    ) {
+
+      selectedFile = null;
+
+      videoFile.value = "";
+
+      showStatus(
+        "❌ Video সর্বোচ্চ 100 MB হতে পারবে।",
+        "error"
+      );
+
+      return;
+
+    }
 
 
-        if (!selectedFile) {
-
-          showStatus(
-            "⚠️ একটি Video নির্বাচন করুন।",
-            "info"
-          );
-
-          return;
-
-        }
+    previewURL =
+      URL.createObjectURL(
+        selectedFile
+      );
 
 
-        if (
-          !selectedFile.type.startsWith(
-            "video/"
-          )
-        ) {
-
-          selectedFile =
-            null;
-
-          videoFile.value =
-            "";
-
-          showStatus(
-            "❌ শুধু Video file নির্বাচন করুন।",
-            "error"
-          );
-
-          return;
-
-        }
+    preview.src =
+      previewURL;
 
 
-        // 100 MB LIMIT
-
-        if (
-          selectedFile.size >
-          100 * 1024 * 1024
-        ) {
-
-          selectedFile =
-            null;
-
-          videoFile.value =
-            "";
-
-          showStatus(
-            "❌ Video সর্বোচ্চ 100 MB হতে পারবে।",
-            "error"
-          );
-
-          return;
-
-        }
+    preview.style.display =
+      "block";
 
 
-        const previewURL =
-          URL.createObjectURL(
-            selectedFile
-          );
+    showStatus(
+      "✅ Video নির্বাচন হয়েছে। Publish করতে পারেন।",
+      "info"
+    );
+
+  }
+);
 
 
-        preview.src =
-          previewURL;
+
+/* =====================================================
+   AUTH PERSISTENCE
+   ===================================================== */
+
+try {
+
+  await setPersistence(
+    auth,
+    browserLocalPersistence
+  );
+
+} catch (error) {
+
+  console.error(
+    "Persistence error:",
+    error
+  );
+
+}
 
 
-        preview.style.display =
-          "block";
+
+/* =====================================================
+   AUTH STATE
+   ===================================================== */
+
+onAuthStateChanged(
+  auth,
+  async (user) => {
+
+    currentUser =
+      user;
 
 
-        showStatus(
-          "✅ Video নির্বাচন হয়েছে। এখন Upload করুন।",
-          "info"
-        );
+    if (!user) {
 
-      }
+      loginStatus.textContent =
+        "❌ Login করা নেই।";
 
+
+      loginStatus.style.color =
+        "#ff6684";
+
+
+      enableForm(false);
+
+
+      status.innerHTML =
+        '⚠️ Video Publish করতে আগে Login করুন।<br>' +
+        '<a class="login-link" href="./auth.html">' +
+        '🔐 Login / Register' +
+        '</a>';
+
+
+      return;
+
+    }
+
+
+    loginStatus.textContent =
+      "✅ Login করা আছে: " +
+      (
+        user.displayName
+        ||
+        user.email
+        ||
+        user.uid
+      );
+
+
+    loginStatus.style.color =
+      "#4ade80";
+
+
+    enableForm(true);
+
+
+    showStatus(
+      "🎥 Video নির্বাচন করে Publish করুন।",
+      "info"
     );
 
 
-
-    // =====================================================
-    // LOGIN PERSISTENCE
-    // =====================================================
+    /*
+      User profile না থাকলে তৈরি করা হবে।
+    */
 
     try {
 
-      await setPersistence(
-        auth,
-        browserLocalPersistence
-      );
+      const userRef =
+        doc(
+          db,
+          "users",
+          user.uid
+        );
+
+
+      const userSnapshot =
+        await getDoc(userRef);
+
+
+      if (!userSnapshot.exists()) {
+
+        await setDoc(
+          userRef,
+          {
+
+            uid:
+              user.uid,
+
+            name:
+              user.displayName
+              ||
+              "WWC User",
+
+            username:
+              "wwc_" +
+              user.uid
+                .substring(0, 6),
+
+            email:
+              user.email || "",
+
+            photoURL:
+              user.photoURL
+              ||
+              "./images/profile.png",
+
+            bio:
+              "Welcome to World Wide Connect 🌍",
+
+            followers:
+              0,
+
+            following:
+              0,
+
+            likes:
+              0,
+
+            followingIds:
+              [],
+
+            followerIds:
+              [],
+
+            createdAt:
+              serverTimestamp()
+
+          }
+        );
+
+      }
 
     } catch (error) {
 
       console.error(
-        "Persistence error:",
+        "Profile error:",
         error
       );
 
     }
 
+  }
+);
 
 
-    // =====================================================
-    // AUTH STATE
-    // =====================================================
 
-    onAuthStateChanged(
+/* =====================================================
+   CLOUDINARY UPLOAD
+   ===================================================== */
 
-      auth,
+function uploadToCloudinary(
+  file
+) {
 
-      async (user) => {
-
-        currentUser =
-          user;
-
-
-        if (!user) {
-
-          loginStatus.textContent =
-            "❌ Login করা নেই।";
+  return new Promise(
+    (
+      resolve,
+      reject
+    ) => {
 
 
-          loginStatus.style.color =
-            "#ff6684";
+      const xhr =
+        new XMLHttpRequest();
 
 
-          enableUploadForm(
-            false
+      xhr.open(
+        "POST",
+        CLOUDINARY_UPLOAD_URL
+      );
+
+
+      xhr.upload.addEventListener(
+        "progress",
+        (event) => {
+
+          if (!event.lengthComputable) {
+            return;
+          }
+
+
+          const percent =
+            (
+              event.loaded /
+              event.total
+            ) * 100;
+
+
+          progressBar.value =
+            percent;
+
+
+          progressText.textContent =
+            Math.round(percent) + "%";
+
+
+          showStatus(
+            "⬆️ Video Upload হচ্ছে: " +
+            Math.round(percent) +
+            "%",
+            "info"
           );
-
-
-          status.innerHTML =
-
-            '⚠️ Video Upload করতে আগে Login করুন।<br>' +
-
-            '<a class="login-link" href="./login.html">' +
-
-            '🔐 Login / Register' +
-
-            '</a>';
-
-
-          return;
 
         }
+      );
 
 
+      xhr.addEventListener(
+        "load",
+        () => {
 
-        // =================================================
-        // USER LOGGED IN
-        // =================================================
+          if (
+            xhr.status >= 200 &&
+            xhr.status < 300
+          ) {
 
-        loginStatus.textContent =
+            try {
 
-          "✅ Login করা আছে: " +
+              const result =
+                JSON.parse(
+                  xhr.responseText
+                );
 
-          (
-            user.displayName
-            ||
-            user.email
-            ||
-            user.uid
-          );
+                resolve(result);
 
+            } catch (error) {
 
-        loginStatus.style.color =
-          "#4ade80";
+              reject(error);
 
+            }
 
-        enableUploadForm(
-          true
-        );
+          } else {
 
-
-        showStatus(
-          "🎥 Video নির্বাচন করে Upload করুন।",
-          "info"
-        );
+            let message =
+              "Cloudinary Upload failed";
 
 
+            try {
 
-        // =================================================
-        // MAKE SURE USER PROFILE EXISTS
-        // =================================================
-
-        try {
-
-          const userRef =
-            doc(
-              db,
-              "users",
-              user.uid
-            );
+              const result =
+                JSON.parse(
+                  xhr.responseText
+                );
 
 
-          const userSnapshot =
-            await getDoc(
-              userRef
-            );
+              message =
+                result?.error?.message
+                ||
+                message;
+
+            } catch (_) {}
 
 
-          if (!userSnapshot.exists()) {
-
-            await setDoc(
-
-              userRef,
-
-              {
-
-                uid:
-                  user.uid,
-
-                name:
-                  user.displayName
-                  ||
-                  "WWC User",
-
-                username:
-                  "wwc_user",
-
-                bio:
-                  "Welcome to WWC 🌍",
-
-                country:
-                  "",
-
-                photoURL:
-                  user.photoURL
-                  ||
-                  "./images/profile.png",
-
-                followers:
-                  0,
-
-                following:
-                  0,
-
-                likes:
-                  0,
-
-                followingIds:
-                  [],
-
-                followerIds:
-                  [],
-
-                videos:
-                  []
-
-              }
-
+            reject(
+              new Error(message)
             );
 
           }
 
-        } catch (error) {
+        }
+      );
 
-          console.error(
-            "User profile check error:",
-            error
+
+      xhr.addEventListener(
+        "error",
+        () => {
+
+          reject(
+            new Error(
+              "Network error"
+            )
           );
 
         }
+      );
 
-      }
 
+      xhr.addEventListener(
+        "abort",
+        () => {
+
+          reject(
+            new Error(
+              "Upload cancelled"
+            )
+          );
+
+        }
+      );
+
+
+      const formData =
+        new FormData();
+
+
+      formData.append(
+        "file",
+        file
+      );
+
+
+      formData.append(
+        "upload_preset",
+        CLOUDINARY_UPLOAD_PRESET
+      );
+
+
+      /*
+        Cloudinary folder.
+      */
+
+      formData.append(
+        "folder",
+        "wwc/videos"
+      );
+
+
+      xhr.send(
+        formData
+      );
+
+    }
+  );
+
+}
+
+
+
+/* =====================================================
+   PUBLISH VIDEO
+   ===================================================== */
+
+uploadBtn.addEventListener(
+  "click",
+  async () => {
+
+
+    if (!currentUser) {
+
+      showStatus(
+        "❌ আগে Login করুন।",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    const file =
+      selectedFile
+      ||
+      videoFile.files[0];
+
+
+    if (!file) {
+
+      showStatus(
+        "⚠️ আগে একটি Video নির্বাচন করুন।",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    if (
+      !file.type.startsWith(
+        "video/"
+      )
+    ) {
+
+      showStatus(
+        "❌ শুধু Video Upload করা যাবে।",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    if (
+      file.size >
+      100 * 1024 * 1024
+    ) {
+
+      showStatus(
+        "❌ Video সর্বোচ্চ 100 MB হতে পারবে।",
+        "error"
+      );
+
+      return;
+
+    }
+
+
+    const videoCaption =
+      caption.value.trim();
+
+
+    if (!videoCaption) {
+
+      showStatus(
+        "⚠️ Video Caption লিখুন।",
+        "error"
+      );
+
+      caption.focus();
+
+      return;
+
+    }
+
+
+    uploadBtn.disabled =
+      true;
+
+    videoFile.disabled =
+      true;
+
+    caption.disabled =
+      true;
+
+
+    progressBox.style.display =
+      "block";
+
+
+    progressBar.value =
+      0;
+
+
+    progressText.textContent =
+      "0%";
+
+
+    showStatus(
+      "⏳ Cloudinary Upload শুরু হচ্ছে...",
+      "info"
     );
 
 
-
-    // =====================================================
-    // UPLOAD BUTTON
-    // =====================================================
-
-    uploadBtn.addEventListener(
-
-      "click",
-
-      async () => {
+    try {
 
 
-        // =================================================
-        // LOGIN CHECK
-        // =================================================
+      /* ===============================================
+         1. GET USER PROFILE
+         =============================================== */
 
-        if (!currentUser) {
-
-          showStatus(
-            "❌ আগে Login করুন।",
-            "error"
-          );
-
-          return;
-
-        }
+      const userRef =
+        doc(
+          db,
+          "users",
+          currentUser.uid
+        );
 
 
+      const userSnapshot =
+        await getDoc(
+          userRef
+        );
 
-        // =================================================
-        // FILE CHECK
-        // =================================================
 
-        const file =
-          selectedFile
+      const userData =
+        userSnapshot.exists()
+          ? userSnapshot.data()
+          : {};
+
+
+      const username =
+        String(
+          userData.username
           ||
-          videoFile.files[0];
+          "wwc_" +
+          currentUser.uid
+            .substring(0, 6)
+        )
+        .replace(
+          /^@/,
+          ""
+        );
 
 
-        if (!file) {
-
-          showStatus(
-            "⚠️ আগে একটি Video নির্বাচন করুন।",
-            "error"
-          );
-
-          return;
-
-        }
+      const userName =
+        userData.name
+        ||
+        currentUser.displayName
+        ||
+        "WWC User";
 
 
-
-        // =================================================
-        // VIDEO TYPE CHECK
-        // =================================================
-
-        if (
-          !file.type.startsWith(
-            "video/"
-          )
-        ) {
-
-          showStatus(
-            "❌ শুধু Video Upload করা যাবে।",
-            "error"
-          );
-
-          return;
-
-        }
+      const photoURL =
+        userData.photoURL
+        ||
+        currentUser.photoURL
+        ||
+        "./images/profile.png";
 
 
 
-        // =================================================
-        // SIZE CHECK
-        // =================================================
+      /* ===============================================
+         2. CLOUDINARY
+         =============================================== */
 
-        if (
-          file.size >
-          100 * 1024 * 1024
-        ) {
-
-          showStatus(
-            "❌ Video সর্বোচ্চ 100 MB হতে পারবে।",
-            "error"
-          );
-
-          return;
-
-        }
+      const cloudinaryResult =
+        await uploadToCloudinary(
+          file
+        );
 
 
-
-        // =================================================
-        // CAPTION
-        // =================================================
-
-        const videoCaption =
-          caption.value.trim();
+      const videoURL =
+        cloudinaryResult.secure_url;
 
 
-        if (!videoCaption) {
+      if (!videoURL) {
 
-          showStatus(
-            "⚠️ Video Caption লিখুন।",
-            "error"
-          );
+        throw new Error(
+          "Cloudinary Video URL পাওয়া যায়নি।"
+        );
 
-          caption.focus();
+      }
 
-          return;
 
-        }
+      showStatus(
+        "☁️ Video Cloudinary-তে Upload হয়েছে। এখন Publish হচ্ছে...",
+        "info"
+      );
 
 
 
-        // =================================================
-        // DISABLE
-        // =================================================
+      /* ===============================================
+         3. FIRESTORE VIDEO
+         =============================================== */
 
-        uploadBtn.disabled =
-          true;
+      const videoRef =
+        await addDoc(
+          collection(
+            db,
+            "videos"
+          ),
+          {
 
+            uid:
+              currentUser.uid,
 
-        videoFile.disabled =
-          true;
+            username:
+              username,
 
+            name:
+              userName,
 
-        caption.disabled =
-          true;
+            photoURL:
+              photoURL,
 
+            videoURL:
+              videoURL,
 
-        progressBox.style.display =
-          "block";
+            caption:
+              videoCaption,
 
+            likes:
+              0,
 
-        progressBar.value =
-          0;
+            comments:
+              0,
 
+            saves:
+              0,
 
-        progressText.textContent =
-          "0%";
+            likedBy:
+              [],
 
+            savedBy:
+              [],
 
-        showStatus(
-          "⏳ Video Upload শুরু হচ্ছে...",
-          "info"
+            createdAt:
+              serverTimestamp(),
+
+            status:
+              "published"
+
+          }
         );
 
 
 
-        try {
+      /* ===============================================
+         4. VIDEO ID UPDATE
+         =============================================== */
 
+      /*
+        পরে Like / Comment / Save / Share
+        এই ID ব্যবহার করবে।
+      */
 
-          // =================================================
-          // SAFE FILE NAME
-          // =================================================
+      console.log(
+        "WWC Video Published:",
+        videoRef.id
+      );
 
-          const safeFileName =
 
-            file.name
 
-              .replace(
-                /[^a-zA-Z0-9._-]/g,
-                "_"
-              );
+      /* ===============================================
+         5. SUCCESS
+         =============================================== */
 
+      progressBar.value =
+        100;
 
 
-          // =================================================
-          // UNIQUE VIDEO ID
-          // =================================================
+      progressText.textContent =
+        "100%";
 
-          const videoId =
 
-            "video_" +
-            Date.now() +
-            "_" +
-            Math.random()
-              .toString(36)
-              .substring(2, 8);
+      showStatus(
+        "✅ Video সফলভাবে Publish হয়েছে!",
+        "success"
+      );
 
 
+      doneBtn.style.display =
+        "block";
 
-          // =================================================
-          // STORAGE PATH
-          // =================================================
 
-          const filePath =
+      uploadBtn.disabled =
+        true;
 
-            "videos/" +
 
-            currentUser.uid +
 
-            "/" +
+      /*
+        Form পরিষ্কার করা।
+      */
 
-            videoId +
+      videoFile.value =
+        "";
 
-            "_" +
+      caption.value =
+        "";
 
-            safeFileName;
+      selectedFile =
+        null;
 
 
+      preview.pause();
 
-          console.log(
-            "Video Storage Path:",
-            filePath
-          );
+      preview.removeAttribute(
+        "src"
+      );
 
+      preview.style.display =
+        "none";
 
 
-          // =================================================
-          // STORAGE REF
-          // =================================================
+    } catch (error) {
 
-          const storageRef =
+      console.error(
+        "WWC Publish Error:",
+        error
+      );
 
-            ref(
-              storage,
-              filePath
-            );
 
+      uploadBtn.disabled =
+        false;
 
+      videoFile.disabled =
+        false;
 
-          // =================================================
-          // START UPLOAD
-          // =================================================
+      caption.disabled =
+        false;
 
-          const uploadTask =
 
-            uploadBytesResumable(
+      progressBox.style.display =
+        "none";
 
-              storageRef,
 
-              file,
+      showStatus(
+        "❌ Publish করা যায়নি: " +
+        error.message,
+        "error"
+      );
 
-              {
+    }
 
-                contentType:
-                  file.type
+  }
+);
 
-              }
 
-            );
 
+/* =====================================================
+   DONE
+   ===================================================== */
 
+doneBtn.addEventListener(
+  "click",
+  () => {
 
-          // =================================================
-          // UPLOAD EVENTS
-          // =================================================
+    window.location.href =
+      "./index.html";
 
-          uploadTask.on(
+  }
+);
 
-            "state_changed",
 
-
-            // ===============================================
-            // PROGRESS
-            // ===============================================
-
-            (snapshot) => {
-
-              const progress =
-
-                (
-                  snapshot.bytesTransferred /
-                  snapshot.totalBytes
-                ) * 100;
-
-
-              progressBar.value =
-                progress;
-
-
-              progressText.textContent =
-
-                Math.round(progress) +
-                "%";
-
-
-              showStatus(
-
-                "⬆️ Video Upload হচ্ছে: " +
-
-                Math.round(progress) +
-
-                "%",
-
-                "info"
-
-              );
-
-            },
-
-
-            // ===============================================
-            // ERROR
-            // ===============================================
-
-            (error) => {
-
-              console.error(
-                "Storage Upload Error:",
-                error
-              );
-
-
-              progressBox.style.display =
-                "none";
-
-
-              uploadBtn.disabled =
-                false;
-
-
-              videoFile.disabled =
-                false;
-
-
-              caption.disabled =
-                false;
-
-
-              if (
-                error.code ===
-                "storage/unauthorized"
-              ) {
-
-                showStatus(
-                  "❌ Firebase Storage Permission নেই।",
-                  "error"
-                );
-
-              } else if (
-                error.code ===
-                "storage/canceled"
-              ) {
-
-                showStatus(
-                  "❌ Upload বাতিল হয়েছে।",
-                  "error"
-                );
-
-              } else {
-
-                showStatus(
-                  "❌ Upload ব্যর্থ হয়েছে: " +
-                  error.message,
-                  "error"
-                );
-
-              }
-
-            },
-
-
-            // ===============================================
-            // SUCCESS
-            // ===============================================
-
-            async () => {
-
-              try {
-
-
-                // =============================================
-                // GET VIDEO URL
-                // =============================================
-
-                const downloadURL =
-
-                  await getDownloadURL(
-                    uploadTask.snapshot.ref
-                  );
-
-
-                console.log(
-                  "Video URL:",
-                  downloadURL
-                );
-
-
-
-                // =============================================
-                // GET USER PROFILE
-                // =============================================
-
-                const userRef =
-
-                  doc(
-                    db,
-                    "users",
-                    currentUser.uid
-                  );
-
-
-                const userSnapshot =
-
-                  await getDoc(
-                    userRef
-                  );
-
-
-                let userData =
-
-                  userSnapshot.exists()
-
-                    ? userSnapshot.data()
-
-                    : {};
-
-
-
-                // =============================================
-                // USER INFORMATION
-                // =============================================
-
-                const username =
-
-                  String(
-                    userData.username
-                    ||
-                    "wwc_user"
-                  )
-                  .replace(
-                    /^@/,
-                    ""
-                  );
-
-
-                const userName =
-
-                  userData.name
-                  ||
-                  currentUser.displayName
-                  ||
-                  "WWC User";
-
-
-                const photoURL =
-
-                  userData.photoURL
-                  ||
-                  currentUser.photoURL
-                  ||
-                  "./images/profile.png";
-
-
-
-                // =============================================
-                // VIDEO DATA
-                // =============================================
-
-                const videoData = {
-
-                  id:
-                    videoId,
-
-                  uid:
-                    currentUser.uid,
-
-                  url:
-                    downloadURL,
-
-                  videoURL:
-                    downloadURL,
-
-                  downloadURL:
-                    downloadURL,
-
-                  caption:
-                    videoCaption,
-
-                  username:
-                    username,
-
-                  name:
-                    userName,
-
-                  photoURL:
-                    photoURL,
-
-                  likes:
-                    0,
-
-                  comments:
-                    0,
-
-                  saves:
-                    0,
-
-                  createdAt:
-                    Date.now()
-
-                };
-
-
-
-                // =============================================
-                // SAVE TO FIRESTORE
-                // users/{uid}/videos
-                // =============================================
-
-                if (
-                  userSnapshot.exists()
-                ) {
-
-                  await updateDoc(
-
-                    userRef,
-
-                    {
-
-                      videos:
-                        arrayUnion(
-                          videoData
-                        )
-
-                    }
-
-                  );
-
-                } else {
-
-                  await setDoc(
-
-                    userRef,
-
-                    {
-
-                      uid:
-                        currentUser.uid,
-
-                      name:
-                        userName,
-
-                      username:
-                        username,
-
-                      photoURL:
-                        photoURL,
-
-                      followers:
-                        0,
-
-                      following:
-                        0,
-
-                      likes:
-                        0,
-
-                      followingIds:
-                        [],
-
-                      followerIds:
-                        [],
-
-                      videos:
-                        [videoData]
-
-                    }
-
-                  );
-
-                }
-
-
-
-                // =============================================
-                // COMPLETE
-                // =============================================
-
-                progressBar.value =
-                  100;
-
-
-                progressText.textContent =
-                  "100%";
-
-
-                showStatus(
-
-                  "✅ Video সফলভাবে Upload এবং Save হয়েছে।",
-
-                  "success"
-
-                );
-
-
-                uploadBtn.disabled =
-                  true;
-
-
-                videoFile.disabled =
-                  true;
-
-
-                caption.disabled =
-                  true;
-
-
-                videoFile.value =
-                  "";
-
-
-                caption.value =
-                  "";
-
-
-                selectedFile =
-                  null;
-
-
-                preview.pause();
-
-
-                preview.removeAttribute(
-                  "src"
-                );
-
-
-                preview.style.display =
-                  "none";
-
-
-                doneBtn.style.display =
-                  "block";
-
-
-
-              } catch (error) {
-
-                console.error(
-                  "Firestore Save Error:",
-                  error
-                );
-
-
-                showStatus(
-
-                  "❌ Video Upload হয়েছে, কিন্তু Profile-এ Save করা যায়নি। " +
-                  error.message,
-
-                  "error"
-
-                );
-
-
-                uploadBtn.disabled =
-                  false;
-
-
-                videoFile.disabled =
-                  false;
-
-
-                caption.disabled =
-                  false;
-
-              }
-
-            }
-
-          );
-
-
-        } catch (error) {
-
-          console.error(
-            "Upload Error:",
-            error
-          );
-
-
-          progressBox.style.display =
-            "none";
-
-
-          uploadBtn.disabled =
-            false;
-
-
-          videoFile.disabled =
-            false;
-
-
-          caption.disabled =
-            false;
-
-
-          showStatus(
-
-            "❌ সমস্যা হয়েছে: " +
-            error.message,
-
-            "error"
-
-          );
-
-        }
-
-      }
-
-    );
-
-
-
-    // =====================================================
-    // DONE BUTTON
-    // =====================================================
-
-    doneBtn.addEventListener(
-
-      "click",
-
-      () => {
-
-        window.location.href =
-          "./index.html";
-
-      }
-
-    );
-
-
-  </script>
-
+</script>
 
 </body>
-
 </html>
