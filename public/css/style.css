@@ -1,12 +1,7 @@
 /* =========================================================
    WORLD WIDE CONNECT
    WWC-CORE
-   MAIN STYLE.CSS
-   TikTok Style Social Video Platform
-   ========================================================= */
-
-/* =========================================================
-   RESET
+   MAIN STYLE
    ========================================================= */
 
 * {
@@ -19,35 +14,26 @@ html,
 body {
     width: 100%;
     height: 100%;
+    margin: 0;
     background: #000;
     color: #fff;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial, sans-serif;
     overflow: hidden;
 }
 
 body {
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
+    overscroll-behavior: none;
 }
 
 button,
 input,
-textarea,
-select {
+textarea {
     font-family: inherit;
 }
 
 button {
     -webkit-tap-highlight-color: transparent;
-}
-
-img {
-    max-width: 100%;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
+    touch-action: manipulation;
 }
 
 
@@ -63,8 +49,8 @@ a {
     height: 100vh;
     height: 100dvh;
 
+    overflow-y: auto;
     overflow-x: hidden;
-    overflow-y: scroll;
 
     background: #000;
 
@@ -75,10 +61,8 @@ a {
 
     -webkit-overflow-scrolling: touch;
 
-    overscroll-behavior-y: contain;
     touch-action: pan-y;
-
-    z-index: 1;
+    overscroll-behavior-y: contain;
 }
 
 #video-feed::-webkit-scrollbar {
@@ -110,6 +94,11 @@ a {
     touch-action: pan-y;
 }
 
+
+/* =========================================================
+   VIDEO
+   ========================================================= */
+
 .feed-video {
     position: absolute;
     inset: 0;
@@ -121,10 +110,12 @@ a {
 
     background: #000;
 
+    z-index: 1;
+
     user-select: none;
     -webkit-user-select: none;
 
-    z-index: 1;
+    -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -139,53 +130,50 @@ a {
     left: 0;
 
     width: 100%;
-    height: 68px;
+    height: 64px;
+
+    z-index: 1000;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    background:
-        linear-gradient(
-            to bottom,
-            rgba(0, 0, 0, .78),
-            rgba(0, 0, 0, .30),
-            transparent
-        );
+    padding-top: env(safe-area-inset-top);
 
-    z-index: 500;
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, .80),
+        rgba(0, 0, 0, .35),
+        transparent
+    );
 
     pointer-events: none;
-
-    padding-top: env(safe-area-inset-top);
 }
 
 .wwc-top-tabs {
     display: flex;
     align-items: center;
-    justify-content: center;
-
-    gap: 25px;
+    gap: 24px;
 }
 
 .wwc-top-tab {
-    position: relative;
-
     border: 0;
     outline: none;
 
     background: transparent;
 
-    color: rgba(255, 255, 255, .62);
+    color: rgba(255, 255, 255, .65);
 
     font-size: 16px;
     font-weight: 600;
 
-    padding: 8px 3px;
-
     cursor: pointer;
 
     pointer-events: auto;
+
+    padding: 8px 4px;
+
+    position: relative;
 }
 
 .wwc-top-tab.active {
@@ -201,75 +189,55 @@ a {
     left: 50%;
     bottom: 0;
 
-    width: 22px;
+    width: 28px;
     height: 3px;
 
-    transform: translateX(-50%);
-
-    border-radius: 10px;
+    border-radius: 3px;
 
     background: #fff;
+
+    transform: translateX(-50%);
 }
-
-
-/* =========================================================
-   SEARCH BUTTON
-   ========================================================= */
 
 .wwc-search-btn {
     position: absolute;
 
     top: 11px;
-    right: 14px;
+    right: 15px;
 
-    width: 43px;
-    height: 43px;
+    width: 42px;
+    height: 42px;
 
     border: 0;
     border-radius: 50%;
 
-    background: rgba(0, 0, 0, .48);
+    background: rgba(0, 0, 0, .50);
 
     color: #fff;
 
     font-size: 21px;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
     cursor: pointer;
 
     pointer-events: auto;
 
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-
-    transition:
-        transform .15s ease,
-        background .15s ease;
-}
-
-.wwc-search-btn:active {
-    transform: scale(.90);
-}
-
-.wwc-search-btn:hover {
-    background: rgba(0, 0, 0, .70);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 
 /* =========================================================
-   VIDEO PROFILE AREA
+   PROFILE AREA
    ========================================================= */
 
 .video-item .profile-area {
     position: absolute;
 
-    right: 14px;
+    right: 15px;
     bottom: 350px;
 
-    width: 72px;
+    width: 70px;
 
     display: flex;
     flex-direction: column;
@@ -277,32 +245,21 @@ a {
 
     gap: 7px;
 
-    z-index: 50;
+    z-index: 100;
 }
 
 .video-item .profile-photo {
-    width: 55px;
-    height: 55px;
+    width: 54px;
+    height: 54px;
 
+    border: 2px solid #fff;
     border-radius: 50%;
 
     object-fit: cover;
 
     background: #333;
 
-    border: 2px solid #fff;
-
     cursor: pointer;
-
-    box-shadow:
-        0 2px 10px rgba(0, 0, 0, .5);
-
-    transition:
-        transform .15s ease;
-}
-
-.video-item .profile-photo:active {
-    transform: scale(.92);
 }
 
 .video-item .profile-area .username {
@@ -313,24 +270,16 @@ a {
     font-size: 12px;
     font-weight: 700;
 
-    line-height: 15px;
-
     text-align: center;
 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 
+    text-shadow: 0 1px 5px #000;
+
     cursor: pointer;
-
-    text-shadow:
-        0 1px 4px rgba(0, 0, 0, .95);
 }
-
-
-/* =========================================================
-   FOLLOW BUTTON
-   ========================================================= */
 
 .video-item .follow-btn {
     width: 68px;
@@ -347,23 +296,19 @@ a {
 
     cursor: pointer;
 
-    box-shadow:
-        0 2px 8px rgba(0, 0, 0, .35);
-
     transition:
         transform .15s ease,
         background .15s ease;
 }
 
 .video-item .follow-btn:active {
-    transform: scale(.91);
+    transform: scale(.94);
 }
 
 .video-item .follow-btn.following {
-    background: rgba(255, 255, 255, .18);
+    background: rgba(255, 255, 255, .20);
 
-    border: 1px solid
-        rgba(255, 255, 255, .75);
+    border: 1px solid rgba(255, 255, 255, .70);
 }
 
 
@@ -374,8 +319,8 @@ a {
 .video-item .actions {
     position: absolute;
 
-    right: 13px;
-    bottom: 96px;
+    right: 15px;
+    bottom: 105px;
 
     width: 58px;
 
@@ -383,9 +328,9 @@ a {
     flex-direction: column;
     align-items: center;
 
-    gap: 12px;
+    gap: 14px;
 
-    z-index: 60;
+    z-index: 120;
 }
 
 .video-item .action-btn {
@@ -399,7 +344,7 @@ a {
 
     color: #fff;
 
-    font-size: 24px;
+    font-size: 25px;
 
     display: flex;
     flex-direction: column;
@@ -410,20 +355,13 @@ a {
 
     cursor: pointer;
 
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-
     transition:
         transform .15s ease,
         background .15s ease;
 }
 
 .video-item .action-btn:active {
-    transform: scale(.86);
-}
-
-.video-item .action-btn:hover {
-    background: rgba(0, 0, 0, .60);
+    transform: scale(.88);
 }
 
 .video-item .like-btn.liked {
@@ -431,7 +369,7 @@ a {
 }
 
 .video-item .save-btn.saved {
-    background: rgba(255, 193, 7, .35);
+    background: rgba(255, 193, 7, .30);
 }
 
 .like-count,
@@ -441,10 +379,9 @@ a {
     font-size: 11px;
     line-height: 12px;
 
-    font-weight: 700;
+    font-weight: 600;
 
-    text-shadow:
-        0 1px 3px #000;
+    text-shadow: 0 1px 3px #000;
 }
 
 
@@ -455,16 +392,15 @@ a {
 .video-info {
     position: absolute;
 
-    left: 14px;
-    right: 82px;
-    bottom: 96px;
+    left: 15px;
+    right: 85px;
+    bottom: 105px;
 
-    z-index: 40;
+    z-index: 90;
 
     pointer-events: none;
 
-    text-shadow:
-        0 1px 5px rgba(0, 0, 0, .95);
+    text-shadow: 0 1px 5px #000;
 }
 
 .video-info .username {
@@ -480,12 +416,9 @@ a {
     color: #fff;
 
     font-size: 14px;
-
     line-height: 20px;
 
-    max-width: 92%;
-
-    word-break: break-word;
+    max-width: 90%;
 }
 
 
@@ -502,12 +435,13 @@ a {
 
     width: 100%;
 
-    height: 66px;
+    min-height: 64px;
 
     padding:
-        4px
-        8px
-        calc(4px + env(safe-area-inset-bottom));
+        5px 8px
+        env(safe-area-inset-bottom);
+
+    z-index: 2000;
 
     display: flex;
     align-items: center;
@@ -515,13 +449,10 @@ a {
 
     background: rgba(0, 0, 0, .95);
 
-    border-top:
-        1px solid rgba(255, 255, 255, .08);
+    border-top: 1px solid rgba(255, 255, 255, .08);
 
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-
-    z-index: 1000;
 }
 
 .wwc-nav-btn {
@@ -529,10 +460,11 @@ a {
     height: 54px;
 
     border: 0;
+    outline: none;
 
     background: transparent;
 
-    color: rgba(255, 255, 255, .68);
+    color: rgba(255, 255, 255, .70);
 
     display: flex;
     flex-direction: column;
@@ -542,13 +474,8 @@ a {
     gap: 3px;
 
     font-size: 11px;
-    font-weight: 500;
 
     cursor: pointer;
-
-    transition:
-        color .15s ease,
-        transform .15s ease;
 }
 
 .wwc-nav-btn span:first-child {
@@ -558,41 +485,26 @@ a {
 
 .wwc-nav-btn.active {
     color: #fff;
-    font-weight: 700;
 }
-
-.wwc-nav-btn:active {
-    transform: scale(.90);
-}
-
-
-/* =========================================================
-   CREATE / UPLOAD BUTTON
-   ========================================================= */
 
 .wwc-create-btn {
-    width: 53px;
-    height: 39px;
+    width: 52px;
+    height: 38px;
 
     border: 0;
-    border-radius: 11px;
+    border-radius: 10px;
 
     background: #fff;
     color: #000;
 
-    font-size: 29px;
-    font-weight: 400;
-
-    line-height: 29px;
+    font-size: 28px;
+    line-height: 28px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
     cursor: pointer;
-
-    box-shadow:
-        0 2px 10px rgba(255, 255, 255, .18);
 
     transition:
         transform .15s ease;
@@ -611,12 +523,11 @@ a {
     position: fixed;
 
     left: 50%;
-    bottom: 74px;
+    bottom: 72px;
 
-    width: min(92%, 370px);
+    width: min(92%, 360px);
 
-    max-height:
-        calc(100vh - 115px);
+    max-height: calc(100vh - 110px);
 
     overflow-y: auto;
 
@@ -624,13 +535,12 @@ a {
 
     background: rgba(20, 20, 20, .98);
 
-    border:
-        1px solid rgba(255, 255, 255, .12);
+    border: 1px solid rgba(255, 255, 255, .12);
 
     border-radius: 20px;
 
     box-shadow:
-        0 15px 45px rgba(0, 0, 0, .70);
+        0 12px 40px rgba(0, 0, 0, .65);
 
     z-index: 3000;
 
@@ -666,18 +576,13 @@ a {
         translateY(0);
 }
 
-
-/* =========================================================
-   PROFILE MENU HEADER
-   ========================================================= */
-
 .profile-menu-header {
     display: flex;
 
     align-items: center;
     justify-content: space-between;
 
-    padding-bottom: 13px;
+    padding-bottom: 14px;
 
     margin-bottom: 8px;
 
@@ -688,7 +593,7 @@ a {
 .profile-menu-title {
     color: #fff;
 
-    font-size: 19px;
+    font-size: 20px;
     font-weight: 700;
 }
 
@@ -699,8 +604,7 @@ a {
     border: 0;
     border-radius: 50%;
 
-    background:
-        rgba(255, 255, 255, .10);
+    background: rgba(255, 255, 255, .10);
 
     color: #fff;
 
@@ -711,19 +615,7 @@ a {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    transition:
-        transform .15s ease;
 }
-
-.profile-menu-close:active {
-    transform: scale(.88);
-}
-
-
-/* =========================================================
-   PROFILE MENU BUTTONS
-   ========================================================= */
 
 .profile-menu-btn {
     width: 100%;
@@ -736,12 +628,11 @@ a {
     border: 0;
     border-radius: 12px;
 
-    background:
-        rgba(255, 255, 255, .08);
+    background: rgba(255, 255, 255, .08);
 
     color: #fff;
 
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
 
     text-align: left;
@@ -750,24 +641,14 @@ a {
 
     display: flex;
     align-items: center;
-
-    transition:
-        background .15s ease,
-        transform .15s ease;
 }
 
 .profile-menu-btn:active {
-    transform: scale(.98);
-}
-
-.profile-menu-btn:hover {
-    background:
-        rgba(255, 255, 255, .13);
+    background: rgba(255, 255, 255, .15);
 }
 
 .profile-menu-btn.logout-menu-btn {
-    background:
-        rgba(254, 44, 85, .15);
+    background: rgba(254, 44, 85, .15);
 
     color: #ff6684;
 }
@@ -781,29 +662,27 @@ a {
     position: fixed;
 
     left: 50%;
-    bottom: 72px;
+    bottom: 70px;
 
-    width: min(92%, 430px);
+    width: min(92%, 420px);
 
-    padding: 16px;
+    padding: 15px;
 
-    background:
-        rgba(20, 20, 20, .98);
+    background: rgba(20, 20, 20, .98);
 
     border:
         1px solid rgba(255, 255, 255, .10);
 
-    border-radius: 17px;
+    border-radius: 16px;
 
     box-shadow:
-        0 12px 40px rgba(0, 0, 0, .70);
+        0 12px 40px rgba(0, 0, 0, .60);
 
     z-index: 4000;
 
     display: none;
 
-    transform:
-        translateX(-50%);
+    transform: translateX(-50%);
 }
 
 .comment-box.show {
@@ -820,42 +699,24 @@ a {
 }
 
 .comment-box textarea {
-    display: block;
-
     width: 100%;
 
-    min-height: 82px;
+    min-height: 80px;
 
     resize: none;
 
-    border: 1px solid #333;
-
+    border: 0;
     outline: none;
 
-    border-radius: 10px;
+    border-radius: 8px;
 
-    padding: 11px;
+    padding: 10px;
 
-    background: #111;
-    color: #fff;
+    background: #fff;
+    color: #111;
 
     font-size: 15px;
-
-    line-height: 20px;
 }
-
-.comment-box textarea::placeholder {
-    color: #777;
-}
-
-.comment-box textarea:focus {
-    border-color: #666;
-}
-
-
-/* =========================================================
-   COMMENT BUTTONS
-   ========================================================= */
 
 .comment-buttons {
     display: flex;
@@ -869,15 +730,13 @@ a {
 
 .comment-buttons button {
     border: 0;
+    border-radius: 8px;
 
-    border-radius: 9px;
-
-    padding: 9px 16px;
-
-    font-size: 14px;
-    font-weight: 600;
+    padding: 9px 15px;
 
     cursor: pointer;
+
+    font-weight: 600;
 }
 
 #commentSend {
@@ -892,38 +751,11 @@ a {
 
 
 /* =========================================================
-   HIDDEN VIDEO INPUT
+   HIDDEN UPLOAD INPUT
    ========================================================= */
 
 #videoUpload {
-    display: none !important;
-}
-
-
-/* =========================================================
-   TOUCH SAFETY
-   ========================================================= */
-
-button,
-.wwc-nav-btn,
-.wwc-create-btn,
-.action-btn,
-.follow-btn {
-    touch-action: manipulation;
-}
-
-
-/* =========================================================
-   SAFE AREA
-   ========================================================= */
-
-@supports (padding: env(safe-area-inset-bottom)) {
-
-    .wwc-bottom-nav {
-        padding-bottom:
-            calc(4px + env(safe-area-inset-bottom));
-    }
-
+    display: none;
 }
 
 
@@ -946,20 +778,18 @@ button,
     }
 
     .wwc-search-btn {
-        top: 8px;
-        right: 9px;
+        top: 9px;
+        right: 10px;
 
         width: 40px;
         height: 40px;
-
-        font-size: 20px;
     }
 
     .video-item .profile-area {
-        right: 9px;
-        bottom: 330px;
+        right: 10px;
+        bottom: 335px;
 
-        width: 66px;
+        width: 65px;
 
         gap: 6px;
     }
@@ -977,25 +807,25 @@ button,
     }
 
     .video-item .actions {
-        right: 8px;
-        bottom: 77px;
+        right: 10px;
+        bottom: 78px;
 
-        width: 54px;
+        width: 55px;
 
-        gap: 9px;
+        gap: 10px;
     }
 
     .video-item .action-btn {
-        width: 47px;
-        height: 47px;
+        width: 48px;
+        height: 48px;
 
-        font-size: 22px;
+        font-size: 23px;
     }
 
     .video-info {
         left: 12px;
-        right: 72px;
-        bottom: 77px;
+        right: 75px;
+        bottom: 78px;
     }
 
     .video-info .username {
@@ -1008,12 +838,12 @@ button,
     }
 
     .wwc-bottom-nav {
-        height: 63px;
+        min-height: 62px;
     }
 
     .wwc-nav-btn {
         width: 54px;
-        height: 53px;
+        height: 54px;
 
         font-size: 10px;
     }
@@ -1024,9 +854,9 @@ button,
 
     .wwc-create-btn {
         width: 50px;
-        height: 37px;
+        height: 36px;
 
-        font-size: 27px;
+        font-size: 26px;
     }
 
     .profile-menu {
@@ -1034,9 +864,9 @@ button,
 
         width: calc(100% - 20px);
 
-        padding: 14px;
-
         border-radius: 18px;
+
+        padding: 14px;
     }
 
     .profile-menu-title {
@@ -1053,8 +883,6 @@ button,
         bottom: 68px;
 
         width: calc(100% - 20px);
-
-        border-radius: 16px;
     }
 }
 
@@ -1074,41 +902,24 @@ button,
     }
 
     .video-item .profile-area {
-        right: 6px;
-        bottom: 320px;
+        right: 7px;
+        bottom: 325px;
     }
 
     .video-item .actions {
-        right: 5px;
-        bottom: 72px;
-
-        gap: 7px;
+        right: 7px;
+        gap: 8px;
     }
 
     .video-item .action-btn {
-        width: 44px;
-        height: 44px;
+        width: 45px;
+        height: 45px;
 
-        font-size: 20px;
+        font-size: 21px;
     }
 
     .video-info {
-        left: 10px;
-        right: 65px;
-        bottom: 72px;
-    }
-
-    .video-caption {
-        font-size: 12px;
-        line-height: 17px;
-    }
-
-    .wwc-nav-btn {
-        width: 50px;
-    }
-
-    .wwc-create-btn {
-        width: 47px;
+        right: 68px;
     }
 
     .profile-menu {
@@ -1120,67 +931,40 @@ button,
 
 
 /* =========================================================
-   TABLET / DESKTOP
+   SAFE AREA
    ========================================================= */
 
-@media (min-width: 768px) {
+@supports (padding: env(safe-area-inset-bottom)) {
 
-    .wwc-top-tab {
-        font-size: 17px;
+    .wwc-bottom-nav {
+        padding-bottom:
+            calc(5px + env(safe-area-inset-bottom));
     }
 
+}
+
+
+/* =========================================================
+   DESKTOP
+   ========================================================= */
+
+@media (min-width: 900px) {
+
     .video-item .profile-area {
-        right: 24px;
-        bottom: 360px;
+        right: 30px;
     }
 
     .video-item .actions {
-        right: 24px;
-        bottom: 110px;
+        right: 30px;
     }
 
     .video-info {
-        left: 24px;
-        bottom: 110px;
-    }
-
-    .wwc-bottom-nav {
-        padding-left: 20px;
-        padding-right: 20px;
+        left: 30px;
     }
 
 }
 
 
 /* =========================================================
-   ACCESSIBILITY
-   ========================================================= */
-
-button:focus-visible,
-textarea:focus-visible,
-input:focus-visible {
-    outline: 2px solid #fff;
-    outline-offset: 2px;
-}
-
-
-/* =========================================================
-   REDUCE MOTION
-   ========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-        scroll-behavior: auto !important;
-        transition-duration: .01ms !important;
-        animation-duration: .01ms !important;
-    }
-
-}
-
-
-/* =========================================================
-   END OF WWC-CORE STYLE.CSS
+   END
    ========================================================= */
