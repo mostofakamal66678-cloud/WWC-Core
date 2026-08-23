@@ -1,871 +1,438 @@
 <!DOCTYPE html>
 <html lang="bn">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#000000">
 
-  <title>WWC Inbox</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+  <meta
+    name="theme-color"
+    content="#000000"
+  >
 
-    body {
-      margin: 0;
-      background: #000;
-      color: #fff;
-      font-family: Arial, sans-serif;
-      min-height: 100vh;
-    }
+  <meta
+    name="description"
+    content="World Wide Connect - Connect with the world, share your videos and discover new creators."
+  >
 
-    .header {
-      height: 64px;
-      display: flex;
-      align-items: center;
-      padding: 0 15px;
-      background: #111;
-      border-bottom: 1px solid #333;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
+  <title>World Wide Connect</title>
 
-    .back-btn {
-      width: 42px;
-      height: 42px;
-      border: 0;
-      border-radius: 50%;
-      background: #222;
-      color: #fff;
-      font-size: 24px;
-      cursor: pointer;
-    }
 
-    .title {
-      margin-left: 15px;
-      font-size: 21px;
-      font-weight: bold;
-    }
+  <!-- =====================================================
+       MAIN CSS
+       ===================================================== -->
 
-    .container {
-      max-width: 650px;
-      margin: auto;
-      padding: 15px 12px 90px;
-    }
+  <link
+    rel="stylesheet"
+    href="./css/style.css"
+  >
 
-    .search-box {
-      margin-bottom: 15px;
-    }
-
-    #searchInput {
-      width: 100%;
-      padding: 13px 15px;
-      border: 1px solid #444;
-      border-radius: 12px;
-      outline: none;
-      background: #181818;
-      color: #fff;
-      font-size: 15px;
-    }
-
-    #searchInput:focus {
-      border-color: #777;
-    }
-
-    .section-title {
-      font-size: 17px;
-      font-weight: bold;
-      margin: 15px 3px 10px;
-    }
-
-    #status {
-      text-align: center;
-      color: #999;
-      padding: 25px 10px;
-    }
-
-    .conversation {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      width: 100%;
-      padding: 13px;
-      margin-bottom: 8px;
-      border: 1px solid #292929;
-      border-radius: 13px;
-      background: #151515;
-      cursor: pointer;
-      text-align: left;
-    }
-
-    .conversation:active {
-      transform: scale(.99);
-    }
-
-    .avatar {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: #333;
-      border: 1px solid #555;
-      flex-shrink: 0;
-    }
-
-    .conversation-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .name-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .name {
-      font-size: 16px;
-      font-weight: bold;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .time {
-      color: #777;
-      font-size: 11px;
-      flex-shrink: 0;
-    }
-
-    .handle {
-      color: #888;
-      font-size: 12px;
-      margin-top: 3px;
-    }
-
-    .last-message {
-      color: #aaa;
-      font-size: 13px;
-      margin-top: 5px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .empty {
-      text-align: center;
-      padding: 55px 20px;
-      color: #777;
-      background: #111;
-      border: 1px solid #222;
-      border-radius: 15px;
-      margin-top: 15px;
-    }
-
-    .empty-icon {
-      font-size: 42px;
-      margin-bottom: 12px;
-    }
-
-    .error {
-      color: #ff6684 !important;
-    }
-
-    @media (max-width: 500px) {
-      .container {
-        padding-left: 9px;
-        padding-right: 9px;
-      }
-    }
-  </style>
 </head>
+
 
 <body>
 
-  <header class="header">
 
-    <button
-      id="backBtn"
-      class="back-btn"
-      type="button"
-      aria-label="Back"
+  <!-- =====================================================
+       WWC MAIN APP
+       ===================================================== -->
+
+  <div id="app">
+
+
+    <!-- ===================================================
+         TOP BAR
+         TikTok Style:
+         Search | Following | For You
+         =================================================== -->
+
+    <header
+      class="wwc-top-bar"
+      aria-label="Feed navigation"
     >
-      ←
-    </button>
 
-    <div class="title">
-      💬 Inbox
-    </div>
-
-  </header>
+      <div class="wwc-top-tabs">
 
 
-  <main class="container">
+        <!-- ===============================================
+             SEARCH
+             =============================================== -->
 
-    <div class="search-box">
+        <button
+          id="searchBtn"
+          class="wwc-search-btn"
+          type="button"
+          aria-label="Search"
+          title="Search"
+        >
 
-      <input
-        id="searchInput"
-        type="search"
-        placeholder="নাম বা username খুঁজুন..."
-        autocomplete="off"
+          🔍
+
+        </button>
+
+
+        <!-- ===============================================
+             FOLLOWING
+             =============================================== -->
+
+        <button
+          id="followingTab"
+          class="wwc-top-tab"
+          type="button"
+          aria-label="Following"
+        >
+
+          Following
+
+        </button>
+
+
+        <!-- ===============================================
+             FOR YOU
+             =============================================== -->
+
+        <button
+          id="forYouTab"
+          class="wwc-top-tab active"
+          type="button"
+          aria-label="For You"
+        >
+
+          For You
+
+        </button>
+
+
+      </div>
+
+    </header>
+
+
+    <!-- ===================================================
+         VIDEO FEED
+         =================================================== -->
+
+    <main
+      id="video-feed"
+      aria-label="WWC Video Feed"
+    >
+
+      <!--
+        Firebase থেকে ভিডিও থাকলে app.js
+        এই জায়গায় Dynamic Video Card তৈরি করবে।
+      -->
+
+
+      <div class="feed-loading">
+
+        ⏳
+
+        <span>
+          Video Feed Loading...
+        </span>
+
+      </div>
+
+
+    </main>
+
+
+    <!-- ===================================================
+         PROFILE MENU
+         =================================================== -->
+
+    <div
+      id="profileMenu"
+      class="profile-menu"
+      aria-hidden="true"
+    >
+
+
+      <div class="profile-menu-header">
+
+
+        <div class="profile-menu-title">
+
+          👤 My Profile
+
+        </div>
+
+
+        <button
+          id="profileMenuClose"
+          class="profile-menu-close"
+          type="button"
+          aria-label="Close Profile Menu"
+        >
+
+          ✕
+
+        </button>
+
+
+      </div>
+
+
+      <!-- PROFILE -->
+
+      <button
+        id="profileBtnMenu"
+        class="profile-menu-btn"
+        type="button"
       >
 
+        👤 Profile
+
+      </button>
+
+
+      <!-- LOGIN -->
+
+      <button
+        id="loginBtn"
+        class="profile-menu-btn"
+        type="button"
+      >
+
+        🔐 Login / Register
+
+      </button>
+
+
+      <!-- LOGOUT -->
+
+      <button
+        id="logoutBtn"
+        class="profile-menu-btn logout-menu-btn"
+        type="button"
+      >
+
+        🚪 Logout
+
+      </button>
+
+
     </div>
 
 
-    <div class="section-title">
-      💬 Messages
+    <!-- ===================================================
+         COMMENT BOX
+         =================================================== -->
+
+    <div
+      id="commentBox"
+      class="comment-box"
+      aria-hidden="true"
+    >
+
+
+      <div class="comment-title">
+
+        💬 Comments
+
+      </div>
+
+
+      <!-- COMMENTS -->
+
+      <div
+        id="commentsList"
+        class="comments-list"
+      >
+
+        <!-- Comments will load here -->
+
+      </div>
+
+
+      <!-- COMMENT INPUT -->
+
+      <textarea
+        id="commentInput"
+        placeholder="Write a comment..."
+        maxlength="500"
+      ></textarea>
+
+
+      <!-- COMMENT BUTTONS -->
+
+      <div class="comment-buttons">
+
+
+        <button
+          id="commentCancel"
+          type="button"
+        >
+
+          Cancel
+
+        </button>
+
+
+        <button
+          id="commentSend"
+          type="button"
+        >
+
+          Send
+
+        </button>
+
+
+      </div>
+
+
     </div>
 
 
-    <div id="status">
-      ⏳ Inbox লোড হচ্ছে...
-    </div>
+    <!-- ===================================================
+         VIDEO UPLOAD INPUT
+         =================================================== -->
 
+    <input
+      id="videoUpload"
+      type="file"
+      accept="video/*"
+      hidden
+    >
 
-    <section id="conversationList"></section>
 
-  </main>
+    <!-- ===================================================
+         BOTTOM NAVIGATION
+         =================================================== -->
 
+    <nav
+      class="wwc-bottom-nav"
+      aria-label="Main navigation"
+    >
 
-  <script type="module">
 
-    import {
-      getApps,
-      initializeApp
-    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+      <!-- =================================================
+           HOME
+           ================================================= -->
 
-    import {
-      getAuth,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+      <button
+        class="wwc-nav-btn active"
+        id="homeBtn"
+        type="button"
+        aria-label="Home"
+      >
 
-    import {
-      getFirestore,
-      collection,
-      query,
-      where,
-      orderBy,
-      limit,
-      onSnapshot,
-      getDocs,
-      doc,
-      getDoc
-    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        <span>
+          🏠
+        </span>
 
+        <span>
+          Home
+        </span>
 
-    // ==========================================
-    // FIREBASE CONFIG
-    // ==========================================
+      </button>
 
-    const firebaseConfig = {
 
-      apiKey:
-        "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
+      <!-- =================================================
+           FRIENDS
+           ================================================= -->
 
-      authDomain:
-        "world-wide-connect-62c87.firebaseapp.com",
+      <button
+        class="wwc-nav-btn"
+        id="friendsBtn"
+        type="button"
+        aria-label="Friends"
+      >
 
-      projectId:
-        "world-wide-connect-62c87",
+        <span>
+          👥
+        </span>
 
-      storageBucket:
-        "world-wide-connect-62c87.firebasestorage.app",
+        <span>
+          Friends
+        </span>
 
-      messagingSenderId:
-        "93178453668",
+      </button>
 
-      appId:
-        "1:93178453668:web:2184630caa8e61f7445031",
 
-      measurementId:
-        "G-PKFJ5NEMGQ"
-    };
+      <!-- =================================================
+           CREATE / UPLOAD
+           ================================================= -->
 
+      <button
+        id="uploadBtn"
+        class="wwc-create-btn"
+        type="button"
+        aria-label="Upload Video"
+        title="Upload Video"
+      >
 
-    // ==========================================
-    // FIREBASE START
-    // ==========================================
+        +
 
-    const app =
-      getApps().length
-        ? getApps()[0]
-        : initializeApp(firebaseConfig);
+      </button>
 
-    const auth =
-      getAuth(app);
 
-    const db =
-      getFirestore(app);
+      <!-- =================================================
+           INBOX
+           ================================================= -->
 
+      <button
+        class="wwc-nav-btn"
+        id="inboxBtn"
+        type="button"
+        aria-label="Inbox"
+      >
 
-    // ==========================================
-    // ELEMENTS
-    // ==========================================
+        <span>
+          💬
+        </span>
 
-    const backBtn =
-      document.getElementById("backBtn");
+        <span>
+          Inbox
+        </span>
 
-    const searchInput =
-      document.getElementById("searchInput");
+      </button>
 
-    const conversationList =
-      document.getElementById("conversationList");
 
-    const status =
-      document.getElementById("status");
+      <!-- =================================================
+           PROFILE
+           ================================================= -->
 
+      <button
+        id="profileBtn"
+        class="wwc-nav-btn"
+        type="button"
+        aria-label="Profile"
+      >
 
-    // ==========================================
-    // VARIABLES
-    // ==========================================
+        <span>
+          👤
+        </span>
 
-    let currentUser = null;
+        <span>
+          Profile
+        </span>
 
-    let conversations = [];
+      </button>
 
-    const defaultPhoto =
-      "./images/profile.png";
 
+    </nav>
 
-    // ==========================================
-    // BACK
-    // ==========================================
 
-    backBtn.addEventListener(
-      "click",
-      () => {
-        history.back();
-      }
-    );
+  </div>
 
 
-    // ==========================================
-    // ESCAPE HTML
-    // ==========================================
+  <!-- =====================================================
+       MAIN APPLICATION JAVASCRIPT
+       ===================================================== -->
 
-    function escapeHtml(value) {
+  <script
+    type="module"
+    src="./js/app.js"
+  ></script>
 
-      return String(value || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-    }
-
-
-    // ==========================================
-    // TIME FORMAT
-    // ==========================================
-
-    function formatTime(timestamp) {
-
-      if (!timestamp) {
-        return "";
-      }
-
-      try {
-
-        const date =
-          timestamp.toDate
-            ? timestamp.toDate()
-            : new Date(timestamp);
-
-        return date.toLocaleDateString(
-          "bn-BD",
-          {
-            day: "numeric",
-            month: "short"
-          }
-        );
-
-      } catch (error) {
-
-        return "";
-
-      }
-
-    }
-
-
-    // ==========================================
-    // LOAD INBOX
-    // ==========================================
-
-    async function loadInbox() {
-
-      if (!currentUser) {
-        return;
-      }
-
-      status.classList.remove("error");
-
-      status.textContent =
-        "⏳ Conversations লোড হচ্ছে...";
-
-
-      /*
-       * conversations collection-এর প্রতিটি document
-       * এমনভাবে রাখার জন্য প্রস্তুত:
-       *
-       * conversations/{conversationId}
-       *
-       * members: [uid1, uid2]
-       * lastMessage: "Hello"
-       * lastMessageAt: Timestamp
-       */
-
-      try {
-
-        const conversationsRef =
-          collection(
-            db,
-            "conversations"
-          );
-
-
-        const inboxQuery =
-          query(
-            conversationsRef,
-            where(
-              "members",
-              "array-contains",
-              currentUser.uid
-            ),
-            orderBy(
-              "lastMessageAt",
-              "desc"
-            ),
-            limit(100)
-          );
-
-
-        onSnapshot(
-          inboxQuery,
-          async (snapshot) => {
-
-            const items = [];
-
-            for (
-              const conversationDoc
-              of snapshot.docs
-            ) {
-
-              const data =
-                conversationDoc.data();
-
-
-              const members =
-                Array.isArray(
-                  data.members
-                )
-                  ? data.members
-                  : [];
-
-
-              const otherUid =
-                members.find(
-                  uid =>
-                    uid !==
-                    currentUser.uid
-                );
-
-
-              if (!otherUid) {
-                continue;
-              }
-
-
-              let otherUser = null;
-
-
-              try {
-
-                const userSnapshot =
-                  await getDoc(
-                    doc(
-                      db,
-                      "users",
-                      otherUid
-                    )
-                  );
-
-
-                if (
-                  userSnapshot.exists()
-                ) {
-
-                  otherUser =
-                    userSnapshot.data();
-
-                }
-
-              } catch (error) {
-
-                console.error(
-                  "User profile error:",
-                  error
-                );
-
-              }
-
-
-              if (!otherUser) {
-                continue;
-              }
-
-
-              items.push({
-
-                id:
-                  conversationDoc.id,
-
-                uid:
-                  otherUid,
-
-                name:
-                  otherUser.name
-                  ||
-                  otherUser.displayName
-                  ||
-                  "WWC User",
-
-                username:
-                  String(
-                    otherUser.username
-                    || "wwc_user"
-                  ).replace(
-                    /^@/,
-                    ""
-                  ),
-
-                photoURL:
-                  otherUser.photoURL
-                  || defaultPhoto,
-
-                lastMessage:
-                  data.lastMessage
-                  || "No messages yet",
-
-                lastMessageAt:
-                  data.lastMessageAt
-                  || null
-
-              });
-
-            }
-
-
-            conversations =
-              items;
-
-
-            renderConversations(
-              filterConversations()
-            );
-
-          },
-          (error) => {
-
-            console.error(
-              "Inbox listener error:",
-              error
-            );
-
-            status.textContent =
-              "❌ Inbox লোড করা যায়নি।";
-
-            status.classList.add(
-              "error"
-            );
-
-          }
-        );
-
-
-      } catch (error) {
-
-        console.error(
-          "Inbox error:",
-          error
-        );
-
-        status.textContent =
-          "❌ Inbox চালু করা যায়নি।";
-
-        status.classList.add(
-          "error"
-        );
-
-      }
-
-    }
-
-
-    // ==========================================
-    // RENDER CONVERSATIONS
-    // ==========================================
-
-    function renderConversations(
-      items
-    ) {
-
-      conversationList.innerHTML =
-        "";
-
-
-      if (!items.length) {
-
-        status.textContent = "";
-
-        conversationList.innerHTML = `
-
-          <div class="empty">
-
-            <div class="empty-icon">
-              💬
-            </div>
-
-            <div>
-              এখনো কোনো Message নেই।
-            </div>
-
-            <p>
-              Friends থেকে কোনো User-এর Profile খুলে
-              Message শুরু করতে পারবে।
-            </p>
-
-          </div>
-
-        `;
-
-        return;
-
-      }
-
-
-      status.textContent =
-        items.length +
-        " টি Conversation";
-
-
-      items.forEach(
-        (item) => {
-
-          const button =
-            document.createElement(
-              "button"
-            );
-
-          button.type =
-            "button";
-
-          button.className =
-            "conversation";
-
-          button.dataset.uid =
-            item.uid;
-
-          button.dataset.conversation =
-            item.id;
-
-
-          button.innerHTML = `
-
-            <img
-              class="avatar"
-              src="${escapeHtml(item.photoURL)}"
-              alt="Profile"
-            >
-
-            <div class="conversation-info">
-
-              <div class="name-row">
-
-                <div class="name">
-                  ${escapeHtml(item.name)}
-                </div>
-
-                <div class="time">
-                  ${escapeHtml(
-                    formatTime(
-                      item.lastMessageAt
-                    )
-                  )}
-                </div>
-
-              </div>
-
-              <div class="handle">
-                @${escapeHtml(item.username)}
-              </div>
-
-              <div class="last-message">
-                ${escapeHtml(item.lastMessage)}
-              </div>
-
-            </div>
-
-          `;
-
-
-          conversationList.appendChild(
-            button
-          );
-
-        }
-      );
-
-    }
-
-
-    // ==========================================
-    // FILTER
-    // ==========================================
-
-    function filterConversations() {
-
-      const queryText =
-        searchInput.value
-          .trim()
-          .toLowerCase();
-
-
-      if (!queryText) {
-        return conversations;
-      }
-
-
-      return conversations.filter(
-        item => {
-
-          return (
-
-            item.name
-              .toLowerCase()
-              .includes(queryText)
-
-            ||
-
-            item.username
-              .toLowerCase()
-              .includes(queryText)
-
-          );
-
-        }
-      );
-
-    }
-
-
-    searchInput.addEventListener(
-      "input",
-      () => {
-
-        renderConversations(
-          filterConversations()
-        );
-
-      }
-    );
-
-
-    // ==========================================
-    // OPEN CHAT
-    // ==========================================
-
-    conversationList.addEventListener(
-      "click",
-      (event) => {
-
-        const conversation =
-          event.target.closest(
-            "[data-conversation]"
-          );
-
-
-        if (!conversation) {
-          return;
-        }
-
-
-        const conversationId =
-          conversation.dataset.conversation;
-
-
-        const uid =
-          conversation.dataset.uid;
-
-
-        /*
-         * পরের ধাপে আমরা chat.html তৈরি করব।
-         *
-         * chat.html?uid=USER_UID&conversation=CONVERSATION_ID
-         */
-
-        window.location.href =
-          "./chat.html?uid=" +
-          encodeURIComponent(uid) +
-          "&conversation=" +
-          encodeURIComponent(
-            conversationId
-          );
-
-      }
-    );
-
-
-    // ==========================================
-    // AUTH
-    // ==========================================
-
-    onAuthStateChanged(
-      auth,
-      async (user) => {
-
-        if (!user) {
-
-          status.textContent =
-            "❌ আগে Login করুন।";
-
-          status.classList.add(
-            "error"
-          );
-
-
-          setTimeout(
-            () => {
-
-              window.location.href =
-                "./login.html";
-
-            },
-            1200
-          );
-
-
-          return;
-
-        }
-
-
-        currentUser =
-          user;
-
-
-        await loadInbox();
-
-      }
-    );
-
-  </script>
 
 </body>
+
 </html>
