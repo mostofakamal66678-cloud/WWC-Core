@@ -1,7 +1,7 @@
 /* =========================================================
    WORLD WIDE CONNECT
    WWC MOBILE VIDEO FEED
-   FINAL SHINY / TIKTOK STYLE CSS
+   CLEAN WHITE ICON / TIKTOK STYLE
    ========================================================= */
 
 
@@ -13,6 +13,7 @@
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
 }
+
 
 html,
 body {
@@ -37,20 +38,21 @@ body {
   color: #fff;
 }
 
+
 button,
 textarea,
 input {
   font-family: inherit;
 }
 
+
 button {
   cursor: pointer;
 }
 
 
-
 /* =========================================================
-   MAIN APP
+   APP
    ========================================================= */
 
 #app {
@@ -77,12 +79,14 @@ button {
   overflow-x: hidden;
 
   scroll-snap-type: y mandatory;
+
   scroll-behavior: smooth;
 
   -webkit-overflow-scrolling: touch;
 
   scrollbar-width: none;
 }
+
 
 #video-feed::-webkit-scrollbar {
   display: none;
@@ -106,6 +110,7 @@ button {
   background: #000;
 
   scroll-snap-align: start;
+
   scroll-snap-stop: always;
 }
 
@@ -174,7 +179,8 @@ button {
   align-items: center;
   justify-content: center;
 
-  padding-top: env(safe-area-inset-top);
+  padding-top:
+    env(safe-area-inset-top);
 
   background:
     linear-gradient(
@@ -205,12 +211,14 @@ button {
   pointer-events: auto;
 }
 
+
 .wwc-top-tab {
   position: relative;
 
   padding: 9px 2px;
 
   border: 0;
+
   outline: none;
 
   background: transparent;
@@ -218,18 +226,19 @@ button {
   color: rgba(255,255,255,.62);
 
   font-size: 16px;
-  font-weight: 700;
 
-  letter-spacing: .1px;
+  font-weight: 700;
 
   transition:
     color .2s ease,
     transform .18s ease;
 }
 
+
 .wwc-top-tab:active {
   transform: scale(.90);
 }
+
 
 .wwc-top-tab.active {
   color: #fff;
@@ -238,10 +247,6 @@ button {
     0 0 10px rgba(255,255,255,.65);
 }
 
-
-/* =========================================================
-   ACTIVE TAB LINE
-   ========================================================= */
 
 .wwc-top-tab.active::after {
   content: "";
@@ -254,54 +259,33 @@ button {
   width: 34px;
   height: 3px;
 
-  transform: translateX(-50%);
+  transform:
+    translateX(-50%);
 
   border-radius: 20px;
 
   background: #fff;
-
-  box-shadow:
-    0 0 6px rgba(255,255,255,.95),
-    0 0 14px rgba(255,255,255,.65);
-
-  animation:
-    tabGlow .25s ease;
-}
-
-@keyframes tabGlow {
-
-  from {
-    width: 8px;
-    opacity: .3;
-  }
-
-  to {
-    width: 34px;
-    opacity: 1;
-  }
-
 }
 
 
 /* =========================================================
-   SEARCH BUTTON
+   SEARCH
    ========================================================= */
 
 .wwc-search-btn {
   position: absolute;
 
-  right: 13px;
-  top: 13px;
+  right: 12px;
+  top: 12px;
 
   width: 40px;
   height: 40px;
 
   padding: 0;
 
-  border-radius: 50%;
+  border: 0;
 
-  border:
-    1px solid rgba(255,255,255,.28);
+  border-radius: 50%;
 
   outline: none;
 
@@ -310,47 +294,33 @@ button {
   align-items: center;
   justify-content: center;
 
+  background: transparent;
+
   color: #fff;
-
-  background:
-    rgba(20,20,20,.55);
-
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-
-  box-shadow:
-    0 4px 15px rgba(0,0,0,.45),
-    inset 0 1px 2px rgba(255,255,255,.18);
 
   pointer-events: auto;
 
-  transition:
-    transform .18s ease,
-    background .18s ease,
-    box-shadow .18s ease;
+  box-shadow: none;
 }
+
 
 .wwc-search-btn span {
-  display: block;
+  display: flex;
 
-  font-size: 30px;
+  align-items: center;
+  justify-content: center;
 
-  line-height: 1;
+  font-size: 20px;
 
-  transform:
-    rotate(-20deg);
+  color: #fff;
 
-  margin-top: -3px;
+  filter:
+    drop-shadow(0 2px 4px rgba(0,0,0,.9));
 }
 
+
 .wwc-search-btn:active {
-  transform: scale(.84);
-
-  background:
-    rgba(255,255,255,.18);
-
-  box-shadow:
-    0 0 20px rgba(255,255,255,.2);
+  transform: scale(.85);
 }
 
 
@@ -373,7 +343,7 @@ button {
   gap: 9px;
 
   max-width:
-    calc(100% - 90px);
+    calc(100% - 85px);
 
   text-shadow:
     0 2px 6px rgba(0,0,0,.9);
@@ -385,8 +355,8 @@ button {
    ========================================================= */
 
 .profile-photo-btn {
-  width: 48px;
-  height: 48px;
+  width: 46px;
+  height: 46px;
 
   flex-shrink: 0;
 
@@ -402,16 +372,14 @@ button {
   background: #222;
 
   box-shadow:
-    0 0 10px rgba(255,255,255,.25),
-    0 3px 12px rgba(0,0,0,.65);
-
-  transition:
-    transform .18s ease;
+    0 2px 10px rgba(0,0,0,.7);
 }
+
 
 .profile-photo-btn:active {
   transform: scale(.88);
 }
+
 
 .profile-photo {
   width: 100%;
@@ -447,78 +415,62 @@ button {
   color: #fff;
 
   font-size: 15px;
-  font-weight: 800;
 
-  text-shadow:
-    0 2px 5px rgba(0,0,0,.9);
+  font-weight: 800;
 }
 
 
 /* =========================================================
-   FOLLOW BUTTON
+   FOLLOW
    ========================================================= */
 
 .follow-btn {
   padding: 7px 13px;
 
-  border: 0;
+  border:
+    1px solid rgba(255,255,255,.9);
 
-  border-radius: 8px;
+  border-radius: 7px;
 
-  color: #fff;
+  background: #fff;
+
+  color: #111;
 
   font-size: 13px;
+
   font-weight: 800;
 
   white-space: nowrap;
 
-  background:
-    linear-gradient(
-      135deg,
-      #ff174f,
-      #fe2c55,
-      #ff5274
-    );
-
   box-shadow:
-    0 4px 13px rgba(254,44,85,.48),
-    inset 0 1px 2px rgba(255,255,255,.35);
-
-  text-shadow:
-    0 1px 2px rgba(0,0,0,.35);
+    0 3px 10px rgba(0,0,0,.4);
 
   transition:
-    transform .18s ease,
-    box-shadow .18s ease;
+    transform .15s ease;
 }
 
-.follow-btn:active {
-  transform: scale(.88);
-}
 
 .follow-btn.following {
-  background:
-    linear-gradient(
-      135deg,
-      #555,
-      #292929
-    );
+  background: #fff;
 
-  box-shadow:
-    0 3px 10px rgba(0,0,0,.45),
-    inset 0 1px 2px rgba(255,255,255,.12);
+  color: #111;
+}
+
+
+.follow-btn:active {
+  transform: scale(.92);
 }
 
 
 /* =========================================================
-   ACTIONS
+   RIGHT ACTIONS
    ========================================================= */
 
 .actions {
   position: absolute;
 
-  right: 9px;
-  bottom: 108px;
+  right: 10px;
+  bottom: 106px;
 
   z-index: 11;
 
@@ -539,75 +491,114 @@ button {
 .action-btn {
   position: relative;
 
-  width: 50px;
-  min-height: 52px;
+  width: 48px;
 
-  padding: 5px 2px;
+  min-height: 54px;
 
-  border: 1px solid rgba(255,255,255,.10);
+  padding: 2px;
 
-  border-radius: 17px;
+  border: 0;
+
+  border-radius: 0;
 
   outline: none;
+
+  background: transparent;
+
+  color: #fff;
 
   display: flex;
 
   flex-direction: column;
 
   align-items: center;
+
   justify-content: center;
 
-  gap: 3px;
+  gap: 4px;
+
+  box-shadow: none;
+
+  backdrop-filter: none;
+
+  -webkit-backdrop-filter: none;
+
+  transition:
+    transform .15s ease,
+    opacity .15s ease;
+}
+
+
+/* =========================================================
+   ICON
+   ========================================================= */
+
+.action-icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
 
   color: #fff;
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255,255,255,.16),
-      rgba(255,255,255,.035)
-    );
-
-  backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
-
-  box-shadow:
-    0 5px 18px rgba(0,0,0,.38),
-    inset 0 1px 2px rgba(255,255,255,.16);
-
-  transition:
-    transform .16s ease,
-    background .18s ease;
-}
-
-.action-btn:active {
-  transform: scale(.83);
-}
-
-.action-icon {
-  font-size: 28px;
+  font-size: 29px;
 
   line-height: 1;
 
+  text-shadow:
+    0 2px 5px rgba(0,0,0,.95);
+
   filter:
     drop-shadow(
-      0 2px 4px rgba(0,0,0,.8)
+      0 2px 3px rgba(0,0,0,.8)
     );
-
-  transition:
-    transform .2s ease,
-    filter .2s ease;
 }
 
+
+.action-icon i {
+  color: #fff;
+}
+
+
+/* =========================================================
+   COUNT
+   ========================================================= */
+
 .action-btn span:last-child {
+  color: #fff;
+
   font-size: 11px;
 
-  line-height: 1.1;
+  font-weight: 700;
 
-  font-weight: 800;
+  line-height: 1;
 
   text-shadow:
-    0 2px 4px rgba(0,0,0,.85);
+    0 2px 5px rgba(0,0,0,.95);
+}
+
+
+/* =========================================================
+   REMOVE BUTTON BOXES
+   ========================================================= */
+
+.like-btn,
+.comment-btn,
+.save-btn,
+.share-btn,
+
+.like-btn.liked,
+.save-btn.saved {
+  background: transparent;
+
+  border: 0;
+
+  box-shadow: none;
+
+  color: #fff;
 }
 
 
@@ -615,29 +606,13 @@ button {
    LIKE
    ========================================================= */
 
-.like-btn.liked {
-  background:
-    linear-gradient(
-      145deg,
-      rgba(254,44,85,.38),
-      rgba(254,44,85,.08)
-    );
-
-  border-color:
-    rgba(255,80,110,.48);
-
-  box-shadow:
-    0 0 14px rgba(254,44,85,.30),
-    inset 0 1px 2px rgba(255,255,255,.16);
+.like-btn.liked .action-icon {
+  transform: scale(1.12);
 }
 
-.like-btn.liked .action-icon {
-  transform: scale(1.20);
 
-  filter:
-    drop-shadow(
-      0 0 8px rgba(255,30,80,.9)
-    );
+.like-btn.liked .action-icon i {
+  font-weight: 900;
 }
 
 
@@ -645,25 +620,13 @@ button {
    SAVE
    ========================================================= */
 
-.save-btn.saved {
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255,190,40,.30),
-      rgba(255,190,40,.06)
-    );
-
-  border-color:
-    rgba(255,210,80,.4);
+.save-btn.saved .action-icon {
+  transform: scale(1.10);
 }
 
-.save-btn.saved .action-icon {
-  transform: scale(1.17);
 
-  filter:
-    drop-shadow(
-      0 0 8px rgba(255,190,40,.9)
-    );
+.save-btn.saved .action-icon i {
+  font-weight: 900;
 }
 
 
@@ -672,19 +635,30 @@ button {
    ========================================================= */
 
 .share-btn .action-icon {
-  font-size: 27px;
+  font-size: 28px;
 }
 
 
 /* =========================================================
-   VIDEO INFORMATION
+   ACTION PRESS
+   ========================================================= */
+
+.action-btn:active {
+  transform: scale(.84);
+
+  opacity: .75;
+}
+
+
+/* =========================================================
+   VIDEO INFO
    ========================================================= */
 
 .video-info {
   position: absolute;
 
   left: 14px;
-  right: 72px;
+  right: 70px;
 
   bottom: 20px;
 
@@ -695,6 +669,7 @@ button {
   text-shadow:
     0 2px 6px rgba(0,0,0,.9);
 }
+
 
 .video-info-username {
   padding: 0;
@@ -708,8 +683,10 @@ button {
   color: #fff;
 
   font-size: 16px;
+
   font-weight: 900;
 }
+
 
 .video-caption {
   margin-top: 7px;
@@ -720,6 +697,7 @@ button {
 
   word-break: break-word;
 }
+
 
 .video-music {
   margin-top: 8px;
@@ -751,24 +729,28 @@ button {
   display: flex;
 
   align-items: center;
+
   justify-content: space-around;
 
   background:
-    rgba(5,5,5,.94);
+    rgba(0,0,0,.94);
 
   border-top:
-    1px solid rgba(255,255,255,.09);
+    1px solid rgba(255,255,255,.08);
 
   box-shadow:
-    0 -8px 25px rgba(0,0,0,.55);
+    0 -7px 25px rgba(0,0,0,.55);
 
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter:
+    blur(12px);
+
+  -webkit-backdrop-filter:
+    blur(12px);
 }
 
 
 /* =========================================================
-   BOTTOM NAV BUTTON
+   NAV BUTTON
    ========================================================= */
 
 .wwc-nav-btn {
@@ -784,113 +766,124 @@ button {
 
   background: transparent;
 
-  color: #8d8d8d;
+  color: #858585;
 
   display: flex;
 
   flex-direction: column;
 
   align-items: center;
+
   justify-content: center;
 
-  gap: 2px;
-
-  font-size: 11px;
+  gap: 3px;
 
   transition:
     color .18s ease,
-    transform .18s ease,
-    text-shadow .18s ease;
+    transform .18s ease;
 }
+
 
 .wwc-nav-btn:active {
   transform: scale(.86);
 }
 
+
 .wwc-nav-btn.active {
   color: #fff;
 
   text-shadow:
-    0 0 8px rgba(255,255,255,.65);
-}
-
-.nav-icon {
-  font-size: 21px;
-
-  line-height: 1;
-}
-
-.nav-label {
-  font-size: 10px;
-
-  font-weight: 700;
+    0 0 8px rgba(255,255,255,.5);
 }
 
 
 /* =========================================================
-   CREATE / UPLOAD BUTTON
+   NAV ICON
    ========================================================= */
 
-.wwc-create-btn {
-  position: relative;
-
-  width: 52px;
-  height: 36px;
-
-  flex-shrink: 0;
-
-  margin: 0 8px;
-
-  padding: 0;
-
-  border: 0;
-
-  border-radius: 10px;
-
-  outline: none;
+.nav-icon {
+  height: 25px;
 
   display: flex;
 
   align-items: center;
   justify-content: center;
 
-  background:
-    linear-gradient(
-      135deg,
-      #ffffff,
-      #ededed
-    );
+  font-size: 21px;
+
+  line-height: 1;
+}
+
+
+.nav-icon i {
+  color: currentColor;
+}
+
+
+/* =========================================================
+   NAV LABEL
+   ========================================================= */
+
+.nav-label {
+  font-size: 10px;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   CREATE BUTTON
+   ========================================================= */
+
+.wwc-create-btn {
+  position: relative;
+
+  width: 47px;
+  height: 35px;
+
+  flex-shrink: 0;
+
+  margin: 0 7px;
+
+  padding: 0;
+
+  border: 0;
+
+  border-radius: 9px;
+
+  outline: none;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  background: #fff;
 
   color: #000;
 
   box-shadow:
-    0 0 12px rgba(255,255,255,.42),
-    0 5px 15px rgba(0,0,0,.55),
-    inset 0 1px 2px rgba(255,255,255,.9);
-
-  transition:
-    transform .18s ease,
-    box-shadow .18s ease;
+    0 3px 13px rgba(0,0,0,.55);
 }
 
+
 .wwc-create-btn span {
-  font-size: 30px;
+  font-size: 28px;
 
   line-height: 1;
 
   margin-top: -2px;
 }
 
+
 .wwc-create-btn:active {
   transform: scale(.86);
-
-  box-shadow:
-    0 0 22px rgba(255,255,255,.65);
 }
 
 
 /* =========================================================
-   LOADING
+   LOADING / EMPTY / ERROR
    ========================================================= */
 
 .feed-loading,
@@ -917,9 +910,11 @@ button {
   font-size: 18px;
 }
 
+
 .feed-loading {
   gap: 10px;
 }
+
 
 .feed-empty small,
 .feed-error small {
@@ -976,10 +971,12 @@ button {
   overflow-y: auto;
 }
 
+
 .comment-box.show {
   transform:
     translateY(0);
 }
+
 
 .comment-title {
   color: #fff;
@@ -989,6 +986,7 @@ button {
   font-weight: 800;
 }
 
+
 .comments-list {
   max-height: 35dvh;
 
@@ -996,6 +994,7 @@ button {
 
   overflow-y: auto;
 }
+
 
 .comment-item {
   display: flex;
@@ -1008,6 +1007,7 @@ button {
     1px solid rgba(255,255,255,.07);
 }
 
+
 .comment-avatar {
   width: 38px;
   height: 38px;
@@ -1019,12 +1019,14 @@ button {
   border-radius: 50%;
 }
 
+
 .comment-avatar img {
   width: 100%;
   height: 100%;
 
   object-fit: cover;
 }
+
 
 .comment-content {
   color: #eee;
@@ -1034,6 +1036,7 @@ button {
   line-height: 1.4;
 }
 
+
 .comment-content strong {
   display: block;
 
@@ -1041,6 +1044,7 @@ button {
 
   color: #fff;
 }
+
 
 .comment-box textarea {
   width: 100%;
@@ -1067,12 +1071,6 @@ button {
   font-size: 14px;
 }
 
-.comment-box textarea:focus {
-  border-color: #777;
-
-  box-shadow:
-    0 0 10px rgba(255,255,255,.08);
-}
 
 .comment-buttons {
   display: flex;
@@ -1081,6 +1079,7 @@ button {
 
   margin-top: 10px;
 }
+
 
 .comment-buttons button {
   flex: 1;
@@ -1091,17 +1090,13 @@ button {
 
   border-radius: 10px;
 
-  background:
-    #333;
+  background: #333;
 
   color: #fff;
 
   font-weight: 700;
 }
 
-.comment-buttons button:active {
-  transform: scale(.96);
-}
 
 #commentSend {
   background:
@@ -1110,9 +1105,6 @@ button {
       #ff174f,
       #fe2c55
     );
-
-  box-shadow:
-    0 4px 12px rgba(254,44,85,.35);
 }
 
 
@@ -1143,6 +1135,7 @@ button {
     0 12px 35px rgba(0,0,0,.65);
 
   backdrop-filter: blur(12px);
+
   -webkit-backdrop-filter: blur(12px);
 
   transform:
@@ -1157,6 +1150,7 @@ button {
     transform .2s ease;
 }
 
+
 .profile-menu.show {
   opacity: 1;
 
@@ -1166,20 +1160,30 @@ button {
     translateY(0) scale(1);
 }
 
+
 .profile-menu-header {
   display: flex;
 
   align-items: center;
+
   justify-content: space-between;
 
   margin-bottom: 10px;
 }
 
+
 .profile-menu-title {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
   font-size: 17px;
 
   font-weight: 800;
 }
+
 
 .profile-menu-close {
   width: 35px;
@@ -1193,6 +1197,7 @@ button {
 
   color: #fff;
 }
+
 
 .profile-menu-btn {
   width: 100%;
@@ -1214,9 +1219,6 @@ button {
   font-weight: 700;
 }
 
-.profile-menu-btn:active {
-  transform: scale(.98);
-}
 
 .logout-menu-btn {
   background:
@@ -1237,23 +1239,25 @@ button {
     gap: 17px;
   }
 
+
   .wwc-top-tab {
     font-size: 14px;
   }
 
+
   .wwc-search-btn {
-    right: 8px;
+    right: 7px;
 
     width: 37px;
     height: 37px;
-
-    top: 13px;
   }
+
 
   .profile-area {
     left: 9px;
     bottom: 101px;
   }
+
 
   .profile-username {
     max-width: 95px;
@@ -1261,37 +1265,52 @@ button {
     font-size: 14px;
   }
 
+
   .follow-btn {
     padding: 6px 9px;
 
     font-size: 12px;
   }
 
+
   .actions {
     right: 5px;
-    bottom: 104px;
+
+    bottom: 103px;
 
     gap: 10px;
   }
 
-  .action-btn {
-    width: 45px;
-    min-height: 48px;
 
-    border-radius: 15px;
+  .action-btn {
+    width: 44px;
+
+    min-height: 50px;
   }
+
 
   .action-icon {
-    font-size: 25px;
+    width: 31px;
+    height: 31px;
+
+    font-size: 26px;
   }
+
+
+  .action-btn span:last-child {
+    font-size: 10px;
+  }
+
 
   .video-info {
     left: 10px;
+
     right: 62px;
   }
 
+
   .wwc-create-btn {
-    width: 48px;
+    width: 45px;
     height: 34px;
 
     margin: 0 5px;
@@ -1308,16 +1327,23 @@ button {
 
   .actions {
     gap: 8px;
-    bottom: 100px;
+
+    bottom: 99px;
   }
+
 
   .action-btn {
-    min-height: 45px;
+    min-height: 46px;
   }
 
+
   .action-icon {
+    width: 29px;
+    height: 29px;
+
     font-size: 24px;
   }
+
 
   .profile-area {
     bottom: 98px;
@@ -1340,209 +1366,6 @@ button {
 
     animation-duration:
       .01ms !important;
-  }
-
-}
-/* =========================================================
-   WWC WHITE ACTION BUTTONS
-   Follow + Like + Comment + Save + Share
-   ========================================================= */
-
-/* FOLLOW BUTTON */
-.follow-btn {
-  padding: 9px 16px;
-
-  border: 1.5px solid #ffffff;
-  border-radius: 10px;
-
-  background: #ffffff;
-  color: #111111;
-
-  font-size: 14px;
-  font-weight: 800;
-
-  white-space: nowrap;
-
-  box-shadow:
-    0 3px 12px rgba(255, 255, 255, 0.35);
-
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-/* Following অবস্থায় */
-.follow-btn.following {
-  background: #ffffff;
-  color: #111111;
-
-  border-color: #ffffff;
-
-  box-shadow:
-    0 3px 14px rgba(255, 255, 255, 0.45);
-}
-
-
-/* =========================================================
-   ACTION BUTTONS
-   ========================================================= */
-
-.action-btn {
-  width: 54px;
-  min-height: 58px;
-
-  padding: 7px 5px;
-
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  border-radius: 16px;
-
-  background: rgba(255, 255, 255, 0.96);
-
-  color: #111111;
-
-  display: flex;
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
-
-  gap: 4px;
-
-  box-shadow:
-    0 4px 15px rgba(0, 0, 0, 0.35),
-    0 0 12px rgba(255, 255, 255, 0.25);
-
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-
-/* ICON */
-.action-icon {
-  font-size: 27px;
-  line-height: 1;
-
-  filter:
-    drop-shadow(0 2px 3px rgba(0,0,0,.25));
-}
-
-
-/* COUNT / SHARE TEXT */
-.action-btn span:last-child {
-  color: #111111;
-
-  font-size: 12px;
-  font-weight: 800;
-
-  line-height: 1.1;
-}
-
-
-/* =========================================================
-   LIKE
-   ========================================================= */
-
-.like-btn {
-  background: #ffffff;
-}
-
-.like-btn.liked {
-  background: #ffffff;
-
-  box-shadow:
-    0 0 18px rgba(255, 255, 255, 0.65);
-}
-
-.like-btn.liked .action-icon {
-  transform: scale(1.18);
-}
-
-
-/* =========================================================
-   COMMENT
-   ========================================================= */
-
-.comment-btn {
-  background: #ffffff;
-}
-
-
-/* =========================================================
-   SAVE
-   ========================================================= */
-
-.save-btn {
-  background: #ffffff;
-}
-
-.save-btn.saved {
-  background: #ffffff;
-
-  box-shadow:
-    0 0 18px rgba(255, 255, 255, 0.65);
-}
-
-.save-btn.saved .action-icon {
-  transform: scale(1.18);
-}
-
-
-/* =========================================================
-   SHARE
-   ========================================================= */
-
-.share-btn {
-  background: #ffffff;
-}
-
-
-/* =========================================================
-   BUTTON PRESS EFFECT
-   ========================================================= */
-
-.action-btn:active {
-  transform: scale(0.90);
-
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.3);
-}
-
-.follow-btn:active {
-  transform: scale(0.94);
-
-  box-shadow:
-    0 2px 8px rgba(255, 255, 255, 0.3);
-}
-
-
-/* =========================================================
-   MOBILE SIZE
-   ========================================================= */
-
-@media (max-width: 380px) {
-
-  .action-btn {
-    width: 50px;
-    min-height: 54px;
-
-    border-radius: 14px;
-  }
-
-  .action-icon {
-    font-size: 24px;
-  }
-
-  .action-btn span:last-child {
-    font-size: 11px;
-  }
-
-  .follow-btn {
-    padding: 7px 12px;
-    font-size: 13px;
   }
 
 }
