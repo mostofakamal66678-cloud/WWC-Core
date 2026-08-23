@@ -1,247 +1,2562 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  >
+<meta charset="UTF-8">
 
-  <meta name="theme-color" content="#000000">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+>
 
-  <title>World Wide Connect</title>
+<meta name="theme-color" content="#000000">
 
-  <link rel="stylesheet" href="./css/style.css">
+<title>WWC - For You</title>
+
+<style>
+
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+
+
+/* =====================================================
+   MAIN APP
+===================================================== */
+
+.app {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  background: #000;
+  overflow: hidden;
+}
+
+
+/* =====================================================
+   VIDEO FEED
+===================================================== */
+
+.feed {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scroll-snap-type: y mandatory;
+
+  scrollbar-width: none;
+}
+
+.feed::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* =====================================================
+   VIDEO ITEM
+===================================================== */
+
+.video-item {
+  position: relative;
+
+  width: 100%;
+  height: 100dvh;
+
+  background: #000;
+
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+
+  overflow: hidden;
+}
+
+
+/* =====================================================
+   VIDEO
+===================================================== */
+
+.video {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  background: #000;
+}
+
+
+/* =====================================================
+   VIDEO DARK GRADIENT
+===================================================== */
+
+.video-item::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 40%;
+
+  background:
+    linear-gradient(
+      transparent,
+      rgba(0,0,0,.75)
+    );
+
+  pointer-events: none;
+}
+
+
+/* =====================================================
+   TOP BAR
+===================================================== */
+
+.top-bar {
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 70px;
+
+  z-index: 20;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding-top: env(safe-area-inset-top);
+
+  background:
+    linear-gradient(
+      rgba(0,0,0,.45),
+      transparent
+    );
+}
+
+
+/* =====================================================
+   TOP TABS
+===================================================== */
+
+.tabs {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 30px;
+
+  height: 100%;
+}
+
+
+.tab {
+
+  position: relative;
+
+  border: 0;
+
+  background: transparent;
+
+  color: rgba(255,255,255,.65);
+
+  font-size: 17px;
+
+  font-weight: bold;
+
+  padding: 10px 3px;
+
+  cursor: pointer;
+}
+
+
+.tab.active {
+
+  color: #fff;
+
+}
+
+
+.tab.active::after {
+
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 1px;
+
+  height: 3px;
+
+  border-radius: 10px;
+
+  background: #fff;
+
+}
+
+
+/* =====================================================
+   SEARCH BUTTON
+===================================================== */
+
+.search-btn {
+
+  position: absolute;
+
+  right: 14px;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  width: 45px;
+  height: 45px;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background: rgba(0,0,0,.35);
+
+  color: #fff;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  cursor: pointer;
+
+  backdrop-filter: blur(5px);
+}
+
+
+.search-btn svg {
+
+  width: 29px;
+  height: 29px;
+
+  fill: none;
+
+  stroke: #fff;
+
+  stroke-width: 2;
+}
+
+
+/* =====================================================
+   RIGHT ACTION BAR
+===================================================== */
+
+.action-bar {
+
+  position: absolute;
+
+  right: 10px;
+
+  bottom: 105px;
+
+  z-index: 30;
+
+  width: 65px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 17px;
+}
+
+
+/* =====================================================
+   ACTION
+===================================================== */
+
+.action {
+
+  width: 62px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #fff;
+
+  cursor: pointer;
+
+  padding: 0;
+}
+
+
+/* =====================================================
+   ACTION ICON
+===================================================== */
+
+.action-icon {
+
+  width: 51px;
+  height: 51px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 50%;
+
+  color: #fff;
+
+  filter:
+    drop-shadow(0 2px 4px rgba(0,0,0,.7));
+
+  transition:
+    transform .15s ease,
+    color .15s ease;
+}
+
+
+.action-icon svg {
+
+  width: 39px;
+  height: 39px;
+
+  fill: none;
+
+  stroke: currentColor;
+
+  stroke-width: 2;
+
+  stroke-linecap: round;
+
+  stroke-linejoin: round;
+}
+
+
+.action:active .action-icon {
+
+  transform: scale(.82);
+
+}
+
+
+/* =====================================================
+   LIKE
+===================================================== */
+
+.like-btn.liked .action-icon {
+
+  color: #ff3040;
+
+  transform: scale(1.08);
+
+}
+
+
+.like-btn.liked .action-icon svg {
+
+  fill: #ff3040;
+
+  stroke: #ff3040;
+}
+
+
+/* =====================================================
+   ACTION NUMBER
+===================================================== */
+
+.action-count {
+
+  margin-top: 1px;
+
+  color: #fff;
+
+  font-size: 13px;
+
+  font-weight: bold;
+
+  text-shadow:
+    0 1px 3px #000;
+}
+
+
+/* =====================================================
+   PROFILE AVATAR
+===================================================== */
+
+.creator-avatar {
+
+  position: relative;
+
+  width: 53px;
+  height: 53px;
+
+  border-radius: 50%;
+
+  border: 2px solid #fff;
+
+  overflow: visible;
+
+  margin-bottom: 2px;
+}
+
+
+.creator-avatar img {
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+
+  display: block;
+}
+
+
+/* =====================================================
+   FOLLOW PLUS
+===================================================== */
+
+.follow-plus {
+
+  position: absolute;
+
+  bottom: -7px;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  width: 24px;
+  height: 24px;
+
+  border-radius: 50%;
+
+  border: 0;
+
+  background: #fe2c55;
+
+  color: #fff;
+
+  font-size: 20px;
+
+  line-height: 20px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  cursor: pointer;
+}
+
+
+.follow-plus.following {
+
+  background: #fff;
+
+  color: #000;
+
+  font-size: 14px;
+}
+
+
+/* =====================================================
+   VIDEO INFORMATION
+===================================================== */
+
+.video-info {
+
+  position: absolute;
+
+  left: 15px;
+
+  right: 85px;
+
+  bottom: 95px;
+
+  z-index: 25;
+
+}
+
+
+/* =====================================================
+   USERNAME
+===================================================== */
+
+.username {
+
+  font-size: 18px;
+
+  font-weight: bold;
+
+  margin-bottom: 10px;
+
+  text-shadow:
+    0 2px 4px rgba(0,0,0,.8);
+}
+
+
+/* =====================================================
+   CAPTION
+===================================================== */
+
+.caption {
+
+  font-size: 15px;
+
+  line-height: 1.45;
+
+  margin-bottom: 10px;
+
+  text-shadow:
+    0 2px 4px rgba(0,0,0,.8);
+}
+
+
+/* =====================================================
+   SOUND
+===================================================== */
+
+.sound {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  font-size: 14px;
+
+  font-weight: bold;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  text-shadow:
+    0 2px 4px rgba(0,0,0,.8);
+}
+
+
+/* =====================================================
+   BOTTOM NAV
+===================================================== */
+
+.bottom-nav {
+
+  position: fixed;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 72px;
+
+  z-index: 100;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-around;
+
+  padding-bottom:
+    env(safe-area-inset-bottom);
+
+  background:
+    linear-gradient(
+      transparent,
+      rgba(0,0,0,.95) 25%
+    );
+}
+
+
+/* =====================================================
+   NAV BUTTON
+===================================================== */
+
+.nav-btn {
+
+  width: 20%;
+
+  height: 65px;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #aaa;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 3px;
+
+  font-size: 11px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+
+.nav-btn svg {
+
+  width: 29px;
+  height: 29px;
+
+  fill: none;
+
+  stroke: currentColor;
+
+  stroke-width: 2;
+
+  stroke-linecap: round;
+
+  stroke-linejoin: round;
+}
+
+
+.nav-btn.active {
+
+  color: #fff;
+
+}
+
+
+/* =====================================================
+   UPLOAD BUTTON
+===================================================== */
+
+.upload-btn {
+
+  position: relative;
+
+  width: 56px;
+  height: 42px;
+
+  border: 0;
+
+  border-radius: 12px;
+
+  background: #fff;
+
+  color: #000;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  cursor: pointer;
+
+  box-shadow:
+    -5px 0 0 #25f4ee,
+    5px 0 0 #fe2c55;
+}
+
+
+.upload-btn svg {
+
+  width: 27px;
+  height: 27px;
+
+  stroke: #000;
+
+  stroke-width: 2.5;
+
+  fill: none;
+}
+
+
+/* =====================================================
+   NOTIFICATION BADGE
+===================================================== */
+
+.badge {
+
+  position: absolute;
+
+  top: -2px;
+  right: 18px;
+
+  min-width: 20px;
+  height: 20px;
+
+  padding: 0 5px;
+
+  border-radius: 10px;
+
+  background: #fe2c55;
+
+  color: #fff;
+
+  font-size: 11px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-weight: bold;
+}
+
+
+/* =====================================================
+   PAUSE ICON
+===================================================== */
+
+.pause-indicator {
+
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%,-50%) scale(.8);
+
+  width: 70px;
+  height: 70px;
+
+  border-radius: 50%;
+
+  background: rgba(0,0,0,.45);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition: .15s;
+}
+
+
+.pause-indicator.show {
+
+  opacity: 1;
+
+  transform:
+    translate(-50%,-50%)
+    scale(1);
+}
+
+
+.pause-indicator svg {
+
+  width: 34px;
+  height: 34px;
+
+  fill: #fff;
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+.toast {
+
+  position: fixed;
+
+  left: 50%;
+
+  bottom: 90px;
+
+  transform:
+    translateX(-50%)
+    translateY(20px);
+
+  z-index: 200;
+
+  background: rgba(30,30,30,.95);
+
+  color: #fff;
+
+  padding: 11px 18px;
+
+  border-radius: 22px;
+
+  font-size: 14px;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition: .25s;
+}
+
+
+.toast.show {
+
+  opacity: 1;
+
+  transform:
+    translateX(-50%)
+    translateY(0);
+}
+
+
+/* =====================================================
+   COMMENT PANEL
+===================================================== */
+
+.comment-panel {
+
+  position: fixed;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  z-index: 150;
+
+  height: 55vh;
+
+  background: #111;
+
+  border-radius:
+    18px 18px 0 0;
+
+  transform: translateY(100%);
+
+  transition:
+    transform .3s ease;
+
+  display: flex;
+
+  flex-direction: column;
+}
+
+
+.comment-panel.open {
+
+  transform: translateY(0);
+
+}
+
+
+.comment-header {
+
+  height: 55px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-bottom: 1px solid #333;
+
+  position: relative;
+
+  font-weight: bold;
+}
+
+
+.close-comments {
+
+  position: absolute;
+
+  right: 15px;
+
+  border: 0;
+
+  background: transparent;
+
+  color: #fff;
+
+  font-size: 26px;
+
+  cursor: pointer;
+}
+
+
+.comments-list {
+
+  flex: 1;
+
+  overflow-y: auto;
+
+  padding: 15px;
+}
+
+
+.comment {
+
+  padding: 10px 0;
+
+  border-bottom: 1px solid #222;
+
+}
+
+
+.comment strong {
+
+  display: block;
+
+  margin-bottom: 4px;
+}
+
+
+.comment-input {
+
+  display: flex;
+
+  gap: 8px;
+
+  padding: 10px;
+
+  border-top: 1px solid #333;
+
+}
+
+
+.comment-input input {
+
+  flex: 1;
+
+  min-width: 0;
+
+  border: 1px solid #444;
+
+  background: #222;
+
+  color: #fff;
+
+  border-radius: 22px;
+
+  padding: 12px 15px;
+
+  outline: none;
+}
+
+
+.comment-input button {
+
+  width: 50px;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background: #fff;
+
+  color: #000;
+
+  font-size: 18px;
+
+  cursor: pointer;
+}
+
+
+/* =====================================================
+   SEARCH PANEL
+===================================================== */
+
+.search-panel {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 300;
+
+  background: #000;
+
+  display: none;
+
+  padding: 15px;
+}
+
+
+.search-panel.open {
+
+  display: block;
+
+}
+
+
+.search-top {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+
+.search-top input {
+
+  flex: 1;
+
+  height: 45px;
+
+  border: 1px solid #444;
+
+  border-radius: 10px;
+
+  background: #222;
+
+  color: #fff;
+
+  padding: 0 14px;
+
+  font-size: 16px;
+
+  outline: none;
+}
+
+
+.close-search {
+
+  width: 45px;
+  height: 45px;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background: #222;
+
+  color: #fff;
+
+  font-size: 24px;
+}
+
+
+/* =====================================================
+   DESKTOP
+===================================================== */
+
+@media (min-width: 700px) {
+
+  .video-item {
+
+    max-width: 500px;
+
+    margin: auto;
+
+  }
+
+  .bottom-nav {
+
+    max-width: 500px;
+
+    left: 50%;
+
+    right: auto;
+
+    transform: translateX(-50%);
+
+  }
+
+}
+
+</style>
+
 </head>
+
 
 <body>
 
-  <div id="app">
 
-    <!-- TOP BAR -->
-    <header class="wwc-top-bar">
-
-      <div class="wwc-top-tabs">
-
-        <button
-          id="followingTab"
-          class="wwc-top-tab"
-          type="button"
-        >
-          Following
-        </button>
-
-        <button
-          id="forYouTab"
-          class="wwc-top-tab active"
-          type="button"
-        >
-          For You
-        </button>
-
-      </div>
-
-      <button
-        id="searchBtn"
-        class="wwc-search-btn"
-        type="button"
-        aria-label="Search"
-      >
-        🔍
-      </button>
-
-    </header>
+<div class="app">
 
 
-    <!-- VIDEO FEED -->
-    <main
-      id="video-feed"
-      aria-label="WWC Video Feed"
-    >
+<!-- ===================================================
+     FEED
+=================================================== -->
 
-      <div class="feed-loading">
-        <div class="loading-spinner">⏳</div>
-        <div>Video Feed Loading...</div>
-      </div>
-
-    </main>
+<main class="feed" id="feed">
 
 
-    <!-- PROFILE MENU -->
-    <div
-      id="profileMenu"
-      class="profile-menu"
-      aria-hidden="true"
-    >
+<!-- ===================================================
+     VIDEO 1
+=================================================== -->
 
-      <div class="profile-menu-header">
+<section class="video-item">
 
-        <div class="profile-menu-title">
-          👤 My Profile
-        </div>
+  <video
+    class="video"
+    src="./videos/video1.mp4"
+    loop
+    muted
+    playsinline
+    preload="metadata"
+  ></video>
 
-        <button
-          id="profileMenuClose"
-          class="profile-menu-close"
-          type="button"
-        >
-          ✕
-        </button>
 
-      </div>
+  <!-- TOP -->
+
+  <div class="top-bar">
+
+    <div class="tabs">
 
       <button
-        id="profileBtnMenu"
-        class="profile-menu-btn"
+        class="tab"
         type="button"
       >
-        👤 Profile
+        Following
       </button>
 
       <button
-        id="loginBtn"
-        class="profile-menu-btn"
+        class="tab active"
         type="button"
       >
-        🔐 Login / Register
-      </button>
-
-      <button
-        id="logoutBtn"
-        class="profile-menu-btn logout-menu-btn"
-        type="button"
-      >
-        🚪 Logout
+        For You
       </button>
 
     </div>
 
 
-    <!-- COMMENT BOX -->
-    <div
-      id="commentBox"
-      class="comment-box"
-      aria-hidden="true"
+    <button
+      class="search-btn"
+      type="button"
+      onclick="openSearch()"
+      aria-label="Search"
     >
 
-      <div class="comment-title">
-        <span>💬 Comments</span>
+      <svg viewBox="0 0 24 24">
 
-        <button
-          id="commentCloseTop"
-          type="button"
-          class="comment-close"
-        >
-          ✕
-        </button>
-      </div>
+        <circle
+          cx="11"
+          cy="11"
+          r="7"
+        />
 
-      <div
-        id="commentsList"
-        class="comments-list"
-      ></div>
+        <path
+          d="M16.5 16.5L22 22"
+        />
 
-      <textarea
-        id="commentInput"
-        placeholder="Write a comment..."
-        maxlength="500"
-      ></textarea>
+      </svg>
 
-      <div class="comment-buttons">
-
-        <button
-          id="commentCancel"
-          type="button"
-        >
-          Cancel
-        </button>
-
-        <button
-          id="commentSend"
-          type="button"
-        >
-          Send
-        </button>
-
-      </div>
-
-    </div>
-
-
-    <!-- VIDEO UPLOAD INPUT -->
-    <input
-      id="videoUpload"
-      type="file"
-      accept="video/*"
-      hidden
-    >
-
-
-    <!-- BOTTOM NAVIGATION -->
-    <nav
-      class="wwc-bottom-nav"
-      aria-label="Main navigation"
-    >
-
-      <button
-        class="wwc-nav-btn active"
-        id="homeBtn"
-        type="button"
-      >
-        <span class="nav-icon">🏠</span>
-        <span class="nav-label">Home</span>
-      </button>
-
-
-      <button
-        class="wwc-nav-btn"
-        id="friendsBtn"
-        type="button"
-      >
-        <span class="nav-icon">👥</span>
-        <span class="nav-label">Friends</span>
-      </button>
-
-
-      <button
-        id="uploadBtn"
-        class="wwc-create-btn"
-        type="button"
-        aria-label="Upload Video"
-      >
-        <span>+</span>
-      </button>
-
-
-      <button
-        class="wwc-nav-btn"
-        id="inboxBtn"
-        type="button"
-      >
-        <span class="nav-icon">💬</span>
-        <span class="nav-label">Inbox</span>
-      </button>
-
-
-      <button
-        id="profileBtn"
-        class="wwc-nav-btn"
-        type="button"
-      >
-        <span class="nav-icon">👤</span>
-        <span class="nav-label">Profile</span>
-      </button>
-
-    </nav>
+    </button>
 
   </div>
 
 
-  <script
-    type="module"
-    src="./js/app.js"
-  ></script>
+  <!-- ACTION BAR -->
+
+  <div class="action-bar">
+
+
+    <!-- PROFILE -->
+
+    <div class="action">
+
+      <div class="creator-avatar">
+
+        <img
+          src="./images/profile.png"
+          alt="Profile"
+        >
+
+        <button
+          class="follow-plus"
+          type="button"
+          onclick="toggleFollow(this)"
+        >
+          +
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- LIKE -->
+
+    <button
+      class="action like-btn"
+      type="button"
+      onclick="toggleLike(this)"
+    >
+
+      <span class="action-icon">
+
+        <svg viewBox="0 0 24 24">
+
+          <path
+            d="M20.8 8.8
+               C20.8 5.8 18.7 4 16.2 4
+               C14.5 4 13 4.9 12 6.2
+               C11 4.9 9.5 4 7.8 4
+               C5.3 4 3.2 5.8 3.2 8.8
+               C3.2 13.1 7.3 16.2 12 20
+               C16.7 16.2 20.8 13.1 20.8 8.8Z"
+          />
+
+        </svg>
+
+      </span>
+
+      <span class="action-count">
+        0
+      </span>
+
+    </button>
+
+
+    <!-- COMMENT -->
+
+    <button
+      class="action"
+      type="button"
+      onclick="openComments()"
+    >
+
+      <span class="action-icon">
+
+        <svg viewBox="0 0 24 24">
+
+          <path
+            d="M20 11.5
+               C20 15.6 16.4 19 12 19
+               C10.7 19 9.5 18.7 8.4 18.2
+               L4 20
+               L5.2 16.1
+               C3.9 14.8 3 13.2 3 11.5
+               C3 7.4 7 4 12 4
+               C17 4 20 7.4 20 11.5Z"
+          />
+
+        </svg>
+
+      </span>
+
+      <span class="action-count">
+        0
+      </span>
+
+    </button>
+
+
+    <!-- BOOKMARK -->
+
+    <button
+      class="action"
+      type="button"
+      onclick="toggleBookmark(this)"
+    >
+
+      <span class="action-icon">
+
+        <svg viewBox="0 0 24 24">
+
+          <path
+            d="M6 4
+               C6 3.4 6.4 3 7 3
+               H17
+               C17.6 3 18 3.4 18 4
+               V21
+               L12 17.2
+               L6 21
+               Z"
+          />
+
+        </svg>
+
+      </span>
+
+      <span class="action-count">
+        0
+      </span>
+
+    </button>
+
+
+    <!-- SHARE -->
+
+    <button
+      class="action"
+      type="button"
+      onclick="shareVideo()"
+    >
+
+      <span class="action-icon">
+
+        <svg viewBox="0 0 24 24">
+
+          <path
+            d="M22 2
+               L11 13"
+          />
+
+          <path
+            d="M22 2
+               L15 22
+               L11 13
+               L2 9
+               Z"
+          />
+
+        </svg>
+
+      </span>
+
+      <span class="action-count">
+        Share
+      </span>
+
+    </button>
+
+
+  </div>
+
+
+  <!-- VIDEO INFO -->
+
+  <div class="video-info">
+
+    <div class="username">
+      @wwc_user
+    </div>
+
+    <div class="caption">
+      🌍 WWC-Core এ আপনাকে স্বাগতম।
+      World Wide Connect
+    </div>
+
+    <div class="sound">
+      🎵 Original sound - WWC
+    </div>
+
+  </div>
+
+
+  <!-- PAUSE -->
+
+  <div class="pause-indicator">
+
+    <svg viewBox="0 0 24 24">
+
+      <rect
+        x="6"
+        y="4"
+        width="4"
+        height="16"
+        rx="1"
+      />
+
+      <rect
+        x="14"
+        y="4"
+        width="4"
+        height="16"
+        rx="1"
+      />
+
+    </svg>
+
+  </div>
+
+</section>
+
+
+<!-- ===================================================
+     VIDEO 2
+=================================================== -->
+
+<section class="video-item">
+
+  <video
+    class="video"
+    src="./videos/video2.mp4"
+    loop
+    muted
+    playsinline
+    preload="metadata"
+  ></video>
+
+
+  <div class="top-bar">
+
+    <div class="tabs">
+
+      <button
+        class="tab"
+        type="button"
+      >
+        Following
+      </button>
+
+      <button
+        class="tab active"
+        type="button"
+      >
+        For You
+      </button>
+
+    </div>
+
+
+    <button
+      class="search-btn"
+      type="button"
+      onclick="openSearch()"
+    >
+
+      <svg viewBox="0 0 24 24">
+
+        <circle
+          cx="11"
+          cy="11"
+          r="7"
+        />
+
+        <path
+          d="M16.5 16.5L22 22"
+        />
+
+      </svg>
+
+    </button>
+
+  </div>
+
+
+  <div class="action-bar">
+
+    <div class="action">
+
+      <div class="creator-avatar">
+
+        <img
+          src="./images/profile.png"
+          alt="Profile"
+        >
+
+        <button
+          class="follow-plus"
+          type="button"
+          onclick="toggleFollow(this)"
+        >
+          +
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <button
+      class="action like-btn"
+      type="button"
+      onclick="toggleLike(this)"
+    >
+
+      <span class="action-icon">
+
+        <svg viewBox="0 0 24 24">
+
+          <path
+            d="M20.8 8.8
+               C20.8 5.8 18.7 4 16.2 4
+               C14.5 4 13 4.9 12 6.2
+               C11 4.9 9.5 4 7.8 4
+               C5.3 4 3.2 5.8 3.2 8.8
+               C3.2 13.1 7.3 16.2 12 20
+               C16.7 16.2 20.8 13.1 20.8 8.8Z"
+          />
+
+        </svg>
+
+      </span>
+
+      <span class="action-count">
+        0
+      </span>
+
+    </button>
+
+
+    <button
+      class="action"
+      type="button"
+      onclick="openComments()"
+    >
+
+      <span class="action-icon">
+
+        <svg viewBox="0 0 24 24">
+
+          <path
+            d="M20 11.5
+               C20 15.6 16.4 19 12 19
+               C10.7 19 9.5 18.7 8.4 18.2
+               L4 20
+               L5.2 16.1
+               C3.9 14.8 3 13.2 3 11.5
+               C3 7.4 7 4 12 4
+               C17 4 20 7.4 20 11.5Z"
+          />
+
+        </svg>
+
+      </span>
+
+      <span class="action-count">
+        0
+      </span>
+
+    </button>
+
+
+    <button
+      class="action"
+      type="button"
+      onclick="toggleBookmark(this)"
+    >
+
+      <span class="action-icon">
+
+        <svg viewBox="0 0 24 24">
+
+          <path
+            d="M6 4
+               C6 3.4 6.4 3 7 3
+               H17
+               C17.6 3 18 3.4 18 4
+               V21
+               L12 17.2
+               L6 21
+               Z"
+          />
+
+        </svg>
+
+      </span>
+
+      <span class="action-count">
+        0
+      </span>
+
+    </button>
+
+
+    <button
+      class="action"
+      type="button"
+      onclick="shareVideo()"
+    >
+
+      <span class="action-icon">
+
+        <svg viewBox="0 0 24 24">
+
+          <path
+            d="M22 2L11 13"
+          />
+
+          <path
+            d="M22 2
+               L15 22
+               L11 13
+               L2 9
+               Z"
+          />
+
+        </svg>
+
+      </span>
+
+      <span class="action-count">
+        Share
+      </span>
+
+    </button>
+
+  </div>
+
+
+  <div class="video-info">
+
+    <div class="username">
+      @wwc_user
+    </div>
+
+    <div class="caption">
+      🌍 নতুন ভিডিও দেখুন WWC-Core এ।
+    </div>
+
+    <div class="sound">
+      🎵 Original sound - WWC
+    </div>
+
+  </div>
+
+
+  <div class="pause-indicator">
+
+    <svg viewBox="0 0 24 24">
+
+      <rect
+        x="6"
+        y="4"
+        width="4"
+        height="16"
+      />
+
+      <rect
+        x="14"
+        y="4"
+        width="4"
+        height="16"
+      />
+
+    </svg>
+
+  </div>
+
+</section>
+
+
+</main>
+
+
+<!-- ===================================================
+     BOTTOM NAVIGATION
+=================================================== -->
+
+<nav class="bottom-nav">
+
+
+  <!-- HOME -->
+
+  <button
+    class="nav-btn active"
+    type="button"
+    onclick="goHome()"
+  >
+
+    <svg viewBox="0 0 24 24">
+
+      <path
+        d="M3 11
+           L12 3
+           L21 11
+           V21
+           H14
+           V15
+           H10
+           V21
+           H3
+           Z"
+      />
+
+    </svg>
+
+    <span>Home</span>
+
+  </button>
+
+
+  <!-- FRIENDS -->
+
+  <button
+    class="nav-btn"
+    type="button"
+    onclick="goFriends()"
+  >
+
+    <svg viewBox="0 0 24 24">
+
+      <circle
+        cx="9"
+        cy="8"
+        r="3"
+      />
+
+      <circle
+        cx="17"
+        cy="9"
+        r="2.5"
+      />
+
+      <path
+        d="M3 20
+           C3 16.5 5.5 14 9 14
+           C12.5 14 15 16.5 15 20"
+      />
+
+      <path
+        d="M15 15
+           C18 15 20 17 20 20"
+      />
+
+    </svg>
+
+    <span>Friends</span>
+
+  </button>
+
+
+  <!-- UPLOAD -->
+
+  <button
+    class="nav-btn"
+    type="button"
+    onclick="uploadVideo()"
+  >
+
+    <span class="upload-btn">
+
+      <svg viewBox="0 0 24 24">
+
+        <path
+          d="M12 5V19"
+        />
+
+        <path
+          d="M5 12H19"
+        />
+
+      </svg>
+
+    </span>
+
+  </button>
+
+
+  <!-- INBOX -->
+
+  <button
+    class="nav-btn"
+    type="button"
+    onclick="goInbox()"
+  >
+
+    <svg viewBox="0 0 24 24">
+
+      <path
+        d="M4 5
+           H20
+           V17
+           H15
+           L12 20
+           L9 17
+           H4
+           Z"
+      />
+
+      <path
+        d="M8 10
+           H16"
+      />
+
+      <path
+        d="M8 13
+           H13"
+      />
+
+    </svg>
+
+    <span>Inbox</span>
+
+    <span class="badge">
+      0
+    </span>
+
+  </button>
+
+
+  <!-- PROFILE -->
+
+  <button
+    class="nav-btn"
+    type="button"
+    onclick="goProfile()"
+  >
+
+    <svg viewBox="0 0 24 24">
+
+      <circle
+        cx="12"
+        cy="8"
+        r="4"
+      />
+
+      <path
+        d="M4 21
+           C4 16.5 7.5 14 12 14
+           C16.5 14 20 16.5 20 21"
+      />
+
+    </svg>
+
+    <span>Profile</span>
+
+  </button>
+
+
+</nav>
+
+
+<!-- ===================================================
+     COMMENT PANEL
+=================================================== -->
+
+<div
+  class="comment-panel"
+  id="commentPanel"
+>
+
+  <div class="comment-header">
+
+    Comments
+
+    <button
+      class="close-comments"
+      type="button"
+      onclick="closeComments()"
+    >
+      ×
+    </button>
+
+  </div>
+
+
+  <div
+    class="comments-list"
+    id="commentsList"
+  >
+
+    <div class="comment">
+
+      <strong>
+        WWC User
+      </strong>
+
+      ভিডিওটি ভালো হয়েছে ❤️
+
+    </div>
+
+  </div>
+
+
+  <div class="comment-input">
+
+    <input
+      id="commentInput"
+      type="text"
+      placeholder="Add comment..."
+    >
+
+    <button
+      type="button"
+      onclick="addComment()"
+    >
+      ➤
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ===================================================
+     SEARCH PANEL
+=================================================== -->
+
+<div
+  class="search-panel"
+  id="searchPanel"
+>
+
+  <div class="search-top">
+
+    <input
+      id="searchInput"
+      type="search"
+      placeholder="Search..."
+    >
+
+    <button
+      class="close-search"
+      type="button"
+      onclick="closeSearch()"
+    >
+      ×
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- ===================================================
+     TOAST
+=================================================== -->
+
+<div
+  class="toast"
+  id="toast"
+></div>
+
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+let toastTimer;
+
+function showToast(text) {
+
+  const toast =
+    document.getElementById("toast");
+
+  toast.textContent = text;
+
+  toast.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer =
+    setTimeout(() => {
+
+      toast.classList.remove("show");
+
+    }, 1800);
+
+}
+
+
+/* =====================================================
+   LIKE
+===================================================== */
+
+function toggleLike(button) {
+
+  const count =
+    button.querySelector(".action-count");
+
+  let number =
+    Number(count.textContent) || 0;
+
+
+  if (
+    button.classList.contains("liked")
+  ) {
+
+    button.classList.remove("liked");
+
+    number--;
+
+    if (number < 0) {
+      number = 0;
+    }
+
+  } else {
+
+    button.classList.add("liked");
+
+    number++;
+
+  }
+
+
+  count.textContent =
+    number;
+
+
+  /* Small animation */
+
+  const icon =
+    button.querySelector(".action-icon");
+
+  icon.animate(
+    [
+      {
+        transform: "scale(.7)"
+      },
+      {
+        transform: "scale(1.25)"
+      },
+      {
+        transform: "scale(1)"
+      }
+    ],
+    {
+      duration: 250
+    }
+  );
+
+}
+
+
+/* =====================================================
+   FOLLOW
+===================================================== */
+
+function toggleFollow(button) {
+
+  if (
+    button.classList.contains("following")
+  ) {
+
+    button.classList.remove("following");
+
+    button.textContent = "+";
+
+    showToast(
+      "Unfollow করা হয়েছে"
+    );
+
+  } else {
+
+    button.classList.add("following");
+
+    button.textContent = "✓";
+
+    showToast(
+      "Following করা হয়েছে"
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   BOOKMARK
+===================================================== */
+
+function toggleBookmark(button) {
+
+  const count =
+    button.querySelector(".action-count");
+
+  const icon =
+    button.querySelector(".action-icon");
+
+
+  if (
+    button.classList.contains("saved")
+  ) {
+
+    button.classList.remove("saved");
+
+    icon.style.color = "#fff";
+
+    count.textContent = "0";
+
+    showToast(
+      "Saved থেকে সরানো হয়েছে"
+    );
+
+  } else {
+
+    button.classList.add("saved");
+
+    icon.style.color = "#fff";
+
+    count.textContent = "1";
+
+    showToast(
+      "ভিডিও Saved হয়েছে"
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   SHARE
+===================================================== */
+
+async function shareVideo() {
+
+  const shareData = {
+
+    title:
+      "WWC-Core",
+
+    text:
+      "এই ভিডিওটি WWC-Core এ দেখুন।",
+
+    url:
+      window.location.href
+
+  };
+
+
+  try {
+
+    if (
+      navigator.share
+    ) {
+
+      await navigator.share(
+        shareData
+      );
+
+    } else {
+
+      await navigator.clipboard.writeText(
+        window.location.href
+      );
+
+      showToast(
+        "ভিডিওর Link Copy হয়েছে"
+      );
+
+    }
+
+  } catch (error) {
+
+    console.log(
+      "Share cancelled"
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   COMMENTS
+===================================================== */
+
+function openComments() {
+
+  document
+    .getElementById("commentPanel")
+    .classList.add("open");
+
+}
+
+
+function closeComments() {
+
+  document
+    .getElementById("commentPanel")
+    .classList.remove("open");
+
+}
+
+
+function addComment() {
+
+  const input =
+    document.getElementById("commentInput");
+
+  const text =
+    input.value.trim();
+
+
+  if (!text) {
+    return;
+  }
+
+
+  const list =
+    document.getElementById("commentsList");
+
+
+  const comment =
+    document.createElement("div");
+
+
+  comment.className =
+    "comment";
+
+
+  comment.innerHTML = `
+
+    <strong>
+      You
+    </strong>
+
+    ${escapeHtml(text)}
+
+  `;
+
+
+  list.appendChild(
+    comment
+  );
+
+
+  input.value = "";
+
+
+  list.scrollTop =
+    list.scrollHeight;
+
+
+  showToast(
+    "Comment করা হয়েছে"
+  );
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(value) {
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+function openSearch() {
+
+  document
+    .getElementById("searchPanel")
+    .classList.add("open");
+
+
+  setTimeout(() => {
+
+    document
+      .getElementById("searchInput")
+      .focus();
+
+  }, 100);
+
+}
+
+
+function closeSearch() {
+
+  document
+    .getElementById("searchPanel")
+    .classList.remove("open");
+
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+function goHome() {
+
+  window.location.href =
+    "./index.html";
+
+}
+
+
+function goFriends() {
+
+  window.location.href =
+    "./friends.html";
+
+}
+
+
+function goInbox() {
+
+  window.location.href =
+    "./inbox.html";
+
+}
+
+
+function goProfile() {
+
+  window.location.href =
+    "./profile.html";
+
+}
+
+
+function uploadVideo() {
+
+  showToast(
+    "Upload page খুলছে..."
+  );
+
+  setTimeout(() => {
+
+    window.location.href =
+      "./upload.html";
+
+  }, 500);
+
+}
+
+
+/* =====================================================
+   VIDEO PLAY / PAUSE
+===================================================== */
+
+const videos =
+  document.querySelectorAll(
+    ".video"
+  );
+
+
+videos.forEach(
+  video => {
+
+    const item =
+      video.closest(
+        ".video-item"
+      );
+
+
+    const indicator =
+      item.querySelector(
+        ".pause-indicator"
+      );
+
+
+    item.addEventListener(
+      "click",
+      event => {
+
+        /*
+          Button বা action area-তে
+          click করলে video pause হবে না।
+        */
+
+        if (
+          event.target.closest(
+            "button"
+          )
+        ) {
+          return;
+        }
+
+
+        if (
+          video.paused
+        ) {
+
+          video.play();
+
+          indicator.classList.remove(
+            "show"
+          );
+
+        } else {
+
+          video.pause();
+
+          indicator.classList.add(
+            "show"
+          );
+
+        }
+
+      }
+    );
+
+  }
+);
+
+
+/* =====================================================
+   AUTO PLAY CURRENT VIDEO
+===================================================== */
+
+const observer =
+  new IntersectionObserver(
+    entries => {
+
+      entries.forEach(
+        entry => {
+
+          const video =
+            entry.target.querySelector(
+              ".video"
+            );
+
+          const indicator =
+            entry.target.querySelector(
+              ".pause-indicator"
+            );
+
+
+          if (
+            entry.isIntersecting
+          ) {
+
+            video.play()
+              .catch(() => {});
+
+            indicator.classList.remove(
+              "show"
+            );
+
+          } else {
+
+            video.pause();
+
+          }
+
+        }
+      );
+
+    },
+    {
+      threshold: .7
+    }
+  );
+
+
+document
+  .querySelectorAll(
+    ".video-item"
+  )
+  .forEach(
+    item => observer.observe(item)
+  );
+
+
+/* =====================================================
+   KEYBOARD COMMENT
+===================================================== */
+
+document
+  .getElementById("commentInput")
+  .addEventListener(
+    "keydown",
+    event => {
+
+      if (
+        event.key === "Enter"
+      ) {
+
+        addComment();
+
+      }
+
+    }
+  );
+
+
+/* =====================================================
+   START FIRST VIDEO
+===================================================== */
+
+window.addEventListener(
+  "load",
+  () => {
+
+    const firstVideo =
+      document.querySelector(
+        ".video"
+      );
+
+
+    if (firstVideo) {
+
+      firstVideo.play()
+        .catch(() => {});
+
+    }
+
+  }
+);
+
+</script>
 
 </body>
 </html>
+
+তোমার project-এ যেগুলো বদলাবে
+
+এই কোডে ভিডিও দুটির জায়গায় তোমার আসল ভিডিও বসাবে:
+
+./videos/video1.mp4
+./videos/video2.mp4
+
+যেমন:
+
+<video
+  class="video"
+  src="./videos/my-video.mp4"
+  loop
+  muted
+  playsinline
+></video>
+
+আর profile ছবি:
+
+./images/profile.png
+
+তোমার বর্তমান Firebase login-এর সঙ্গে এটা সরাসরি conflict করবে না। তবে এখন Like/Comment/Bookmark-এর UI কাজ করছে; Firebase/Firestore-এ স্থায়ীভাবে save করার জন্য তোমার বর্তমান "index.html"/ভিডিও-feed-এর কোডের সঙ্গে এগুলো connect করতে হবে। বিশেষ করে Like চাপলে শুধু UI-তে লাল হচ্ছে—পরেরবার reload করলে এখনো Firebase থেকে count আনছে না।
+
+সবচেয়ে গুরুত্বপূর্ণভাবে, তোমার চাওয়া অনুযায়ী normal অবস্থায় সব icon সাদা, আর Like করলে শুধু Like icon লাল হবে। TikTok-এর মতো right-side vertical action layout এবং নিচের navigation-ও রাখা হয়েছে।
