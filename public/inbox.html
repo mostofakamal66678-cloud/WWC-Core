@@ -1,1 +1,793 @@
 
+<!DOCTYPE html>
+<html lang="bn">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta
+    name="theme-color"
+    content="#000000"
+  >
+
+  <title>WWC Inbox</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background: #000;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+
+    .inbox-app {
+      width: 100%;
+      min-height: 100vh;
+      background: #000;
+    }
+
+    /* ================================
+       TOP BAR
+       ================================ */
+
+    .inbox-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 64px;
+
+      display: flex;
+      align-items: center;
+
+      padding:
+        env(safe-area-inset-top)
+        16px
+        0;
+
+      background: rgba(0, 0, 0, .96);
+      border-bottom: 1px solid #222;
+    }
+
+    .back-btn {
+      width: 42px;
+      height: 42px;
+
+      border: 0;
+      border-radius: 50%;
+
+      background: #1c1c1c;
+      color: #fff;
+
+      font-size: 22px;
+      cursor: pointer;
+
+      flex-shrink: 0;
+    }
+
+    .inbox-title {
+      flex: 1;
+
+      margin-left: 14px;
+
+      font-size: 21px;
+      font-weight: 700;
+    }
+
+    .new-message-btn {
+      width: 42px;
+      height: 42px;
+
+      border: 0;
+      border-radius: 50%;
+
+      background: #fe2c55;
+      color: #fff;
+
+      font-size: 21px;
+      cursor: pointer;
+    }
+
+    /* ================================
+       SEARCH
+       ================================ */
+
+    .search-area {
+      padding: 12px 14px;
+      background: #000;
+    }
+
+    .search-box {
+      width: 100%;
+
+      padding: 12px 15px;
+
+      border: 1px solid #292929;
+      border-radius: 12px;
+
+      outline: none;
+
+      background: #151515;
+      color: #fff;
+
+      font-size: 15px;
+    }
+
+    .search-box:focus {
+      border-color: #fe2c55;
+    }
+
+    /* ================================
+       LOGIN
+       ================================ */
+
+    .login-box {
+      display: none;
+
+      margin: 25px 16px;
+      padding: 25px 18px;
+
+      text-align: center;
+
+      background: #151515;
+      border: 1px solid #292929;
+      border-radius: 16px;
+    }
+
+    .login-box.show {
+      display: block;
+    }
+
+    .login-icon {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    .login-text {
+      color: #aaa;
+      line-height: 1.6;
+    }
+
+    .login-btn {
+      margin-top: 15px;
+
+      padding: 11px 22px;
+
+      border: 0;
+      border-radius: 10px;
+
+      background: #fe2c55;
+      color: #fff;
+
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* ================================
+       LOADING
+       ================================ */
+
+    .loading {
+      padding: 40px 20px;
+
+      text-align: center;
+
+      color: #888;
+    }
+
+    /* ================================
+       EMPTY
+       ================================ */
+
+    .empty {
+      display: none;
+
+      padding: 55px 20px;
+
+      text-align: center;
+
+      color: #888;
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+    }
+
+    /* ================================
+       CONVERSATION LIST
+       ================================ */
+
+    .conversation-list {
+      width: 100%;
+      padding-bottom: 90px;
+    }
+
+    .conversation {
+      width: 100%;
+
+      display: flex;
+      align-items: center;
+
+      padding: 13px 15px;
+
+      background: #000;
+
+      border: 0;
+      border-bottom: 1px solid #181818;
+
+      color: #fff;
+
+      text-align: left;
+
+      cursor: pointer;
+    }
+
+    .conversation:active {
+      background: #171717;
+    }
+
+    .avatar-wrap {
+      position: relative;
+
+      width: 54px;
+      height: 54px;
+
+      flex-shrink: 0;
+    }
+
+    .avatar {
+      width: 54px;
+      height: 54px;
+
+      border-radius: 50%;
+
+      object-fit: cover;
+
+      background: #222;
+    }
+
+    .online-dot {
+      position: absolute;
+
+      right: 1px;
+      bottom: 1px;
+
+      width: 13px;
+      height: 13px;
+
+      border: 2px solid #000;
+      border-radius: 50%;
+
+      background: #35d66f;
+    }
+
+    .conversation-info {
+      min-width: 0;
+      flex: 1;
+
+      margin-left: 13px;
+    }
+
+    .conversation-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 8px;
+    }
+
+    .conversation-name {
+      min-width: 0;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .conversation-time {
+      flex-shrink: 0;
+
+      color: #777;
+      font-size: 12px;
+    }
+
+    .conversation-bottom {
+      display: flex;
+      align-items: center;
+
+      margin-top: 5px;
+      gap: 7px;
+    }
+
+    .conversation-message {
+      flex: 1;
+      min-width: 0;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      color: #888;
+      font-size: 14px;
+    }
+
+    .unread-badge {
+      min-width: 21px;
+      height: 21px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 0 6px;
+
+      border-radius: 20px;
+
+      background: #fe2c55;
+      color: #fff;
+
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    /* ================================
+       BOTTOM NAV
+       ================================ */
+
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      z-index: 200;
+
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+
+      padding:
+        8px
+        8px
+        calc(8px + env(safe-area-inset-bottom));
+
+      background: rgba(10, 10, 10, .98);
+      border-top: 1px solid #222;
+    }
+
+    .nav-btn {
+      flex: 1;
+
+      border: 0;
+      background: transparent;
+      color: #888;
+
+      padding: 5px;
+
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .nav-btn span {
+      display: block;
+      font-size: 21px;
+      margin-bottom: 2px;
+    }
+
+    .nav-btn.active {
+      color: #fff;
+    }
+
+    /* ================================
+       MOBILE
+       ================================ */
+
+    @media (max-width: 500px) {
+
+      .inbox-header {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .inbox-title {
+        font-size: 19px;
+      }
+
+      .conversation {
+        padding: 12px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<div class="inbox-app">
+
+
+  <!-- =========================================
+       HEADER
+       ========================================= -->
+
+  <header class="inbox-header">
+
+    <button
+      id="backBtn"
+      class="back-btn"
+      type="button"
+      aria-label="Back"
+    >
+      ←
+    </button>
+
+    <div class="inbox-title">
+      Inbox
+    </div>
+
+    <button
+      id="newMessageBtn"
+      class="new-message-btn"
+      type="button"
+      aria-label="New message"
+    >
+      ✎
+    </button>
+
+  </header>
+
+
+  <!-- =========================================
+       SEARCH
+       ========================================= -->
+
+  <div class="search-area">
+
+    <input
+      id="searchInput"
+      class="search-box"
+      type="search"
+      placeholder="🔍 Search messages..."
+      autocomplete="off"
+    >
+
+  </div>
+
+
+  <!-- =========================================
+       LOGIN BOX
+       ========================================= -->
+
+  <div
+    id="loginBox"
+    class="login-box"
+  >
+
+    <div class="login-icon">
+      🔐
+    </div>
+
+    <div class="login-text">
+      Inbox ব্যবহার করতে আগে Login করুন।
+    </div>
+
+    <button
+      id="loginBtn"
+      class="login-btn"
+      type="button"
+    >
+      Login / Register
+    </button>
+
+  </div>
+
+
+  <!-- =========================================
+       LOADING
+       ========================================= -->
+
+  <div
+    id="loading"
+    class="loading"
+  >
+    ⏳ Inbox Loading...
+  </div>
+
+
+  <!-- =========================================
+       EMPTY
+       ========================================= -->
+
+  <div
+    id="empty"
+    class="empty"
+  >
+
+    <div class="empty-icon">
+      💬
+    </div>
+
+    <div>
+      এখনো কোনো Message নেই।
+    </div>
+
+    <small>
+      Friends বা Profile থেকে নতুন conversation শুরু করুন।
+    </small>
+
+  </div>
+
+
+  <!-- =========================================
+       CONVERSATIONS
+       ========================================= -->
+
+  <main
+    id="conversationList"
+    class="conversation-list"
+  >
+  </main>
+
+
+  <!-- =========================================
+       BOTTOM NAV
+       ========================================= -->
+
+  <nav
+    class="bottom-nav"
+    aria-label="Main navigation"
+  >
+
+    <button
+      id="homeBtn"
+      class="nav-btn"
+      type="button"
+    >
+      <span>🏠</span>
+      Home
+    </button>
+
+
+    <button
+      id="friendsBtn"
+      class="nav-btn"
+      type="button"
+    >
+      <span>👥</span>
+      Friends
+    </button>
+
+
+    <button
+      id="inboxBtn"
+      class="nav-btn active"
+      type="button"
+    >
+      <span>💬</span>
+      Inbox
+    </button>
+
+
+    <button
+      id="profileBtn"
+      class="nav-btn"
+      type="button"
+    >
+      <span>👤</span>
+      Profile
+    </button>
+
+  </nav>
+
+
+</div>
+
+
+<!-- =========================================
+     FIREBASE / INBOX JS
+     ========================================= -->
+
+<script type="module">
+
+  import {
+    getApps,
+    initializeApp
+  } from
+  "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+
+  import {
+    getAuth,
+    onAuthStateChanged
+  } from
+  "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+
+  const firebaseConfig = {
+
+    apiKey:
+      "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
+
+    authDomain:
+      "world-wide-connect-62c87.firebaseapp.com",
+
+    projectId:
+      "world-wide-connect-62c87",
+
+    storageBucket:
+      "world-wide-connect-62c87.firebasestorage.app",
+
+    messagingSenderId:
+      "93178453668",
+
+    appId:
+      "1:93178453668:web:2184630caa8e61f7445031",
+
+    measurementId:
+      "G-PKFJ5NEMGQ"
+
+  };
+
+
+  const app =
+    getApps().length
+      ? getApps()[0]
+      : initializeApp(firebaseConfig);
+
+
+  const auth =
+    getAuth(app);
+
+
+  const loading =
+    document.getElementById("loading");
+
+  const empty =
+    document.getElementById("empty");
+
+  const loginBox =
+    document.getElementById("loginBox");
+
+
+  /* =========================================
+     NAVIGATION
+     ========================================= */
+
+  document
+    .getElementById("backBtn")
+    ?.addEventListener(
+      "click",
+      () => history.back()
+    );
+
+
+  document
+    .getElementById("homeBtn")
+    ?.addEventListener(
+      "click",
+      () => {
+        window.location.href = "./index.html";
+      }
+    );
+
+
+  document
+    .getElementById("friendsBtn")
+    ?.addEventListener(
+      "click",
+      () => {
+        window.location.href = "./friends.html";
+      }
+    );
+
+
+  document
+    .getElementById("profileBtn")
+    ?.addEventListener(
+      "click",
+      () => {
+        window.location.href = "./profile.html";
+      }
+    );
+
+
+  document
+    .getElementById("loginBtn")
+    ?.addEventListener(
+      "click",
+      () => {
+        window.location.href = "./auth.html";
+      }
+    );
+
+
+  document
+    .getElementById("newMessageBtn")
+    ?.addEventListener(
+      "click",
+      () => {
+
+        alert(
+          "💬 New Message system পরের ধাপে যুক্ত করা হবে।"
+        );
+
+      }
+    );
+
+
+  /* =========================================
+     AUTH
+     ========================================= */
+
+  onAuthStateChanged(
+    auth,
+    user => {
+
+      loading.style.display =
+        "none";
+
+
+      if (!user) {
+
+        loginBox.classList.add(
+          "show"
+        );
+
+        empty.style.display =
+          "none";
+
+        return;
+
+      }
+
+
+      loginBox.classList.remove(
+        "show"
+      );
+
+
+      empty.style.display =
+        "block";
+
+      empty.innerHTML = `
+        <div class="empty-icon">💬</div>
+        <div>এখনো কোনো Message নেই।</div>
+        <small>
+          Friends বা Profile থেকে নতুন conversation শুরু করুন।
+        </small>
+      `;
+
+    }
+  );
+
+</script>
+
+
+</body>
+</html>
