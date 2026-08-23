@@ -1,793 +1,1001 @@
-
 <!DOCTYPE html>
 <html lang="bn">
-
 <head>
-
   <meta charset="UTF-8">
-
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0, viewport-fit=cover"
   >
 
-  <meta
-    name="theme-color"
-    content="#000000"
-  >
+  <meta name="theme-color" content="#000000">
 
   <title>WWC Inbox</title>
 
   <style>
-
     * {
       box-sizing: border-box;
     }
 
-    html,
     body {
       margin: 0;
-      padding: 0;
-      width: 100%;
-      min-height: 100%;
       background: #000;
       color: #fff;
       font-family: Arial, sans-serif;
-    }
-
-    body {
-      overflow-x: hidden;
-    }
-
-    .inbox-app {
-      width: 100%;
       min-height: 100vh;
-      background: #000;
     }
 
-    /* ================================
-       TOP BAR
-       ================================ */
-
-    .inbox-header {
+    .header {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      background: #111;
+      border-bottom: 1px solid #333;
       position: sticky;
       top: 0;
       z-index: 100;
-      height: 64px;
-
-      display: flex;
-      align-items: center;
-
-      padding:
-        env(safe-area-inset-top)
-        16px
-        0;
-
-      background: rgba(0, 0, 0, .96);
-      border-bottom: 1px solid #222;
     }
 
     .back-btn {
       width: 42px;
       height: 42px;
-
       border: 0;
       border-radius: 50%;
-
-      background: #1c1c1c;
+      background: #222;
       color: #fff;
-
-      font-size: 22px;
-      cursor: pointer;
-
-      flex-shrink: 0;
-    }
-
-    .inbox-title {
-      flex: 1;
-
-      margin-left: 14px;
-
-      font-size: 21px;
-      font-weight: 700;
-    }
-
-    .new-message-btn {
-      width: 42px;
-      height: 42px;
-
-      border: 0;
-      border-radius: 50%;
-
-      background: #fe2c55;
-      color: #fff;
-
-      font-size: 21px;
+      font-size: 24px;
       cursor: pointer;
     }
 
-    /* ================================
-       SEARCH
-       ================================ */
+    .title {
+      margin-left: 15px;
+      font-size: 21px;
+      font-weight: bold;
+    }
 
-    .search-area {
-      padding: 12px 14px;
-      background: #000;
+    .container {
+      max-width: 650px;
+      margin: auto;
+      padding: 15px 12px 90px;
     }
 
     .search-box {
+      display: flex;
+      margin-bottom: 15px;
+    }
+
+    #searchInput {
       width: 100%;
-
-      padding: 12px 15px;
-
-      border: 1px solid #292929;
+      padding: 13px 15px;
+      border: 1px solid #333;
       border-radius: 12px;
-
       outline: none;
-
-      background: #151515;
+      background: #181818;
       color: #fff;
-
       font-size: 15px;
     }
 
-    .search-box:focus {
-      border-color: #fe2c55;
+    #searchInput:focus {
+      border-color: #777;
     }
 
-    /* ================================
-       LOGIN
-       ================================ */
-
-    .login-box {
-      display: none;
-
-      margin: 25px 16px;
-      padding: 25px 18px;
-
-      text-align: center;
-
-      background: #151515;
-      border: 1px solid #292929;
-      border-radius: 16px;
-    }
-
-    .login-box.show {
-      display: block;
-    }
-
-    .login-icon {
-      font-size: 42px;
-      margin-bottom: 10px;
-    }
-
-    .login-text {
-      color: #aaa;
-      line-height: 1.6;
-    }
-
-    .login-btn {
-      margin-top: 15px;
-
-      padding: 11px 22px;
-
-      border: 0;
-      border-radius: 10px;
-
-      background: #fe2c55;
-      color: #fff;
-
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    /* ================================
-       LOADING
-       ================================ */
-
-    .loading {
-      padding: 40px 20px;
-
-      text-align: center;
-
-      color: #888;
-    }
-
-    /* ================================
-       EMPTY
-       ================================ */
-
-    .empty {
-      display: none;
-
-      padding: 55px 20px;
-
-      text-align: center;
-
-      color: #888;
-    }
-
-    .empty-icon {
-      font-size: 48px;
-      margin-bottom: 12px;
-    }
-
-    /* ================================
-       CONVERSATION LIST
-       ================================ */
-
-    .conversation-list {
-      width: 100%;
-      padding-bottom: 90px;
+    .section-title {
+      font-size: 17px;
+      font-weight: bold;
+      margin: 15px 3px 10px;
     }
 
     .conversation {
-      width: 100%;
-
       display: flex;
       align-items: center;
-
-      padding: 13px 15px;
-
-      background: #000;
-
-      border: 0;
-      border-bottom: 1px solid #181818;
-
-      color: #fff;
-
-      text-align: left;
-
+      gap: 12px;
+      padding: 13px;
+      margin-bottom: 8px;
+      background: #151515;
+      border: 1px solid #292929;
+      border-radius: 13px;
       cursor: pointer;
     }
 
     .conversation:active {
-      background: #171717;
-    }
-
-    .avatar-wrap {
-      position: relative;
-
-      width: 54px;
-      height: 54px;
-
-      flex-shrink: 0;
+      transform: scale(.99);
     }
 
     .avatar {
       width: 54px;
       height: 54px;
-
       border-radius: 50%;
-
       object-fit: cover;
-
-      background: #222;
-    }
-
-    .online-dot {
-      position: absolute;
-
-      right: 1px;
-      bottom: 1px;
-
-      width: 13px;
-      height: 13px;
-
-      border: 2px solid #000;
-      border-radius: 50%;
-
-      background: #35d66f;
+      background: #333;
+      border: 1px solid #555;
+      flex-shrink: 0;
     }
 
     .conversation-info {
-      min-width: 0;
       flex: 1;
-
-      margin-left: 13px;
+      min-width: 0;
     }
 
-    .conversation-top {
+    .name-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-
-      gap: 8px;
+      gap: 10px;
     }
 
-    .conversation-name {
-      min-width: 0;
-
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-
+    .name {
       font-size: 16px;
-      font-weight: 700;
-    }
-
-    .conversation-time {
-      flex-shrink: 0;
-
-      color: #777;
-      font-size: 12px;
-    }
-
-    .conversation-bottom {
-      display: flex;
-      align-items: center;
-
-      margin-top: 5px;
-      gap: 7px;
-    }
-
-    .conversation-message {
-      flex: 1;
-      min-width: 0;
-
+      font-weight: bold;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-
-      color: #888;
-      font-size: 14px;
     }
 
-    .unread-badge {
-      min-width: 21px;
-      height: 21px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      padding: 0 6px;
-
-      border-radius: 20px;
-
-      background: #fe2c55;
-      color: #fff;
-
+    .time {
+      color: #777;
       font-size: 11px;
-      font-weight: 700;
+      flex-shrink: 0;
     }
 
-    /* ================================
-       BOTTOM NAV
-       ================================ */
-
-    .bottom-nav {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-
-      z-index: 200;
-
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-
-      padding:
-        8px
-        8px
-        calc(8px + env(safe-area-inset-bottom));
-
-      background: rgba(10, 10, 10, .98);
-      border-top: 1px solid #222;
-    }
-
-    .nav-btn {
-      flex: 1;
-
-      border: 0;
-      background: transparent;
+    .handle {
       color: #888;
-
-      padding: 5px;
-
-      font-size: 11px;
-      cursor: pointer;
+      font-size: 12px;
+      margin-top: 3px;
     }
 
-    .nav-btn span {
-      display: block;
-      font-size: 21px;
-      margin-bottom: 2px;
+    .last-message {
+      color: #aaa;
+      font-size: 13px;
+      margin-top: 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .nav-btn.active {
-      color: #fff;
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: #888;
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 15px;
+      margin-top: 15px;
     }
 
-    /* ================================
-       MOBILE
-       ================================ */
+    .empty-icon {
+      font-size: 45px;
+      margin-bottom: 12px;
+    }
+
+    .status {
+      text-align: center;
+      color: #999;
+      padding: 15px 5px;
+      min-height: 20px;
+    }
+
+    .error {
+      color: #ff6684 !important;
+    }
 
     @media (max-width: 500px) {
-
-      .inbox-header {
-        padding-left: 10px;
-        padding-right: 10px;
+      .container {
+        padding-left: 8px;
+        padding-right: 8px;
       }
-
-      .inbox-title {
-        font-size: 19px;
-      }
-
-      .conversation {
-        padding: 12px;
-      }
-
     }
-
   </style>
-
 </head>
-
 
 <body>
 
-
-<div class="inbox-app">
-
-
-  <!-- =========================================
-       HEADER
-       ========================================= -->
-
-  <header class="inbox-header">
+  <header class="header">
 
     <button
       id="backBtn"
       class="back-btn"
       type="button"
-      aria-label="Back"
     >
       ←
     </button>
 
-    <div class="inbox-title">
-      Inbox
+    <div class="title">
+      💬 Inbox
     </div>
-
-    <button
-      id="newMessageBtn"
-      class="new-message-btn"
-      type="button"
-      aria-label="New message"
-    >
-      ✎
-    </button>
 
   </header>
 
 
-  <!-- =========================================
-       SEARCH
-       ========================================= -->
+  <main class="container">
 
-  <div class="search-area">
+    <div class="search-box">
 
-    <input
-      id="searchInput"
-      class="search-box"
-      type="search"
-      placeholder="🔍 Search messages..."
-      autocomplete="off"
+      <input
+        id="searchInput"
+        type="search"
+        placeholder="নাম বা username খুঁজুন..."
+        autocomplete="off"
+      >
+
+    </div>
+
+
+    <div
+      id="status"
+      class="status"
     >
-
-  </div>
-
-
-  <!-- =========================================
-       LOGIN BOX
-       ========================================= -->
-
-  <div
-    id="loginBox"
-    class="login-box"
-  >
-
-    <div class="login-icon">
-      🔐
+      Inbox লোড হচ্ছে...
     </div>
 
-    <div class="login-text">
-      Inbox ব্যবহার করতে আগে Login করুন।
+
+    <div class="section-title">
+      💬 Messages
     </div>
 
-    <button
-      id="loginBtn"
-      class="login-btn"
-      type="button"
-    >
-      Login / Register
-    </button>
 
-  </div>
+    <section id="conversationList"></section>
 
-
-  <!-- =========================================
-       LOADING
-       ========================================= -->
-
-  <div
-    id="loading"
-    class="loading"
-  >
-    ⏳ Inbox Loading...
-  </div>
-
-
-  <!-- =========================================
-       EMPTY
-       ========================================= -->
-
-  <div
-    id="empty"
-    class="empty"
-  >
-
-    <div class="empty-icon">
-      💬
-    </div>
-
-    <div>
-      এখনো কোনো Message নেই।
-    </div>
-
-    <small>
-      Friends বা Profile থেকে নতুন conversation শুরু করুন।
-    </small>
-
-  </div>
-
-
-  <!-- =========================================
-       CONVERSATIONS
-       ========================================= -->
-
-  <main
-    id="conversationList"
-    class="conversation-list"
-  >
   </main>
 
 
-  <!-- =========================================
-       BOTTOM NAV
-       ========================================= -->
+  <script type="module">
 
-  <nav
-    class="bottom-nav"
-    aria-label="Main navigation"
-  >
+    // ==========================================
+    // FIREBASE
+    // ==========================================
 
-    <button
-      id="homeBtn"
-      class="nav-btn"
-      type="button"
-    >
-      <span>🏠</span>
-      Home
-    </button>
+    import {
+      getApps,
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
+    import {
+      getAuth,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
-    <button
-      id="friendsBtn"
-      class="nav-btn"
-      type="button"
-    >
-      <span>👥</span>
-      Friends
-    </button>
+    import {
+      getFirestore,
+      collection,
+      query,
+      where,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
-    <button
-      id="inboxBtn"
-      class="nav-btn active"
-      type="button"
-    >
-      <span>💬</span>
-      Inbox
-    </button>
+    // ==========================================
+    // FIREBASE CONFIG
+    // ==========================================
+
+    const firebaseConfig = {
+
+      apiKey:
+        "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
+
+      authDomain:
+        "world-wide-connect-62c87.firebaseapp.com",
+
+      projectId:
+        "world-wide-connect-62c87",
+
+      storageBucket:
+        "world-wide-connect-62c87.firebasestorage.app",
+
+      messagingSenderId:
+        "93178453668",
+
+      appId:
+        "1:93178453668:web:2184630caa8e61f7445031",
+
+      measurementId:
+        "G-PKFJ5NEMGQ"
+    };
 
 
-    <button
-      id="profileBtn"
-      class="nav-btn"
-      type="button"
-    >
-      <span>👤</span>
-      Profile
-    </button>
-
-  </nav>
+    const app =
+      getApps().length
+        ? getApps()[0]
+        : initializeApp(firebaseConfig);
 
 
-</div>
+    const auth =
+      getAuth(app);
+
+    const db =
+      getFirestore(app);
 
 
-<!-- =========================================
-     FIREBASE / INBOX JS
-     ========================================= -->
+    // ==========================================
+    // ELEMENTS
+    // ==========================================
 
-<script type="module">
+    const backBtn =
+      document.getElementById("backBtn");
 
-  import {
-    getApps,
-    initializeApp
-  } from
-  "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    const searchInput =
+      document.getElementById("searchInput");
 
+    const conversationList =
+      document.getElementById("conversationList");
 
-  import {
-    getAuth,
-    onAuthStateChanged
-  } from
-  "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+    const status =
+      document.getElementById("status");
 
 
-  const firebaseConfig = {
+    // ==========================================
+    // VARIABLES
+    // ==========================================
 
-    apiKey:
-      "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
+    let currentUser = null;
 
-    authDomain:
-      "world-wide-connect-62c87.firebaseapp.com",
+    let allConversations = [];
 
-    projectId:
-      "world-wide-connect-62c87",
-
-    storageBucket:
-      "world-wide-connect-62c87.firebasestorage.app",
-
-    messagingSenderId:
-      "93178453668",
-
-    appId:
-      "1:93178453668:web:2184630caa8e61f7445031",
-
-    measurementId:
-      "G-PKFJ5NEMGQ"
-
-  };
+    const defaultPhoto =
+      "./images/profile.png";
 
 
-  const app =
-    getApps().length
-      ? getApps()[0]
-      : initializeApp(firebaseConfig);
+    // ==========================================
+    // BACK
+    // ==========================================
 
-
-  const auth =
-    getAuth(app);
-
-
-  const loading =
-    document.getElementById("loading");
-
-  const empty =
-    document.getElementById("empty");
-
-  const loginBox =
-    document.getElementById("loginBox");
-
-
-  /* =========================================
-     NAVIGATION
-     ========================================= */
-
-  document
-    .getElementById("backBtn")
-    ?.addEventListener(
-      "click",
-      () => history.back()
-    );
-
-
-  document
-    .getElementById("homeBtn")
-    ?.addEventListener(
+    backBtn.addEventListener(
       "click",
       () => {
-        window.location.href = "./index.html";
+        history.back();
       }
     );
 
 
-  document
-    .getElementById("friendsBtn")
-    ?.addEventListener(
-      "click",
-      () => {
-        window.location.href = "./friends.html";
+    // ==========================================
+    // ESCAPE HTML
+    // ==========================================
+
+    function escapeHtml(value) {
+
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
+
+
+    // ==========================================
+    // FORMAT TIME
+    // ==========================================
+
+    function formatTime(value) {
+
+      if (!value) {
+        return "";
       }
-    );
 
+      try {
 
-  document
-    .getElementById("profileBtn")
-    ?.addEventListener(
-      "click",
-      () => {
-        window.location.href = "./profile.html";
+        let date;
+
+        if (
+          typeof value.toDate ===
+          "function"
+        ) {
+
+          date = value.toDate();
+
+        } else {
+
+          date = new Date(value);
+
+        }
+
+        if (isNaN(date.getTime())) {
+          return "";
+        }
+
+        return date.toLocaleTimeString(
+          "bn-BD",
+          {
+            hour: "numeric",
+            minute: "2-digit"
+          }
+        );
+
+      } catch (error) {
+
+        return "";
+
       }
-    );
+
+    }
 
 
-  document
-    .getElementById("loginBtn")
-    ?.addEventListener(
-      "click",
-      () => {
-        window.location.href = "./auth.html";
+    // ==========================================
+    // LOAD INBOX
+    // ==========================================
+
+    async function loadInbox() {
+
+      if (!currentUser) {
+        return;
       }
-    );
+
+      status.classList.remove("error");
+
+      status.textContent =
+        "⏳ Messages লোড হচ্ছে...";
+
+      conversationList.innerHTML = "";
 
 
-  document
-    .getElementById("newMessageBtn")
-    ?.addEventListener(
-      "click",
-      () => {
+      try {
 
-        alert(
-          "💬 New Message system পরের ধাপে যুক্ত করা হবে।"
+        /*
+         * messages collection-এর মধ্যে
+         * যেসব message-এর senderId বা receiverId
+         * current user-এর UID, সেগুলো নেওয়া হবে।
+         */
+
+        const messagesRef =
+          collection(
+            db,
+            "messages"
+          );
+
+
+        const sentQuery =
+          query(
+            messagesRef,
+            where(
+              "senderId",
+              "==",
+              currentUser.uid
+            )
+          );
+
+
+        const receivedQuery =
+          query(
+            messagesRef,
+            where(
+              "receiverId",
+              "==",
+              currentUser.uid
+            )
+          );
+
+
+        const [
+          sentSnapshot,
+          receivedSnapshot
+        ] =
+          await Promise.all([
+            getDocs(sentQuery),
+            getDocs(receivedQuery)
+          ]);
+
+
+        const messageMap =
+          new Map();
+
+
+        function processSnapshot(snapshot) {
+
+          snapshot.forEach(
+            (messageDoc) => {
+
+              const data =
+                messageDoc.data();
+
+
+              const otherUid =
+                data.senderId ===
+                currentUser.uid
+
+                  ? data.receiverId
+
+                  : data.senderId;
+
+
+              if (!otherUid) {
+                return;
+              }
+
+
+              const old =
+                messageMap.get(
+                  otherUid
+                );
+
+
+              const oldTime =
+                old?.createdAt
+                ? getDateValue(
+                    old.createdAt
+                  )
+                : 0;
+
+
+              const newTime =
+                data.createdAt
+                ? getDateValue(
+                    data.createdAt
+                  )
+                : 0;
+
+
+              if (
+                !old
+                ||
+                newTime >= oldTime
+              ) {
+
+                messageMap.set(
+                  otherUid,
+                  {
+
+                    uid:
+                      otherUid,
+
+                    lastMessage:
+                      data.text
+                      || "",
+
+                    createdAt:
+                      data.createdAt
+                      || null
+
+                  }
+                );
+
+              }
+
+            }
+          );
+
+        }
+
+
+        processSnapshot(
+          sentSnapshot
+        );
+
+        processSnapshot(
+          receivedSnapshot
+        );
+
+
+        allConversations =
+          Array.from(
+            messageMap.values()
+          );
+
+
+        if (!allConversations.length) {
+
+          renderEmpty();
+
+          return;
+
+        }
+
+
+        await loadProfilesForConversations();
+
+
+      } catch (error) {
+
+        console.error(
+          "Inbox error:",
+          error
+        );
+
+
+        status.textContent =
+          "❌ Inbox লোড করা যায়নি।";
+
+        status.classList.add(
+          "error"
         );
 
       }
-    );
+
+    }
 
 
-  /* =========================================
-     AUTH
-     ========================================= */
+    // ==========================================
+    // DATE VALUE
+    // ==========================================
 
-  onAuthStateChanged(
-    auth,
-    user => {
+    function getDateValue(value) {
 
-      loading.style.display =
-        "none";
+      try {
+
+        if (
+          value
+          &&
+          typeof value.toDate ===
+          "function"
+        ) {
+
+          return value.toDate().getTime();
+
+        }
+
+        return new Date(value).getTime();
+
+      } catch (error) {
+
+        return 0;
+
+      }
+
+    }
 
 
-      if (!user) {
+    // ==========================================
+    // LOAD USER PROFILES
+    // ==========================================
 
-        loginBox.classList.add(
-          "show"
-        );
+    async function loadProfilesForConversations() {
 
-        empty.style.display =
-          "none";
+      const conversations = [];
+
+
+      for (
+        const conversation
+        of allConversations
+      ) {
+
+        try {
+
+          const profileQuery =
+            query(
+              collection(
+                db,
+                "users"
+              ),
+              where(
+                "__name__",
+                "==",
+                conversation.uid
+              )
+            );
+
+
+          const snapshot =
+            await getDocs(
+              profileQuery
+            );
+
+
+          if (!snapshot.empty) {
+
+            const profileData =
+              snapshot.docs[0].data();
+
+
+            conversations.push({
+
+              ...conversation,
+
+              name:
+                profileData.name
+                || profileData.displayName
+                || "WWC User",
+
+              username:
+                profileData.username
+                || "wwc_user",
+
+              photoURL:
+                profileData.photoURL
+                || defaultPhoto
+
+            });
+
+          }
+
+        } catch (error) {
+
+          console.error(
+            "Profile load error:",
+            error
+          );
+
+        }
+
+      }
+
+
+      allConversations =
+        conversations;
+
+
+      renderConversations(
+        allConversations
+      );
+
+    }
+
+
+    // ==========================================
+    // RENDER
+    // ==========================================
+
+    function renderConversations(
+      conversations
+    ) {
+
+      conversationList.innerHTML = "";
+
+
+      if (!conversations.length) {
+
+        renderEmpty();
 
         return;
 
       }
 
 
-      loginBox.classList.remove(
-        "show"
+      status.textContent =
+        conversations.length +
+        "টি conversation";
+
+
+      conversations.forEach(
+        (conversation) => {
+
+          const card =
+            document.createElement(
+              "div"
+            );
+
+
+          card.className =
+            "conversation";
+
+
+          let username =
+            conversation.username
+            || "wwc_user";
+
+
+          username =
+            String(username)
+              .replace(
+                /^@/,
+                ""
+              );
+
+
+          card.innerHTML = `
+
+            <img
+              class="avatar"
+              src="${
+                escapeHtml(
+                  conversation.photoURL
+                  || defaultPhoto
+                )
+              }"
+              alt="Profile"
+            >
+
+            <div class="conversation-info">
+
+              <div class="name-row">
+
+                <div class="name">
+                  ${
+                    escapeHtml(
+                      conversation.name
+                    )
+                  }
+                </div>
+
+                <div class="time">
+                  ${
+                    formatTime(
+                      conversation.createdAt
+                    )
+                  }
+                </div>
+
+              </div>
+
+              <div class="handle">
+                @${escapeHtml(username)}
+              </div>
+
+              <div class="last-message">
+                ${
+                  escapeHtml(
+                    conversation.lastMessage
+                    || "No message"
+                  )
+                }
+              </div>
+
+            </div>
+
+          `;
+
+
+          card.addEventListener(
+            "click",
+            () => {
+
+              window.location.href =
+                "./chat.html?uid=" +
+                encodeURIComponent(
+                  conversation.uid
+                );
+
+            }
+          );
+
+
+          conversationList.appendChild(
+            card
+          );
+
+        }
       );
 
+    }
 
-      empty.style.display =
-        "block";
 
-      empty.innerHTML = `
-        <div class="empty-icon">💬</div>
-        <div>এখনো কোনো Message নেই।</div>
-        <small>
-          Friends বা Profile থেকে নতুন conversation শুরু করুন।
-        </small>
+    // ==========================================
+    // EMPTY
+    // ==========================================
+
+    function renderEmpty() {
+
+      status.textContent = "";
+
+      conversationList.innerHTML = `
+
+        <div class="empty">
+
+          <div class="empty-icon">
+            💬
+          </div>
+
+          <div>
+            এখনো কোনো Message নেই।
+          </div>
+
+          <p>
+            Friends থেকে কোনো User নির্বাচন করে
+            Message শুরু করুন।
+          </p>
+
+        </div>
+
       `;
 
     }
-  );
 
-</script>
 
+    // ==========================================
+    // SEARCH
+    // ==========================================
+
+    function searchConversations() {
+
+      const queryText =
+        searchInput.value
+          .trim()
+          .toLowerCase();
+
+
+      if (!queryText) {
+
+        renderConversations(
+          allConversations
+        );
+
+        return;
+
+      }
+
+
+      const filtered =
+        allConversations.filter(
+          (conversation) => {
+
+            const name =
+              String(
+                conversation.name
+                || ""
+              ).toLowerCase();
+
+
+            const username =
+              String(
+                conversation.username
+                || ""
+              )
+                .replace(
+                  /^@/,
+                  ""
+                )
+                .toLowerCase();
+
+
+            return (
+              name.includes(
+                queryText
+              )
+              ||
+              username.includes(
+                queryText
+              )
+            );
+
+          }
+        );
+
+
+      renderConversations(
+        filtered
+      );
+
+    }
+
+
+    searchInput.addEventListener(
+      "input",
+      searchConversations
+    );
+
+
+    // ==========================================
+    // AUTH
+    // ==========================================
+
+    onAuthStateChanged(
+      auth,
+      async (user) => {
+
+        if (!user) {
+
+          status.textContent =
+            "❌ আগে Login করুন।";
+
+          status.classList.add(
+            "error"
+          );
+
+
+          setTimeout(
+            () => {
+
+              window.location.href =
+                "./login.html";
+
+            },
+            1200
+          );
+
+
+          return;
+
+        }
+
+
+        currentUser =
+          user;
+
+
+        await loadInbox();
+
+      }
+    );
+
+  </script>
 
 </body>
 </html>
