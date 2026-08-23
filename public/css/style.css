@@ -1365,3 +1365,163 @@ button:disabled {
   }
 
 }
+/* =========================================================
+   TIKTOK STYLE LIKE ANIMATION
+   ========================================================= */
+
+.like-btn.liked .action-icon {
+  animation: wwcLikePop 0.35s ease;
+}
+
+@keyframes wwcLikePop {
+  0% {
+    transform: scale(1);
+  }
+
+  35% {
+    transform: scale(1.45);
+  }
+
+  65% {
+    transform: scale(0.88);
+  }
+
+  100% {
+    transform: scale(1.08);
+  }
+}
+
+
+/* =========================================================
+   DOUBLE TAP HEART EFFECT
+   ========================================================= */
+
+.double-tap-heart {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  z-index: 100;
+
+  pointer-events: none;
+
+  font-size: 95px;
+
+  transform:
+    translate(-50%, -50%)
+    scale(0.4);
+
+  opacity: 0;
+
+  animation:
+    wwcDoubleHeart 0.75s
+    cubic-bezier(0.2, 0.8, 0.3, 1)
+    forwards;
+
+  filter:
+    drop-shadow(
+      0 4px 12px
+      rgba(0, 0, 0, 0.35)
+    );
+}
+
+@keyframes wwcDoubleHeart {
+
+  0% {
+    opacity: 0;
+    transform:
+      translate(-50%, -50%)
+      scale(0.4);
+  }
+
+  20% {
+    opacity: 1;
+    transform:
+      translate(-50%, -50%)
+      scale(1.2);
+  }
+
+  45% {
+    opacity: 1;
+    transform:
+      translate(-50%, -50%)
+      scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform:
+      translate(-50%, -50%)
+      scale(1.35);
+  }
+}
+
+
+/* =========================================================
+   BUTTON PRESS EFFECT
+   ========================================================= */
+
+.action-btn:active .action-icon {
+  transform: scale(0.82);
+}
+
+.like-btn.liked .action-icon {
+  text-shadow:
+    0 0 10px rgba(255, 70, 70, 0.65);
+}
+
+.save-btn.saved .action-icon {
+  text-shadow:
+    0 0 10px rgba(255, 255, 255, 0.45);
+}
+
+
+/* =========================================================
+   FOLLOW BUTTON ANIMATION
+   ========================================================= */
+
+.follow-btn {
+  transition:
+    transform 0.15s ease,
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.follow-btn.following {
+  animation:
+    wwcFollowPop 0.25s ease;
+}
+
+@keyframes wwcFollowPop {
+
+  0% {
+    transform: scale(0.9);
+  }
+
+  60% {
+    transform: scale(1.06);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+/* =========================================================
+   SHARE / COMMENT / SAVE FEEDBACK
+   ========================================================= */
+
+.comment-btn .action-icon,
+.save-btn .action-icon,
+.share-btn .action-icon {
+  transition:
+    transform 0.18s ease;
+}
+
+.comment-btn:active .action-icon,
+.save-btn:active .action-icon,
+.share-btn:active .action-icon {
+  transform: scale(0.8);
+}
