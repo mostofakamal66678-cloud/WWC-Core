@@ -1,7 +1,7 @@
 /* =========================================================
    WORLD WIDE CONNECT
-   MAIN STYLE.CSS
-   TikTok Style Mobile Video Feed
+   WWC TIKTOK STYLE FEED
+   CLEAN MOBILE UI
    ========================================================= */
 
 * {
@@ -15,25 +15,32 @@ body {
   width: 100%;
   height: 100%;
   overflow: hidden;
+
   background: #000;
   color: #fff;
-  font-family: Arial, Helvetica, sans-serif;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 }
 
 body {
   overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button,
-textarea,
-input {
+input,
+textarea {
   font-family: inherit;
 }
 
 button {
-  border: none;
-  outline: none;
+  border: 0;
+  outline: 0;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button:disabled {
@@ -71,7 +78,7 @@ button:disabled {
   z-index: 1000;
 
   width: 100%;
-  height: 65px;
+  height: 68px;
 
   display: flex;
   align-items: center;
@@ -82,7 +89,7 @@ button:disabled {
   background:
     linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0.75),
+      rgba(0, 0, 0, 0.72),
       rgba(0, 0, 0, 0)
     );
 
@@ -93,7 +100,7 @@ button:disabled {
   display: flex;
   align-items: center;
 
-  gap: 25px;
+  gap: 26px;
 
   pointer-events: auto;
 }
@@ -101,7 +108,7 @@ button:disabled {
 .wwc-top-tab {
   position: relative;
 
-  padding: 8px 3px;
+  padding: 8px 2px;
 
   background: transparent;
 
@@ -111,7 +118,7 @@ button:disabled {
   font-weight: 700;
 
   text-shadow:
-    0 1px 4px rgba(0, 0, 0, 0.8);
+    0 1px 5px rgba(0, 0, 0, 0.8);
 }
 
 .wwc-top-tab.active {
@@ -137,7 +144,7 @@ button:disabled {
 .wwc-search-btn {
   position: absolute;
 
-  right: 14px;
+  right: 12px;
 
   width: 42px;
   height: 42px;
@@ -148,17 +155,22 @@ button:disabled {
 
   border-radius: 50%;
 
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.25);
 
   color: #fff;
 
   font-size: 22px;
 
   pointer-events: auto;
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
 }
 
 .wwc-search-btn:active {
-  transform: scale(0.9);
+  transform: scale(0.88);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 
@@ -169,8 +181,7 @@ button:disabled {
 #video-feed {
   position: absolute;
 
-  top: 0;
-  left: 0;
+  inset: 0;
 
   width: 100%;
   height: 100%;
@@ -185,6 +196,8 @@ button:disabled {
   scrollbar-width: none;
 
   -webkit-overflow-scrolling: touch;
+
+  overscroll-behavior-y: contain;
 }
 
 #video-feed::-webkit-scrollbar {
@@ -202,6 +215,8 @@ button:disabled {
   width: 100%;
   height: 100dvh;
 
+  min-height: 100dvh;
+
   overflow: hidden;
 
   background: #000;
@@ -210,11 +225,15 @@ button:disabled {
   scroll-snap-stop: always;
 }
 
+
+/* =========================================================
+   VIDEO
+   ========================================================= */
+
 .feed-video {
   position: absolute;
 
-  top: 0;
-  left: 0;
+  inset: 0;
 
   width: 100%;
   height: 100%;
@@ -222,6 +241,8 @@ button:disabled {
   object-fit: cover;
 
   background: #000;
+
+  cursor: pointer;
 }
 
 
@@ -234,16 +255,304 @@ button:disabled {
 
   inset: 0;
 
+  z-index: 2;
+
   pointer-events: none;
 
   background:
     linear-gradient(
       to bottom,
-      rgba(0, 0, 0, 0.42) 0%,
-      rgba(0, 0, 0, 0) 25%,
-      rgba(0, 0, 0, 0) 53%,
-      rgba(0, 0, 0, 0.78) 100%
+      rgba(0, 0, 0, 0.45) 0%,
+      rgba(0, 0, 0, 0.05) 23%,
+      rgba(0, 0, 0, 0) 50%,
+      rgba(0, 0, 0, 0.16) 65%,
+      rgba(0, 0, 0, 0.84) 100%
     );
+}
+
+
+/* =========================================================
+   TIKTOK STYLE RIGHT ACTION BAR
+   ========================================================= */
+
+.actions {
+  position: absolute;
+
+  right: 8px;
+  bottom: 132px;
+
+  z-index: 100;
+
+  width: 62px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 18px;
+
+  pointer-events: auto;
+}
+
+
+/* =========================================================
+   ACTION BUTTON
+   ========================================================= */
+
+.action-btn {
+  position: relative;
+
+  width: 58px;
+  min-height: 61px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+
+  gap: 3px;
+
+  padding: 0;
+
+  background: transparent;
+
+  color: #fff;
+
+  text-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.9);
+
+  transition:
+    transform 0.12s ease;
+}
+
+.action-btn:active {
+  transform: scale(0.88);
+}
+
+
+/* =========================================================
+   TIKTOK STYLE ICON
+   ========================================================= */
+
+.action-icon {
+  position: relative;
+
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: transparent;
+
+  color: #fff;
+
+  font-size: 31px;
+  line-height: 1;
+
+  filter:
+    drop-shadow(
+      0 2px 4px rgba(0, 0, 0, 0.75)
+    );
+
+  transition:
+    transform 0.18s cubic-bezier(
+      0.2,
+      0.8,
+      0.3,
+      1.2
+    ),
+    color 0.18s ease;
+}
+
+
+/* =========================================================
+   LIKE
+   ========================================================= */
+
+.like-btn .action-icon {
+  font-size: 34px;
+}
+
+.like-btn.liked .action-icon {
+  color: #ff2d55;
+
+  transform:
+    scale(1.18);
+
+  animation:
+    wwc-like-pop 0.32s ease;
+}
+
+@keyframes wwc-like-pop {
+
+  0% {
+    transform: scale(0.65);
+  }
+
+  55% {
+    transform: scale(1.32);
+  }
+
+  100% {
+    transform: scale(1.18);
+  }
+
+}
+
+
+/* =========================================================
+   SAVE
+   ========================================================= */
+
+.save-btn.saved .action-icon {
+  color: #ffd84d;
+
+  transform:
+    scale(1.12);
+
+  animation:
+    wwc-save-pop 0.25s ease;
+}
+
+@keyframes wwc-save-pop {
+
+  0% {
+    transform: scale(0.75);
+  }
+
+  70% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1.12);
+  }
+
+}
+
+
+/* =========================================================
+   COUNTS
+   ========================================================= */
+
+.like-count,
+.comment-count,
+.save-count,
+.share-label {
+  display: block;
+
+  min-width: 24px;
+
+  color: #fff;
+
+  font-size: 12px;
+  line-height: 15px;
+
+  font-weight: 700;
+
+  text-align: center;
+
+  text-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.9);
+}
+
+
+/* =========================================================
+   SHARE LABEL
+   ========================================================= */
+
+.share-label {
+  margin-top: 0;
+}
+
+
+/* =========================================================
+   DOUBLE TAP HEART
+   ========================================================= */
+
+.double-tap-heart {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  z-index: 500;
+
+  width: 120px;
+  height: 120px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  transform:
+    translate(-50%, -50%)
+    scale(0);
+
+  pointer-events: none;
+
+  color: #fff;
+
+  font-size: 105px;
+
+  text-shadow:
+    0 5px 25px rgba(0, 0, 0, 0.5);
+
+  opacity: 0;
+}
+
+.double-tap-heart.show {
+  animation:
+    wwc-double-heart 0.75s
+    cubic-bezier(
+      0.18,
+      0.89,
+      0.32,
+      1.28
+    );
+}
+
+@keyframes wwc-double-heart {
+
+  0% {
+    opacity: 0;
+    transform:
+      translate(-50%, -50%)
+      scale(0.2)
+      rotate(-10deg);
+  }
+
+  20% {
+    opacity: 1;
+    transform:
+      translate(-50%, -50%)
+      scale(1.15)
+      rotate(0deg);
+  }
+
+  45% {
+    opacity: 1;
+    transform:
+      translate(-50%, -50%)
+      scale(0.98);
+  }
+
+  75% {
+    opacity: 0.85;
+    transform:
+      translate(-50%, -50%)
+      scale(1.04);
+  }
+
+  100% {
+    opacity: 0;
+    transform:
+      translate(-50%, -50%)
+      scale(1.35);
+  }
+
 }
 
 
@@ -257,27 +566,39 @@ button:disabled {
   left: 14px;
   bottom: 145px;
 
-  z-index: 50;
+  z-index: 100;
 
   display: flex;
   align-items: center;
 
   gap: 8px;
 
-  max-width: calc(100% - 85px);
+  max-width: calc(100% - 90px);
+
+  pointer-events: auto;
 }
 
+
+/* =========================================================
+   PROFILE PHOTO
+   ========================================================= */
+
 .profile-photo-btn {
+  position: relative;
+
   flex-shrink: 0;
 
-  width: 46px;
-  height: 46px;
+  width: 48px;
+  height: 48px;
 
   padding: 2px;
 
   border-radius: 50%;
 
   background: #fff;
+
+  box-shadow:
+    0 2px 10px rgba(0, 0, 0, 0.45);
 }
 
 .profile-photo {
@@ -293,8 +614,13 @@ button:disabled {
   background: #222;
 }
 
+
+/* =========================================================
+   USERNAME
+   ========================================================= */
+
 .profile-username {
-  max-width: 130px;
+  max-width: 125px;
 
   overflow: hidden;
 
@@ -310,15 +636,22 @@ button:disabled {
   font-weight: 800;
 
   text-shadow:
-    0 1px 4px #000;
+    0 1px 5px rgba(0, 0, 0, 0.9);
 }
+
+
+/* =========================================================
+   FOLLOW BUTTON
+   ========================================================= */
 
 .follow-btn {
   flex-shrink: 0;
 
-  padding: 7px 13px;
+  min-width: 72px;
 
-  border-radius: 7px;
+  padding: 7px 12px;
+
+  border-radius: 6px;
 
   background: #fff;
 
@@ -326,99 +659,27 @@ button:disabled {
 
   font-size: 12px;
   font-weight: 800;
+
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.25);
+
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease;
 }
 
 .follow-btn:active {
-  transform: scale(0.94);
+  transform: scale(0.92);
 }
 
 .follow-btn.following {
-  background: rgba(255, 255, 255, 0.18);
+  background:
+    rgba(255, 255, 255, 0.18);
 
   color: #fff;
 
   border:
     1px solid rgba(255, 255, 255, 0.7);
-}
-
-
-/* =========================================================
-   ACTION BUTTONS
-   ========================================================= */
-
-.actions {
-  position: absolute;
-
-  right: 9px;
-  bottom: 132px;
-
-  z-index: 60;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  gap: 16px;
-}
-
-.action-btn {
-  width: 52px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  gap: 3px;
-
-  background: transparent;
-
-  color: #fff;
-
-  text-shadow:
-    0 1px 4px #000;
-}
-
-.action-icon {
-  width: 43px;
-  height: 43px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: rgba(0, 0, 0, 0.24);
-
-  font-size: 27px;
-
-  transition:
-    transform 0.15s ease;
-}
-
-.action-btn:active .action-icon {
-  transform: scale(0.82);
-}
-
-.like-btn.liked .action-icon {
-  transform: scale(1.08);
-}
-
-.save-btn.saved .action-icon {
-  transform: scale(1.08);
-}
-
-.like-count,
-.comment-count,
-.save-count,
-.share-label {
-  min-width: 20px;
-
-  text-align: center;
-
-  font-size: 12px;
-  font-weight: 700;
 }
 
 
@@ -430,13 +691,13 @@ button:disabled {
   position: absolute;
 
   left: 14px;
-  right: 75px;
+  right: 82px;
   bottom: 72px;
 
-  z-index: 50;
+  z-index: 90;
 
   text-shadow:
-    0 1px 4px #000;
+    0 1px 5px rgba(0, 0, 0, 0.9);
 }
 
 .video-info-username {
@@ -466,7 +727,7 @@ button:disabled {
 .video-music {
   margin-top: 7px;
 
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.92);
 
   font-size: 12px;
 }
@@ -486,7 +747,7 @@ button:disabled {
 
   width: 100%;
 
-  min-height: 70px;
+  min-height: 68px;
 
   display: flex;
   align-items: center;
@@ -503,11 +764,17 @@ button:disabled {
 
   border-top:
     1px solid rgba(255, 255, 255, 0.08);
+
+  backdrop-filter:
+    blur(10px);
+
+  -webkit-backdrop-filter:
+    blur(10px);
 }
 
 .wwc-nav-btn {
   width: 20%;
-  height: 60px;
+  height: 58px;
 
   display: flex;
   flex-direction: column;
@@ -520,6 +787,9 @@ button:disabled {
   background: transparent;
 
   color: rgba(255, 255, 255, 0.62);
+
+  transition:
+    transform 0.12s ease;
 }
 
 .wwc-nav-btn.active {
@@ -527,12 +797,11 @@ button:disabled {
 }
 
 .wwc-nav-btn:active {
-  transform: scale(0.92);
+  transform: scale(0.9);
 }
 
 .nav-icon {
   font-size: 22px;
-
   line-height: 1;
 }
 
@@ -540,6 +809,11 @@ button:disabled {
   font-size: 10px;
   font-weight: 700;
 }
+
+
+/* =========================================================
+   CREATE BUTTON
+   ========================================================= */
 
 .wwc-create-btn {
   width: 48px;
@@ -555,15 +829,19 @@ button:disabled {
 
   color: #000;
 
-  font-size: 30px;
+  font-size: 29px;
   font-weight: 300;
 
   box-shadow:
-    0 0 0 2px rgba(255, 255, 255, 0.35);
+    0 0 0 2px
+    rgba(255, 255, 255, 0.35);
+
+  transition:
+    transform 0.15s ease;
 }
 
 .wwc-create-btn:active {
-  transform: scale(0.9);
+  transform: scale(0.88);
 }
 
 
@@ -576,12 +854,8 @@ button:disabled {
   height: 100%;
 
   display: flex;
-  flex-direction: column;
-
   align-items: center;
   justify-content: center;
-
-  gap: 12px;
 
   background: #000;
 
@@ -590,10 +864,6 @@ button:disabled {
   text-align: center;
 
   font-size: 15px;
-}
-
-.feed-loading div:first-child {
-  font-size: 30px;
 }
 
 
@@ -654,7 +924,8 @@ button:disabled {
   background:
     rgba(18, 18, 18, 0.98);
 
-  transform: translateX(110%);
+  transform:
+    translateX(110%);
 
   transition:
     transform 0.25s ease;
@@ -758,14 +1029,16 @@ button:disabled {
   box-shadow:
     0 -12px 45px rgba(0, 0, 0, 0.6);
 
-  transform: translateY(110%);
+  transform:
+    translateY(110%);
 
   transition:
     transform 0.25s ease;
 }
 
 .comment-box.show {
-  transform: translateY(0);
+  transform:
+    translateY(0);
 }
 
 .comment-title {
@@ -807,6 +1080,8 @@ button:disabled {
   padding: 10px 15px;
 
   scrollbar-width: thin;
+
+  overscroll-behavior: contain;
 }
 
 .comment-item {
@@ -817,7 +1092,8 @@ button:disabled {
   padding: 11px 0;
 
   border-bottom:
-    1px solid rgba(255, 255, 255, 0.07);
+    1px solid
+    rgba(255, 255, 255, 0.07);
 }
 
 .comment-avatar {
@@ -873,7 +1149,7 @@ button:disabled {
 #commentInput {
   width: calc(100% - 24px);
 
-  min-height: 68px;
+  min-height: 60px;
 
   margin: 8px 12px;
 
@@ -886,7 +1162,7 @@ button:disabled {
   border:
     1px solid #333;
 
-  border-radius: 10px;
+  border-radius: 12px;
 
   background: #1c1c1c;
 
@@ -896,7 +1172,8 @@ button:disabled {
 }
 
 #commentInput::placeholder {
-  color: rgba(255, 255, 255, 0.45);
+  color:
+    rgba(255, 255, 255, 0.45);
 }
 
 .comment-buttons {
@@ -907,7 +1184,10 @@ button:disabled {
   padding:
     0
     12px
-    calc(12px + env(safe-area-inset-bottom));
+    calc(
+      12px +
+      env(safe-area-inset-bottom)
+    );
 }
 
 .comment-buttons button {
@@ -945,29 +1225,42 @@ button:disabled {
 
 
 /* =========================================================
-   GENERAL MOBILE
+   MOBILE
    ========================================================= */
 
 @media (max-width: 600px) {
 
+  .actions {
+    right: 7px;
+    bottom: 128px;
+    gap: 17px;
+  }
+
+  .action-btn {
+    width: 56px;
+  }
+
+  .action-icon {
+    width: 46px;
+    height: 46px;
+  }
+
   .profile-area {
+    left: 13px;
     bottom: 143px;
   }
 
-  .actions {
-    right: 8px;
-    bottom: 125px;
-  }
-
   .video-info {
-    bottom: 74px;
+    left: 13px;
+    right: 78px;
+    bottom: 72px;
   }
 
 }
 
 
 /* =========================================================
-   VERY SMALL SCREEN
+   SMALL PHONES
    ========================================================= */
 
 @media (max-width: 360px) {
@@ -985,23 +1278,28 @@ button:disabled {
   }
 
   .profile-photo-btn {
-    width: 42px;
-    height: 42px;
+    width: 43px;
+    height: 43px;
   }
 
   .follow-btn {
-    padding: 6px 10px;
+    min-width: 65px;
+    padding: 6px 9px;
   }
 
   .actions {
+    right: 4px;
     gap: 12px;
   }
 
   .action-icon {
-    width: 39px;
-    height: 39px;
+    width: 42px;
+    height: 42px;
+    font-size: 28px;
+  }
 
-    font-size: 24px;
+  .like-btn .action-icon {
+    font-size: 31px;
   }
 
   .video-info {
@@ -1024,7 +1322,8 @@ button:disabled {
     margin: 0 auto;
 
     box-shadow:
-      0 0 70px rgba(0, 0, 0, 0.75);
+      0 0 70px
+      rgba(0, 0, 0, 0.75);
   }
 
   .wwc-top-bar {
@@ -1032,7 +1331,8 @@ button:disabled {
 
     left: 50%;
 
-    transform: translateX(-50%);
+    transform:
+      translateX(-50%);
   }
 
   .wwc-bottom-nav {
@@ -1040,7 +1340,28 @@ button:disabled {
 
     left: 50%;
 
-    transform: translateX(-50%);
+    transform:
+      translateX(-50%);
+  }
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+
+    scroll-behavior: auto !important;
+
+    transition-duration: 0.01ms !important;
   }
 
 }
