@@ -60,18 +60,17 @@
     }
 
     .search-box {
-      display: flex;
       margin-bottom: 15px;
     }
 
     #searchInput {
       width: 100%;
       padding: 13px 15px;
-      border: 1px solid #333;
+      border: 1px solid #444;
       border-radius: 12px;
-      outline: none;
       background: #181818;
       color: #fff;
+      outline: none;
       font-size: 15px;
     }
 
@@ -80,30 +79,38 @@
     }
 
     .section-title {
-      font-size: 17px;
+      font-size: 18px;
       font-weight: bold;
-      margin: 15px 3px 10px;
+      margin: 15px 3px 12px;
     }
 
-    .conversation {
+    #usersList {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .user-card {
+      width: 100%;
       display: flex;
       align-items: center;
       gap: 12px;
       padding: 13px;
-      margin-bottom: 8px;
-      background: #151515;
-      border: 1px solid #292929;
+      border: 1px solid #333;
       border-radius: 13px;
+      background: #181818;
+      color: #fff;
       cursor: pointer;
+      text-align: left;
     }
 
-    .conversation:active {
-      transform: scale(.99);
+    .user-card:active {
+      background: #252525;
     }
 
     .avatar {
-      width: 54px;
-      height: 54px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
       object-fit: cover;
       background: #333;
@@ -111,83 +118,234 @@
       flex-shrink: 0;
     }
 
-    .conversation-info {
+    .user-info {
       flex: 1;
       min-width: 0;
     }
 
-    .name-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .name {
+    .user-name {
       font-size: 16px;
       font-weight: bold;
+      margin-bottom: 5px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    .time {
-      color: #777;
-      font-size: 11px;
-      flex-shrink: 0;
-    }
-
-    .handle {
-      color: #888;
-      font-size: 12px;
-      margin-top: 3px;
-    }
-
-    .last-message {
-      color: #aaa;
+    .user-handle {
+      color: #999;
       font-size: 13px;
-      margin-top: 6px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    .empty {
-      text-align: center;
-      padding: 60px 20px;
-      color: #888;
-      background: #111;
-      border: 1px solid #222;
-      border-radius: 15px;
-      margin-top: 15px;
-    }
-
-    .empty-icon {
-      font-size: 45px;
-      margin-bottom: 12px;
+    .chat-icon {
+      font-size: 21px;
+      flex-shrink: 0;
     }
 
     .status {
       text-align: center;
       color: #999;
-      padding: 15px 5px;
-      min-height: 20px;
+      padding: 25px 10px;
     }
 
     .error {
-      color: #ff6684 !important;
+      color: #ff6684;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 45px 20px;
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 14px;
+      color: #888;
+    }
+
+    .empty-icon {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    /* ==========================================
+       CHAT SCREEN
+       ========================================== */
+
+    #chatScreen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 500;
+    }
+
+    .chat-header {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      background: #111;
+      border-bottom: 1px solid #333;
+    }
+
+    .chat-back {
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 50%;
+      background: #222;
+      color: #fff;
+      font-size: 23px;
+      cursor: pointer;
+    }
+
+    .chat-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #333;
+    }
+
+    .chat-user-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chat-user-name {
+      font-weight: bold;
+      font-size: 16px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .chat-user-handle {
+      color: #888;
+      font-size: 12px;
+    }
+
+    .profile-open-btn {
+      border: 0;
+      border-radius: 9px;
+      background: #222;
+      color: #fff;
+      padding: 9px;
+      cursor: pointer;
+    }
+
+    .messages {
+      position: absolute;
+      top: 64px;
+      bottom: 72px;
+      left: 0;
+      right: 0;
+      overflow-y: auto;
+      padding: 15px 12px;
+    }
+
+    .message-row {
+      display: flex;
+      margin: 8px 0;
+    }
+
+    .message-row.mine {
+      justify-content: flex-end;
+    }
+
+    .message-bubble {
+      max-width: 78%;
+      padding: 10px 13px;
+      border-radius: 16px;
+      background: #222;
+      color: #fff;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+    }
+
+    .message-row.mine .message-bubble {
+      background: #fe2c55;
+    }
+
+    .message-time {
+      display: block;
+      font-size: 10px;
+      opacity: .65;
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .chat-input-area {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      background: #111;
+      border-top: 1px solid #333;
+    }
+
+    #messageInput {
+      flex: 1;
+      min-width: 0;
+      resize: none;
+      height: 45px;
+      padding: 12px;
+      border: 1px solid #444;
+      border-radius: 22px;
+      outline: none;
+      background: #1c1c1c;
+      color: #fff;
+      font-size: 15px;
+    }
+
+    #sendBtn {
+      width: 45px;
+      height: 45px;
+      border: 0;
+      border-radius: 50%;
+      background: #fe2c55;
+      color: #fff;
+      font-size: 19px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    #sendBtn:disabled {
+      opacity: .5;
+    }
+
+    .no-messages {
+      text-align: center;
+      color: #777;
+      padding: 50px 15px;
     }
 
     @media (max-width: 500px) {
       .container {
-        padding-left: 8px;
-        padding-right: 8px;
+        padding-left: 9px;
+        padding-right: 9px;
+      }
+
+      .message-bubble {
+        max-width: 85%;
       }
     }
   </style>
 </head>
 
 <body>
+
+  <!-- ==========================================
+       INBOX
+       ========================================== -->
 
   <header class="header">
 
@@ -220,22 +378,106 @@
     </div>
 
 
+    <div class="section-title">
+      💬 Message
+    </div>
+
+
     <div
       id="status"
       class="status"
     >
-      Inbox লোড হচ্ছে...
+      ⏳ Users লোড হচ্ছে...
     </div>
 
 
-    <div class="section-title">
-      💬 Messages
-    </div>
-
-
-    <section id="conversationList"></section>
+    <section id="usersList"></section>
 
   </main>
+
+
+  <!-- ==========================================
+       CHAT SCREEN
+       ========================================== -->
+
+  <section id="chatScreen">
+
+    <header class="chat-header">
+
+      <button
+        id="chatBackBtn"
+        class="chat-back"
+        type="button"
+      >
+        ←
+      </button>
+
+
+      <img
+        id="chatAvatar"
+        class="chat-avatar"
+        src="./images/profile.png"
+        alt="User"
+      >
+
+
+      <div class="chat-user-info">
+
+        <div
+          id="chatUserName"
+          class="chat-user-name"
+        >
+          User
+        </div>
+
+        <div
+          id="chatUserHandle"
+          class="chat-user-handle"
+        >
+          @wwc_user
+        </div>
+
+      </div>
+
+
+      <button
+        id="profileOpenBtn"
+        class="profile-open-btn"
+        type="button"
+        aria-label="Open profile"
+      >
+        👤
+      </button>
+
+    </header>
+
+
+    <div
+      id="messages"
+      class="messages"
+    ></div>
+
+
+    <div class="chat-input-area">
+
+      <textarea
+        id="messageInput"
+        maxlength="1000"
+        placeholder="Message লিখুন..."
+      ></textarea>
+
+
+      <button
+        id="sendBtn"
+        type="button"
+        aria-label="Send message"
+      >
+        ➤
+      </button>
+
+    </div>
+
+  </section>
 
 
   <script type="module">
@@ -257,9 +499,14 @@
     import {
       getFirestore,
       collection,
+      getDocs,
+      doc,
+      getDoc,
+      addDoc,
       query,
-      where,
-      getDocs
+      orderBy,
+      onSnapshot,
+      serverTimestamp
     } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
@@ -289,14 +536,18 @@
 
       measurementId:
         "G-PKFJ5NEMGQ"
+
     };
 
+
+    // ==========================================
+    // START FIREBASE
+    // ==========================================
 
     const app =
       getApps().length
         ? getApps()[0]
         : initializeApp(firebaseConfig);
-
 
     const auth =
       getAuth(app);
@@ -315,23 +566,58 @@
     const searchInput =
       document.getElementById("searchInput");
 
-    const conversationList =
-      document.getElementById("conversationList");
-
     const status =
       document.getElementById("status");
+
+    const usersList =
+      document.getElementById("usersList");
+
+    const chatScreen =
+      document.getElementById("chatScreen");
+
+    const chatBackBtn =
+      document.getElementById("chatBackBtn");
+
+    const chatAvatar =
+      document.getElementById("chatAvatar");
+
+    const chatUserName =
+      document.getElementById("chatUserName");
+
+    const chatUserHandle =
+      document.getElementById("chatUserHandle");
+
+    const profileOpenBtn =
+      document.getElementById("profileOpenBtn");
+
+    const messages =
+      document.getElementById("messages");
+
+    const messageInput =
+      document.getElementById("messageInput");
+
+    const sendBtn =
+      document.getElementById("sendBtn");
 
 
     // ==========================================
     // VARIABLES
     // ==========================================
 
-    let currentUser = null;
-
-    let allConversations = [];
-
     const defaultPhoto =
       "./images/profile.png";
+
+    let currentUser =
+      null;
+
+    let allUsers =
+      [];
+
+    let selectedUser =
+      null;
+
+    let unsubscribeMessages =
+      null;
 
 
     // ==========================================
@@ -346,253 +632,78 @@
     );
 
 
-    // ==========================================
-    // ESCAPE HTML
-    // ==========================================
-
-    function escapeHtml(value) {
-
-      return String(value || "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-    }
+    chatBackBtn.addEventListener(
+      "click",
+      closeChat
+    );
 
 
     // ==========================================
-    // FORMAT TIME
+    // LOAD USERS
     // ==========================================
 
-    function formatTime(value) {
+    async function loadUsers() {
 
-      if (!value) {
-        return "";
-      }
+      status.textContent =
+        "⏳ Users লোড হচ্ছে...";
+
+      status.classList.remove(
+        "error"
+      );
+
 
       try {
 
-        let date;
+        const snapshot =
+          await getDocs(
+            collection(
+              db,
+              "users"
+            )
+          );
 
-        if (
-          typeof value.toDate ===
-          "function"
-        ) {
 
-          date = value.toDate();
+        allUsers = [];
 
-        } else {
 
-          date = new Date(value);
+        snapshot.forEach(
+          userDoc => {
 
-        }
+            if (
+              userDoc.id ===
+              currentUser.uid
+            ) {
+              return;
+            }
 
-        if (isNaN(date.getTime())) {
-          return "";
-        }
 
-        return date.toLocaleTimeString(
-          "bn-BD",
-          {
-            hour: "numeric",
-            minute: "2-digit"
+            allUsers.push({
+
+              uid:
+                userDoc.id,
+
+              ...userDoc.data()
+
+            });
+
           }
         );
 
-      } catch (error) {
 
-        return "";
-
-      }
-
-    }
-
-
-    // ==========================================
-    // LOAD INBOX
-    // ==========================================
-
-    async function loadInbox() {
-
-      if (!currentUser) {
-        return;
-      }
-
-      status.classList.remove("error");
-
-      status.textContent =
-        "⏳ Messages লোড হচ্ছে...";
-
-      conversationList.innerHTML = "";
-
-
-      try {
-
-        /*
-         * messages collection-এর মধ্যে
-         * যেসব message-এর senderId বা receiverId
-         * current user-এর UID, সেগুলো নেওয়া হবে।
-         */
-
-        const messagesRef =
-          collection(
-            db,
-            "messages"
-          );
-
-
-        const sentQuery =
-          query(
-            messagesRef,
-            where(
-              "senderId",
-              "==",
-              currentUser.uid
-            )
-          );
-
-
-        const receivedQuery =
-          query(
-            messagesRef,
-            where(
-              "receiverId",
-              "==",
-              currentUser.uid
-            )
-          );
-
-
-        const [
-          sentSnapshot,
-          receivedSnapshot
-        ] =
-          await Promise.all([
-            getDocs(sentQuery),
-            getDocs(receivedQuery)
-          ]);
-
-
-        const messageMap =
-          new Map();
-
-
-        function processSnapshot(snapshot) {
-
-          snapshot.forEach(
-            (messageDoc) => {
-
-              const data =
-                messageDoc.data();
-
-
-              const otherUid =
-                data.senderId ===
-                currentUser.uid
-
-                  ? data.receiverId
-
-                  : data.senderId;
-
-
-              if (!otherUid) {
-                return;
-              }
-
-
-              const old =
-                messageMap.get(
-                  otherUid
-                );
-
-
-              const oldTime =
-                old?.createdAt
-                ? getDateValue(
-                    old.createdAt
-                  )
-                : 0;
-
-
-              const newTime =
-                data.createdAt
-                ? getDateValue(
-                    data.createdAt
-                  )
-                : 0;
-
-
-              if (
-                !old
-                ||
-                newTime >= oldTime
-              ) {
-
-                messageMap.set(
-                  otherUid,
-                  {
-
-                    uid:
-                      otherUid,
-
-                    lastMessage:
-                      data.text
-                      || "",
-
-                    createdAt:
-                      data.createdAt
-                      || null
-
-                  }
-                );
-
-              }
-
-            }
-          );
-
-        }
-
-
-        processSnapshot(
-          sentSnapshot
+        renderUsers(
+          allUsers
         );
-
-        processSnapshot(
-          receivedSnapshot
-        );
-
-
-        allConversations =
-          Array.from(
-            messageMap.values()
-          );
-
-
-        if (!allConversations.length) {
-
-          renderEmpty();
-
-          return;
-
-        }
-
-
-        await loadProfilesForConversations();
 
 
       } catch (error) {
 
         console.error(
-          "Inbox error:",
+          "Users error:",
           error
         );
 
-
         status.textContent =
-          "❌ Inbox লোড করা যায়নি।";
+          "❌ Users লোড করা যায়নি।";
 
         status.classList.add(
           "error"
@@ -604,135 +715,37 @@
 
 
     // ==========================================
-    // DATE VALUE
+    // RENDER USERS
     // ==========================================
 
-    function getDateValue(value) {
-
-      try {
-
-        if (
-          value
-          &&
-          typeof value.toDate ===
-          "function"
-        ) {
-
-          return value.toDate().getTime();
-
-        }
-
-        return new Date(value).getTime();
-
-      } catch (error) {
-
-        return 0;
-
-      }
-
-    }
-
-
-    // ==========================================
-    // LOAD USER PROFILES
-    // ==========================================
-
-    async function loadProfilesForConversations() {
-
-      const conversations = [];
-
-
-      for (
-        const conversation
-        of allConversations
-      ) {
-
-        try {
-
-          const profileQuery =
-            query(
-              collection(
-                db,
-                "users"
-              ),
-              where(
-                "__name__",
-                "==",
-                conversation.uid
-              )
-            );
-
-
-          const snapshot =
-            await getDocs(
-              profileQuery
-            );
-
-
-          if (!snapshot.empty) {
-
-            const profileData =
-              snapshot.docs[0].data();
-
-
-            conversations.push({
-
-              ...conversation,
-
-              name:
-                profileData.name
-                || profileData.displayName
-                || "WWC User",
-
-              username:
-                profileData.username
-                || "wwc_user",
-
-              photoURL:
-                profileData.photoURL
-                || defaultPhoto
-
-            });
-
-          }
-
-        } catch (error) {
-
-          console.error(
-            "Profile load error:",
-            error
-          );
-
-        }
-
-      }
-
-
-      allConversations =
-        conversations;
-
-
-      renderConversations(
-        allConversations
-      );
-
-    }
-
-
-    // ==========================================
-    // RENDER
-    // ==========================================
-
-    function renderConversations(
-      conversations
+    function renderUsers(
+      users
     ) {
 
-      conversationList.innerHTML = "";
+      usersList.innerHTML =
+        "";
 
 
-      if (!conversations.length) {
+      if (!users.length) {
 
-        renderEmpty();
+        status.textContent =
+          "";
+
+        usersList.innerHTML = `
+
+          <div class="empty">
+
+            <div class="empty-icon">
+              💬
+            </div>
+
+            <div>
+              এখনো অন্য কোনো User নেই।
+            </div>
+
+          </div>
+
+        `;
 
         return;
 
@@ -740,25 +753,36 @@
 
 
       status.textContent =
-        conversations.length +
-        "টি conversation";
+        users.length +
+        " জন User";
 
 
-      conversations.forEach(
-        (conversation) => {
+      users.forEach(
+        user => {
 
-          const card =
+          const button =
             document.createElement(
-              "div"
+              "button"
             );
 
+          button.type =
+            "button";
 
-          card.className =
-            "conversation";
+          button.className =
+            "user-card";
+
+          button.dataset.uid =
+            user.uid;
+
+
+          const name =
+            user.name
+            || user.displayName
+            || "WWC User";
 
 
           let username =
-            conversation.username
+            user.username
             || "wwc_user";
 
 
@@ -770,75 +794,40 @@
               );
 
 
-          card.innerHTML = `
+          const photo =
+            user.photoURL
+            || defaultPhoto;
+
+
+          button.innerHTML = `
 
             <img
               class="avatar"
-              src="${
-                escapeHtml(
-                  conversation.photoURL
-                  || defaultPhoto
-                )
-              }"
+              src="${escapeHtml(photo)}"
               alt="Profile"
             >
 
-            <div class="conversation-info">
+            <div class="user-info">
 
-              <div class="name-row">
-
-                <div class="name">
-                  ${
-                    escapeHtml(
-                      conversation.name
-                    )
-                  }
-                </div>
-
-                <div class="time">
-                  ${
-                    formatTime(
-                      conversation.createdAt
-                    )
-                  }
-                </div>
-
+              <div class="user-name">
+                ${escapeHtml(name)}
               </div>
 
-              <div class="handle">
+              <div class="user-handle">
                 @${escapeHtml(username)}
               </div>
 
-              <div class="last-message">
-                ${
-                  escapeHtml(
-                    conversation.lastMessage
-                    || "No message"
-                  )
-                }
-              </div>
+            </div>
 
+            <div class="chat-icon">
+              💬
             </div>
 
           `;
 
 
-          card.addEventListener(
-            "click",
-            () => {
-
-              window.location.href =
-                "./chat.html?uid=" +
-                encodeURIComponent(
-                  conversation.uid
-                );
-
-            }
-          );
-
-
-          conversationList.appendChild(
-            card
+          usersList.appendChild(
+            button
           );
 
         }
@@ -848,33 +837,34 @@
 
 
     // ==========================================
-    // EMPTY
+    // ESCAPE HTML
     // ==========================================
 
-    function renderEmpty() {
+    function escapeHtml(
+      value
+    ) {
 
-      status.textContent = "";
-
-      conversationList.innerHTML = `
-
-        <div class="empty">
-
-          <div class="empty-icon">
-            💬
-          </div>
-
-          <div>
-            এখনো কোনো Message নেই।
-          </div>
-
-          <p>
-            Friends থেকে কোনো User নির্বাচন করে
-            Message শুরু করুন।
-          </p>
-
-        </div>
-
-      `;
+      return String(value || "")
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+        .replace(
+          /</g,
+          "&lt;"
+        )
+        .replace(
+          />/g,
+          "&gt;"
+        )
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+        .replace(
+          /'/g,
+          "&#039;"
+        );
 
     }
 
@@ -883,72 +873,609 @@
     // SEARCH
     // ==========================================
 
-    function searchConversations() {
+    searchInput.addEventListener(
+      "input",
+      () => {
 
-      const queryText =
-        searchInput.value
-          .trim()
-          .toLowerCase();
+        const text =
+          searchInput.value
+            .trim()
+            .toLowerCase();
 
 
-      if (!queryText) {
+        if (!text) {
 
-        renderConversations(
-          allConversations
+          renderUsers(
+            allUsers
+          );
+
+          return;
+
+        }
+
+
+        const filtered =
+          allUsers.filter(
+            user => {
+
+              const name =
+                String(
+                  user.name
+                  || user.displayName
+                  || ""
+                ).toLowerCase();
+
+
+              const username =
+                String(
+                  user.username
+                  || ""
+                )
+                  .replace(
+                    /^@/,
+                    ""
+                  )
+                  .toLowerCase();
+
+
+              return (
+                name.includes(text)
+                ||
+                username.includes(text)
+              );
+
+            }
+          );
+
+
+        renderUsers(
+          filtered
         );
-
-        return;
 
       }
+    );
 
 
-      const filtered =
-        allConversations.filter(
-          (conversation) => {
+    // ==========================================
+    // USER CLICK
+    // ==========================================
 
-            const name =
-              String(
-                conversation.name
-                || ""
-              ).toLowerCase();
+    usersList.addEventListener(
+      "click",
+      event => {
 
-
-            const username =
-              String(
-                conversation.username
-                || ""
-              )
-                .replace(
-                  /^@/,
-                  ""
-                )
-                .toLowerCase();
+        const card =
+          event.target.closest(
+            ".user-card"
+          );
 
 
-            return (
-              name.includes(
-                queryText
-              )
-              ||
-              username.includes(
-                queryText
-              )
-            );
-
-          }
-        );
+        if (!card) {
+          return;
+        }
 
 
-      renderConversations(
-        filtered
+        const uid =
+          card.dataset.uid;
+
+
+        const user =
+          allUsers.find(
+            item =>
+              item.uid === uid
+          );
+
+
+        if (user) {
+
+          openChat(
+            user
+          );
+
+        }
+
+      }
+    );
+
+
+    // ==========================================
+    // OPEN CHAT
+    // ==========================================
+
+    function openChat(
+      user
+    ) {
+
+      selectedUser =
+        user;
+
+
+      const name =
+        user.name
+        || user.displayName
+        || "WWC User";
+
+
+      let username =
+        user.username
+        || "wwc_user";
+
+
+      username =
+        String(username)
+          .replace(
+            /^@/,
+            ""
+          );
+
+
+      chatUserName.textContent =
+        name;
+
+
+      chatUserHandle.textContent =
+        "@" + username;
+
+
+      chatAvatar.src =
+        user.photoURL
+        || defaultPhoto;
+
+
+      chatScreen.style.display =
+        "block";
+
+
+      messages.innerHTML = `
+
+        <div class="no-messages">
+          ⏳ Messages লোড হচ্ছে...
+        </div>
+
+      `;
+
+
+      listenToMessages();
+
+
+      setTimeout(
+        () => {
+          messageInput.focus();
+        },
+        100
       );
 
     }
 
 
-    searchInput.addEventListener(
-      "input",
-      searchConversations
+    // ==========================================
+    // CHAT ID
+    // ==========================================
+
+    function getChatId(
+      uid1,
+      uid2
+    ) {
+
+      return [
+        uid1,
+        uid2
+      ]
+        .sort()
+        .join("_");
+
+    }
+
+
+    // ==========================================
+    // LISTEN MESSAGES
+    // ==========================================
+
+    function listenToMessages() {
+
+      if (
+        !currentUser
+        ||
+        !selectedUser
+      ) {
+        return;
+      }
+
+
+      if (unsubscribeMessages) {
+
+        unsubscribeMessages();
+
+        unsubscribeMessages =
+          null;
+
+      }
+
+
+      const chatId =
+        getChatId(
+          currentUser.uid,
+          selectedUser.uid
+        );
+
+
+      const messagesRef =
+        collection(
+          db,
+          "chats",
+          chatId,
+          "messages"
+        );
+
+
+      const messagesQuery =
+        query(
+          messagesRef,
+          orderBy(
+            "createdAt",
+            "asc"
+          )
+        );
+
+
+      unsubscribeMessages =
+        onSnapshot(
+          messagesQuery,
+          snapshot => {
+
+            messages.innerHTML =
+              "";
+
+
+            if (
+              snapshot.empty
+            ) {
+
+              messages.innerHTML = `
+
+                <div class="no-messages">
+                  💬 এখনো কোনো Message নেই।<br>
+                  প্রথম Message পাঠান।
+                </div>
+
+              `;
+
+              return;
+
+            }
+
+
+            snapshot.forEach(
+              messageDoc => {
+
+                const data =
+                  messageDoc.data();
+
+
+                const row =
+                  document.createElement(
+                    "div"
+                  );
+
+
+                row.className =
+                  "message-row";
+
+
+                if (
+                  data.senderId ===
+                  currentUser.uid
+                ) {
+
+                  row.classList.add(
+                    "mine"
+                  );
+
+                }
+
+
+                const bubble =
+                  document.createElement(
+                    "div"
+                  );
+
+
+                bubble.className =
+                  "message-bubble";
+
+
+                bubble.textContent =
+                  data.text
+                  || "";
+
+
+                const time =
+                  document.createElement(
+                    "span"
+                  );
+
+
+                time.className =
+                  "message-time";
+
+
+                time.textContent =
+                  formatTime(
+                    data.createdAt
+                  );
+
+
+                bubble.appendChild(
+                  time
+                );
+
+
+                row.appendChild(
+                  bubble
+                );
+
+
+                messages.appendChild(
+                  row
+                );
+
+              }
+            );
+
+
+            scrollMessages();
+
+          },
+          error => {
+
+            console.error(
+              "Message listener error:",
+              error
+            );
+
+
+            messages.innerHTML = `
+
+              <div class="no-messages">
+                ❌ Messages লোড করা যায়নি।
+              </div>
+
+            `;
+
+          }
+        );
+
+    }
+
+
+    // ==========================================
+    // SEND MESSAGE
+    // ==========================================
+
+    async function sendMessage() {
+
+      if (
+        !currentUser
+        ||
+        !selectedUser
+      ) {
+        return;
+      }
+
+
+      const text =
+        messageInput.value.trim();
+
+
+      if (!text) {
+        return;
+      }
+
+
+      sendBtn.disabled =
+        true;
+
+
+      try {
+
+        const chatId =
+          getChatId(
+            currentUser.uid,
+            selectedUser.uid
+          );
+
+
+        await addDoc(
+          collection(
+            db,
+            "chats",
+            chatId,
+            "messages"
+          ),
+          {
+
+            senderId:
+              currentUser.uid,
+
+            receiverId:
+              selectedUser.uid,
+
+            text:
+              text,
+
+            createdAt:
+              serverTimestamp()
+
+          }
+        );
+
+
+        messageInput.value =
+          "";
+
+
+        scrollMessages();
+
+
+      } catch (error) {
+
+        console.error(
+          "Send message error:",
+          error
+        );
+
+
+        alert(
+          "❌ Message পাঠানো যায়নি।"
+        );
+
+      }
+
+
+      sendBtn.disabled =
+        false;
+
+
+      messageInput.focus();
+
+    }
+
+
+    sendBtn.addEventListener(
+      "click",
+      sendMessage
+    );
+
+
+    // ==========================================
+    // ENTER TO SEND
+    // ==========================================
+
+    messageInput.addEventListener(
+      "keydown",
+      event => {
+
+        if (
+          event.key === "Enter"
+          &&
+          !event.shiftKey
+        ) {
+
+          event.preventDefault();
+
+          sendMessage();
+
+        }
+
+      }
+    );
+
+
+    // ==========================================
+    // SCROLL
+    // ==========================================
+
+    function scrollMessages() {
+
+      requestAnimationFrame(
+        () => {
+
+          messages.scrollTop =
+            messages.scrollHeight;
+
+        }
+      );
+
+    }
+
+
+    // ==========================================
+    // TIME
+    // ==========================================
+
+    function formatTime(
+      timestamp
+    ) {
+
+      if (
+        !timestamp
+        ||
+        !timestamp.toDate
+      ) {
+
+        return "";
+
+      }
+
+
+      const date =
+        timestamp.toDate();
+
+
+      return date.toLocaleTimeString(
+        "bn-BD",
+        {
+          hour: "numeric",
+          minute: "2-digit"
+        }
+      );
+
+    }
+
+
+    // ==========================================
+    // CLOSE CHAT
+    // ==========================================
+
+    function closeChat() {
+
+      if (
+        unsubscribeMessages
+      ) {
+
+        unsubscribeMessages();
+
+        unsubscribeMessages =
+          null;
+
+      }
+
+
+      selectedUser =
+        null;
+
+
+      chatScreen.style.display =
+        "none";
+
+
+      messages.innerHTML =
+        "";
+
+    }
+
+
+    // ==========================================
+    // OPEN USER PROFILE
+    // ==========================================
+
+    profileOpenBtn.addEventListener(
+      "click",
+      () => {
+
+        if (
+          selectedUser
+        ) {
+
+          window.location.href =
+            "user-profile.html?uid=" +
+            encodeURIComponent(
+              selectedUser.uid
+            );
+
+        }
+
+      }
     );
 
 
@@ -958,7 +1485,7 @@
 
     onAuthStateChanged(
       auth,
-      async (user) => {
+      async user => {
 
         if (!user) {
 
@@ -990,7 +1517,7 @@
           user;
 
 
-        await loadInbox();
+        await loadUsers();
 
       }
     );
