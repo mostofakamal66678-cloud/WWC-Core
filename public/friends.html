@@ -2,7 +2,8 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
 
   <title>WWC Friends</title>
 
@@ -54,10 +55,14 @@
       padding: 18px 15px 90px;
     }
 
-    .user-box {
+    .user-box,
+    .friend-card {
       background: #181818;
       border: 1px solid #333;
       border-radius: 15px;
+    }
+
+    .user-box {
       padding: 16px;
       margin-bottom: 18px;
     }
@@ -68,27 +73,37 @@
       gap: 12px;
     }
 
-    .my-avatar {
-      width: 55px;
-      height: 55px;
+    .my-avatar,
+    .avatar {
       border-radius: 50%;
       object-fit: cover;
       background: #333;
+    }
+
+    .my-avatar {
+      width: 55px;
+      height: 55px;
       border: 2px solid #fff;
     }
 
-    .my-info {
+    .my-info,
+    .friend-info {
       flex: 1;
       min-width: 0;
     }
 
+    .my-name,
+    .friend-name {
+      font-weight: bold;
+    }
+
     .my-name {
       font-size: 17px;
-      font-weight: bold;
       margin-bottom: 4px;
     }
 
-    .my-handle {
+    .my-handle,
+    .friend-handle {
       color: #999;
       font-size: 13px;
     }
@@ -133,17 +148,12 @@
       font-size: 15px;
     }
 
-    #searchInput:focus {
-      border-color: #777;
-    }
-
     #searchBtn {
       border: 0;
       border-radius: 10px;
       padding: 0 18px;
       background: #fff;
       color: #000;
-      font-size: 15px;
       font-weight: bold;
       cursor: pointer;
     }
@@ -160,29 +170,17 @@
       gap: 12px;
       padding: 14px;
       margin-bottom: 10px;
-      background: #181818;
-      border: 1px solid #333;
-      border-radius: 13px;
     }
 
     .avatar {
       width: 52px;
       height: 52px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: #333;
       border: 1px solid #555;
       flex-shrink: 0;
     }
 
-    .friend-info {
-      flex: 1;
-      min-width: 0;
-    }
-
     .friend-name {
       font-size: 16px;
-      font-weight: bold;
       margin-bottom: 4px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -190,8 +188,6 @@
     }
 
     .friend-handle {
-      color: #999;
-      font-size: 13px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -225,6 +221,12 @@
     .follow-btn.following {
       background: #333;
       border: 1px solid #777;
+    }
+
+    .follow-btn:disabled,
+    .profile-btn:disabled {
+      opacity: .6;
+      cursor: wait;
     }
 
     .empty {
@@ -277,1044 +279,950 @@
 
 <body>
 
-  <header class="header">
+<header class="header">
+  <button class="back-btn" id="backBtn" type="button">←</button>
+  <div class="title">👥 Friends</div>
+</header>
 
-    <button
-      class="back-btn"
-      type="button"
-      id="backBtn"
+<main class="container">
+
+  <section class="user-box">
+
+    <div class="user-top">
+
+      <img
+        id="myAvatar"
+        class="my-avatar"
+        src="./images/profile.png"
+        alt="Profile"
+      >
+
+      <div class="my-info">
+
+        <div id="myName" class="my-name">
+          Loading...
+        </div>
+
+        <div id="myHandle" class="my-handle">
+          @wwc_user
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="stats">
+
+      <div class="stat">
+        <strong id="followersCount">0</strong>
+        <span>Followers</span>
+      </div>
+
+      <div class="stat">
+        <strong id="followingCount">0</strong>
+        <span>Following</span>
+      </div>
+
+    </div>
+
+  </section>
+
+  <div class="search-box">
+
+    <input
+      type="search"
+      id="searchInput"
+      placeholder="নাম বা username খুঁজুন..."
+      autocomplete="off"
     >
-      ←
+
+    <button id="searchBtn" type="button">
+      🔍 Search
     </button>
 
-    <div class="title">
-      👥 Friends
-    </div>
+  </div>
 
-  </header>
+  <div id="status">
+    Friends লোড হচ্ছে...
+  </div>
 
+  <div class="section-title">
+    👥 People on WWC
+  </div>
 
-  <main class="container">
+  <section id="usersList"></section>
 
-    <section class="user-box">
-
-      <div class="user-top">
-
-        <img
-          id="myAvatar"
-          class="my-avatar"
-          src="./images/profile.png"
-          alt="Profile"
-        >
-
-        <div class="my-info">
-
-          <div
-            id="myName"
-            class="my-name"
-          >
-            Loading...
-          </div>
-
-          <div
-            id="myHandle"
-            class="my-handle"
-          >
-            @wwc_user
-          </div>
-
-        </div>
-
-      </div>
+</main>
 
 
-      <div class="stats">
+<script type="module">
 
-        <div class="stat">
-          <strong id="followersCount">0</strong>
-          <span>Followers</span>
-        </div>
+import {
+  getApps,
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
-        <div class="stat">
-          <strong id="followingCount">0</strong>
-          <span>Following</span>
-        </div>
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
-      </div>
-
-    </section>
-
-
-    <div class="search-box">
-
-      <input
-        type="search"
-        id="searchInput"
-        placeholder="নাম বা username খুঁজুন..."
-        autocomplete="off"
-      >
-
-      <button
-        type="button"
-        id="searchBtn"
-      >
-        🔍 Search
-      </button>
-
-    </div>
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  arrayUnion,
+  arrayRemove,
+  increment
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
-    <div
-      id="status"
-    >
-      Friends লোড হচ্ছে...
-    </div>
+/* =====================================================
+   FIREBASE
+   ===================================================== */
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
+  authDomain: "world-wide-connect-62c87.firebaseapp.com",
+  projectId: "world-wide-connect-62c87",
+  storageBucket: "world-wide-connect-62c87.firebasestorage.app",
+  messagingSenderId: "93178453668",
+  appId: "1:93178453668:web:2184630caa8e61f7445031",
+  measurementId: "G-PKFJ5NEMGQ"
+};
+
+const app =
+  getApps().length
+    ? getApps()[0]
+    : initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 
-    <div class="section-title">
-      👥 People on WWC
-    </div>
+/* =====================================================
+   ELEMENTS
+   ===================================================== */
+
+const backBtn =
+  document.getElementById("backBtn");
+
+const myAvatar =
+  document.getElementById("myAvatar");
+
+const myName =
+  document.getElementById("myName");
+
+const myHandle =
+  document.getElementById("myHandle");
+
+const followersCount =
+  document.getElementById("followersCount");
+
+const followingCount =
+  document.getElementById("followingCount");
+
+const searchInput =
+  document.getElementById("searchInput");
+
+const searchBtn =
+  document.getElementById("searchBtn");
+
+const usersList =
+  document.getElementById("usersList");
+
+const status =
+  document.getElementById("status");
 
 
-    <section id="usersList"></section>
+/* =====================================================
+   GLOBAL
+   ===================================================== */
 
-  </main>
+let currentUser = null;
+let currentProfile = {};
+let allUsers = [];
+let followingIds = [];
 
-
-  <script type="module">
-
-    import {
-      getApps,
-      initializeApp
-    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-
-
-    import {
-      getAuth,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+const defaultPhoto =
+  "./images/profile.png";
 
 
-    import {
-      getFirestore,
-      collection,
-      getDocs,
-      doc,
-      getDoc,
-      setDoc,
-      updateDoc
-    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+/* =====================================================
+   BACK
+   ===================================================== */
+
+backBtn.addEventListener(
+  "click",
+  () => {
+
+    if (history.length > 1) {
+      history.back();
+    } else {
+      window.location.href =
+        "./index.html";
+    }
+
+  }
+);
 
 
-    // ==========================================
-    // FIREBASE CONFIG
-    // ==========================================
+/* =====================================================
+   SAFE HTML
+   ===================================================== */
 
-    const firebaseConfig = {
+function escapeHtml(value) {
 
-      apiKey:
-        "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 
-      authDomain:
-        "world-wide-connect-62c87.firebaseapp.com",
+}
 
-      projectId:
-        "world-wide-connect-62c87",
 
-      storageBucket:
-        "world-wide-connect-62c87.firebasestorage.app",
+/* =====================================================
+   LOAD MY PROFILE
+   ===================================================== */
 
-      messagingSenderId:
-        "93178453668",
+async function loadMyProfile() {
 
-      appId:
-        "1:93178453668:web:2184630caa8e61f7445031",
+  const userRef =
+    doc(
+      db,
+      "users",
+      currentUser.uid
+    );
 
-      measurementId:
-        "G-PKFJ5NEMGQ"
+  const snapshot =
+    await getDoc(userRef);
+
+
+  if (!snapshot.exists()) {
+
+    currentProfile = {
+
+      uid:
+        currentUser.uid,
+
+      name:
+        currentUser.displayName ||
+        "WWC User",
+
+      username:
+        "wwc_" +
+        currentUser.uid.substring(0, 6),
+
+      email:
+        currentUser.email || "",
+
+      photoURL:
+        currentUser.photoURL ||
+        defaultPhoto,
+
+      followers: 0,
+      following: 0,
+      likes: 0,
+
+      followerIds: [],
+      followingIds: [],
+
+      videos: []
+
     };
 
 
-    // ==========================================
-    // FIREBASE START
-    // ==========================================
+    await setDoc(
+      userRef,
+      currentProfile
+    );
 
-    const app =
-      getApps().length
-        ? getApps()[0]
-        : initializeApp(firebaseConfig);
+  } else {
 
+    currentProfile =
+      snapshot.data();
 
-    const auth =
-      getAuth(app);
-
-    const db =
-      getFirestore(app);
+  }
 
 
-    // ==========================================
-    // ELEMENTS
-    // ==========================================
-
-    const backBtn =
-      document.getElementById("backBtn");
-
-    const myAvatar =
-      document.getElementById("myAvatar");
-
-    const myName =
-      document.getElementById("myName");
-
-    const myHandle =
-      document.getElementById("myHandle");
-
-    const followersCount =
-      document.getElementById("followersCount");
-
-    const followingCount =
-      document.getElementById("followingCount");
-
-    const searchInput =
-      document.getElementById("searchInput");
-
-    const searchBtn =
-      document.getElementById("searchBtn");
-
-    const usersList =
-      document.getElementById("usersList");
-
-    const status =
-      document.getElementById("status");
+  myName.textContent =
+    currentProfile.name ||
+    "WWC User";
 
 
-    // ==========================================
-    // VARIABLES
-    // ==========================================
-
-    let currentUser = null;
-
-    let currentProfile = {};
-
-    let allUsers = [];
-
-    let followingIds = [];
+  const username =
+    String(
+      currentProfile.username ||
+      "wwc_user"
+    ).replace(/^@/, "");
 
 
-    // ==========================================
-    // DEFAULT PHOTO
-    // ==========================================
-
-    const defaultPhoto =
-      "./images/profile.png";
+  myHandle.textContent =
+    "@" + username;
 
 
-    // ==========================================
-    // BACK BUTTON
-    // ==========================================
+  myAvatar.src =
+    currentProfile.photoURL ||
+    defaultPhoto;
 
-    backBtn.addEventListener(
-      "click",
-      () => {
-        history.back();
-      }
+
+  followersCount.textContent =
+    Number(
+      currentProfile.followers || 0
     );
 
 
-    // ==========================================
-    // LOAD MY PROFILE
-    // ==========================================
+  followingCount.textContent =
+    Number(
+      currentProfile.following || 0
+    );
 
-    async function loadMyProfile() {
 
-      if (!currentUser) {
-        return;
-      }
+  followingIds =
+    Array.isArray(
+      currentProfile.followingIds
+    )
+      ? [...currentProfile.followingIds]
+      : [];
 
-      try {
+}
 
-        const userRef =
-          doc(
-            db,
-            "users",
-            currentUser.uid
-          );
 
-        const snapshot =
-          await getDoc(userRef);
+/* =====================================================
+   LOAD USERS
+   ===================================================== */
 
+async function loadUsers() {
 
-        if (snapshot.exists()) {
+  status.classList.remove("error");
 
-          currentProfile =
-            snapshot.data();
+  status.textContent =
+    "⏳ Users লোড হচ্ছে...";
 
-        } else {
+  usersList.innerHTML = "";
 
-          currentProfile = {
 
-            name:
-              currentUser.displayName
-              || "WWC User",
+  const snapshot =
+    await getDocs(
+      collection(
+        db,
+        "users"
+      )
+    );
 
-            username:
-              "wwc_user",
 
-            photoURL:
-              currentUser.photoURL
-              || defaultPhoto,
+  allUsers = [];
 
-            followers:
-              0,
 
-            following:
-              0,
-
-            likes:
-              0
-
-          };
-
-
-          await setDoc(
-            userRef,
-            currentProfile
-          );
-
-        }
-
-
-        myName.textContent =
-          currentProfile.name
-          || "WWC User";
-
-
-        let username =
-          currentProfile.username
-          || "wwc_user";
-
-
-        username =
-          username.replace(
-            /^@/,
-            ""
-          );
-
-
-        myHandle.textContent =
-          "@" + username;
-
-
-        myAvatar.src =
-          currentProfile.photoURL
-          || defaultPhoto;
-
-
-        followersCount.textContent =
-          currentProfile.followers
-          || 0;
-
-
-        followingCount.textContent =
-          currentProfile.following
-          || 0;
-
-
-        followingIds =
-          Array.isArray(
-            currentProfile.followingIds
-          )
-            ? currentProfile.followingIds
-            : [];
-
-
-      } catch (error) {
-
-        console.error(
-          "My profile error:",
-          error
-        );
-
-        status.textContent =
-          "❌ নিজের Profile লোড করা যায়নি।";
-
-        status.classList.add("error");
-
-      }
-
-    }
-
-
-    // ==========================================
-    // LOAD ALL USERS
-    // ==========================================
-
-    async function loadUsers() {
-
-      usersList.innerHTML = "";
-
-      status.classList.remove("error");
-
-      status.textContent =
-        "⏳ Users লোড হচ্ছে...";
-
-
-      try {
-
-        const usersSnapshot =
-          await getDocs(
-            collection(
-              db,
-              "users"
-            )
-          );
-
-
-        allUsers = [];
-
-
-        usersSnapshot.forEach(
-          (userDoc) => {
-
-            const data =
-              userDoc.data();
-
-
-            if (
-              userDoc.id !==
-              currentUser.uid
-            ) {
-
-              allUsers.push({
-
-                uid:
-                  userDoc.id,
-
-                ...data
-
-              });
-
-            }
-
-          }
-        );
-
-
-        renderUsers(
-          allUsers
-        );
-
-
-      } catch (error) {
-
-        console.error(
-          "Users load error:",
-          error
-        );
-
-        status.textContent =
-          "❌ Users লোড করা যায়নি।";
-
-        status.classList.add(
-          "error"
-        );
-
-      }
-
-    }
-
-
-    // ==========================================
-    // RENDER USERS
-    // ==========================================
-
-    function renderUsers(
-      users
-    ) {
-
-      usersList.innerHTML = "";
-
-
-      if (!users.length) {
-
-        status.textContent = "";
-
-        usersList.innerHTML = `
-
-          <div class="empty">
-
-            <div class="empty-icon">
-              👥
-            </div>
-
-            <div>
-              এখনো অন্য কোনো User নেই।
-            </div>
-
-            <p>
-              নতুন User Register করলে এখানে দেখা যাবে।
-            </p>
-
-          </div>
-
-        `;
-
-        return;
-
-      }
-
-
-      status.textContent =
-        users.length +
-        " জন User পাওয়া গেছে।";
-
-
-      users.forEach(
-        (user) => {
-
-          const card =
-            document.createElement(
-              "div"
-            );
-
-          card.className =
-            "friend-card";
-
-
-          const photo =
-            user.photoURL
-            || defaultPhoto;
-
-
-          const name =
-            user.name
-            || user.displayName
-            || "WWC User";
-
-
-          let username =
-            user.username
-            || "wwc_user";
-
-
-          username =
-            username.replace(
-              /^@/,
-              ""
-            );
-
-
-          const isFollowing =
-            followingIds.includes(
-              user.uid
-            );
-
-
-          card.innerHTML = `
-
-            <img
-              class="avatar"
-              src="${photo}"
-              alt="Profile"
-            >
-
-            <div class="friend-info">
-
-              <div class="friend-name">
-                ${escapeHtml(name)}
-              </div>
-
-              <div class="friend-handle">
-                @${escapeHtml(username)}
-              </div>
-
-            </div>
-
-            <div class="card-buttons">
-
-              <button
-                type="button"
-                class="profile-btn"
-                data-profile="${user.uid}"
-              >
-                Profile
-              </button>
-
-              <button
-                type="button"
-                class="follow-btn ${
-                  isFollowing
-                    ? "following"
-                    : ""
-                }"
-                data-follow="${user.uid}"
-              >
-                ${
-                  isFollowing
-                    ? "Following"
-                    : "Follow"
-                }
-              </button>
-
-            </div>
-
-          `;
-
-
-          usersList.appendChild(
-            card
-          );
-
-        }
-      );
-
-    }
-
-
-    // ==========================================
-    // ESCAPE HTML
-    // ==========================================
-
-    function escapeHtml(
-      value
-    ) {
-
-      return String(value || "")
-        .replace(
-          /&/g,
-          "&amp;"
-        )
-        .replace(
-          /</g,
-          "&lt;"
-        )
-        .replace(
-          />/g,
-          "&gt;"
-        )
-        .replace(
-          /"/g,
-          "&quot;"
-        )
-        .replace(
-          /'/g,
-          "&#039;"
-        );
-
-    }
-
-
-    // ==========================================
-    // FOLLOW / UNFOLLOW
-    // ==========================================
-
-    async function toggleFollow(
-      targetUid
-    ) {
-
-      if (!currentUser) {
-        return;
-      }
-
+  snapshot.forEach(
+    userDoc => {
 
       if (
-        targetUid ===
+        userDoc.id ===
         currentUser.uid
       ) {
         return;
       }
 
 
-      try {
+      allUsers.push({
 
-        const targetRef =
-          doc(
-            db,
-            "users",
-            targetUid
-          );
+        uid:
+          userDoc.id,
 
+        ...userDoc.data()
 
-        const myRef =
-          doc(
-            db,
-            "users",
-            currentUser.uid
-          );
+      });
+
+    }
+  );
 
 
-        const targetSnapshot =
-          await getDoc(
-            targetRef
-          );
+  renderUsers(
+    allUsers
+  );
+
+}
 
 
-        const mySnapshot =
-          await getDoc(
-            myRef
-          );
+/* =====================================================
+   RENDER USERS
+   ===================================================== */
+
+function renderUsers(users) {
+
+  usersList.innerHTML = "";
 
 
-        if (
-          !targetSnapshot.exists()
-        ) {
-          return;
-        }
+  if (!users.length) {
+
+    status.textContent = "";
+
+    usersList.innerHTML = `
+
+      <div class="empty">
+
+        <div class="empty-icon">
+          👥
+        </div>
+
+        <div>
+          কোনো User পাওয়া যায়নি।
+        </div>
+
+        <p>
+          অন্য User Register করলে এখানে দেখা যাবে।
+        </p>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
 
 
-        const targetData =
-          targetSnapshot.data();
+  status.textContent =
+    users.length +
+    " জন User পাওয়া গেছে।";
 
 
-        const myData =
-          mySnapshot.exists()
-            ? mySnapshot.data()
-            : currentProfile;
+  users.forEach(
+    user => {
+
+      const name =
+        user.name ||
+        user.displayName ||
+        "WWC User";
 
 
-        let myFollowing =
-          Array.isArray(
-            myData.followingIds
-          )
-            ? [...myData.followingIds]
-            : [];
+      const username =
+        String(
+          user.username ||
+          "wwc_user"
+        ).replace(/^@/, "");
 
 
-        let targetFollowers =
-          Array.isArray(
-            targetData.followerIds
-          )
-            ? [...targetData.followerIds]
-            : [];
+      const photo =
+        user.photoURL ||
+        defaultPhoto;
 
 
-        const alreadyFollowing =
-          myFollowing.includes(
-            targetUid
-          );
-
-
-        if (alreadyFollowing) {
-
-          myFollowing =
-            myFollowing.filter(
-              id =>
-                id !== targetUid
-            );
-
-
-          targetFollowers =
-            targetFollowers.filter(
-              id =>
-                id !== currentUser.uid
-            );
-
-
-        } else {
-
-          myFollowing.push(
-            targetUid
-          );
-
-
-          if (
-            !targetFollowers.includes(
-              currentUser.uid
-            )
-          ) {
-
-            targetFollowers.push(
-              currentUser.uid
-            );
-
-          }
-
-        }
-
-
-        const newFollowingCount =
-          myFollowing.length;
-
-
-        const newFollowersCount =
-          targetFollowers.length;
-
-
-        await updateDoc(
-          myRef,
-          {
-
-            followingIds:
-              myFollowing,
-
-            following:
-              newFollowingCount
-
-          }
+      const isFollowing =
+        followingIds.includes(
+          user.uid
         );
 
 
-        await updateDoc(
-          targetRef,
-          {
-
-            followerIds:
-              targetFollowers,
-
-            followers:
-              newFollowersCount
-
-          }
+      const card =
+        document.createElement(
+          "div"
         );
 
 
-        followingIds =
-          myFollowing;
+      card.className =
+        "friend-card";
 
 
-        currentProfile.following =
-          newFollowingCount;
+      card.innerHTML = `
+
+        <img
+          class="avatar"
+          src="${escapeHtml(photo)}"
+          alt="Profile"
+          loading="lazy"
+        >
+
+        <div class="friend-info">
+
+          <div class="friend-name">
+            ${escapeHtml(name)}
+          </div>
+
+          <div class="friend-handle">
+            @${escapeHtml(username)}
+          </div>
+
+        </div>
+
+        <div class="card-buttons">
+
+          <button
+            type="button"
+            class="profile-btn"
+            data-profile="${escapeHtml(user.uid)}"
+          >
+            Profile
+          </button>
+
+          <button
+            type="button"
+            class="follow-btn ${
+              isFollowing
+                ? "following"
+                : ""
+            }"
+            data-follow="${escapeHtml(user.uid)}"
+          >
+            ${
+              isFollowing
+                ? "Following"
+                : "Follow"
+            }
+          </button>
+
+        </div>
+
+      `;
 
 
-        currentProfile.followingIds =
-          myFollowing;
+      usersList.appendChild(card);
+
+    }
+  );
+
+}
 
 
-        followingCount.textContent =
-          newFollowingCount;
+/* =====================================================
+   FOLLOW / UNFOLLOW
+   ===================================================== */
+
+async function toggleFollow(
+  targetUid,
+  button
+) {
+
+  if (!currentUser) {
+    return;
+  }
 
 
-        renderUsers(
-          filterUsers()
-        );
+  if (
+    targetUid ===
+    currentUser.uid
+  ) {
+    return;
+  }
 
 
-      } catch (error) {
-
-        console.error(
-          "Follow error:",
-          error
-        );
+  button.disabled = true;
 
 
-        status.textContent =
-          "❌ Follow পরিবর্তন করা যায়নি।";
+  try {
 
-        status.classList.add(
-          "error"
-        );
+    const myRef =
+      doc(
+        db,
+        "users",
+        currentUser.uid
+      );
 
-      }
+
+    const targetRef =
+      doc(
+        db,
+        "users",
+        targetUid
+      );
+
+
+    const mySnap =
+      await getDoc(myRef);
+
+
+    const targetSnap =
+      await getDoc(targetRef);
+
+
+    if (
+      !mySnap.exists() ||
+      !targetSnap.exists()
+    ) {
+
+      throw new Error(
+        "User profile not found"
+      );
 
     }
 
 
-    // ==========================================
-    // USER CLICK EVENTS
-    // ==========================================
+    const myData =
+      mySnap.data();
 
-    usersList.addEventListener(
-      "click",
-      async (event) => {
-
-        const followButton =
-          event.target.closest(
-            "[data-follow]"
-          );
+    const targetData =
+      targetSnap.data();
 
 
-        if (followButton) {
-
-          const uid =
-            followButton.dataset.follow;
-
-
-          followButton.disabled =
-            true;
-
-
-          await toggleFollow(
-            uid
-          );
+    const alreadyFollowing =
+      Array.isArray(
+        myData.followingIds
+      ) &&
+      myData.followingIds.includes(
+        targetUid
+      );
 
 
-          followButton.disabled =
-            false;
+    if (alreadyFollowing) {
 
+      await updateDoc(
+        myRef,
+        {
 
-          return;
+          followingIds:
+            arrayRemove(
+              targetUid
+            ),
+
+          following:
+            increment(-1)
 
         }
+      );
 
 
-        const profileButton =
-          event.target.closest(
-            "[data-profile]"
-          );
+      await updateDoc(
+        targetRef,
+        {
 
+          followerIds:
+            arrayRemove(
+              currentUser.uid
+            ),
 
-        if (profileButton) {
-
-          const uid =
-            profileButton.dataset.profile;
-
-
-          /*
-           * পরে আমরা dedicated
-           * user-profile.html তৈরি করে
-           * UID পাঠাব।
-           */
-
-          window.location.href =
-            "user-profile.html?uid=" +
-            encodeURIComponent(uid);
+          followers:
+            increment(-1)
 
         }
+      );
 
-      }
+
+      followingIds =
+        followingIds.filter(
+          id =>
+            id !== targetUid
+        );
+
+
+      button.textContent =
+        "Follow";
+
+
+      button.classList.remove(
+        "following"
+      );
+
+
+    } else {
+
+      await updateDoc(
+        myRef,
+        {
+
+          followingIds:
+            arrayUnion(
+              targetUid
+            ),
+
+          following:
+            increment(1)
+
+        }
+      );
+
+
+      await updateDoc(
+        targetRef,
+        {
+
+          followerIds:
+            arrayUnion(
+              currentUser.uid
+            ),
+
+          followers:
+            increment(1)
+
+        }
+      );
+
+
+      followingIds.push(
+        targetUid
+      );
+
+
+      button.textContent =
+        "Following";
+
+
+      button.classList.add(
+        "following"
+      );
+
+    }
+
+
+    const myUpdated =
+      await getDoc(myRef);
+
+
+    if (myUpdated.exists()) {
+
+      currentProfile =
+        myUpdated.data();
+
+
+      followingCount.textContent =
+        Number(
+          currentProfile.following ||
+          0
+        );
+
+    }
+
+
+    status.classList.remove(
+      "error"
     );
 
 
-    // ==========================================
-    // SEARCH
-    // ==========================================
+    status.textContent =
+      alreadyFollowing
+        ? "✓ Unfollow করা হয়েছে"
+        : "✓ Following করা হয়েছে";
 
-    function filterUsers() {
 
-      const query =
-        searchInput.value
-          .trim()
+  } catch (error) {
+
+    console.error(
+      "Follow error:",
+      error
+    );
+
+
+    status.textContent =
+      "❌ Follow পরিবর্তন করা যায়নি।";
+
+    status.classList.add(
+      "error"
+    );
+
+  } finally {
+
+    button.disabled =
+      false;
+
+  }
+
+}
+
+
+/* =====================================================
+   CLICK EVENTS
+   ===================================================== */
+
+usersList.addEventListener(
+  "click",
+  async event => {
+
+    const followButton =
+      event.target.closest(
+        "[data-follow]"
+      );
+
+
+    if (followButton) {
+
+      await toggleFollow(
+        followButton.dataset.follow,
+        followButton
+      );
+
+      return;
+
+    }
+
+
+    const profileButton =
+      event.target.closest(
+        "[data-profile]"
+      );
+
+
+    if (profileButton) {
+
+      const uid =
+        profileButton.dataset.profile;
+
+
+      window.location.href =
+        "./user-profile.html?uid=" +
+        encodeURIComponent(uid);
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   SEARCH
+   ===================================================== */
+
+function filterUsers() {
+
+  const query =
+    searchInput.value
+      .trim()
+      .toLowerCase();
+
+
+  if (!query) {
+    return allUsers;
+  }
+
+
+  return allUsers.filter(
+    user => {
+
+      const name =
+        String(
+          user.name ||
+          user.displayName ||
+          ""
+        ).toLowerCase();
+
+
+      const username =
+        String(
+          user.username ||
+          ""
+        )
+          .replace(/^@/, "")
           .toLowerCase();
 
 
-      if (!query) {
-
-        return allUsers;
-
-      }
-
-
-      return allUsers.filter(
-        (user) => {
-
-          const name =
-            String(
-              user.name
-              || user.displayName
-              || ""
-            ).toLowerCase();
-
-
-          const username =
-            String(
-              user.username
-              || ""
-            )
-              .replace(
-                /^@/,
-                ""
-              )
-              .toLowerCase();
-
-
-          return (
-            name.includes(query)
-            ||
-            username.includes(query)
-          );
-
-        }
+      return (
+        name.includes(query) ||
+        username.includes(query)
       );
+
+    }
+  );
+
+}
+
+
+function doSearch() {
+
+  renderUsers(
+    filterUsers()
+  );
+
+}
+
+
+searchBtn.addEventListener(
+  "click",
+  doSearch
+);
+
+
+searchInput.addEventListener(
+  "input",
+  doSearch
+);
+
+
+searchInput.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "Enter"
+    ) {
+
+      doSearch();
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   AUTH
+   ===================================================== */
+
+onAuthStateChanged(
+  auth,
+  async user => {
+
+    if (!user) {
+
+      status.textContent =
+        "❌ আগে Login করুন।";
+
+      status.classList.add(
+        "error"
+      );
+
+
+      setTimeout(
+        () => {
+
+          window.location.href =
+            "./auth.html";
+
+        },
+        1000
+      );
+
+
+      return;
 
     }
 
 
-    function doSearch() {
-
-      const results =
-        filterUsers();
+    currentUser =
+      user;
 
 
-      renderUsers(
-        results
+    try {
+
+      await loadMyProfile();
+
+      await loadUsers();
+
+    } catch (error) {
+
+      console.error(
+        "Friends error:",
+        error
+      );
+
+
+      status.textContent =
+        "❌ Friends load করা যায়নি।";
+
+      status.classList.add(
+        "error"
       );
 
     }
 
+  }
+);
 
-    searchBtn.addEventListener(
-      "click",
-      doSearch
-    );
-
-
-    searchInput.addEventListener(
-      "input",
-      doSearch
-    );
-
-
-    searchInput.addEventListener(
-      "keydown",
-      (event) => {
-
-        if (
-          event.key === "Enter"
-        ) {
-
-          doSearch();
-
-        }
-
-      }
-    );
-
-
-    // ==========================================
-    // AUTH
-    // ==========================================
-
-    onAuthStateChanged(
-      auth,
-      async (user) => {
-
-        if (!user) {
-
-          status.textContent =
-            "❌ আগে Login করুন।";
-
-          status.classList.add(
-            "error"
-          );
-
-
-          setTimeout(
-            () => {
-
-              window.location.href =
-                "./login.html";
-
-            },
-            1200
-          );
-
-
-          return;
-
-        }
-
-
-        currentUser =
-          user;
-
-
-        await loadMyProfile();
-
-        await loadUsers();
-
-      }
-    );
-
-  </script>
+</script>
 
 </body>
 </html>
