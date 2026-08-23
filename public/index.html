@@ -1,3467 +1,1319 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0, viewport-fit=cover"
->
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
 
 <title>WWC - For You</title>
 
 <style>
-
-/* =====================================================
-   RESET
-===================================================== */
-
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: #000;
-  color: #fff;
-  font-family: Arial, sans-serif;
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#000;
+  color:#fff;
+  font-family:Arial,sans-serif;
 }
 
-
-/* =====================================================
-   APP
-===================================================== */
-
-.app {
-  position: relative;
-  width: 100%;
-  height: 100dvh;
-  background: #000;
-  overflow: hidden;
+button{
+  font-family:inherit;
 }
 
-
-/* =====================================================
-   FEED
-===================================================== */
-
-.feed {
-  position: absolute;
-  inset: 0;
-
-  width: 100%;
-  height: 100%;
-
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  scroll-snap-type: y mandatory;
-
-  scrollbar-width: none;
+.app{
+  position:relative;
+  width:100%;
+  height:100dvh;
+  background:#000;
+  overflow:hidden;
 }
 
-.feed::-webkit-scrollbar {
-  display: none;
+/* ================= VIDEO FEED ================= */
+
+.feed{
+  position:absolute;
+  inset:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  scroll-snap-type:y mandatory;
+  scrollbar-width:none;
 }
 
-
-/* =====================================================
-   VIDEO ITEM
-===================================================== */
-
-.video-item {
-  position: relative;
-
-  width: 100%;
-  height: 100dvh;
-
-  background: #000;
-
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-
-  overflow: hidden;
+.feed::-webkit-scrollbar{
+  display:none;
 }
 
-
-/* =====================================================
-   VIDEO
-===================================================== */
-
-.video {
-  position: absolute;
-  inset: 0;
-
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-
-  background: #000;
+.video-item{
+  position:relative;
+  width:100%;
+  height:100dvh;
+  background:#000;
+  scroll-snap-align:start;
+  scroll-snap-stop:always;
+  overflow:hidden;
 }
 
-
-/* =====================================================
-   DARK GRADIENT
-===================================================== */
-
-.video-item::after {
-  content: "";
-
-  position: absolute;
-
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  height: 45%;
-
-  background:
-    linear-gradient(
-      transparent,
-      rgba(0,0,0,.82)
-    );
-
-  pointer-events: none;
+.video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  background:#000;
 }
 
+/* নিচের কালো gradient */
 
-/* =====================================================
-   TOP BAR
-===================================================== */
-
-.top-bar {
-  position: absolute;
-
-  top: 0;
-  left: 0;
-  right: 0;
-
-  height: 70px;
-
-  z-index: 20;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  padding-top: env(safe-area-inset-top);
-
-  background:
-    linear-gradient(
-      rgba(0,0,0,.5),
-      transparent
-    );
+.video-item::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:45%;
+  background:linear-gradient(
+    transparent,
+    rgba(0,0,0,.82)
+  );
+  pointer-events:none;
 }
 
+/* ================= TOP BAR ================= */
 
-/* =====================================================
-   TABS
-===================================================== */
-
-.tabs {
-  display: flex;
-
-  align-items: center;
-
-  gap: 30px;
-
-  height: 100%;
+.top-bar{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height:72px;
+  z-index:20;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding-top:env(safe-area-inset-top);
+  background:linear-gradient(
+    rgba(0,0,0,.5),
+    transparent
+  );
 }
 
-.tab {
-  position: relative;
-
-  border: 0;
-
-  background: transparent;
-
-  color: rgba(255,255,255,.62);
-
-  font-size: 17px;
-
-  font-weight: bold;
-
-  padding: 10px 3px;
-
-  cursor: pointer;
+.tabs{
+  display:flex;
+  align-items:center;
+  gap:30px;
+  height:100%;
 }
 
-.tab.active {
-  color: #fff;
+.tab{
+  position:relative;
+  border:0;
+  background:transparent;
+  color:rgba(255,255,255,.65);
+  font-size:17px;
+  font-weight:bold;
+  padding:10px 3px;
+  cursor:pointer;
 }
 
-.tab.active::after {
-  content: "";
-
-  position: absolute;
-
-  left: 0;
-  right: 0;
-  bottom: 1px;
-
-  height: 3px;
-
-  border-radius: 10px;
-
-  background: #fff;
+.tab.active{
+  color:#fff;
 }
 
-
-/* =====================================================
-   SEARCH
-===================================================== */
-
-.search-btn {
-  position: absolute;
-
-  right: 14px;
-  top: 50%;
-
-  transform: translateY(-50%);
-
-  width: 45px;
-  height: 45px;
-
-  border: 0;
-
-  border-radius: 50%;
-
-  background: rgba(0,0,0,.35);
-
-  color: #fff;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  cursor: pointer;
-
-  backdrop-filter: blur(5px);
+.tab.active::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:1px;
+  height:3px;
+  border-radius:10px;
+  background:#fff;
 }
 
-.search-btn svg {
-  width: 29px;
-  height: 29px;
+/* ================= SEARCH ================= */
 
-  fill: none;
-
-  stroke: #fff;
-
-  stroke-width: 2;
-
-  stroke-linecap: round;
+.search-btn{
+  position:absolute;
+  right:12px;
+  top:50%;
+  transform:translateY(-50%);
+  width:46px;
+  height:46px;
+  border:0;
+  border-radius:50%;
+  background:rgba(0,0,0,.32);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  backdrop-filter:blur(6px);
 }
 
-
-/* =====================================================
-   RIGHT ACTION BAR
-===================================================== */
-
-.action-bar {
-  position: absolute;
-
-  right: 9px;
-  bottom: 105px;
-
-  z-index: 30;
-
-  width: 66px;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  gap: 16px;
+.search-btn svg{
+  width:29px;
+  height:29px;
+  fill:none;
+  stroke:#fff;
+  stroke-width:2;
+  stroke-linecap:round;
 }
 
+/* ================= RIGHT ACTIONS ================= */
 
-/* =====================================================
-   ACTION BUTTON
-===================================================== */
-
-.action {
-  width: 62px;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
-
-  border: 0;
-
-  background: transparent;
-
-  color: #fff;
-
-  cursor: pointer;
-
-  padding: 0;
+.action-bar{
+  position:absolute;
+  right:9px;
+  bottom:105px;
+  z-index:30;
+  width:66px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:16px;
 }
 
-.action:disabled {
-  opacity: .6;
+.action{
+  width:62px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  border:0;
+  background:transparent;
+  color:#fff;
+  cursor:pointer;
+  padding:0;
 }
 
-
-/* =====================================================
-   ACTION ICON
-===================================================== */
-
-.action-icon {
-  width: 51px;
-  height: 51px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  color: #fff;
-
-  filter:
-    drop-shadow(
-      0 2px 5px rgba(0,0,0,.8)
-    );
-
-  transition:
-    transform .15s ease,
-    color .15s ease;
+.action-icon{
+  width:53px;
+  height:53px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#fff;
+  filter:drop-shadow(0 2px 4px rgba(0,0,0,.8));
+  transition:transform .15s ease,color .15s ease;
 }
 
-.action-icon svg {
-  width: 39px;
-  height: 39px;
-
-  fill: none;
-
-  stroke: currentColor;
-
-  stroke-width: 2;
-
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.action-icon svg{
+  width:39px;
+  height:39px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
 }
 
-.action:active .action-icon {
-  transform: scale(.82);
+.action:active .action-icon{
+  transform:scale(.8);
 }
 
-
-/* =====================================================
-   LIKE
-===================================================== */
-
-.like-btn.liked .action-icon {
-  color: #ff3040;
-
-  transform: scale(1.08);
+.action-count{
+  margin-top:0;
+  color:#fff;
+  font-size:13px;
+  font-weight:bold;
+  text-shadow:0 1px 4px #000;
 }
 
-.like-btn.liked .action-icon svg {
-  fill: #ff3040;
+/* ================= LIKE ================= */
 
-  stroke: #ff3040;
+.like-btn.liked .action-icon{
+  color:#ff3040;
+  transform:scale(1.08);
 }
 
-
-/* =====================================================
-   BOOKMARK
-===================================================== */
-
-.bookmark-btn.saved .action-icon {
-  color: #fff;
+.like-btn.liked .action-icon svg{
+  fill:#ff3040;
+  stroke:#ff3040;
 }
 
-.bookmark-btn.saved .action-icon svg {
-  fill: #fff;
+/* ================= BOOKMARK ================= */
 
-  stroke: #fff;
+.bookmark-btn.saved .action-icon{
+  color:#fff;
 }
 
-
-/* =====================================================
-   COUNTS
-===================================================== */
-
-.action-count {
-  margin-top: 1px;
-
-  color: #fff;
-
-  font-size: 13px;
-
-  font-weight: bold;
-
-  text-shadow:
-    0 1px 4px #000;
-
-  max-width: 62px;
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-
-  white-space: nowrap;
+.bookmark-btn.saved .action-icon svg{
+  fill:#fff;
+  stroke:#fff;
 }
 
-
-/* =====================================================
-   CREATOR
-===================================================== */
-
-.creator-action {
-  width: 62px;
-
-  display: flex;
-
-  justify-content: center;
+.bookmark-btn.saved .action-count{
+  color:#fff;
 }
 
-.creator-avatar {
-  position: relative;
+/* ================= CREATOR ================= */
 
-  width: 53px;
-  height: 53px;
-
-  border-radius: 50%;
-
-  border: 2px solid #fff;
-
-  overflow: visible;
-
-  margin-bottom: 3px;
+.creator-avatar{
+  position:relative;
+  width:54px;
+  height:54px;
+  border-radius:50%;
+  border:2px solid #fff;
+  overflow:visible;
+  margin-bottom:2px;
 }
 
-.creator-avatar img {
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-
-  border-radius: 50%;
-
-  display: block;
+.creator-avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:50%;
+  display:block;
 }
 
-
-/* =====================================================
-   FOLLOW PLUS
-===================================================== */
-
-.follow-plus {
-  position: absolute;
-
-  bottom: -7px;
-  left: 50%;
-
-  transform: translateX(-50%);
-
-  width: 24px;
-  height: 24px;
-
-  border-radius: 50%;
-
-  border: 0;
-
-  background: #fff;
-
-  color: #000;
-
-  font-size: 20px;
-
-  line-height: 20px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  cursor: pointer;
-
-  box-shadow:
-    0 2px 6px rgba(0,0,0,.5);
+.follow-plus{
+  position:absolute;
+  bottom:-7px;
+  left:50%;
+  transform:translateX(-50%);
+  width:25px;
+  height:25px;
+  border-radius:50%;
+  border:2px solid #000;
+  background:#fff;
+  color:#000;
+  font-size:19px;
+  line-height:19px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
 }
 
-.follow-plus.following {
-  background: #fff;
-
-  color: #000;
-
-  font-size: 14px;
+.follow-plus.following{
+  background:#fff;
+  color:#000;
+  font-size:15px;
 }
 
-.follow-plus:disabled {
-  opacity: .6;
+/* ================= VIDEO INFO ================= */
+
+.video-info{
+  position:absolute;
+  left:15px;
+  right:88px;
+  bottom:96px;
+  z-index:25;
 }
 
-
-/* =====================================================
-   VIDEO INFO
-===================================================== */
-
-.video-info {
-  position: absolute;
-
-  left: 15px;
-  right: 88px;
-
-  bottom: 95px;
-
-  z-index: 25;
+.username{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:9px;
+  text-shadow:0 2px 4px rgba(0,0,0,.9);
 }
 
-.username {
-  font-size: 18px;
-
-  font-weight: bold;
-
-  margin-bottom: 9px;
-
-  text-shadow:
-    0 2px 5px rgba(0,0,0,.9);
+.caption{
+  font-size:15px;
+  line-height:1.45;
+  margin-bottom:9px;
+  text-shadow:0 2px 4px rgba(0,0,0,.9);
 }
 
-.caption {
-  font-size: 15px;
-
-  line-height: 1.45;
-
-  margin-bottom: 9px;
-
-  text-shadow:
-    0 2px 5px rgba(0,0,0,.9);
+.sound{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:14px;
+  font-weight:bold;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  text-shadow:0 2px 4px rgba(0,0,0,.9);
 }
 
-.sound {
-  display: flex;
+/* ================= BOTTOM NAV ================= */
 
-  align-items: center;
-
-  gap: 6px;
-
-  font-size: 14px;
-
-  font-weight: bold;
-
-  white-space: nowrap;
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-
-  text-shadow:
-    0 2px 5px rgba(0,0,0,.9);
+.bottom-nav{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  height:74px;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:space-around;
+  padding-bottom:env(safe-area-inset-bottom);
+  background:linear-gradient(
+    transparent,
+    rgba(0,0,0,.96) 28%
+  );
 }
 
-
-/* =====================================================
-   BOTTOM NAV
-===================================================== */
-
-.bottom-nav {
-  position: fixed;
-
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  height: 72px;
-
-  z-index: 100;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: space-around;
-
-  padding-bottom:
-    env(safe-area-inset-bottom);
-
-  background:
-    linear-gradient(
-      transparent,
-      rgba(0,0,0,.96) 28%
-    );
+.nav-btn{
+  position:relative;
+  width:20%;
+  height:65px;
+  border:0;
+  background:transparent;
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  font-size:11px;
+  font-weight:bold;
+  cursor:pointer;
 }
 
-
-/* =====================================================
-   NAV BUTTON
-===================================================== */
-
-.nav-btn {
-  position: relative;
-
-  width: 20%;
-
-  height: 65px;
-
-  border: 0;
-
-  background: transparent;
-
-  color: #fff;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
-
-  gap: 3px;
-
-  font-size: 11px;
-
-  font-weight: bold;
-
-  cursor: pointer;
+.nav-btn svg{
+  width:29px;
+  height:29px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
 }
 
-.nav-btn svg {
-  width: 29px;
-  height: 29px;
-
-  fill: none;
-
-  stroke: currentColor;
-
-  stroke-width: 2;
-
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.nav-btn.active{
+  color:#fff;
 }
 
-.nav-btn.active {
-  color: #fff;
+.nav-btn:active{
+  transform:scale(.92);
 }
 
-.nav-btn:active svg {
-  transform: scale(.82);
-}
+/* ================= UPLOAD ================= */
 
-
-/* =====================================================
-   UPLOAD
-===================================================== */
-
-.upload-btn {
-  position: relative;
-
-  width: 56px;
-  height: 42px;
-
-  border: 0;
-
-  border-radius: 12px;
-
-  background: #fff;
-
-  color: #000;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  cursor: pointer;
-
+.upload-btn{
+  position:relative;
+  width:56px;
+  height:42px;
+  border:0;
+  border-radius:12px;
+  background:#fff;
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
   box-shadow:
     -5px 0 0 #25f4ee,
     5px 0 0 #fe2c55;
 }
 
-.upload-btn svg {
-  width: 27px;
-  height: 27px;
-
-  stroke: #000;
-
-  stroke-width: 2.5;
-
-  fill: none;
-
-  stroke-linecap: round;
+.upload-btn svg{
+  width:27px;
+  height:27px;
+  stroke:#000;
+  stroke-width:2.5;
+  fill:none;
 }
 
+/* ================= BADGE ================= */
 
-/* =====================================================
-   BADGE
-===================================================== */
-
-.badge {
-  position: absolute;
-
-  top: 3px;
-  right: 14px;
-
-  min-width: 20px;
-  height: 20px;
-
-  padding: 0 5px;
-
-  border-radius: 10px;
-
-  background: #fe2c55;
-
-  color: #fff;
-
-  font-size: 11px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  font-weight: bold;
+.badge{
+  position:absolute;
+  top:2px;
+  right:17px;
+  min-width:19px;
+  height:19px;
+  padding:0 5px;
+  border-radius:10px;
+  background:#fff;
+  color:#000;
+  font-size:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
 }
 
+/* ================= PAUSE ================= */
 
-/* =====================================================
-   PAUSE
-===================================================== */
-
-.pause-indicator {
-  position: absolute;
-
-  left: 50%;
-  top: 50%;
-
-  transform:
-    translate(-50%,-50%)
-    scale(.8);
-
-  width: 70px;
-  height: 70px;
-
-  border-radius: 50%;
-
-  background: rgba(0,0,0,.45);
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  opacity: 0;
-
-  pointer-events: none;
-
-  transition: .15s;
+.pause-indicator{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%) scale(.8);
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  background:rgba(0,0,0,.45);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0;
+  pointer-events:none;
+  transition:.15s;
+  z-index:40;
 }
 
-.pause-indicator.show {
-  opacity: 1;
-
-  transform:
-    translate(-50%,-50%)
-    scale(1);
+.pause-indicator.show{
+  opacity:1;
+  transform:translate(-50%,-50%) scale(1);
 }
 
-.pause-indicator svg {
-  width: 34px;
-  height: 34px;
-
-  fill: #fff;
+.pause-indicator svg{
+  width:34px;
+  height:34px;
+  fill:#fff;
 }
 
+/* ================= TOAST ================= */
 
-/* =====================================================
-   TOAST
-===================================================== */
-
-.toast {
-  position: fixed;
-
-  left: 50%;
-  bottom: 90px;
-
-  transform:
-    translateX(-50%)
-    translateY(20px);
-
-  z-index: 500;
-
-  background: rgba(30,30,30,.96);
-
-  color: #fff;
-
-  padding: 11px 18px;
-
-  border-radius: 22px;
-
-  font-size: 14px;
-
-  opacity: 0;
-
-  pointer-events: none;
-
-  transition: .25s;
-
-  max-width: 85%;
-
-  text-align: center;
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:92px;
+  transform:translateX(-50%) translateY(20px);
+  z-index:500;
+  background:rgba(25,25,25,.96);
+  color:#fff;
+  padding:11px 18px;
+  border-radius:22px;
+  font-size:14px;
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  white-space:nowrap;
 }
 
-.toast.show {
-  opacity: 1;
-
-  transform:
-    translateX(-50%)
-    translateY(0);
+.toast.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
 }
 
+/* ================= COMMENTS ================= */
 
-/* =====================================================
-   COMMENT PANEL
-===================================================== */
-
-.comment-panel {
-  position: fixed;
-
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  z-index: 400;
-
-  height: 55vh;
-
-  background: #111;
-
-  border-radius:
-    18px 18px 0 0;
-
-  transform:
-    translateY(100%);
-
-  transition:
-    transform .3s ease;
-
-  display: flex;
-
-  flex-direction: column;
+.comment-panel{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  z-index:300;
+  height:55vh;
+  background:#111;
+  border-radius:18px 18px 0 0;
+  transform:translateY(100%);
+  transition:transform .3s ease;
+  display:flex;
+  flex-direction:column;
 }
 
-.comment-panel.open {
-  transform:
-    translateY(0);
+.comment-panel.open{
+  transform:translateY(0);
 }
 
-.comment-header {
-  height: 55px;
-
-  flex-shrink: 0;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  border-bottom: 1px solid #333;
-
-  position: relative;
-
-  font-weight: bold;
+.comment-header{
+  height:55px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-bottom:1px solid #333;
+  position:relative;
+  font-weight:bold;
 }
 
-.comment-count-title {
-  margin-left: 5px;
-
-  color: #aaa;
-
-  font-size: 13px;
+.close-comments{
+  position:absolute;
+  right:12px;
+  width:42px;
+  height:42px;
+  border:0;
+  background:transparent;
+  color:#fff;
+  font-size:28px;
+  cursor:pointer;
 }
 
-.close-comments {
-  position: absolute;
-
-  right: 15px;
-
-  border: 0;
-
-  background: transparent;
-
-  color: #fff;
-
-  font-size: 28px;
-
-  cursor: pointer;
+.comments-list{
+  flex:1;
+  overflow-y:auto;
+  padding:15px;
 }
 
-.comments-list {
-  flex: 1;
-
-  overflow-y: auto;
-
-  padding: 15px;
+.comment{
+  padding:10px 0;
+  border-bottom:1px solid #222;
+  font-size:14px;
 }
 
-.comment {
-  padding: 11px 0;
-
-  border-bottom: 1px solid #222;
+.comment strong{
+  display:block;
+  margin-bottom:4px;
 }
 
-.comment strong {
-  display: block;
-
-  margin-bottom: 4px;
+.comment-input{
+  display:flex;
+  gap:8px;
+  padding:10px;
+  border-top:1px solid #333;
+  padding-bottom:calc(10px + env(safe-area-inset-bottom));
 }
 
-.comment-text {
-  color: #ddd;
-
-  line-height: 1.4;
+.comment-input input{
+  flex:1;
+  min-width:0;
+  border:1px solid #444;
+  background:#222;
+  color:#fff;
+  border-radius:22px;
+  padding:12px 15px;
+  outline:none;
 }
 
-.no-comments {
-  text-align: center;
-
-  color: #777;
-
-  padding: 40px 10px;
+.comment-input button{
+  width:48px;
+  height:48px;
+  border:0;
+  border-radius:50%;
+  background:#fff;
+  color:#000;
+  font-size:18px;
+  cursor:pointer;
 }
 
-.comment-input {
-  display: flex;
+/* ================= SEARCH PANEL ================= */
 
-  gap: 8px;
-
-  padding: 10px;
-
-  border-top: 1px solid #333;
-
-  padding-bottom:
-    calc(
-      10px + env(safe-area-inset-bottom)
-    );
+.search-panel{
+  position:fixed;
+  inset:0;
+  z-index:400;
+  background:#000;
+  display:none;
+  padding:15px;
+  padding-top:calc(15px + env(safe-area-inset-top));
 }
 
-.comment-input input {
-  flex: 1;
-
-  min-width: 0;
-
-  border: 1px solid #444;
-
-  background: #222;
-
-  color: #fff;
-
-  border-radius: 22px;
-
-  padding: 12px 15px;
-
-  outline: none;
-
-  font-size: 15px;
+.search-panel.open{
+  display:block;
 }
 
-.comment-input button {
-  width: 50px;
-  height: 45px;
-
-  flex-shrink: 0;
-
-  border: 0;
-
-  border-radius: 50%;
-
-  background: #fff;
-
-  color: #000;
-
-  font-size: 18px;
-
-  cursor: pointer;
+.search-top{
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
 
-
-/* =====================================================
-   SEARCH PANEL
-===================================================== */
-
-.search-panel {
-  position: fixed;
-
-  inset: 0;
-
-  z-index: 600;
-
-  background: #000;
-
-  display: none;
-
-  padding:
-    calc(15px + env(safe-area-inset-top))
-    15px
-    15px;
+.search-top input{
+  flex:1;
+  height:46px;
+  border:1px solid #444;
+  border-radius:12px;
+  background:#222;
+  color:#fff;
+  padding:0 14px;
+  font-size:16px;
+  outline:none;
 }
 
-.search-panel.open {
-  display: block;
+.close-search{
+  width:46px;
+  height:46px;
+  border:0;
+  border-radius:50%;
+  background:#222;
+  color:#fff;
+  font-size:25px;
+  cursor:pointer;
 }
 
-.search-top {
-  display: flex;
+/* ================= DESKTOP ================= */
 
-  align-items: center;
+@media(min-width:700px){
 
-  gap: 10px;
-}
-
-.search-top input {
-  flex: 1;
-
-  height: 45px;
-
-  border: 1px solid #444;
-
-  border-radius: 10px;
-
-  background: #222;
-
-  color: #fff;
-
-  padding: 0 14px;
-
-  font-size: 16px;
-
-  outline: none;
-}
-
-.close-search {
-  width: 45px;
-  height: 45px;
-
-  border: 0;
-
-  border-radius: 50%;
-
-  background: #222;
-
-  color: #fff;
-
-  font-size: 24px;
-
-  cursor: pointer;
-}
-
-
-/* =====================================================
-   SEARCH RESULTS
-===================================================== */
-
-.search-results {
-  margin-top: 20px;
-
-  overflow-y: auto;
-
-  max-height: calc(100vh - 100px);
-}
-
-.search-result {
-  display: flex;
-
-  align-items: center;
-
-  gap: 12px;
-
-  padding: 12px 4px;
-
-  border-bottom: 1px solid #222;
-}
-
-.search-result img {
-  width: 48px;
-  height: 48px;
-
-  border-radius: 50%;
-
-  object-fit: cover;
-}
-
-.search-result-info {
-  flex: 1;
-
-  min-width: 0;
-}
-
-.search-result-name {
-  font-weight: bold;
-
-  margin-bottom: 3px;
-}
-
-.search-result-handle {
-  color: #888;
-
-  font-size: 13px;
-}
-
-.search-result button {
-  border: 0;
-
-  border-radius: 8px;
-
-  padding: 9px 12px;
-
-  background: #fff;
-
-  color: #000;
-
-  font-weight: bold;
-}
-
-
-/* =====================================================
-   DESKTOP
-===================================================== */
-
-@media (min-width: 700px) {
-
-  .video-item {
-    max-width: 500px;
-
-    margin: auto;
+  .video-item{
+    max-width:500px;
+    margin:auto;
   }
 
-  .bottom-nav {
-    max-width: 500px;
-
-    left: 50%;
-    right: auto;
-
-    transform:
-      translateX(-50%);
+  .bottom-nav{
+    max-width:500px;
+    left:50%;
+    right:auto;
+    width:100%;
+    transform:translateX(-50%);
   }
-
 }
-
-
-/* =====================================================
-   SMALL MOBILE
-===================================================== */
-
-@media (max-width: 380px) {
-
-  .action-bar {
-    right: 5px;
-
-    gap: 11px;
-  }
-
-  .action-icon {
-    width: 46px;
-    height: 46px;
-  }
-
-  .action-icon svg {
-    width: 35px;
-    height: 35px;
-  }
-
-  .creator-avatar {
-    width: 49px;
-    height: 49px;
-  }
-
-  .video-info {
-    left: 10px;
-    right: 72px;
-  }
-
-}
-
 </style>
-
 </head>
-
 
 <body>
 
-
 <div class="app">
 
+<main class="feed" id="feed">
 
-<!-- ===================================================
-     FEED
-=================================================== -->
+<!-- ================= VIDEO 1 ================= -->
 
-<main
-  class="feed"
-  id="feed"
+<section class="video-item">
+
+<video
+  class="video"
+  src="./videos/video1.mp4"
+  loop
+  muted
+  playsinline
+  preload="metadata"
+></video>
+
+<div class="top-bar">
+
+<div class="tabs">
+
+<button class="tab" type="button" onclick="showToast('Following')">
+Following
+</button>
+
+<button class="tab active" type="button">
+For You
+</button>
+
+</div>
+
+<button
+  class="search-btn"
+  type="button"
+  onclick="openSearch()"
+  aria-label="Search"
+>
+<svg viewBox="0 0 24 24">
+<circle cx="11" cy="11" r="7"></circle>
+<path d="M16.5 16.5L22 22"></path>
+</svg>
+</button>
+
+</div>
+
+<div class="action-bar">
+
+<div class="action">
+<div class="creator-avatar">
+
+<img
+  src="./images/profile.png"
+  alt="Profile"
 >
 
+<button
+  class="follow-plus"
+  type="button"
+  onclick="toggleFollow(this)"
+>
++
+</button>
 
-<!-- ===================================================
-     VIDEO 1
-=================================================== -->
+</div>
+</div>
 
-<section
-  class="video-item"
-  data-video-id="video1"
-  data-creator-uid=""
+<button
+  class="action like-btn"
+  type="button"
+  onclick="toggleLike(this)"
 >
 
-  <video
-    class="video"
-    src="./videos/video1.mp4"
-    loop
-    muted
-    playsinline
-    preload="metadata"
-  ></video>
+<span class="action-icon">
 
+<svg viewBox="0 0 24 24">
+<path d="M20.8 8.8C20.8 5.8 18.7 4 16.2 4C14.5 4 13 4.9 12 6.2C11 4.9 9.5 4 7.8 4C5.3 4 3.2 5.8 3.2 8.8C3.2 13.1 7.3 16.2 12 20C16.7 16.2 20.8 13.1 20.8 8.8Z"></path>
+</svg>
 
-  <!-- TOP BAR -->
+</span>
 
-  <div class="top-bar">
+<span class="action-count">0</span>
 
-    <div class="tabs">
+</button>
 
-      <button
-        class="tab"
-        type="button"
-        onclick="showToast('Following feed শীঘ্রই আসছে')"
-      >
-        Following
-      </button>
+<button
+  class="action"
+  type="button"
+  onclick="openComments()"
+>
 
-      <button
-        class="tab active"
-        type="button"
-      >
-        For You
-      </button>
+<span class="action-icon">
 
-    </div>
+<svg viewBox="0 0 24 24">
+<path d="M20 11.5C20 15.6 16.4 19 12 19C10.7 19 9.5 18.7 8.4 18.2L4 20L5.2 16.1C3.9 14.8 3 13.2 3 11.5C3 7.4 7 4 12 4C17 4 20 7.4 20 11.5Z"></path>
+</svg>
 
+</span>
 
-    <button
-      class="search-btn"
-      type="button"
-      onclick="openSearch()"
-      aria-label="Search"
-    >
+<span class="action-count">0</span>
 
-      <svg viewBox="0 0 24 24">
+</button>
 
-        <circle
-          cx="11"
-          cy="11"
-          r="7"
-        />
+<button
+  class="action bookmark-btn"
+  type="button"
+  onclick="toggleBookmark(this)"
+>
 
-        <path
-          d="M16.5 16.5L22 22"
-        />
+<span class="action-icon">
 
-      </svg>
+<svg viewBox="0 0 24 24">
+<path d="M6 4C6 3.4 6.4 3 7 3H17C17.6 3 18 3.4 18 4V21L12 17.2L6 21Z"></path>
+</svg>
 
-    </button>
+</span>
 
-  </div>
+<span class="action-count">0</span>
 
+</button>
 
-  <!-- ACTION BAR -->
+<button
+  class="action"
+  type="button"
+  onclick="shareVideo()"
+>
 
-  <div class="action-bar">
+<span class="action-icon">
 
+<svg viewBox="0 0 24 24">
+<path d="M22 2L11 13"></path>
+<path d="M22 2L15 22L11 13L2 9Z"></path>
+</svg>
 
-    <!-- CREATOR -->
+</span>
 
-    <div class="creator-action">
+<span class="action-count">Share</span>
 
-      <div class="creator-avatar">
+</button>
 
-        <img
-          class="creator-image"
-          src="./images/profile.png"
-          alt="Profile"
-        >
+</div>
 
-        <button
-          class="follow-plus"
-          type="button"
-          onclick="toggleFollow(this)"
-        >
-          +
-        </button>
+<div class="video-info">
 
-      </div>
+<div class="username">@wwc_user</div>
 
-    </div>
+<div class="caption">
+🌍 WWC-Core এ আপনাকে স্বাগতম।<br>
+World Wide Connect
+</div>
 
+<div class="sound">
+🎵 Original sound - WWC
+</div>
 
-    <!-- LIKE -->
+</div>
 
-    <button
-      class="action like-btn"
-      type="button"
-      onclick="toggleLike(this)"
-    >
+<div class="pause-indicator">
 
-      <span class="action-icon">
+<svg viewBox="0 0 24 24">
+<rect x="6" y="4" width="4" height="16" rx="1"></rect>
+<rect x="14" y="4" width="4" height="16" rx="1"></rect>
+</svg>
 
-        <svg viewBox="0 0 24 24">
-
-          <path
-            d="M20.8 8.8
-               C20.8 5.8 18.7 4 16.2 4
-               C14.5 4 13 4.9 12 6.2
-               C11 4.9 9.5 4 7.8 4
-               C5.3 4 3.2 5.8 3.2 8.8
-               C3.2 13.1 7.3 16.2 12 20
-               C16.7 16.2 20.8 13.1 20.8 8.8Z"
-          />
-
-        </svg>
-
-      </span>
-
-      <span class="action-count like-count">
-        0
-      </span>
-
-    </button>
-
-
-    <!-- COMMENT -->
-
-    <button
-      class="action comment-btn"
-      type="button"
-      onclick="openComments(this)"
-    >
-
-      <span class="action-icon">
-
-        <svg viewBox="0 0 24 24">
-
-          <path
-            d="M20 11.5
-               C20 15.6 16.4 19 12 19
-               C10.7 19 9.5 18.7 8.4 18.2
-               L4 20
-               L5.2 16.1
-               C3.9 14.8 3 13.2 3 11.5
-               C3 7.4 7 4 12 4
-               C17 4 20 7.4 20 11.5Z"
-          />
-
-        </svg>
-
-      </span>
-
-      <span class="action-count comment-count">
-        0
-      </span>
-
-    </button>
-
-
-    <!-- BOOKMARK -->
-
-    <button
-      class="action bookmark-btn"
-      type="button"
-      onclick="toggleBookmark(this)"
-    >
-
-      <span class="action-icon">
-
-        <svg viewBox="0 0 24 24">
-
-          <path
-            d="M6 4
-               C6 3.4 6.4 3 7 3
-               H17
-               C17.6 3 18 3.4 18 4
-               V21
-               L12 17.2
-               L6 21
-               Z"
-          />
-
-        </svg>
-
-      </span>
-
-      <span class="action-count bookmark-count">
-        0
-      </span>
-
-    </button>
-
-
-    <!-- SHARE -->
-
-    <button
-      class="action"
-      type="button"
-      onclick="shareVideo(this)"
-    >
-
-      <span class="action-icon">
-
-        <svg viewBox="0 0 24 24">
-
-          <path
-            d="M22 2L11 13"
-          />
-
-          <path
-            d="M22 2
-               L15 22
-               L11 13
-               L2 9
-               Z"
-          />
-
-        </svg>
-
-      </span>
-
-      <span class="action-count">
-        Share
-      </span>
-
-    </button>
-
-
-  </div>
-
-
-  <!-- VIDEO INFO -->
-
-  <div class="video-info">
-
-    <div class="username creator-username">
-      @wwc_user
-    </div>
-
-    <div class="caption">
-      🌍 WWC-Core এ আপনাকে স্বাগতম।
-      World Wide Connect
-    </div>
-
-    <div class="sound">
-      🎵 Original sound - WWC
-    </div>
-
-  </div>
-
-
-  <!-- PAUSE -->
-
-  <div class="pause-indicator">
-
-    <svg viewBox="0 0 24 24">
-
-      <rect
-        x="6"
-        y="4"
-        width="4"
-        height="16"
-        rx="1"
-      />
-
-      <rect
-        x="14"
-        y="4"
-        width="4"
-        height="16"
-        rx="1"
-      />
-
-    </svg>
-
-  </div>
+</div>
 
 </section>
 
+<!-- ================= VIDEO 2 ================= -->
 
-<!-- ===================================================
-     VIDEO 2
-=================================================== -->
+<section class="video-item">
 
-<section
-  class="video-item"
-  data-video-id="video2"
-  data-creator-uid=""
+<video
+  class="video"
+  src="./videos/video2.mp4"
+  loop
+  muted
+  playsinline
+  preload="metadata"
+></video>
+
+<div class="top-bar">
+
+<div class="tabs">
+
+<button class="tab" type="button" onclick="showToast('Following')">
+Following
+</button>
+
+<button class="tab active" type="button">
+For You
+</button>
+
+</div>
+
+<button
+  class="search-btn"
+  type="button"
+  onclick="openSearch()"
+>
+<svg viewBox="0 0 24 24">
+<circle cx="11" cy="11" r="7"></circle>
+<path d="M16.5 16.5L22 22"></path>
+</svg>
+</button>
+
+</div>
+
+<div class="action-bar">
+
+<div class="action">
+
+<div class="creator-avatar">
+
+<img
+  src="./images/profile.png"
+  alt="Profile"
 >
 
-  <video
-    class="video"
-    src="./videos/video2.mp4"
-    loop
-    muted
-    playsinline
-    preload="metadata"
-  ></video>
+<button
+  class="follow-plus"
+  type="button"
+  onclick="toggleFollow(this)"
+>
++
+</button>
 
+</div>
 
-  <div class="top-bar">
+</div>
 
-    <div class="tabs">
+<button
+  class="action like-btn"
+  type="button"
+  onclick="toggleLike(this)"
+>
 
-      <button
-        class="tab"
-        type="button"
-        onclick="showToast('Following feed শীঘ্রই আসছে')"
-      >
-        Following
-      </button>
+<span class="action-icon">
 
-      <button
-        class="tab active"
-        type="button"
-      >
-        For You
-      </button>
+<svg viewBox="0 0 24 24">
+<path d="M20.8 8.8C20.8 5.8 18.7 4 16.2 4C14.5 4 13 4.9 12 6.2C11 4.9 9.5 4 7.8 4C5.3 4 3.2 5.8 3.2 8.8C3.2 13.1 7.3 16.2 12 20C16.7 16.2 20.8 13.1 20.8 8.8Z"></path>
+</svg>
 
-    </div>
+</span>
 
+<span class="action-count">0</span>
 
-    <button
-      class="search-btn"
-      type="button"
-      onclick="openSearch()"
-    >
+</button>
 
-      <svg viewBox="0 0 24 24">
+<button
+  class="action"
+  type="button"
+  onclick="openComments()"
+>
 
-        <circle
-          cx="11"
-          cy="11"
-          r="7"
-        />
+<span class="action-icon">
 
-        <path
-          d="M16.5 16.5L22 22"
-        />
+<svg viewBox="0 0 24 24">
+<path d="M20 11.5C20 15.6 16.4 19 12 19C10.7 19 9.5 18.7 8.4 18.2L4 20L5.2 16.1C3.9 14.8 3 13.2 3 11.5C3 7.4 7 4 12 4C17 4 20 7.4 20 11.5Z"></path>
+</svg>
 
-      </svg>
+</span>
 
-    </button>
+<span class="action-count">0</span>
 
-  </div>
+</button>
 
+<button
+  class="action bookmark-btn"
+  type="button"
+  onclick="toggleBookmark(this)"
+>
 
-  <div class="action-bar">
+<span class="action-icon">
 
+<svg viewBox="0 0 24 24">
+<path d="M6 4C6 3.4 6.4 3 7 3H17C17.6 3 18 3.4 18 4V21L12 17.2L6 21Z"></path>
+</svg>
 
-    <div class="creator-action">
+</span>
 
-      <div class="creator-avatar">
+<span class="action-count">0</span>
 
-        <img
-          class="creator-image"
-          src="./images/profile.png"
-          alt="Profile"
-        >
+</button>
 
-        <button
-          class="follow-plus"
-          type="button"
-          onclick="toggleFollow(this)"
-        >
-          +
-        </button>
+<button
+  class="action"
+  type="button"
+  onclick="shareVideo()"
+>
 
-      </div>
+<span class="action-icon">
 
-    </div>
+<svg viewBox="0 0 24 24">
+<path d="M22 2L11 13"></path>
+<path d="M22 2L15 22L11 13L2 9Z"></path>
+</svg>
 
+</span>
 
-    <button
-      class="action like-btn"
-      type="button"
-      onclick="toggleLike(this)"
-    >
+<span class="action-count">Share</span>
 
-      <span class="action-icon">
+</button>
 
-        <svg viewBox="0 0 24 24">
+</div>
 
-          <path
-            d="M20.8 8.8
-               C20.8 5.8 18.7 4 16.2 4
-               C14.5 4 13 4.9 12 6.2
-               C11 4.9 9.5 4 7.8 4
-               C5.3 4 3.2 5.8 3.2 8.8
-               C3.2 13.1 7.3 16.2 12 20
-               C16.7 16.2 20.8 13.1 20.8 8.8Z"
-          />
+<div class="video-info">
 
-        </svg>
+<div class="username">@wwc_user</div>
 
-      </span>
+<div class="caption">
+🌍 নতুন ভিডিও দেখুন WWC-Core এ।
+</div>
 
-      <span class="action-count like-count">
-        0
-      </span>
+<div class="sound">
+🎵 Original sound - WWC
+</div>
 
-    </button>
+</div>
 
+<div class="pause-indicator">
 
-    <button
-      class="action comment-btn"
-      type="button"
-      onclick="openComments(this)"
-    >
+<svg viewBox="0 0 24 24">
+<rect x="6" y="4" width="4" height="16"></rect>
+<rect x="14" y="4" width="4" height="16"></rect>
+</svg>
 
-      <span class="action-icon">
-
-        <svg viewBox="0 0 24 24">
-
-          <path
-            d="M20 11.5
-               C20 15.6 16.4 19 12 19
-               C10.7 19 9.5 18.7 8.4 18.2
-               L4 20
-               L5.2 16.1
-               C3.9 14.8 3 13.2 3 11.5
-               C3 7.4 7 4 12 4
-               C17 4 20 7.4 20 11.5Z"
-          />
-
-        </svg>
-
-      </span>
-
-      <span class="action-count comment-count">
-        0
-      </span>
-
-    </button>
-
-
-    <button
-      class="action bookmark-btn"
-      type="button"
-      onclick="toggleBookmark(this)"
-    >
-
-      <span class="action-icon">
-
-        <svg viewBox="0 0 24 24">
-
-          <path
-            d="M6 4
-               C6 3.4 6.4 3 7 3
-               H17
-               C17.6 3 18 3.4 18 4
-               V21
-               L12 17.2
-               L6 21
-               Z"
-          />
-
-        </svg>
-
-      </span>
-
-      <span class="action-count bookmark-count">
-        0
-      </span>
-
-    </button>
-
-
-    <button
-      class="action"
-      type="button"
-      onclick="shareVideo(this)"
-    >
-
-      <span class="action-icon">
-
-        <svg viewBox="0 0 24 24">
-
-          <path
-            d="M22 2L11 13"
-          />
-
-          <path
-            d="M22 2
-               L15 22
-               L11 13
-               L2 9
-               Z"
-          />
-
-        </svg>
-
-      </span>
-
-      <span class="action-count">
-        Share
-      </span>
-
-    </button>
-
-  </div>
-
-
-  <div class="video-info">
-
-    <div class="username creator-username">
-      @wwc_user
-    </div>
-
-    <div class="caption">
-      🌍 নতুন ভিডিও দেখুন WWC-Core এ।
-    </div>
-
-    <div class="sound">
-      🎵 Original sound - WWC
-    </div>
-
-  </div>
-
-
-  <div class="pause-indicator">
-
-    <svg viewBox="0 0 24 24">
-
-      <rect
-        x="6"
-        y="4"
-        width="4"
-        height="16"
-        rx="1"
-      />
-
-      <rect
-        x="14"
-        y="4"
-        width="4"
-        height="16"
-        rx="1"
-      />
-
-    </svg>
-
-  </div>
+</div>
 
 </section>
-
 
 </main>
 
-
-<!-- ===================================================
-     BOTTOM NAV
-=================================================== -->
+<!-- ================= BOTTOM NAV ================= -->
 
 <nav class="bottom-nav">
 
+<button
+  class="nav-btn active"
+  type="button"
+  onclick="goHome()"
+>
 
-  <button
-    class="nav-btn active"
-    type="button"
-    onclick="goHome()"
-  >
+<svg viewBox="0 0 24 24">
+<path d="M3 11L12 3L21 11V21H14V15H10V21H3Z"></path>
+</svg>
 
-    <svg viewBox="0 0 24 24">
+<span>Home</span>
 
-      <path
-        d="M3 11
-           L12 3
-           L21 11
-           V21
-           H14
-           V15
-           H10
-           V21
-           H3
-           Z"
-      />
+</button>
 
-    </svg>
+<button
+  class="nav-btn"
+  type="button"
+  onclick="goFriends()"
+>
 
-    <span>Home</span>
+<svg viewBox="0 0 24 24">
+<circle cx="9" cy="8" r="3"></circle>
+<circle cx="17" cy="9" r="2.5"></circle>
+<path d="M3 20C3 16.5 5.5 14 9 14C12.5 14 15 16.5 15 20"></path>
+<path d="M15 15C18 15 20 17 20 20"></path>
+</svg>
 
-  </button>
+<span>Friends</span>
 
+</button>
 
-  <button
-    class="nav-btn"
-    type="button"
-    onclick="goFriends()"
-  >
+<button
+  class="nav-btn"
+  type="button"
+  onclick="uploadVideo()"
+>
 
-    <svg viewBox="0 0 24 24">
+<span class="upload-btn">
 
-      <circle
-        cx="9"
-        cy="8"
-        r="3"
-      />
+<svg viewBox="0 0 24 24">
+<path d="M12 5V19"></path>
+<path d="M5 12H19"></path>
+</svg>
 
-      <circle
-        cx="17"
-        cy="9"
-        r="2.5"
-      />
+</span>
 
-      <path
-        d="M3 20
-           C3 16.5 5.5 14 9 14
-           C12.5 14 15 16.5 15 20"
-      />
+</button>
 
-      <path
-        d="M15 15
-           C18 15 20 17 20 20"
-      />
+<button
+  class="nav-btn"
+  type="button"
+  onclick="goInbox()"
+>
 
-    </svg>
+<svg viewBox="0 0 24 24">
+<path d="M4 5H20V17H15L12 20L9 17H4Z"></path>
+<path d="M8 10H16"></path>
+<path d="M8 13H13"></path>
+</svg>
 
-    <span>Friends</span>
+<span>Inbox</span>
 
-  </button>
+<span class="badge">0</span>
 
+</button>
 
-  <button
-    class="nav-btn"
-    type="button"
-    onclick="uploadVideo()"
-  >
+<button
+  class="nav-btn"
+  type="button"
+  onclick="goProfile()"
+>
 
-    <span class="upload-btn">
+<svg viewBox="0 0 24 24">
+<circle cx="12" cy="8" r="4"></circle>
+<path d="M4 21C4 16.5 7.5 14 12 14C16.5 14 20 16.5 20 21"></path>
+</svg>
 
-      <svg viewBox="0 0 24 24">
+<span>Profile</span>
 
-        <path d="M12 5V19"></path>
-
-        <path d="M5 12H19"></path>
-
-      </svg>
-
-    </span>
-
-  </button>
-
-
-  <button
-    class="nav-btn"
-    type="button"
-    onclick="goInbox()"
-  >
-
-    <svg viewBox="0 0 24 24">
-
-      <path
-        d="M4 5
-           H20
-           V17
-           H15
-           L12 20
-           L9 17
-           H4
-           Z"
-      />
-
-      <path
-        d="M8 10H16"
-      />
-
-      <path
-        d="M8 13H13"
-      />
-
-    </svg>
-
-    <span>Inbox</span>
-
-    <span class="badge">
-      0
-    </span>
-
-  </button>
-
-
-  <button
-    class="nav-btn"
-    type="button"
-    onclick="goProfile()"
-  >
-
-    <svg viewBox="0 0 24 24">
-
-      <circle
-        cx="12"
-        cy="8"
-        r="4"
-      />
-
-      <path
-        d="M4 21
-           C4 16.5 7.5 14 12 14
-           C16.5 14 20 16.5 20 21"
-      />
-
-    </svg>
-
-    <span>Profile</span>
-
-  </button>
-
+</button>
 
 </nav>
 
-
-<!-- ===================================================
-     COMMENT PANEL
-=================================================== -->
+<!-- ================= COMMENTS ================= -->
 
 <div
   class="comment-panel"
   id="commentPanel"
 >
 
-  <div class="comment-header">
+<div class="comment-header">
 
-    Comments
+Comments
 
-    <span
-      id="commentTitleCount"
-      class="comment-count-title"
-    >
-      0
-    </span>
-
-    <button
-      class="close-comments"
-      type="button"
-      onclick="closeComments()"
-    >
-      ×
-    </button>
-
-  </div>
-
-
-  <div
-    class="comments-list"
-    id="commentsList"
-  >
-
-    <div class="no-comments">
-      Comments লোড হচ্ছে...
-    </div>
-
-  </div>
-
-
-  <div class="comment-input">
-
-    <input
-      id="commentInput"
-      type="text"
-      maxlength="500"
-      placeholder="Add comment..."
-      autocomplete="off"
-    >
-
-    <button
-      id="commentSendBtn"
-      type="button"
-      onclick="addComment()"
-    >
-      ➤
-    </button>
-
-  </div>
+<button
+  class="close-comments"
+  type="button"
+  onclick="closeComments()"
+>
+×
+</button>
 
 </div>
 
+<div
+  class="comments-list"
+  id="commentsList"
+>
 
-<!-- ===================================================
-     SEARCH PANEL
-=================================================== -->
+<div class="comment">
+
+<strong>WWC User</strong>
+
+ভিডিওটি ভালো হয়েছে ❤️
+
+</div>
+
+</div>
+
+<div class="comment-input">
+
+<input
+  id="commentInput"
+  type="text"
+  placeholder="Add comment..."
+>
+
+<button
+  type="button"
+  onclick="addComment()"
+>
+➤
+</button>
+
+</div>
+
+</div>
+
+<!-- ================= SEARCH ================= -->
 
 <div
   class="search-panel"
   id="searchPanel"
 >
 
-  <div class="search-top">
+<div class="search-top">
 
-    <input
-      id="searchInput"
-      type="search"
-      placeholder="Search users..."
-      autocomplete="off"
-    >
+<input
+  id="searchInput"
+  type="search"
+  placeholder="Search..."
+>
 
-    <button
-      class="close-search"
-      type="button"
-      onclick="closeSearch()"
-    >
-      ×
-    </button>
-
-  </div>
-
-
-  <div
-    class="search-results"
-    id="searchResults"
-  ></div>
+<button
+  class="close-search"
+  type="button"
+  onclick="closeSearch()"
+>
+×
+</button>
 
 </div>
 
-
-<!-- ===================================================
-     TOAST
-=================================================== -->
+</div>
 
 <div
   class="toast"
   id="toast"
 ></div>
 
-
 </div>
 
+<script>
 
-<script type="module">
+/* ================= TOAST ================= */
 
+let toastTimer;
 
-/* =====================================================
-   FIREBASE APP
-===================================================== */
-
-import {
-  getApps,
-  initializeApp
-} from
-"https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-
-
-/* =====================================================
-   FIREBASE AUTH
-===================================================== */
-
-import {
-  getAuth,
-  onAuthStateChanged
-} from
-"https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-
-
-/* =====================================================
-   FIRESTORE
-===================================================== */
-
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  collection,
-  getDocs,
-  addDoc,
-  deleteDoc,
-  serverTimestamp,
-  increment,
-  arrayUnion,
-  arrayRemove,
-  query,
-  orderBy,
-  limit,
-  runTransaction
-} from
-"https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
-
-/* =====================================================
-   FIREBASE CONFIG
-===================================================== */
-
-const firebaseConfig = {
-
-  apiKey:
-    "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
-
-  authDomain:
-    "world-wide-connect-62c87.firebaseapp.com",
-
-  projectId:
-    "world-wide-connect-62c87",
-
-  storageBucket:
-    "world-wide-connect-62c87.firebasestorage.app",
-
-  messagingSenderId:
-    "93178453668",
-
-  appId:
-    "1:93178453668:web:2184630caa8e61f7445031",
-
-  measurementId:
-    "G-PKFJ5NEMGQ"
-
-};
-
-
-/* =====================================================
-   INITIALIZE
-===================================================== */
-
-const app =
-  getApps().length
-    ? getApps()[0]
-    : initializeApp(firebaseConfig);
-
-
-const auth =
-  getAuth(app);
-
-
-const db =
-  getFirestore(app);
-
-
-/* =====================================================
-   GLOBAL
-===================================================== */
-
-let currentUser = null;
-
-let currentProfile = null;
-
-let activeVideoId = null;
-
-let activeVideoItem = null;
-
-let toastTimer = null;
-
-let videosReady = false;
-
-
-/* =====================================================
-   ELEMENTS
-===================================================== */
-
-const commentPanel =
-  document.getElementById(
-    "commentPanel"
-  );
-
-const commentsList =
-  document.getElementById(
-    "commentsList"
-  );
-
-const commentInput =
-  document.getElementById(
-    "commentInput"
-  );
-
-const commentSendBtn =
-  document.getElementById(
-    "commentSendBtn"
-  );
-
-const commentTitleCount =
-  document.getElementById(
-    "commentTitleCount"
-  );
-
-const searchPanel =
-  document.getElementById(
-    "searchPanel"
-  );
-
-const searchInput =
-  document.getElementById(
-    "searchInput"
-  );
-
-const searchResults =
-  document.getElementById(
-    "searchResults"
-  );
-
-
-/* =====================================================
-   DEFAULT IMAGE
-===================================================== */
-
-const defaultPhoto =
-  "./images/profile.png";
-
-
-/* =====================================================
-   TOAST
-===================================================== */
-
-window.showToast =
-function showToast(text) {
+function showToast(text){
 
   const toast =
-    document.getElementById(
-      "toast"
-    );
+    document.getElementById("toast");
 
-  toast.textContent =
-    text;
+  toast.textContent = text;
 
-  toast.classList.add(
-    "show"
-  );
+  toast.classList.add("show");
 
-  clearTimeout(
-    toastTimer
-  );
+  clearTimeout(toastTimer);
 
   toastTimer =
-    setTimeout(
-      () => {
+    setTimeout(() => {
 
-        toast.classList.remove(
-          "show"
-        );
+      toast.classList.remove("show");
 
-      },
-      1800
-    );
-
-};
-
-
-/* =====================================================
-   FORMAT NUMBER
-===================================================== */
-
-function formatNumber(number) {
-
-  number =
-    Number(number) || 0;
-
-
-  if (number >= 1000000) {
-
-    return (
-      (number / 1000000)
-        .toFixed(1)
-        .replace(".0", "") +
-      "M"
-    );
-
-  }
-
-
-  if (number >= 1000) {
-
-    return (
-      (number / 1000)
-        .toFixed(1)
-        .replace(".0", "") +
-      "K"
-    );
-
-  }
-
-
-  return String(number);
-
+    },1800);
 }
 
 
-/* =====================================================
-   GET VIDEO ITEM
-===================================================== */
+/* ================= LIKE ================= */
 
-function getVideoItemFromButton(
-  button
-) {
+function toggleLike(button){
 
-  return button.closest(
-    ".video-item"
-  );
+  const count =
+    button.querySelector(".action-count");
 
-}
+  let number =
+    Number(count.textContent) || 0;
 
+  if(button.classList.contains("liked")){
 
-/* =====================================================
-   ENSURE VIDEO DOCUMENT
-===================================================== */
+    button.classList.remove("liked");
 
-async function ensureVideoDocument(
-  videoItem
-) {
+    number =
+      Math.max(0,number - 1);
 
-  const videoId =
-    videoItem.dataset.videoId;
+  }else{
 
+    button.classList.add("liked");
 
-  const videoRef =
-    doc(
-      db,
-      "videos",
-      videoId
-    );
-
-
-  const snapshot =
-    await getDoc(
-      videoRef
-    );
-
-
-  if (!snapshot.exists()) {
-
-    const creatorUid =
-      currentUser
-        ? currentUser.uid
-        : "";
-
-
-    await setDoc(
-      videoRef,
-      {
-
-        videoId:
-          videoId,
-
-        creatorUid:
-          creatorUid,
-
-        likes:
-          0,
-
-        comments:
-          0,
-
-        bookmarks:
-          0,
-
-        createdAt:
-          serverTimestamp()
-
-      }
-    );
-
-
-    videoItem.dataset.creatorUid =
-      creatorUid;
-
-
-    return {
-
-      likes: 0,
-      comments: 0,
-      bookmarks: 0,
-      creatorUid: creatorUid
-
-    };
+    number++;
 
   }
 
-
-  const data =
-    snapshot.data();
-
-
-  videoItem.dataset.creatorUid =
-    data.creatorUid || "";
-
-
-  return data;
-
-}
-
-
-/* =====================================================
-   UPDATE VIDEO COUNTS
-===================================================== */
-
-function updateVideoCounts(
-  videoItem,
-  data
-) {
-
-  if (!videoItem || !data) {
-    return;
-  }
-
-
-  const likeCount =
-    videoItem.querySelector(
-      ".like-count"
-    );
-
-
-  const commentCount =
-    videoItem.querySelector(
-      ".comment-count"
-    );
-
-
-  const bookmarkCount =
-    videoItem.querySelector(
-      ".bookmark-count"
-    );
-
-
-  if (likeCount) {
-
-    likeCount.textContent =
-      formatNumber(
-        data.likes || 0
-      );
-
-  }
-
-
-  if (commentCount) {
-
-    commentCount.textContent =
-      formatNumber(
-        data.comments || 0
-      );
-
-  }
-
-
-  if (bookmarkCount) {
-
-    bookmarkCount.textContent =
-      formatNumber(
-        data.bookmarks || 0
-      );
-
-  }
-
-}
-
-
-/* =====================================================
-   LOAD VIDEO DATA
-===================================================== */
-
-async function loadVideoData(
-  videoItem
-) {
-
-  try {
-
-    const data =
-      await ensureVideoDocument(
-        videoItem
-      );
-
-
-    updateVideoCounts(
-      videoItem,
-      data
-    );
-
-
-    if (!currentUser) {
-      return;
-    }
-
-
-    const videoId =
-      videoItem.dataset.videoId;
-
-
-    /* LIKE STATUS */
-
-    const likeRef =
-      doc(
-        db,
-        "videos",
-        videoId,
-        "likes",
-        currentUser.uid
-      );
-
-
-    const likeSnap =
-      await getDoc(
-        likeRef
-      );
-
-
-    const likeButton =
-      videoItem.querySelector(
-        ".like-btn"
-      );
-
-
-    if (
-      likeSnap.exists() &&
-      likeButton
-    ) {
-
-      likeButton.classList.add(
-        "liked"
-      );
-
-    }
-
-
-    /* BOOKMARK STATUS */
-
-    const bookmarkRef =
-      doc(
-        db,
-        "users",
-        currentUser.uid,
-        "bookmarks",
-        videoId
-      );
-
-
-    const bookmarkSnap =
-      await getDoc(
-        bookmarkRef
-      );
-
-
-    const bookmarkButton =
-      videoItem.querySelector(
-        ".bookmark-btn"
-      );
-
-
-    if (
-      bookmarkSnap.exists() &&
-      bookmarkButton
-    ) {
-
-      bookmarkButton.classList.add(
-        "saved"
-      );
-
-    }
-
-
-    /* FOLLOW STATUS */
-
-    await updateFollowButton(
-      videoItem
-    );
-
-  } catch (error) {
-
-    console.error(
-      "Video data error:",
-      error
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   LOAD ALL VIDEO DATA
-===================================================== */
-
-async function loadAllVideoData() {
-
-  const items =
-    document.querySelectorAll(
-      ".video-item"
-    );
-
-
-  for (
-    const item of items
-  ) {
-
-    await loadVideoData(
-      item
-    );
-
-  }
-
-
-  videosReady = true;
-
-}
-
-
-/* =====================================================
-   LIKE
-===================================================== */
-
-window.toggleLike =
-async function toggleLike(
-  button
-) {
-
-  if (!currentUser) {
-
-    showToast(
-      "আগে Login করুন"
-    );
-
-    setTimeout(
-      () => {
-
-        window.location.href =
-          "./auth.html";
-
-      },
-      600
-    );
-
-    return;
-  }
-
-
-  const videoItem =
-    getVideoItemFromButton(
-      button
-    );
-
-
-  if (!videoItem) {
-    return;
-  }
-
-
-  const videoId =
-    videoItem.dataset.videoId;
-
+  count.textContent = number;
 
   const icon =
-    button.querySelector(
-      ".action-icon"
-    );
+    button.querySelector(".action-icon");
 
-
-  button.disabled =
-    true;
-
-
-  try {
-
-    const videoRef =
-      doc(
-        db,
-        "videos",
-        videoId
-      );
-
-
-    const likeRef =
-      doc(
-        db,
-        "videos",
-        videoId,
-        "likes",
-        currentUser.uid
-      );
-
-
-    let newLiked =
-      false;
-
-
-    await runTransaction(
-      db,
-      async transaction => {
-
-        const videoSnap =
-          await transaction.get(
-            videoRef
-          );
-
-
-        const likeSnap =
-          await transaction.get(
-            likeRef
-          );
-
-
-        if (
-          likeSnap.exists()
-        ) {
-
-          transaction.delete(
-            likeRef
-          );
-
-
-          transaction.update(
-            videoRef,
-            {
-
-              likes:
-                increment(-1)
-
-            }
-          );
-
-
-          newLiked =
-            false;
-
-        } else {
-
-          transaction.set(
-            likeRef,
-            {
-
-              uid:
-                currentUser.uid,
-
-              createdAt:
-                serverTimestamp()
-
-            }
-          );
-
-
-          transaction.update(
-            videoRef,
-            {
-
-              likes:
-                increment(1)
-
-            }
-          );
-
-
-          newLiked =
-            true;
-
-        }
-
-      }
-    );
-
-
-    if (newLiked) {
-
-      button.classList.add(
-        "liked"
-      );
-
-      showToast(
-        "❤️ Liked"
-      );
-
-    } else {
-
-      button.classList.remove(
-        "liked"
-      );
-
-      showToast(
-        "Like সরানো হয়েছে"
-      );
-
+  icon.animate(
+    [
+      {transform:"scale(.7)"},
+      {transform:"scale(1.28)"},
+      {transform:"scale(1)"}
+    ],
+    {
+      duration:250,
+      easing:"ease-out"
     }
-
-
-    const updated =
-      await getDoc(
-        videoRef
-      );
-
-
-    if (
-      updated.exists()
-    ) {
-
-      updateVideoCounts(
-        videoItem,
-        updated.data()
-      );
-
-    }
-
-
-    icon.animate(
-      [
-        {
-          transform:
-            "scale(.7)"
-        },
-        {
-          transform:
-            "scale(1.3)"
-        },
-        {
-          transform:
-            "scale(1)"
-        }
-      ],
-      {
-        duration: 250
-      }
-    );
-
-
-  } catch (error) {
-
-    console.error(
-      "Like error:",
-      error
-    );
-
-
-    showToast(
-      "Like করা যায়নি"
-    );
-
-  } finally {
-
-    button.disabled =
-      false;
-
-  }
-
-};
-
-
-/* =====================================================
-   FOLLOW
-===================================================== */
-
-async function updateFollowButton(
-  videoItem
-) {
-
-  if (!currentUser) {
-    return;
-  }
-
-
-  const targetUid =
-    videoItem.dataset.creatorUid;
-
-
-  if (
-    !targetUid ||
-    targetUid === currentUser.uid
-  ) {
-
-    const button =
-      videoItem.querySelector(
-        ".follow-plus"
-      );
-
-
-    if (button) {
-
-      button.style.display =
-        targetUid === currentUser.uid
-          ? "none"
-          : "flex";
-
-    }
-
-
-    return;
-
-  }
-
-
-  const myRef =
-    doc(
-      db,
-      "users",
-      currentUser.uid
-    );
-
-
-  const mySnap =
-    await getDoc(
-      myRef
-    );
-
-
-  if (!mySnap.exists()) {
-    return;
-  }
-
-
-  const data =
-    mySnap.data();
-
-
-  const followingIds =
-    Array.isArray(
-      data.followingIds
-    )
-      ? data.followingIds
-      : [];
-
-
-  const button =
-    videoItem.querySelector(
-      ".follow-plus"
-    );
-
-
-  if (!button) {
-    return;
-  }
-
-
-  if (
-    followingIds.includes(
-      targetUid
-    )
-  ) {
-
-    button.classList.add(
-      "following"
-    );
-
-    button.textContent =
-      "✓";
-
-  } else {
-
-    button.classList.remove(
-      "following"
-    );
-
-    button.textContent =
-      "+";
-
-  }
-
+  );
 }
 
 
-/* =====================================================
-   FOLLOW / UNFOLLOW
-===================================================== */
+/* ================= FOLLOW ================= */
 
-window.toggleFollow =
-async function toggleFollow(
-  button
-) {
+function toggleFollow(button){
 
-  if (!currentUser) {
+  if(
+    button.classList.contains("following")
+  ){
 
-    showToast(
-      "আগে Login করুন"
-    );
+    button.classList.remove("following");
 
-    setTimeout(
-      () => {
-
-        window.location.href =
-          "./auth.html";
-
-      },
-      600
-    );
-
-    return;
-  }
-
-
-  const videoItem =
-    button.closest(
-      ".video-item"
-    );
-
-
-  if (!videoItem) {
-    return;
-  }
-
-
-  const targetUid =
-    videoItem.dataset.creatorUid;
-
-
-  if (
-    !targetUid
-  ) {
+    button.textContent = "+";
 
     showToast(
-      "Creator profile পাওয়া যায়নি"
+      "Unfollow করা হয়েছে"
     );
 
-    return;
+  }else{
 
-  }
+    button.classList.add("following");
 
-
-  if (
-    targetUid ===
-    currentUser.uid
-  ) {
+    button.textContent = "✓";
 
     showToast(
-      "নিজেকে Follow করা যাবে না"
+      "Following করা হয়েছে"
     );
-
-    return;
 
   }
+}
 
 
-  button.disabled =
-    true;
+/* ================= BOOKMARK ================= */
 
+function toggleBookmark(button){
 
-  try {
+  const count =
+    button.querySelector(".action-count");
 
-    const myRef =
-      doc(
-        db,
-        "users",
-        currentUser.uid
-      );
+  if(
+    button.classList.contains("saved")
+  ){
 
+    button.classList.remove("saved");
 
-    const targetRef =
-      doc(
-        db,
-        "users",
-        targetUid
-      );
-
-
-    const mySnap =
-      await getDoc(
-        myRef
-      );
-
-
-    const targetSnap =
-      await getDoc(
-        targetRef
-      );
-
-
-    if (
-      !mySnap.exists() ||
-      !targetSnap.exists()
-    ) {
-
-      throw new Error(
-        "Profile not found"
-      );
-
-    }
-
-
-    const myData =
-      mySnap.data();
-
-
-    const followingIds =
-      Array.isArray(
-        myData.followingIds
-      )
-        ? myData.followingIds
-        : [];
-
-
-    const isFollowing =
-      followingIds.includes(
-        targetUid
-      );
-
-
-    if (isFollowing) {
-
-      await updateDoc(
-        myRef,
-        {
-
-          followingIds:
-            arrayRemove(
-              targetUid
-            ),
-
-          following:
-            increment(-1)
-
-        }
-      );
-
-
-      await updateDoc(
-        targetRef,
-        {
-
-          followerIds:
-            arrayRemove(
-              currentUser.uid
-            ),
-
-          followers:
-            increment(-1)
-
-        }
-      );
-
-
-      button.classList.remove(
-        "following"
-      );
-
-      button.textContent =
-        "+";
-
-
-      showToast(
-        "Unfollow করা হয়েছে"
-      );
-
-
-    } else {
-
-      await updateDoc(
-        myRef,
-        {
-
-          followingIds:
-            arrayUnion(
-              targetUid
-            ),
-
-          following:
-            increment(1)
-
-        }
-      );
-
-
-      await updateDoc(
-        targetRef,
-        {
-
-          followerIds:
-            arrayUnion(
-              currentUser.uid
-            ),
-
-          followers:
-            increment(1)
-
-        }
-      );
-
-
-      button.classList.add(
-        "following"
-      );
-
-      button.textContent =
-        "✓";
-
-
-      showToast(
-        "Following করা হয়েছে"
-      );
-
-    }
-
-
-  } catch (error) {
-
-    console.error(
-      "Follow error:",
-      error
-    );
-
+    count.textContent = "0";
 
     showToast(
-      "Follow পরিবর্তন করা যায়নি"
+      "Saved থেকে সরানো হয়েছে"
     );
 
-  } finally {
+  }else{
 
-    button.disabled =
-      false;
+    button.classList.add("saved");
 
-  }
-
-};
-
-
-/* =====================================================
-   BOOKMARK
-===================================================== */
-
-window.toggleBookmark =
-async function toggleBookmark(
-  button
-) {
-
-  if (!currentUser) {
+    count.textContent = "1";
 
     showToast(
-      "আগে Login করুন"
+      "ভিডিও Saved হয়েছে"
     );
-
-    setTimeout(
-      () => {
-
-        window.location.href =
-          "./auth.html";
-
-      },
-      600
-    );
-
-    return;
-  }
-
-
-  const videoItem =
-    getVideoItemFromButton(
-      button
-    );
-
-
-  if (!videoItem) {
-    return;
-  }
-
-
-  const videoId =
-    videoItem.dataset.videoId;
-
-
-  button.disabled =
-    true;
-
-
-  try {
-
-    const bookmarkRef =
-      doc(
-        db,
-        "users",
-        currentUser.uid,
-        "bookmarks",
-        videoId
-      );
-
-
-    const videoRef =
-      doc(
-        db,
-        "videos",
-        videoId
-      );
-
-
-    const bookmarkSnap =
-      await getDoc(
-        bookmarkRef
-      );
-
-
-    if (
-      bookmarkSnap.exists()
-    ) {
-
-      await deleteDoc(
-        bookmarkRef
-      );
-
-
-      await updateDoc(
-        videoRef,
-        {
-
-          bookmarks:
-            increment(-1)
-
-        }
-      );
-
-
-      button.classList.remove(
-        "saved"
-      );
-
-
-      showToast(
-        "Saved থেকে সরানো হয়েছে"
-      );
-
-
-    } else {
-
-      await setDoc(
-        bookmarkRef,
-        {
-
-          videoId:
-            videoId,
-
-          uid:
-            currentUser.uid,
-
-          createdAt:
-            serverTimestamp()
-
-        }
-      );
-
-
-      await updateDoc(
-        videoRef,
-        {
-
-          bookmarks:
-            increment(1)
-
-        }
-      );
-
-
-      button.classList.add(
-        "saved"
-      );
-
-
-      showToast(
-        "ভিডিও Saved হয়েছে"
-      );
-
-    }
-
-
-    const updated =
-      await getDoc(
-        videoRef
-      );
-
-
-    if (
-      updated.exists()
-    ) {
-
-      updateVideoCounts(
-        videoItem,
-        updated.data()
-      );
-
-    }
-
-
-  } catch (error) {
-
-    console.error(
-      "Bookmark error:",
-      error
-    );
-
-
-    showToast(
-      "Bookmark করা যায়নি"
-    );
-
-  } finally {
-
-    button.disabled =
-      false;
 
   }
-
-};
-
-
-/* =====================================================
-   SHARE
-===================================================== */
-
-window.shareVideo =
-async function shareVideo(
-  button
-) {
-
-  const videoItem =
-    getVideoItemFromButton(
-      button
-    );
+}
 
 
-  const videoId =
-    videoItem
-      ? videoItem.dataset.videoId
-      : "";
+/* ================= SHARE ================= */
 
-
-  const shareUrl =
-    window.location.origin +
-    window.location.pathname +
-    "?video=" +
-    encodeURIComponent(
-      videoId
-    );
-
+async function shareVideo(){
 
   const shareData = {
 
-    title:
-      "WWC-Core",
+    title:"WWC-Core",
 
-    text:
-      "এই ভিডিওটি WWC-Core এ দেখুন।",
+    text:"এই ভিডিওটি WWC-Core এ দেখুন।",
 
-    url:
-      shareUrl
+    url:window.location.href
 
   };
 
+  try{
 
-  try {
-
-    if (
-      navigator.share
-    ) {
+    if(navigator.share){
 
       await navigator.share(
         shareData
       );
 
-      showToast(
-        "ভিডিও Share করা হয়েছে"
-      );
-
-    } else {
+    }else{
 
       await navigator.clipboard.writeText(
-        shareUrl
+        window.location.href
       );
 
       showToast(
@@ -3470,1079 +1322,303 @@ async function shareVideo(
 
     }
 
-  } catch (error) {
+  }catch(error){
 
     console.log(
       "Share cancelled"
     );
 
   }
-
-};
-
-
-/* =====================================================
-   OPEN COMMENTS
-===================================================== */
-
-window.openComments =
-async function openComments(
-  button
-) {
-
-  if (!currentUser) {
-
-    showToast(
-      "আগে Login করুন"
-    );
-
-    setTimeout(
-      () => {
-
-        window.location.href =
-          "./auth.html";
-
-      },
-      600
-    );
-
-    return;
-  }
-
-
-  activeVideoItem =
-    getVideoItemFromButton(
-      button
-    );
-
-
-  if (!activeVideoItem) {
-    return;
-  }
-
-
-  activeVideoId =
-    activeVideoItem.dataset.videoId;
-
-
-  commentPanel.classList.add(
-    "open"
-  );
-
-
-  commentsList.innerHTML =
-    `
-      <div class="no-comments">
-        Comments লোড হচ্ছে...
-      </div>
-    `;
-
-
-  commentInput.value =
-    "";
-
-
-  await loadComments();
-
-};
-
-
-/* =====================================================
-   CLOSE COMMENTS
-===================================================== */
-
-window.closeComments =
-function closeComments() {
-
-  commentPanel.classList.remove(
-    "open"
-  );
-
-
-  activeVideoId =
-    null;
-
-  activeVideoItem =
-    null;
-
-};
-
-
-/* =====================================================
-   LOAD COMMENTS
-===================================================== */
-
-async function loadComments() {
-
-  if (
-    !activeVideoId
-  ) {
-    return;
-  }
-
-
-  try {
-
-    const commentsRef =
-      collection(
-        db,
-        "videos",
-        activeVideoId,
-        "comments"
-      );
-
-
-    const commentsQuery =
-      query(
-        commentsRef,
-        orderBy(
-          "createdAt",
-          "asc"
-        ),
-        limit(100)
-      );
-
-
-    const snapshot =
-      await getDocs(
-        commentsQuery
-      );
-
-
-    commentsList.innerHTML =
-      "";
-
-
-    if (
-      snapshot.empty
-    ) {
-
-      commentsList.innerHTML =
-        `
-          <div class="no-comments">
-            এখনো কোনো Comment নেই।
-          </div>
-        `;
-
-    } else {
-
-      snapshot.forEach(
-        commentDoc => {
-
-          const data =
-            commentDoc.data();
-
-
-          const comment =
-            document.createElement(
-              "div"
-            );
-
-
-          comment.className =
-            "comment";
-
-
-          const name =
-            escapeHtml(
-              data.name ||
-              "WWC User"
-            );
-
-
-          const text =
-            escapeHtml(
-              data.text ||
-              ""
-            );
-
-
-          comment.innerHTML =
-            `
-              <strong>
-                ${name}
-              </strong>
-
-              <div class="comment-text">
-                ${text}
-              </div>
-            `;
-
-
-          commentsList.appendChild(
-            comment
-          );
-
-        }
-      );
-
-    }
-
-
-    commentTitleCount.textContent =
-      snapshot.size;
-
-
-    commentsList.scrollTop =
-      commentsList.scrollHeight;
-
-
-  } catch (error) {
-
-    console.error(
-      "Comments load error:",
-      error
-    );
-
-
-    commentsList.innerHTML =
-      `
-        <div class="no-comments">
-          Comment load করা যায়নি।
-        </div>
-      `;
-
-  }
-
 }
 
 
-/* =====================================================
-   ADD COMMENT
-===================================================== */
+/* ================= COMMENTS ================= */
 
-window.addComment =
-async function addComment() {
+function openComments(){
 
-  if (!currentUser) {
+  document
+    .getElementById("commentPanel")
+    .classList.add("open");
 
-    showToast(
-      "আগে Login করুন"
+}
+
+function closeComments(){
+
+  document
+    .getElementById("commentPanel")
+    .classList.remove("open");
+
+}
+
+function addComment(){
+
+  const input =
+    document.getElementById(
+      "commentInput"
     );
-
-    return;
-
-  }
-
-
-  if (
-    !activeVideoId ||
-    !activeVideoItem
-  ) {
-
-    return;
-
-  }
-
 
   const text =
-    commentInput.value.trim();
+    input.value.trim();
 
-
-  if (!text) {
-
-    showToast(
-      "Comment লিখুন"
-    );
-
+  if(!text){
     return;
-
   }
 
-
-  commentSendBtn.disabled =
-    true;
-
-
-  try {
-
-    const name =
-      currentProfile &&
-      currentProfile.name
-        ? currentProfile.name
-        : (
-            currentUser.displayName ||
-            "WWC User"
-          );
-
-
-    const commentsRef =
-      collection(
-        db,
-        "videos",
-        activeVideoId,
-        "comments"
-      );
-
-
-    await addDoc(
-      commentsRef,
-      {
-
-        uid:
-          currentUser.uid,
-
-        name:
-          name,
-
-        text:
-          text,
-
-        createdAt:
-          serverTimestamp()
-
-      }
+  const list =
+    document.getElementById(
+      "commentsList"
     );
 
+  const comment =
+    document.createElement("div");
 
-    const videoRef =
-      doc(
-        db,
-        "videos",
-        activeVideoId
-      );
+  comment.className =
+    "comment";
 
+  const strong =
+    document.createElement("strong");
 
-    await updateDoc(
-      videoRef,
-      {
+  strong.textContent = "You";
 
-        comments:
-          increment(1)
+  const textNode =
+    document.createTextNode(text);
 
-      }
-    );
+  comment.appendChild(strong);
 
+  comment.appendChild(textNode);
 
-    commentInput.value =
-      "";
+  list.appendChild(comment);
 
+  input.value = "";
 
-    await loadComments();
+  list.scrollTop =
+    list.scrollHeight;
 
-
-    const updated =
-      await getDoc(
-        videoRef
-      );
+  showToast(
+    "Comment করা হয়েছে"
+  );
+}
 
 
-    if (
-      updated.exists()
-    ) {
+/* ================= SEARCH ================= */
 
-      updateVideoCounts(
-        activeVideoItem,
-        updated.data()
-      );
+function openSearch(){
 
-    }
+  document
+    .getElementById("searchPanel")
+    .classList.add("open");
 
+  setTimeout(() => {
 
-    showToast(
-      "Comment করা হয়েছে"
-    );
+    document
+      .getElementById("searchInput")
+      .focus();
 
+  },100);
+}
 
-  } catch (error) {
+function closeSearch(){
 
-    console.error(
-      "Comment error:",
-      error
-    );
-
-
-    showToast(
-      "Comment করা যায়নি"
-    );
-
-  } finally {
-
-    commentSendBtn.disabled =
-      false;
-
-  }
-
-};
-
-
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
-
-function escapeHtml(value) {
-
-  return String(
-    value ?? ""
-  )
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-    .replace(
-      /</g,
-      "&lt;"
-    )
-    .replace(
-      />/g,
-      "&gt;"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-    .replace(
-      /'/g,
-      "&#039;"
-    );
+  document
+    .getElementById("searchPanel")
+    .classList.remove("open");
 
 }
 
 
-/* =====================================================
-   SEARCH OPEN
-===================================================== */
+/* ================= NAVIGATION ================= */
 
-window.openSearch =
-function openSearch() {
-
-  searchPanel.classList.add(
-    "open"
-  );
-
-
-  searchInput.value =
-    "";
-
-
-  searchResults.innerHTML =
-    `
-      <div class="no-comments">
-        User খুঁজতে নাম বা username লিখুন।
-      </div>
-    `;
-
-
-  setTimeout(
-    () => {
-
-      searchInput.focus();
-
-    },
-    100
-  );
-
-};
-
-
-/* =====================================================
-   SEARCH CLOSE
-===================================================== */
-
-window.closeSearch =
-function closeSearch() {
-
-  searchPanel.classList.remove(
-    "open"
-  );
-
-};
-
-
-/* =====================================================
-   SEARCH USERS
-===================================================== */
-
-async function searchUsers() {
-
-  const queryText =
-    searchInput.value
-      .trim()
-      .toLowerCase();
-
-
-  if (!queryText) {
-
-    searchResults.innerHTML =
-      `
-        <div class="no-comments">
-          User খুঁজতে নাম বা username লিখুন।
-        </div>
-      `;
-
-    return;
-
-  }
-
-
-  searchResults.innerHTML =
-    `
-      <div class="no-comments">
-        Search হচ্ছে...
-      </div>
-    `;
-
-
-  try {
-
-    const snapshot =
-      await getDocs(
-        collection(
-          db,
-          "users"
-        )
-      );
-
-
-    searchResults.innerHTML =
-      "";
-
-
-    let found =
-      0;
-
-
-    snapshot.forEach(
-      userDoc => {
-
-        const data =
-          userDoc.data();
-
-
-        if (
-          currentUser &&
-          userDoc.id ===
-          currentUser.uid
-        ) {
-
-          return;
-
-        }
-
-
-        const name =
-          String(
-            data.name ||
-            data.displayName ||
-            ""
-          );
-
-
-        const username =
-          String(
-            data.username ||
-            ""
-          )
-            .replace(
-              /^@/,
-              ""
-            );
-
-
-        const nameMatch =
-          name
-            .toLowerCase()
-            .includes(
-              queryText
-            );
-
-
-        const usernameMatch =
-          username
-            .toLowerCase()
-            .includes(
-              queryText
-            );
-
-
-        if (
-          !nameMatch &&
-          !usernameMatch
-        ) {
-
-          return;
-
-        }
-
-
-        found++;
-
-
-        const result =
-          document.createElement(
-            "div"
-          );
-
-
-        result.className =
-          "search-result";
-
-
-        result.innerHTML =
-          `
-            <img
-              src="${escapeHtml(
-                data.photoURL ||
-                defaultPhoto
-              )}"
-              alt="Profile"
-            >
-
-            <div class="search-result-info">
-
-              <div class="search-result-name">
-                ${escapeHtml(
-                  name ||
-                  "WWC User"
-                )}
-              </div>
-
-              <div class="search-result-handle">
-                @${escapeHtml(
-                  username ||
-                  "wwc_user"
-                )}
-              </div>
-
-            </div>
-
-            <button
-              type="button"
-              data-user-profile="${escapeHtml(
-                userDoc.id
-              )}"
-            >
-              Profile
-            </button>
-          `;
-
-
-        searchResults.appendChild(
-          result
-        );
-
-      }
-    );
-
-
-    if (!found) {
-
-      searchResults.innerHTML =
-        `
-          <div class="no-comments">
-            কোনো User পাওয়া যায়নি।
-          </div>
-        `;
-
-    }
-
-
-  } catch (error) {
-
-    console.error(
-      "Search error:",
-      error
-    );
-
-
-    searchResults.innerHTML =
-      `
-        <div class="no-comments">
-          Search করা যায়নি।
-        </div>
-      `;
-
-  }
-
-}
-
-
-/* =====================================================
-   SEARCH INPUT
-===================================================== */
-
-searchInput.addEventListener(
-  "input",
-  searchUsers
-);
-
-
-/* =====================================================
-   SEARCH PROFILE
-===================================================== */
-
-searchResults.addEventListener(
-  "click",
-  event => {
-
-    const button =
-      event.target.closest(
-        "[data-user-profile]"
-      );
-
-
-    if (!button) {
-      return;
-    }
-
-
-    const uid =
-      button.dataset.userProfile;
-
-
-    window.location.href =
-      "./user-profile.html?uid=" +
-      encodeURIComponent(
-        uid
-      );
-
-  }
-);
-
-
-/* =====================================================
-   COMMENT ENTER
-===================================================== */
-
-commentInput.addEventListener(
-  "keydown",
-  event => {
-
-    if (
-      event.key === "Enter"
-    ) {
-
-      event.preventDefault();
-
-      addComment();
-
-    }
-
-  }
-);
-
-
-/* =====================================================
-   NAVIGATION
-===================================================== */
-
-window.goHome =
-function goHome() {
+function goHome(){
 
   window.location.href =
     "./index.html";
 
-};
+}
 
-
-window.goFriends =
-function goFriends() {
+function goFriends(){
 
   window.location.href =
     "./friends.html";
 
-};
+}
 
-
-window.goInbox =
-function goInbox() {
+function goInbox(){
 
   window.location.href =
     "./inbox.html";
 
-};
+}
 
-
-window.goProfile =
-function goProfile() {
+function goProfile(){
 
   window.location.href =
     "./profile.html";
 
-};
+}
 
-
-window.uploadVideo =
-function uploadVideo() {
+function uploadVideo(){
 
   showToast(
     "Upload page খুলছে..."
   );
 
+  setTimeout(() => {
 
-  setTimeout(
-    () => {
+    window.location.href =
+      "./upload.html";
 
-      window.location.href =
-        "./upload.html";
+  },400);
 
-    },
-    400
-  );
-
-};
+}
 
 
-/* =====================================================
-   VIDEO PLAY / PAUSE
-===================================================== */
+/* ================= VIDEO PLAY / PAUSE ================= */
 
 const videos =
-  document.querySelectorAll(
-    ".video"
-  );
+  document.querySelectorAll(".video");
 
+videos.forEach(video => {
 
-videos.forEach(
-  video => {
+  const item =
+    video.closest(".video-item");
 
-    const item =
-      video.closest(
-        ".video-item"
-      );
-
-
-    const indicator =
-      item.querySelector(
-        ".pause-indicator"
-      );
-
-
-    item.addEventListener(
-      "click",
-      event => {
-
-        if (
-          event.target.closest(
-            "button"
-          )
-        ) {
-
-          return;
-
-        }
-
-
-        if (
-          video.paused
-        ) {
-
-          video.play()
-            .catch(
-              () => {}
-            );
-
-
-          indicator.classList.remove(
-            "show"
-          );
-
-        } else {
-
-          video.pause();
-
-
-          indicator.classList.add(
-            "show"
-          );
-
-        }
-
-      }
+  const indicator =
+    item.querySelector(
+      ".pause-indicator"
     );
 
-  }
-);
+  item.addEventListener(
+    "click",
+    event => {
+
+      if(
+        event.target.closest("button")
+      ){
+        return;
+      }
+
+      if(video.paused){
+
+        video.play()
+          .catch(()=>{});
+
+        indicator.classList.remove(
+          "show"
+        );
+
+      }else{
+
+        video.pause();
+
+        indicator.classList.add(
+          "show"
+        );
+
+      }
+
+    }
+  );
+
+});
 
 
-/* =====================================================
-   AUTO PLAY
-===================================================== */
+/* ================= AUTO PLAY ================= */
 
 const observer =
   new IntersectionObserver(
     entries => {
 
-      entries.forEach(
-        entry => {
+      entries.forEach(entry => {
 
-          const video =
-            entry.target.querySelector(
-              ".video"
-            );
+        const video =
+          entry.target.querySelector(
+            ".video"
+          );
 
+        const indicator =
+          entry.target.querySelector(
+            ".pause-indicator"
+          );
 
-          const indicator =
-            entry.target.querySelector(
-              ".pause-indicator"
-            );
+        if(entry.isIntersecting){
 
+          video.play()
+            .catch(()=>{});
 
-          if (
-            entry.isIntersecting
-          ) {
+          indicator.classList.remove(
+            "show"
+          );
 
-            video.play()
-              .catch(
-                () => {}
-              );
+        }else{
 
-
-            indicator.classList.remove(
-              "show"
-            );
-
-          } else {
-
-            video.pause();
-
-          }
+          video.pause();
 
         }
-      );
+
+      });
 
     },
     {
-      threshold: .7
+      threshold:.7
     }
   );
 
 
 document
-  .querySelectorAll(
-    ".video-item"
-  )
-  .forEach(
-    item => {
+  .querySelectorAll(".video-item")
+  .forEach(item => {
 
-      observer.observe(
-        item
-      );
+    observer.observe(item);
+
+  });
+
+
+/* ================= COMMENT ENTER ================= */
+
+document
+  .getElementById("commentInput")
+  .addEventListener(
+    "keydown",
+    event => {
+
+      if(event.key === "Enter"){
+
+        addComment();
+
+      }
 
     }
   );
 
 
-/* =====================================================
-   AUTH
-===================================================== */
+/* ================= SEARCH ENTER ================= */
 
-onAuthStateChanged(
-  auth,
-  async user => {
+document
+  .getElementById("searchInput")
+  .addEventListener(
+    "keydown",
+    event => {
 
-    currentUser =
-      user;
+      if(event.key === "Enter"){
 
+        const value =
+          event.target.value.trim();
 
-    if (!user) {
+        if(value){
 
-      showToast(
-        "Login না থাকলে Like/Comment/Save করতে Login করুন"
-      );
+          showToast(
+            "Search: " + value
+          );
 
-
-      return;
-
-    }
-
-
-    try {
-
-      const userRef =
-        doc(
-          db,
-          "users",
-          user.uid
-        );
-
-
-      const userSnap =
-        await getDoc(
-          userRef
-        );
-
-
-      if (
-        userSnap.exists()
-      ) {
-
-        currentProfile =
-          userSnap.data();
-
-      } else {
-
-        currentProfile = {
-
-          uid:
-            user.uid,
-
-          name:
-            user.displayName ||
-            "WWC User",
-
-          username:
-            "wwc_" +
-            user.uid.substring(
-              0,
-              6
-            ),
-
-          email:
-            user.email ||
-            "",
-
-          photoURL:
-            user.photoURL ||
-            defaultPhoto,
-
-          followers:
-            0,
-
-          following:
-            0,
-
-          followerIds:
-            [],
-
-          followingIds:
-            []
-
-        };
-
-
-        await setDoc(
-          userRef,
-          currentProfile
-        );
+        }
 
       }
 
-
-      await loadAllVideoData();
-
-
-    } catch (error) {
-
-      console.error(
-        "Auth/profile error:",
-        error
-      );
-
-
-      showToast(
-        "Profile load করা যায়নি"
-      );
-
     }
-
-  }
-);
+  );
 
 
-/* =====================================================
-   FIRST VIDEO
-===================================================== */
+/* ================= START VIDEO ================= */
 
 window.addEventListener(
   "load",
@@ -4553,13 +1629,10 @@ window.addEventListener(
         ".video"
       );
 
-
-    if (firstVideo) {
+    if(firstVideo){
 
       firstVideo.play()
-        .catch(
-          () => {}
-        );
+        .catch(()=>{});
 
     }
 
