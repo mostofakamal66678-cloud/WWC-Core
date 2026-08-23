@@ -1,1343 +1,367 @@
-/* =========================================================
-   🌍 WORLD WIDE CONNECT
-   PREMIUM TIKTOK STYLE MOBILE FEED
-   ========================================================= */
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
 
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: #000;
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-}
+  <meta
+    name="theme-color"
+    content="#000000"
+  >
 
-body {
-  color: #fff;
-}
+  <title>World Wide Connect</title>
 
-button {
-  font-family: inherit;
-  cursor: pointer;
-  -webkit-user-select: none;
-  user-select: none;
-}
+  <!-- MAIN CSS -->
+  <link
+    rel="stylesheet"
+    href="./css/style.css"
+  >
+</head>
 
-button:focus {
-  outline: none;
-}
+<body>
 
+  <!-- =====================================================
+       WWC MAIN APP
+       ===================================================== -->
 
-/* =========================================================
-   APP
-   ========================================================= */
+  <div id="app">
 
-#app {
-  position: relative;
-  width: 100%;
-  height: 100dvh;
-  overflow: hidden;
-  background: #000;
-}
+    <!-- ===================================================
+         TOP BAR
+         Following | For You | Search
+         =================================================== -->
 
+    <header class="wwc-top-bar">
 
-/* =========================================================
-   VIDEO FEED
-   ========================================================= */
+      <div class="wwc-top-tabs">
 
-#video-feed {
-  position: relative;
+        <!-- FOLLOWING -->
 
-  width: 100%;
-  height: 100dvh;
+        <button
+          id="followingTab"
+          class="wwc-top-tab"
+          type="button"
+        >
+          Following
+        </button>
 
-  overflow-y: auto;
-  overflow-x: hidden;
 
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
+        <!-- FOR YOU -->
 
-  -webkit-overflow-scrolling: touch;
+        <button
+          id="forYouTab"
+          class="wwc-top-tab active"
+          type="button"
+        >
+          For You
+        </button>
 
-  scrollbar-width: none;
-}
+      </div>
 
-#video-feed::-webkit-scrollbar {
-  display: none;
-}
 
+      <!-- SEARCH -->
 
-.video-item {
-  position: relative;
+      <button
+        id="searchBtn"
+        class="wwc-search-btn"
+        type="button"
+        aria-label="Search"
+      >
+        <span>⌕</span>
+      </button>
 
-  width: 100%;
-  height: 100dvh;
-  min-height: 100dvh;
+    </header>
 
-  background: #000;
 
-  overflow: hidden;
+    <!-- ===================================================
+         VIDEO FEED
+         =================================================== -->
 
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-}
+    <main
+      id="video-feed"
+      aria-label="WWC Video Feed"
+    >
 
+      <!-- Firebase থেকে ভিডিও এখানে আসবে -->
 
-/* =========================================================
-   VIDEO
-   ========================================================= */
+      <div class="feed-loading">
 
-.feed-video {
-  position: absolute;
+        <div>
+          ⏳
+        </div>
 
-  inset: 0;
+        <div>
+          Video Feed Loading...
+        </div>
 
-  width: 100%;
-  height: 100%;
+      </div>
 
-  object-fit: cover;
+    </main>
 
-  background: #000;
 
-  display: block;
-}
+    <!-- ===================================================
+         PROFILE MENU
+         =================================================== -->
 
+    <div
+      id="profileMenu"
+      class="profile-menu"
+      aria-hidden="true"
+    >
 
-/* =========================================================
-   VIDEO DARK OVERLAY
-   ========================================================= */
+      <div class="profile-menu-header">
 
-.video-overlay {
-  position: absolute;
+        <div class="profile-menu-title">
+          👤 My Profile
+        </div>
 
-  inset: 0;
 
-  pointer-events: none;
+        <button
+          id="profileMenuClose"
+          class="profile-menu-close"
+          type="button"
+          aria-label="Close"
+        >
+          ✕
+        </button>
 
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.55) 0%,
-      rgba(0, 0, 0, 0.05) 24%,
-      rgba(0, 0, 0, 0) 48%,
-      rgba(0, 0, 0, 0.18) 68%,
-      rgba(0, 0, 0, 0.82) 100%
-    );
+      </div>
 
-  z-index: 2;
-}
 
+      <!-- PROFILE -->
 
-/* =========================================================
-   ✨ TOP BAR
-   ========================================================= */
+      <button
+        id="profileBtnMenu"
+        class="profile-menu-btn"
+        type="button"
+      >
+        👤 Profile
+      </button>
 
-.wwc-top-bar {
-  position: fixed;
 
-  top: 0;
-  left: 0;
-  right: 0;
+      <!-- LOGIN -->
 
-  height: 64px;
+      <button
+        id="loginBtn"
+        class="profile-menu-btn"
+        type="button"
+      >
+        🔐 Login / Register
+      </button>
 
-  padding-top: env(safe-area-inset-top);
 
-  display: flex;
+      <!-- LOGOUT -->
 
-  align-items: center;
-  justify-content: center;
+      <button
+        id="logoutBtn"
+        class="profile-menu-btn logout-menu-btn"
+        type="button"
+      >
+        🚪 Logout
+      </button>
 
-  z-index: 80;
+    </div>
 
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.78),
-      rgba(0, 0, 0, 0.18),
-      transparent
-    );
 
-  pointer-events: none;
-}
+    <!-- ===================================================
+         COMMENT BOX
+         =================================================== -->
 
+    <div
+      id="commentBox"
+      class="comment-box"
+      aria-hidden="true"
+    >
 
-/* =========================================================
-   TOP TABS
-   ========================================================= */
+      <!-- COMMENT HEADER -->
 
-.wwc-top-tabs {
-  position: relative;
+      <div class="comment-title">
+        💬 Comments
+      </div>
 
-  display: flex;
 
-  align-items: center;
-  justify-content: center;
+      <!-- COMMENTS -->
 
-  gap: 28px;
+      <div
+        id="commentsList"
+        class="comments-list"
+      >
+        <!-- Comments will load here -->
+      </div>
 
-  height: 48px;
 
-  pointer-events: auto;
-}
+      <!-- COMMENT INPUT -->
 
+      <textarea
+        id="commentInput"
+        placeholder="Write a comment..."
+        maxlength="500"
+      ></textarea>
 
-/* =========================================================
-   TOP TAB BUTTON
-   ========================================================= */
 
-.wwc-top-tab {
-  position: relative;
+      <!-- COMMENT BUTTONS -->
 
-  min-width: 75px;
+      <div class="comment-buttons">
 
-  padding: 9px 3px;
+        <button
+          id="commentCancel"
+          type="button"
+        >
+          Cancel
+        </button>
 
-  border: 0;
 
-  background: transparent;
+        <button
+          id="commentSend"
+          type="button"
+        >
+          Send
+        </button>
 
-  color: rgba(255, 255, 255, 0.68);
+      </div>
 
-  font-size: 15px;
-  font-weight: 700;
+    </div>
 
-  text-shadow:
-    0 1px 8px rgba(0, 0, 0, 0.9);
 
-  transition:
-    color 0.2s ease,
-    transform 0.2s ease;
-}
+    <!-- ===================================================
+         VIDEO UPLOAD INPUT
+         =================================================== -->
 
+    <input
+      id="videoUpload"
+      type="file"
+      accept="video/*"
+      hidden
+    >
 
-/* ACTIVE TAB */
 
-.wwc-top-tab.active {
-  color: #fff;
+    <!-- ===================================================
+         BOTTOM NAVIGATION
+         =================================================== -->
 
-  transform: scale(1.05);
-}
+    <nav
+      class="wwc-bottom-nav"
+      aria-label="Main navigation"
+    >
 
+      <!-- =================================================
+           HOME
+           ================================================= -->
 
-/* =========================================================
-   ACTIVE TAB GLOW LINE
-   ========================================================= */
+      <button
+        class="wwc-nav-btn active"
+        id="homeBtn"
+        type="button"
+      >
 
-.wwc-top-tab.active::after {
-  content: "";
+        <span class="nav-icon">
+          🏠
+        </span>
 
-  position: absolute;
+        <span class="nav-label">
+          Home
+        </span>
 
-  left: 50%;
+      </button>
 
-  bottom: 0;
 
-  width: 30px;
-  height: 3px;
+      <!-- =================================================
+           FRIENDS
+           ================================================= -->
 
-  transform: translateX(-50%);
+      <button
+        class="wwc-nav-btn"
+        id="friendsBtn"
+        type="button"
+      >
 
-  border-radius: 999px;
+        <span class="nav-icon">
+          👥
+        </span>
 
-  background: #fff;
+        <span class="nav-label">
+          Friends
+        </span>
 
-  box-shadow:
-    0 0 5px rgba(255, 255, 255, 0.95),
-    0 0 12px rgba(255, 255, 255, 0.75),
-    0 0 20px rgba(255, 255, 255, 0.45);
-}
+      </button>
 
 
-/* PRESS EFFECT */
+      <!-- =================================================
+           CREATE / UPLOAD
+           ================================================= -->
 
-.wwc-top-tab:active {
-  transform: scale(0.94);
-}
+      <button
+        id="uploadBtn"
+        class="wwc-create-btn"
+        type="button"
+        aria-label="Upload Video"
+      >
 
+        <span>
+          +
+        </span>
 
-/* =========================================================
-   🔍 SEARCH BUTTON
-   ========================================================= */
+      </button>
 
-.wwc-search-btn {
-  position: absolute;
 
-  right: 13px;
-  top: 15px;
+      <!-- =================================================
+           INBOX
+           ================================================= -->
 
-  width: 39px;
-  height: 39px;
+      <button
+        class="wwc-nav-btn"
+        id="inboxBtn"
+        type="button"
+      >
 
-  padding: 0;
+        <span class="nav-icon">
+          💬
+        </span>
 
-  border: 1px solid rgba(255, 255, 255, 0.55);
+        <span class="nav-label">
+          Inbox
+        </span>
 
-  border-radius: 50%;
+      </button>
 
-  background:
-    rgba(0, 0, 0, 0.42);
 
-  color: #fff;
+      <!-- =================================================
+           PROFILE
+           ================================================= -->
 
-  display: flex;
+      <button
+        id="profileBtn"
+        class="wwc-nav-btn"
+        type="button"
+      >
 
-  align-items: center;
-  justify-content: center;
+        <span class="nav-icon">
+          👤
+        </span>
 
-  font-size: 20px;
+        <span class="nav-label">
+          Profile
+        </span>
 
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+      </button>
 
-  box-shadow:
-    0 3px 15px rgba(0, 0, 0, 0.45),
-    inset 0 0 10px rgba(255, 255, 255, 0.08);
+    </nav>
 
-  transition:
-    transform 0.2s ease,
-    background 0.2s ease,
-    box-shadow 0.2s ease;
+  </div>
 
-  pointer-events: auto;
-}
 
+  <!-- =====================================================
+       MAIN APPLICATION JAVASCRIPT
+       ===================================================== -->
 
-/* SEARCH GLOW */
+  <script
+    type="module"
+    src="./js/app.js"
+  ></script>
 
-.wwc-search-btn:hover,
-.wwc-search-btn:active {
-  transform: scale(1.08);
-
-  background:
-    rgba(255, 255, 255, 0.16);
-
-  box-shadow:
-    0 0 8px rgba(255, 255, 255, 0.4),
-    0 0 18px rgba(255, 255, 255, 0.2);
-}
-
-
-/* =========================================================
-   PROFILE AREA
-   ========================================================= */
-
-.profile-area {
-  position: absolute;
-
-  left: 14px;
-  bottom: 112px;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 9px;
-
-  max-width: calc(100% - 85px);
-
-  z-index: 10;
-}
-
-
-/* =========================================================
-   PROFILE PHOTO
-   ========================================================= */
-
-.profile-photo-btn {
-  width: 48px;
-  height: 48px;
-
-  padding: 0;
-
-  flex-shrink: 0;
-
-  border: 2px solid #fff;
-
-  border-radius: 50%;
-
-  overflow: hidden;
-
-  background: #222;
-
-  box-shadow:
-    0 0 5px rgba(255, 255, 255, 0.7),
-    0 0 13px rgba(255, 255, 255, 0.25);
-
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.profile-photo-btn:active {
-  transform: scale(0.91);
-}
-
-.profile-photo {
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-
-  display: block;
-}
-
-
-/* =========================================================
-   USERNAME
-   ========================================================= */
-
-.profile-username {
-  max-width: 125px;
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-
-  white-space: nowrap;
-
-  padding: 0;
-
-  border: 0;
-
-  background: transparent;
-
-  color: #fff;
-
-  font-size: 15px;
-  font-weight: 800;
-
-  text-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.95);
-}
-
-
-/* =========================================================
-   FOLLOW BUTTON
-   ========================================================= */
-
-.follow-btn {
-  padding: 7px 13px;
-
-  border: 1px solid rgba(255, 255, 255, 0.85);
-
-  border-radius: 8px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #ff174f,
-      #fe2c55,
-      #ff416c
-    );
-
-  color: #fff;
-
-  font-size: 13px;
-  font-weight: 800;
-
-  white-space: nowrap;
-
-  box-shadow:
-    0 3px 12px rgba(254, 44, 85, 0.42),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
-
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    background 0.18s ease;
-}
-
-.follow-btn:active {
-  transform: scale(0.92);
-}
-
-.follow-btn.following {
-  background:
-    linear-gradient(
-      135deg,
-      #444,
-      #222
-    );
-
-  border-color: rgba(255, 255, 255, 0.35);
-
-  box-shadow:
-    0 3px 10px rgba(0, 0, 0, 0.45);
-}
-
-
-/* =========================================================
-   🎯 RIGHT ACTION BUTTONS
-   ========================================================= */
-
-.actions {
-  position: absolute;
-
-  right: 10px;
-  bottom: 111px;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  gap: 15px;
-
-  z-index: 12;
-}
-
-
-/* =========================================================
-   ACTION BUTTON
-   ========================================================= */
-
-.action-btn {
-  width: 50px;
-
-  padding: 0;
-
-  border: 0;
-
-  background: transparent;
-
-  color: #fff;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  justify-content: center;
-
-  gap: 4px;
-
-  text-shadow:
-    0 2px 7px rgba(0, 0, 0, 0.9);
-
-  transition:
-    transform 0.18s ease;
-}
-
-
-/* =========================================================
-   ACTION ICON
-   ========================================================= */
-
-.action-icon {
-  width: 45px;
-  height: 45px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  font-size: 27px;
-
-  line-height: 1;
-
-  background:
-    rgba(0, 0, 0, 0.26);
-
-  border: 1px solid rgba(255, 255, 255, 0.16);
-
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-
-  box-shadow:
-    0 4px 13px rgba(0, 0, 0, 0.35),
-    inset 0 0 8px rgba(255, 255, 255, 0.08);
-
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    background 0.2s ease;
-}
-
-
-/* =========================================================
-   ACTION COUNT
-   ========================================================= */
-
-.action-btn span:last-child {
-  font-size: 12px;
-
-  font-weight: 800;
-
-  color: #fff;
-
-  text-shadow:
-    0 2px 5px rgba(0, 0, 0, 0.95);
-}
-
-
-/* =========================================================
-   ACTION PRESS
-   ========================================================= */
-
-.action-btn:active {
-  transform: scale(0.88);
-}
-
-
-/* =========================================================
-   ❤️ LIKE
-   ========================================================= */
-
-.like-btn.liked .action-icon {
-  transform: scale(1.17);
-
-  background:
-    rgba(255, 45, 85, 0.16);
-
-  box-shadow:
-    0 0 8px rgba(255, 45, 85, 0.75),
-    0 0 20px rgba(255, 45, 85, 0.38);
-}
-
-
-/* =========================================================
-   🔖 SAVE
-   ========================================================= */
-
-.save-btn.saved .action-icon {
-  transform: scale(1.13);
-
-  background:
-    rgba(255, 193, 7, 0.12);
-
-  box-shadow:
-    0 0 8px rgba(255, 193, 7, 0.65),
-    0 0 18px rgba(255, 193, 7, 0.28);
-}
-
-
-/* =========================================================
-   VIDEO INFO
-   ========================================================= */
-
-.video-info {
-  position: absolute;
-
-  left: 14px;
-  right: 76px;
-  bottom: 18px;
-
-  z-index: 10;
-
-  color: #fff;
-}
-
-
-.video-info-username {
-  padding: 0;
-
-  border: 0;
-
-  background: transparent;
-
-  color: #fff;
-
-  font-size: 16px;
-  font-weight: 900;
-
-  text-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.95);
-}
-
-
-.video-caption {
-  margin-top: 7px;
-
-  font-size: 14px;
-
-  line-height: 1.4;
-
-  font-weight: 500;
-
-  word-break: break-word;
-
-  text-shadow:
-    0 2px 7px rgba(0, 0, 0, 0.9);
-}
-
-
-.video-music {
-  margin-top: 8px;
-
-  font-size: 13px;
-
-  color: #eee;
-
-  text-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.9);
-}
-
-
-/* =========================================================
-   📱 BOTTOM NAVIGATION
-   ========================================================= */
-
-.wwc-bottom-nav {
-  position: fixed;
-
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  height: 66px;
-
-  padding:
-    0
-    4px
-    env(safe-area-inset-bottom);
-
-  background:
-    rgba(0, 0, 0, 0.91);
-
-  border-top:
-    1px solid rgba(255, 255, 255, 0.09);
-
-  display: flex;
-
-  align-items: center;
-  justify-content: space-around;
-
-  z-index: 60;
-
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-
-  box-shadow:
-    0 -5px 20px rgba(0, 0, 0, 0.35);
-}
-
-
-/* =========================================================
-   BOTTOM NAV BUTTON
-   ========================================================= */
-
-.wwc-nav-btn {
-  position: relative;
-
-  flex: 1;
-
-  height: 100%;
-
-  padding: 5px 2px;
-
-  border: 0;
-
-  background: transparent;
-
-  color: rgba(255, 255, 255, 0.55);
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
-
-  gap: 3px;
-
-  font-size: 10px;
-  font-weight: 700;
-
-  transition:
-    color 0.2s ease,
-    transform 0.2s ease;
-}
-
-
-.wwc-nav-btn span:first-child {
-  font-size: 21px;
-
-  line-height: 1;
-
-  filter:
-    drop-shadow(
-      0 2px 5px rgba(0, 0, 0, 0.8)
-    );
-
-  transition:
-    transform 0.2s ease;
-}
-
-
-.wwc-nav-btn.active {
-  color: #fff;
-
-  text-shadow:
-    0 0 8px rgba(255, 255, 255, 0.45);
-}
-
-
-.wwc-nav-btn.active span:first-child {
-  transform: scale(1.12);
-
-  filter:
-    drop-shadow(
-      0 0 6px rgba(255, 255, 255, 0.55)
-    );
-}
-
-
-.wwc-nav-btn:active {
-  transform: scale(0.91);
-}
-
-
-/* =========================================================
-   ➕ CREATE / UPLOAD BUTTON
-   ========================================================= */
-
-.wwc-create-btn {
-  position: relative;
-
-  width: 48px;
-  height: 35px;
-
-  margin:
-    0
-    8px;
-
-  padding: 0;
-
-  border: 0;
-
-  border-radius: 9px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #fff,
-      #e9e9e9
-    );
-
-  color: #000;
-
-  font-size: 28px;
-  font-weight: 400;
-
-  line-height: 1;
-
-  box-shadow:
-    -5px 0 0 #25f4ee,
-    5px 0 0 #fe2c55,
-    0 4px 15px rgba(255, 255, 255, 0.2);
-
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease;
-}
-
-
-.wwc-create-btn:active {
-  transform: scale(0.88);
-
-  box-shadow:
-    -3px 0 0 #25f4ee,
-    3px 0 0 #fe2c55,
-    0 2px 8px rgba(255, 255, 255, 0.2);
-}
-
-
-/* =========================================================
-   LOADING / EMPTY / ERROR
-   ========================================================= */
-
-.feed-loading,
-.feed-empty,
-.feed-error {
-  width: 100%;
-  height: 100dvh;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  flex-direction: column;
-
-  text-align: center;
-
-  padding: 30px;
-
-  background: #000;
-
-  color: #fff;
-
-  font-size: 18px;
-}
-
-
-.feed-empty small,
-.feed-error small {
-  margin-top: 10px;
-
-  color: #aaa;
-
-  word-break: break-word;
-
-  font-size: 13px;
-}
-
-
-/* =========================================================
-   💬 COMMENT BOX
-   ========================================================= */
-
-.comment-box {
-  position: fixed;
-
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  z-index: 100;
-
-  padding:
-    18px
-    16px
-    calc(18px + env(safe-area-inset-bottom));
-
-  background:
-    linear-gradient(
-      to bottom,
-      #202020,
-      #111
-    );
-
-  border:
-    1px solid rgba(255, 255, 255, 0.1);
-
-  border-radius:
-    22px
-    22px
-    0
-    0;
-
-  transform:
-    translateY(110%);
-
-  transition:
-    transform 0.28s cubic-bezier(.2,.8,.2,1);
-
-  box-shadow:
-    0 -8px 30px rgba(0, 0, 0, 0.65);
-}
-
-
-.comment-box.show {
-  transform:
-    translateY(0);
-}
-
-
-.comment-title {
-  color: #fff;
-
-  font-size: 18px;
-
-  font-weight: 800;
-
-  text-align: center;
-}
-
-
-.comments-list {
-  max-height: 35vh;
-
-  overflow-y: auto;
-
-  margin-top: 10px;
-}
-
-
-.comment-box textarea {
-  width: 100%;
-
-  min-height: 90px;
-
-  margin-top: 12px;
-
-  padding: 12px;
-
-  border-radius: 12px;
-
-  border:
-    1px solid #444;
-
-  outline: none;
-
-  background: #0c0c0c;
-
-  color: #fff;
-
-  resize: none;
-
-  font-size: 14px;
-}
-
-
-.comment-box textarea:focus {
-  border-color: #777;
-
-  box-shadow:
-    0 0 10px rgba(255, 255, 255, 0.08);
-}
-
-
-.comment-buttons {
-  display: flex;
-
-  gap: 10px;
-
-  margin-top: 10px;
-}
-
-
-.comment-buttons button {
-  flex: 1;
-
-  padding: 12px;
-
-  border: 0;
-
-  border-radius: 10px;
-
-  background: #333;
-
-  color: #fff;
-
-  font-weight: 700;
-}
-
-
-#commentSend {
-  background:
-    linear-gradient(
-      135deg,
-      #fe2c55,
-      #ff174f
-    );
-
-  box-shadow:
-    0 4px 12px rgba(254, 44, 85, 0.28);
-}
-
-
-/* =========================================================
-   COMMENT ITEMS
-   ========================================================= */
-
-.comment-item {
-  display: flex;
-
-  gap: 10px;
-
-  padding: 9px 0;
-
-  border-bottom:
-    1px solid rgba(255, 255, 255, 0.07);
-}
-
-
-.comment-avatar {
-  width: 36px;
-  height: 36px;
-
-  flex-shrink: 0;
-
-  border-radius: 50%;
-
-  overflow: hidden;
-}
-
-
-.comment-avatar img {
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-}
-
-
-.comment-content {
-  color: #eee;
-
-  font-size: 13px;
-
-  line-height: 1.4;
-}
-
-
-.comment-content strong {
-  color: #fff;
-
-  display: block;
-
-  margin-bottom: 3px;
-}
-
-
-/* =========================================================
-   PROFILE MENU
-   ========================================================= */
-
-.profile-menu {
-  position: fixed;
-
-  right: 12px;
-  bottom: 76px;
-
-  width: 230px;
-
-  padding: 12px;
-
-  z-index: 120;
-
-  background:
-    rgba(20, 20, 20, 0.97);
-
-  border:
-    1px solid rgba(255, 255, 255, 0.12);
-
-  border-radius: 16px;
-
-  box-shadow:
-    0 10px 35px rgba(0, 0, 0, 0.65);
-
-  transform:
-    translateY(15px) scale(0.96);
-
-  opacity: 0;
-
-  pointer-events: none;
-
-  transition:
-    all 0.2s ease;
-}
-
-
-.profile-menu.show {
-  transform:
-    translateY(0) scale(1);
-
-  opacity: 1;
-
-  pointer-events: auto;
-}
-
-
-.profile-menu-header {
-  display: flex;
-
-  align-items: center;
-  justify-content: space-between;
-
-  padding: 5px 4px 10px;
-}
-
-
-.profile-menu-title {
-  font-weight: 800;
-
-  color: #fff;
-}
-
-
-.profile-menu-close {
-  border: 0;
-
-  background: transparent;
-
-  color: #fff;
-
-  font-size: 18px;
-}
-
-
-.profile-menu-btn {
-  width: 100%;
-
-  padding: 12px;
-
-  margin-top: 6px;
-
-  border: 0;
-
-  border-radius: 10px;
-
-  background: #292929;
-
-  color: #fff;
-
-  text-align: left;
-
-  font-weight: 700;
-}
-
-
-.profile-menu-btn:active {
-  transform: scale(0.97);
-}
-
-
-.logout-menu-btn {
-  background:
-    linear-gradient(
-      135deg,
-      #d71945,
-      #fe2c55
-    );
-}
-
-
-/* =========================================================
-   🎬 VIDEO CARD TRANSITION
-   ========================================================= */
-
-.video-item {
-  animation:
-    videoFade 0.35s ease;
-}
-
-
-@keyframes videoFade {
-
-  from {
-    opacity: 0.7;
-  }
-
-  to {
-    opacity: 1;
-  }
-
-}
-
-
-/* =========================================================
-   SMALL PHONES
-   ========================================================= */
-
-@media (max-width: 380px) {
-
-  .wwc-top-tabs {
-    gap: 20px;
-  }
-
-  .wwc-top-tab {
-    min-width: 68px;
-    font-size: 14px;
-  }
-
-  .wwc-search-btn {
-    right: 8px;
-
-    width: 36px;
-    height: 36px;
-
-    font-size: 18px;
-  }
-
-  .profile-area {
-    left: 9px;
-    bottom: 105px;
-  }
-
-  .profile-photo-btn {
-    width: 44px;
-    height: 44px;
-  }
-
-  .profile-username {
-    max-width: 90px;
-  }
-
-  .follow-btn {
-    padding: 6px 9px;
-
-    font-size: 12px;
-  }
-
-  .actions {
-    right: 5px;
-    bottom: 105px;
-
-    gap: 11px;
-  }
-
-  .action-icon {
-    width: 42px;
-    height: 42px;
-
-    font-size: 24px;
-  }
-
-  .action-btn {
-    width: 45px;
-  }
-
-  .video-info {
-    left: 10px;
-    right: 67px;
-  }
-
-}
-
-
-/* =========================================================
-   TABLET / LARGE SCREEN
-   ========================================================= */
-
-@media (min-width: 700px) {
-
-  #app {
-    max-width: 500px;
-
-    margin: 0 auto;
-
-    box-shadow:
-      0 0 40px rgba(0, 0, 0, 0.6);
-  }
-
-  .wwc-top-bar {
-    left: 50%;
-
-    right: auto;
-
-    width: 500px;
-
-    transform:
-      translateX(-50%);
-  }
-
-  .wwc-bottom-nav {
-    left: 50%;
-
-    right: auto;
-
-    width: 500px;
-
-    transform:
-      translateX(-50%);
-  }
-
-}
+</body>
+</html>
