@@ -1,367 +1,1343 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-  <meta charset="UTF-8">
+/* =========================================================
+   WORLD WIDE CONNECT
+   WWC MOBILE VIDEO FEED
+   FINAL SHINY / TIKTOK STYLE CSS
+   ========================================================= */
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  >
 
-  <meta
-    name="theme-color"
-    content="#000000"
-  >
+/* =========================================================
+   GLOBAL
+   ========================================================= */
 
-  <title>World Wide Connect</title>
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
 
-  <!-- MAIN CSS -->
-  <link
-    rel="stylesheet"
-    href="./css/style.css"
-  >
-</head>
+html,
+body {
+  margin: 0;
+  padding: 0;
 
-<body>
+  width: 100%;
+  height: 100%;
 
-  <!-- =====================================================
-       WWC MAIN APP
-       ===================================================== -->
+  overflow: hidden;
 
-  <div id="app">
+  background: #000;
 
-    <!-- ===================================================
-         TOP BAR
-         Following | For You | Search
-         =================================================== -->
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+}
 
-    <header class="wwc-top-bar">
+body {
+  color: #fff;
+}
 
-      <div class="wwc-top-tabs">
+button,
+textarea,
+input {
+  font-family: inherit;
+}
 
-        <!-- FOLLOWING -->
+button {
+  cursor: pointer;
+}
 
-        <button
-          id="followingTab"
-          class="wwc-top-tab"
-          type="button"
-        >
-          Following
-        </button>
 
+/* =========================================================
+   MAIN APP
+   ========================================================= */
 
-        <!-- FOR YOU -->
+#app {
+  position: relative;
 
-        <button
-          id="forYouTab"
-          class="wwc-top-tab active"
-          type="button"
-        >
-          For You
-        </button>
+  width: 100%;
+  height: 100dvh;
 
-      </div>
+  overflow: hidden;
 
+  background: #000;
+}
 
-      <!-- SEARCH -->
 
-      <button
-        id="searchBtn"
-        class="wwc-search-btn"
-        type="button"
-        aria-label="Search"
-      >
-        <span>⌕</span>
-      </button>
+/* =========================================================
+   VIDEO FEED
+   ========================================================= */
 
-    </header>
+#video-feed {
+  width: 100%;
+  height: 100dvh;
 
+  overflow-y: auto;
+  overflow-x: hidden;
 
-    <!-- ===================================================
-         VIDEO FEED
-         =================================================== -->
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
 
-    <main
-      id="video-feed"
-      aria-label="WWC Video Feed"
-    >
+  -webkit-overflow-scrolling: touch;
 
-      <!-- Firebase থেকে ভিডিও এখানে আসবে -->
+  scrollbar-width: none;
+}
 
-      <div class="feed-loading">
+#video-feed::-webkit-scrollbar {
+  display: none;
+}
 
-        <div>
-          ⏳
-        </div>
 
-        <div>
-          Video Feed Loading...
-        </div>
+/* =========================================================
+   VIDEO ITEM
+   ========================================================= */
 
-      </div>
+.video-item {
+  position: relative;
 
-    </main>
+  width: 100%;
+  height: 100dvh;
 
+  min-height: 100dvh;
 
-    <!-- ===================================================
-         PROFILE MENU
-         =================================================== -->
+  overflow: hidden;
 
-    <div
-      id="profileMenu"
-      class="profile-menu"
-      aria-hidden="true"
-    >
+  background: #000;
 
-      <div class="profile-menu-header">
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
 
-        <div class="profile-menu-title">
-          👤 My Profile
-        </div>
 
+/* =========================================================
+   VIDEO
+   ========================================================= */
 
-        <button
-          id="profileMenuClose"
-          class="profile-menu-close"
-          type="button"
-          aria-label="Close"
-        >
-          ✕
-        </button>
+.feed-video {
+  position: absolute;
 
-      </div>
+  inset: 0;
 
+  width: 100%;
+  height: 100%;
 
-      <!-- PROFILE -->
+  object-fit: cover;
 
-      <button
-        id="profileBtnMenu"
-        class="profile-menu-btn"
-        type="button"
-      >
-        👤 Profile
-      </button>
+  display: block;
 
+  background: #000;
+}
 
-      <!-- LOGIN -->
 
-      <button
-        id="loginBtn"
-        class="profile-menu-btn"
-        type="button"
-      >
-        🔐 Login / Register
-      </button>
+/* =========================================================
+   VIDEO OVERLAY
+   ========================================================= */
 
+.video-overlay {
+  position: absolute;
 
-      <!-- LOGOUT -->
+  inset: 0;
 
-      <button
-        id="logoutBtn"
-        class="profile-menu-btn logout-menu-btn"
-        type="button"
-      >
-        🚪 Logout
-      </button>
+  z-index: 1;
 
-    </div>
+  pointer-events: none;
 
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0,0,0,.48),
+      rgba(0,0,0,.08) 25%,
+      transparent 52%,
+      rgba(0,0,0,.72) 100%
+    );
+}
 
-    <!-- ===================================================
-         COMMENT BOX
-         =================================================== -->
 
-    <div
-      id="commentBox"
-      class="comment-box"
-      aria-hidden="true"
-    >
+/* =========================================================
+   TOP BAR
+   ========================================================= */
 
-      <!-- COMMENT HEADER -->
+.wwc-top-bar {
+  position: fixed;
 
-      <div class="comment-title">
-        💬 Comments
-      </div>
+  top: 0;
+  left: 0;
+  right: 0;
 
+  height: 65px;
 
-      <!-- COMMENTS -->
+  z-index: 60;
 
-      <div
-        id="commentsList"
-        class="comments-list"
-      >
-        <!-- Comments will load here -->
-      </div>
+  display: flex;
 
+  align-items: center;
+  justify-content: center;
 
-      <!-- COMMENT INPUT -->
+  padding-top: env(safe-area-inset-top);
 
-      <textarea
-        id="commentInput"
-        placeholder="Write a comment..."
-        maxlength="500"
-      ></textarea>
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0,0,0,.82),
+      rgba(0,0,0,.38),
+      transparent
+    );
 
+  pointer-events: none;
+}
 
-      <!-- COMMENT BUTTONS -->
 
-      <div class="comment-buttons">
+/* =========================================================
+   TOP TABS
+   ========================================================= */
 
-        <button
-          id="commentCancel"
-          type="button"
-        >
-          Cancel
-        </button>
+.wwc-top-tabs {
+  height: 100%;
 
+  display: flex;
 
-        <button
-          id="commentSend"
-          type="button"
-        >
-          Send
-        </button>
+  align-items: center;
+  justify-content: center;
 
-      </div>
+  gap: 24px;
 
-    </div>
+  pointer-events: auto;
+}
 
+.wwc-top-tab {
+  position: relative;
 
-    <!-- ===================================================
-         VIDEO UPLOAD INPUT
-         =================================================== -->
+  padding: 9px 2px;
 
-    <input
-      id="videoUpload"
-      type="file"
-      accept="video/*"
-      hidden
-    >
+  border: 0;
+  outline: none;
 
+  background: transparent;
 
-    <!-- ===================================================
-         BOTTOM NAVIGATION
-         =================================================== -->
+  color: rgba(255,255,255,.62);
 
-    <nav
-      class="wwc-bottom-nav"
-      aria-label="Main navigation"
-    >
+  font-size: 16px;
+  font-weight: 700;
 
-      <!-- =================================================
-           HOME
-           ================================================= -->
+  letter-spacing: .1px;
 
-      <button
-        class="wwc-nav-btn active"
-        id="homeBtn"
-        type="button"
-      >
+  transition:
+    color .2s ease,
+    transform .18s ease;
+}
 
-        <span class="nav-icon">
-          🏠
-        </span>
+.wwc-top-tab:active {
+  transform: scale(.90);
+}
 
-        <span class="nav-label">
-          Home
-        </span>
+.wwc-top-tab.active {
+  color: #fff;
 
-      </button>
+  text-shadow:
+    0 0 10px rgba(255,255,255,.65);
+}
 
 
-      <!-- =================================================
-           FRIENDS
-           ================================================= -->
+/* =========================================================
+   ACTIVE TAB LINE
+   ========================================================= */
 
-      <button
-        class="wwc-nav-btn"
-        id="friendsBtn"
-        type="button"
-      >
+.wwc-top-tab.active::after {
+  content: "";
 
-        <span class="nav-icon">
-          👥
-        </span>
+  position: absolute;
 
-        <span class="nav-label">
-          Friends
-        </span>
+  left: 50%;
+  bottom: 1px;
 
-      </button>
+  width: 34px;
+  height: 3px;
 
+  transform: translateX(-50%);
 
-      <!-- =================================================
-           CREATE / UPLOAD
-           ================================================= -->
+  border-radius: 20px;
 
-      <button
-        id="uploadBtn"
-        class="wwc-create-btn"
-        type="button"
-        aria-label="Upload Video"
-      >
+  background: #fff;
 
-        <span>
-          +
-        </span>
+  box-shadow:
+    0 0 6px rgba(255,255,255,.95),
+    0 0 14px rgba(255,255,255,.65);
 
-      </button>
+  animation:
+    tabGlow .25s ease;
+}
 
+@keyframes tabGlow {
 
-      <!-- =================================================
-           INBOX
-           ================================================= -->
+  from {
+    width: 8px;
+    opacity: .3;
+  }
 
-      <button
-        class="wwc-nav-btn"
-        id="inboxBtn"
-        type="button"
-      >
+  to {
+    width: 34px;
+    opacity: 1;
+  }
 
-        <span class="nav-icon">
-          💬
-        </span>
+}
 
-        <span class="nav-label">
-          Inbox
-        </span>
 
-      </button>
+/* =========================================================
+   SEARCH BUTTON
+   ========================================================= */
 
+.wwc-search-btn {
+  position: absolute;
 
-      <!-- =================================================
-           PROFILE
-           ================================================= -->
+  right: 13px;
+  top: 13px;
 
-      <button
-        id="profileBtn"
-        class="wwc-nav-btn"
-        type="button"
-      >
+  width: 40px;
+  height: 40px;
 
-        <span class="nav-icon">
-          👤
-        </span>
+  padding: 0;
 
-        <span class="nav-label">
-          Profile
-        </span>
+  border-radius: 50%;
 
-      </button>
+  border:
+    1px solid rgba(255,255,255,.28);
 
-    </nav>
+  outline: none;
 
-  </div>
+  display: flex;
 
+  align-items: center;
+  justify-content: center;
 
-  <!-- =====================================================
-       MAIN APPLICATION JAVASCRIPT
-       ===================================================== -->
+  color: #fff;
 
-  <script
-    type="module"
-    src="./js/app.js"
-  ></script>
+  background:
+    rgba(20,20,20,.55);
 
-</body>
-</html>
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 4px 15px rgba(0,0,0,.45),
+    inset 0 1px 2px rgba(255,255,255,.18);
+
+  pointer-events: auto;
+
+  transition:
+    transform .18s ease,
+    background .18s ease,
+    box-shadow .18s ease;
+}
+
+.wwc-search-btn span {
+  display: block;
+
+  font-size: 30px;
+
+  line-height: 1;
+
+  transform:
+    rotate(-20deg);
+
+  margin-top: -3px;
+}
+
+.wwc-search-btn:active {
+  transform: scale(.84);
+
+  background:
+    rgba(255,255,255,.18);
+
+  box-shadow:
+    0 0 20px rgba(255,255,255,.2);
+}
+
+
+/* =========================================================
+   PROFILE AREA
+   ========================================================= */
+
+.profile-area {
+  position: absolute;
+
+  left: 14px;
+  bottom: 105px;
+
+  z-index: 10;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  max-width:
+    calc(100% - 90px);
+
+  text-shadow:
+    0 2px 6px rgba(0,0,0,.9);
+}
+
+
+/* =========================================================
+   PROFILE PHOTO
+   ========================================================= */
+
+.profile-photo-btn {
+  width: 48px;
+  height: 48px;
+
+  flex-shrink: 0;
+
+  padding: 0;
+
+  border:
+    2px solid #fff;
+
+  border-radius: 50%;
+
+  overflow: hidden;
+
+  background: #222;
+
+  box-shadow:
+    0 0 10px rgba(255,255,255,.25),
+    0 3px 12px rgba(0,0,0,.65);
+
+  transition:
+    transform .18s ease;
+}
+
+.profile-photo-btn:active {
+  transform: scale(.88);
+}
+
+.profile-photo {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+}
+
+
+/* =========================================================
+   USERNAME
+   ========================================================= */
+
+.profile-username {
+  max-width: 130px;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+
+  padding: 0;
+
+  border: 0;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #fff;
+
+  font-size: 15px;
+  font-weight: 800;
+
+  text-shadow:
+    0 2px 5px rgba(0,0,0,.9);
+}
+
+
+/* =========================================================
+   FOLLOW BUTTON
+   ========================================================= */
+
+.follow-btn {
+  padding: 7px 13px;
+
+  border: 0;
+
+  border-radius: 8px;
+
+  color: #fff;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  white-space: nowrap;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff174f,
+      #fe2c55,
+      #ff5274
+    );
+
+  box-shadow:
+    0 4px 13px rgba(254,44,85,.48),
+    inset 0 1px 2px rgba(255,255,255,.35);
+
+  text-shadow:
+    0 1px 2px rgba(0,0,0,.35);
+
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease;
+}
+
+.follow-btn:active {
+  transform: scale(.88);
+}
+
+.follow-btn.following {
+  background:
+    linear-gradient(
+      135deg,
+      #555,
+      #292929
+    );
+
+  box-shadow:
+    0 3px 10px rgba(0,0,0,.45),
+    inset 0 1px 2px rgba(255,255,255,.12);
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.actions {
+  position: absolute;
+
+  right: 9px;
+  bottom: 108px;
+
+  z-index: 11;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 14px;
+}
+
+
+/* =========================================================
+   ACTION BUTTON
+   ========================================================= */
+
+.action-btn {
+  position: relative;
+
+  width: 50px;
+  min-height: 52px;
+
+  padding: 5px 2px;
+
+  border: 1px solid rgba(255,255,255,.10);
+
+  border-radius: 17px;
+
+  outline: none;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 3px;
+
+  color: #fff;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.16),
+      rgba(255,255,255,.035)
+    );
+
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+
+  box-shadow:
+    0 5px 18px rgba(0,0,0,.38),
+    inset 0 1px 2px rgba(255,255,255,.16);
+
+  transition:
+    transform .16s ease,
+    background .18s ease;
+}
+
+.action-btn:active {
+  transform: scale(.83);
+}
+
+.action-icon {
+  font-size: 28px;
+
+  line-height: 1;
+
+  filter:
+    drop-shadow(
+      0 2px 4px rgba(0,0,0,.8)
+    );
+
+  transition:
+    transform .2s ease,
+    filter .2s ease;
+}
+
+.action-btn span:last-child {
+  font-size: 11px;
+
+  line-height: 1.1;
+
+  font-weight: 800;
+
+  text-shadow:
+    0 2px 4px rgba(0,0,0,.85);
+}
+
+
+/* =========================================================
+   LIKE
+   ========================================================= */
+
+.like-btn.liked {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(254,44,85,.38),
+      rgba(254,44,85,.08)
+    );
+
+  border-color:
+    rgba(255,80,110,.48);
+
+  box-shadow:
+    0 0 14px rgba(254,44,85,.30),
+    inset 0 1px 2px rgba(255,255,255,.16);
+}
+
+.like-btn.liked .action-icon {
+  transform: scale(1.20);
+
+  filter:
+    drop-shadow(
+      0 0 8px rgba(255,30,80,.9)
+    );
+}
+
+
+/* =========================================================
+   SAVE
+   ========================================================= */
+
+.save-btn.saved {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,190,40,.30),
+      rgba(255,190,40,.06)
+    );
+
+  border-color:
+    rgba(255,210,80,.4);
+}
+
+.save-btn.saved .action-icon {
+  transform: scale(1.17);
+
+  filter:
+    drop-shadow(
+      0 0 8px rgba(255,190,40,.9)
+    );
+}
+
+
+/* =========================================================
+   SHARE
+   ========================================================= */
+
+.share-btn .action-icon {
+  font-size: 27px;
+}
+
+
+/* =========================================================
+   VIDEO INFORMATION
+   ========================================================= */
+
+.video-info {
+  position: absolute;
+
+  left: 14px;
+  right: 72px;
+
+  bottom: 20px;
+
+  z-index: 10;
+
+  color: #fff;
+
+  text-shadow:
+    0 2px 6px rgba(0,0,0,.9);
+}
+
+.video-info-username {
+  padding: 0;
+
+  border: 0;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #fff;
+
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.video-caption {
+  margin-top: 7px;
+
+  font-size: 14px;
+
+  line-height: 1.4;
+
+  word-break: break-word;
+}
+
+.video-music {
+  margin-top: 8px;
+
+  color: #ddd;
+
+  font-size: 13px;
+}
+
+
+/* =========================================================
+   BOTTOM NAVIGATION
+   ========================================================= */
+
+.wwc-bottom-nav {
+  position: fixed;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 66px;
+
+  padding-bottom:
+    env(safe-area-inset-bottom);
+
+  z-index: 50;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-around;
+
+  background:
+    rgba(5,5,5,.94);
+
+  border-top:
+    1px solid rgba(255,255,255,.09);
+
+  box-shadow:
+    0 -8px 25px rgba(0,0,0,.55);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+
+/* =========================================================
+   BOTTOM NAV BUTTON
+   ========================================================= */
+
+.wwc-nav-btn {
+  flex: 1;
+
+  height: 100%;
+
+  padding: 4px 2px;
+
+  border: 0;
+
+  outline: none;
+
+  background: transparent;
+
+  color: #8d8d8d;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 2px;
+
+  font-size: 11px;
+
+  transition:
+    color .18s ease,
+    transform .18s ease,
+    text-shadow .18s ease;
+}
+
+.wwc-nav-btn:active {
+  transform: scale(.86);
+}
+
+.wwc-nav-btn.active {
+  color: #fff;
+
+  text-shadow:
+    0 0 8px rgba(255,255,255,.65);
+}
+
+.nav-icon {
+  font-size: 21px;
+
+  line-height: 1;
+}
+
+.nav-label {
+  font-size: 10px;
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   CREATE / UPLOAD BUTTON
+   ========================================================= */
+
+.wwc-create-btn {
+  position: relative;
+
+  width: 52px;
+  height: 36px;
+
+  flex-shrink: 0;
+
+  margin: 0 8px;
+
+  padding: 0;
+
+  border: 0;
+
+  border-radius: 10px;
+
+  outline: none;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffffff,
+      #ededed
+    );
+
+  color: #000;
+
+  box-shadow:
+    0 0 12px rgba(255,255,255,.42),
+    0 5px 15px rgba(0,0,0,.55),
+    inset 0 1px 2px rgba(255,255,255,.9);
+
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease;
+}
+
+.wwc-create-btn span {
+  font-size: 30px;
+
+  line-height: 1;
+
+  margin-top: -2px;
+}
+
+.wwc-create-btn:active {
+  transform: scale(.86);
+
+  box-shadow:
+    0 0 22px rgba(255,255,255,.65);
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.feed-loading,
+.feed-empty,
+.feed-error {
+  width: 100%;
+  height: 100dvh;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  padding: 30px;
+
+  background: #000;
+
+  color: #fff;
+
+  font-size: 18px;
+}
+
+.feed-loading {
+  gap: 10px;
+}
+
+.feed-empty small,
+.feed-error small {
+  margin-top: 10px;
+
+  color: #aaa;
+
+  word-break: break-word;
+}
+
+
+/* =========================================================
+   COMMENT BOX
+   ========================================================= */
+
+.comment-box {
+  position: fixed;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  z-index: 100;
+
+  max-height: 85dvh;
+
+  padding:
+    18px
+    16px
+    calc(18px + env(safe-area-inset-bottom));
+
+  background:
+    linear-gradient(
+      180deg,
+      #202020,
+      #111
+    );
+
+  border-radius:
+    22px 22px 0 0;
+
+  border-top:
+    1px solid rgba(255,255,255,.12);
+
+  box-shadow:
+    0 -10px 35px rgba(0,0,0,.65);
+
+  transform:
+    translateY(110%);
+
+  transition:
+    transform .28s ease;
+
+  overflow-y: auto;
+}
+
+.comment-box.show {
+  transform:
+    translateY(0);
+}
+
+.comment-title {
+  color: #fff;
+
+  font-size: 18px;
+
+  font-weight: 800;
+}
+
+.comments-list {
+  max-height: 35dvh;
+
+  margin-top: 12px;
+
+  overflow-y: auto;
+}
+
+.comment-item {
+  display: flex;
+
+  gap: 10px;
+
+  padding: 10px 0;
+
+  border-bottom:
+    1px solid rgba(255,255,255,.07);
+}
+
+.comment-avatar {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  overflow: hidden;
+
+  border-radius: 50%;
+}
+
+.comment-avatar img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.comment-content {
+  color: #eee;
+
+  font-size: 14px;
+
+  line-height: 1.4;
+}
+
+.comment-content strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: #fff;
+}
+
+.comment-box textarea {
+  width: 100%;
+
+  min-height: 85px;
+
+  margin-top: 12px;
+
+  padding: 12px;
+
+  border:
+    1px solid #444;
+
+  border-radius: 12px;
+
+  outline: none;
+
+  resize: none;
+
+  background: #0d0d0d;
+
+  color: #fff;
+
+  font-size: 14px;
+}
+
+.comment-box textarea:focus {
+  border-color: #777;
+
+  box-shadow:
+    0 0 10px rgba(255,255,255,.08);
+}
+
+.comment-buttons {
+  display: flex;
+
+  gap: 10px;
+
+  margin-top: 10px;
+}
+
+.comment-buttons button {
+  flex: 1;
+
+  padding: 12px;
+
+  border: 0;
+
+  border-radius: 10px;
+
+  background:
+    #333;
+
+  color: #fff;
+
+  font-weight: 700;
+}
+
+.comment-buttons button:active {
+  transform: scale(.96);
+}
+
+#commentSend {
+  background:
+    linear-gradient(
+      135deg,
+      #ff174f,
+      #fe2c55
+    );
+
+  box-shadow:
+    0 4px 12px rgba(254,44,85,.35);
+}
+
+
+/* =========================================================
+   PROFILE MENU
+   ========================================================= */
+
+.profile-menu {
+  position: fixed;
+
+  left: 15px;
+  right: 15px;
+  bottom: 78px;
+
+  z-index: 90;
+
+  padding: 15px;
+
+  border-radius: 18px;
+
+  background:
+    rgba(25,25,25,.96);
+
+  border:
+    1px solid rgba(255,255,255,.12);
+
+  box-shadow:
+    0 12px 35px rgba(0,0,0,.65);
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  transform:
+    translateY(20px) scale(.96);
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition:
+    opacity .2s ease,
+    transform .2s ease;
+}
+
+.profile-menu.show {
+  opacity: 1;
+
+  pointer-events: auto;
+
+  transform:
+    translateY(0) scale(1);
+}
+
+.profile-menu-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 10px;
+}
+
+.profile-menu-title {
+  font-size: 17px;
+
+  font-weight: 800;
+}
+
+.profile-menu-close {
+  width: 35px;
+  height: 35px;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background: #333;
+
+  color: #fff;
+}
+
+.profile-menu-btn {
+  width: 100%;
+
+  padding: 13px;
+
+  margin-top: 7px;
+
+  border: 0;
+
+  border-radius: 10px;
+
+  background: #292929;
+
+  color: #fff;
+
+  text-align: left;
+
+  font-weight: 700;
+}
+
+.profile-menu-btn:active {
+  transform: scale(.98);
+}
+
+.logout-menu-btn {
+  background:
+    rgba(254,44,85,.18);
+
+  color:
+    #ff5b78;
+}
+
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+  .wwc-top-tabs {
+    gap: 17px;
+  }
+
+  .wwc-top-tab {
+    font-size: 14px;
+  }
+
+  .wwc-search-btn {
+    right: 8px;
+
+    width: 37px;
+    height: 37px;
+
+    top: 13px;
+  }
+
+  .profile-area {
+    left: 9px;
+    bottom: 101px;
+  }
+
+  .profile-username {
+    max-width: 95px;
+
+    font-size: 14px;
+  }
+
+  .follow-btn {
+    padding: 6px 9px;
+
+    font-size: 12px;
+  }
+
+  .actions {
+    right: 5px;
+    bottom: 104px;
+
+    gap: 10px;
+  }
+
+  .action-btn {
+    width: 45px;
+    min-height: 48px;
+
+    border-radius: 15px;
+  }
+
+  .action-icon {
+    font-size: 25px;
+  }
+
+  .video-info {
+    left: 10px;
+    right: 62px;
+  }
+
+  .wwc-create-btn {
+    width: 48px;
+    height: 34px;
+
+    margin: 0 5px;
+  }
+
+}
+
+
+/* =========================================================
+   VERY SMALL DEVICES
+   ========================================================= */
+
+@media (max-height: 650px) {
+
+  .actions {
+    gap: 8px;
+    bottom: 100px;
+  }
+
+  .action-btn {
+    min-height: 45px;
+  }
+
+  .action-icon {
+    font-size: 24px;
+  }
+
+  .profile-area {
+    bottom: 98px;
+  }
+
+}
+
+
+/* =========================================================
+   REDUCE MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  * {
+    scroll-behavior: auto !important;
+
+    transition-duration:
+      .01ms !important;
+
+    animation-duration:
+      .01ms !important;
+  }
+
+}
