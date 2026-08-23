@@ -1,105 +1,61 @@
 /* =========================================================
-   WORLD WIDE CONNECT
-   WWC-CORE
-   MAIN STYLE
+   WWC MOBILE VIDEO FEED
    ========================================================= */
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
 
 html,
 body {
+  margin: 0;
+  padding: 0;
   width: 100%;
   height: 100%;
-  background: #000;
-  color: #fff;
-  font-family: Arial, sans-serif;
   overflow: hidden;
-}
-
-body {
-  -webkit-tap-highlight-color: transparent;
-}
-
-button,
-input,
-textarea {
-  font-family: inherit;
-}
-
-button {
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+  background: #000;
 }
 
 #app {
   width: 100%;
-  height: 100%;
+  height: 100dvh;
+  background: #000;
+  overflow: hidden;
 }
 
-
-/* =========================================================
-   VIDEO FEED
-   ========================================================= */
-
 #video-feed {
-  position: fixed;
-  inset: 0;
-
   width: 100%;
-  height: 100vh;
   height: 100dvh;
-
   overflow-y: auto;
   overflow-x: hidden;
-
-  background: #000;
 
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
 
-  scrollbar-width: none;
-
   -webkit-overflow-scrolling: touch;
 
-  touch-action: pan-y;
-  overscroll-behavior-y: contain;
+  scrollbar-width: none;
 }
 
 #video-feed::-webkit-scrollbar {
   display: none;
 }
 
-
-/* =========================================================
-   VIDEO ITEM
-   ========================================================= */
-
 .video-item {
   position: relative;
 
   width: 100%;
-  height: 100vh;
   height: 100dvh;
 
-  min-height: 100vh;
   min-height: 100dvh;
-
-  overflow: hidden;
 
   background: #000;
 
   scroll-snap-align: start;
   scroll-snap-stop: always;
 
-  touch-action: pan-y;
+  overflow: hidden;
 }
 
 .feed-video {
   position: absolute;
+
   inset: 0;
 
   width: 100%;
@@ -109,133 +65,62 @@ button {
 
   background: #000;
 
-  z-index: 1;
-
-  user-select: none;
-  -webkit-user-select: none;
+  display: block;
 }
 
+.video-overlay {
+  position: absolute;
 
-/* =========================================================
-   TOP BAR
-   ========================================================= */
+  inset: 0;
 
-.wwc-top-bar {
-  position: fixed;
-
-  top: 0;
-  left: 0;
-
-  width: 100%;
-  height: 64px;
-
-  z-index: 500;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  pointer-events: none;
 
   background:
     linear-gradient(
       to bottom,
-      rgba(0, 0, 0, .78),
-      rgba(0, 0, 0, 0)
+      rgba(0,0,0,.25),
+      transparent 30%,
+      transparent 60%,
+      rgba(0,0,0,.65)
     );
-
-  pointer-events: none;
-}
-
-.wwc-top-tabs {
-  display: flex;
-  align-items: center;
-
-  gap: 24px;
-}
-
-.wwc-top-tab {
-  border: 0;
-  outline: none;
-
-  background: transparent;
-
-  color: rgba(255, 255, 255, .65);
-
-  font-size: 16px;
-  font-weight: 600;
-
-  padding: 8px 4px;
-
-  pointer-events: auto;
-}
-
-.wwc-top-tab.active {
-  color: #fff;
-  font-weight: 700;
-}
-
-.wwc-search-btn {
-  position: absolute;
-
-  top: 10px;
-  right: 14px;
-
-  width: 44px;
-  height: 44px;
-
-  border: 0;
-  border-radius: 50%;
-
-  background: rgba(0, 0, 0, .45);
-
-  color: #fff;
-
-  font-size: 21px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  pointer-events: auto;
 }
 
 
 /* =========================================================
-   PROFILE AREA
+   PROFILE
    ========================================================= */
 
-.video-item .profile-area {
+.profile-area {
   position: absolute;
 
-  right: 14px;
-  bottom: 330px;
-
-  width: 70px;
+  left: 14px;
+  bottom: 105px;
 
   display: flex;
-  flex-direction: column;
+
   align-items: center;
 
-  gap: 7px;
+  gap: 9px;
 
-  z-index: 50;
+  z-index: 5;
+
+  max-width: calc(100% - 90px);
 }
 
 .profile-photo-btn {
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
 
   padding: 0;
 
   border: 2px solid #fff;
   border-radius: 50%;
 
-  background: #333;
-
   overflow: hidden;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #222;
+
+  flex-shrink: 0;
 }
 
 .profile-photo {
@@ -243,12 +128,67 @@ button {
   height: 100%;
 
   object-fit: cover;
-
-  display: block;
 }
 
-.video-item .profile-username {
-  width: 100%;
+.profile-username {
+  max-width: 130px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  border: 0;
+  background: transparent;
+
+  color: #fff;
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.follow-btn {
+  padding: 7px 12px;
+
+  border: 1px solid #fff;
+  border-radius: 7px;
+
+  background: #fe2c55;
+
+  color: #fff;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+.follow-btn.following {
+  background: #333;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.actions {
+  position: absolute;
+
+  right: 10px;
+  bottom: 110px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 15px;
+
+  z-index: 6;
+}
+
+.action-btn {
+  width: 48px;
 
   padding: 0;
 
@@ -258,140 +198,53 @@ button {
 
   color: #fff;
 
-  font-size: 12px;
-  font-weight: 700;
-
-  text-align: center;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  text-shadow: 0 1px 4px #000;
-}
-
-.video-item .follow-btn {
-  width: 68px;
-  height: 32px;
-
-  border: 0;
-  border-radius: 18px;
-
-  background: #fe2c55;
-  color: #fff;
-
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.video-item .follow-btn.following {
-  background: rgba(255, 255, 255, .18);
-
-  border: 1px solid rgba(255, 255, 255, .75);
-}
-
-
-/* =========================================================
-   RIGHT ACTION BUTTONS
-   ========================================================= */
-
-.video-item .actions {
-  position: absolute;
-
-  right: 14px;
-  bottom: 82px;
-
-  width: 58px;
-
   display: flex;
+
   flex-direction: column;
+
   align-items: center;
 
-  gap: 11px;
-
-  z-index: 60;
-}
-
-.video-item .action-btn {
-  width: 50px;
-  height: 50px;
-
-  border: 0;
-  border-radius: 50%;
-
-  background: rgba(0, 0, 0, .42);
-
-  color: #fff;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  gap: 1px;
-
-  transition:
-    transform .15s ease,
-    background .15s ease;
-}
-
-.video-item .action-btn:active {
-  transform: scale(.88);
+  gap: 3px;
 }
 
 .action-icon {
-  font-size: 23px;
-  line-height: 24px;
+  font-size: 28px;
+
+  line-height: 1;
 }
 
-.like-count,
-.comment-count,
-.save-count {
-  font-size: 10px;
-  line-height: 12px;
-  font-weight: 600;
-
-  color: #fff;
-
-  text-shadow: 0 1px 3px #000;
+.action-btn span:last-child {
+  font-size: 12px;
+  font-weight: 700;
 }
 
-.share-label {
-  font-size: 8px;
-  line-height: 10px;
-  font-weight: 600;
+.like-btn.liked .action-icon {
+  transform: scale(1.15);
 }
 
-.video-item .like-btn.liked {
-  background: rgba(254, 44, 85, .88);
-}
-
-.video-item .save-btn.saved {
-  background: rgba(255, 193, 7, .35);
+.save-btn.saved .action-icon {
+  transform: scale(1.15);
 }
 
 
 /* =========================================================
-   VIDEO INFORMATION
+   VIDEO INFO
    ========================================================= */
 
 .video-info {
   position: absolute;
 
   left: 14px;
-  right: 84px;
-  bottom: 84px;
+  right: 72px;
+  bottom: 20px;
 
-  z-index: 40;
+  z-index: 5;
 
-  text-shadow: 0 1px 4px #000;
+  color: #fff;
 }
 
 .video-info-username {
-  display: block;
-
   padding: 0;
-  margin-bottom: 7px;
 
   border: 0;
 
@@ -400,37 +253,30 @@ button {
   color: #fff;
 
   font-size: 16px;
-  font-weight: 700;
-
-  text-align: left;
+  font-weight: 800;
 }
 
 .video-caption {
-  color: #fff;
+  margin-top: 7px;
 
   font-size: 14px;
-  line-height: 20px;
 
-  max-width: 92%;
+  line-height: 1.4;
+
+  word-break: break-word;
 }
 
 .video-music {
-  margin-top: 7px;
+  margin-top: 8px;
 
-  color: rgba(255, 255, 255, .92);
+  font-size: 13px;
 
-  font-size: 12px;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  max-width: 90%;
+  color: #ddd;
 }
 
 
 /* =========================================================
-   BOTTOM NAVIGATION
+   BOTTOM NAV
    ========================================================= */
 
 .wwc-bottom-nav {
@@ -440,48 +286,42 @@ button {
   right: 0;
   bottom: 0;
 
-  width: 100%;
-  height: 64px;
+  height: 65px;
 
-  z-index: 1000;
+  padding-bottom:
+    env(safe-area-inset-bottom);
+
+  background: rgba(0,0,0,.92);
 
   display: flex;
+
   align-items: center;
   justify-content: space-around;
 
-  padding: 5px 8px;
-
-  background: rgba(0, 0, 0, .95);
-
-  border-top: 1px solid rgba(255, 255, 255, .08);
-
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  z-index: 50;
 }
 
 .wwc-nav-btn {
-  width: 58px;
-  height: 54px;
+  flex: 1;
+
+  height: 100%;
 
   border: 0;
 
   background: transparent;
 
-  color: rgba(255, 255, 255, .72);
+  color: #aaa;
 
   display: flex;
+
   flex-direction: column;
+
   align-items: center;
   justify-content: center;
 
-  gap: 3px;
+  gap: 2px;
 
   font-size: 11px;
-}
-
-.wwc-nav-btn span:first-child {
-  font-size: 22px;
-  line-height: 23px;
 }
 
 .wwc-nav-btn.active {
@@ -489,461 +329,168 @@ button {
 }
 
 .wwc-create-btn {
-  width: 52px;
-  height: 38px;
+  width: 48px;
+  height: 34px;
+
+  margin: 0 8px;
 
   border: 0;
-  border-radius: 10px;
+  border-radius: 9px;
 
   background: #fff;
+
   color: #000;
 
   font-size: 28px;
-  line-height: 28px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  line-height: 1;
 }
 
 
 /* =========================================================
-   PROFILE MENU
+   LOADING / EMPTY
    ========================================================= */
 
-.profile-menu {
-  position: fixed;
-
-  left: 50%;
-  bottom: 72px;
-
-  width: min(92%, 360px);
-  max-height: calc(100vh - 110px);
-
-  overflow-y: auto;
-
-  padding: 16px;
-
-  background: rgba(20, 20, 20, .98);
-
-  border: 1px solid rgba(255, 255, 255, .12);
-  border-radius: 20px;
-
-  box-shadow:
-    0 12px 40px rgba(0, 0, 0, .65);
-
-  z-index: 3000;
-
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-
-  transform:
-    translateX(-50%)
-    translateY(20px);
-
-  transition:
-    opacity .2s ease,
-    transform .2s ease,
-    visibility .2s ease;
-
-  scrollbar-width: none;
-}
-
-.profile-menu::-webkit-scrollbar {
-  display: none;
-}
-
-.profile-menu.show {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-
-  transform:
-    translateX(-50%)
-    translateY(0);
-}
-
-.profile-menu-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  padding-bottom: 14px;
-  margin-bottom: 8px;
-
-  border-bottom:
-    1px solid rgba(255, 255, 255, .1);
-}
-
-.profile-menu-title {
-  color: #fff;
-
-  font-size: 20px;
-  font-weight: 700;
-}
-
-.profile-menu-close {
-  width: 36px;
-  height: 36px;
-
-  border: 0;
-  border-radius: 50%;
-
-  background: rgba(255, 255, 255, .1);
-
-  color: #fff;
-
-  font-size: 17px;
+.feed-loading,
+.feed-empty,
+.feed-error {
+  width: 100%;
+  height: 100dvh;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
-}
 
-.profile-menu-btn {
-  width: 100%;
-  min-height: 52px;
+  flex-direction: column;
 
-  margin-top: 8px;
-  padding: 0 16px;
+  text-align: center;
 
-  border: 0;
-  border-radius: 12px;
+  padding: 30px;
 
-  background: rgba(255, 255, 255, .08);
+  background: #000;
 
   color: #fff;
 
-  font-size: 16px;
-  font-weight: 600;
-
-  text-align: left;
-
-  display: flex;
-  align-items: center;
+  font-size: 18px;
 }
 
-.profile-menu-btn.logout-menu-btn {
-  background: rgba(254, 44, 85, .15);
+.feed-empty small,
+.feed-error small {
+  margin-top: 10px;
 
-  color: #ff6684;
+  color: #aaa;
+
+  word-break: break-word;
 }
 
 
 /* =========================================================
-   COMMENT BOX
+   COMMENT BOX MOBILE
    ========================================================= */
 
 .comment-box {
   position: fixed;
 
-  left: 50%;
-  bottom: 70px;
+  left: 0;
+  right: 0;
+  bottom: 0;
 
-  width: min(92%, 420px);
-  max-height: 70vh;
+  z-index: 100;
 
-  padding: 15px;
+  padding:
+    18px
+    16px
+    calc(18px + env(safe-area-inset-bottom));
 
-  background: rgba(20, 20, 20, .98);
+  background: #181818;
 
-  border:
-    1px solid rgba(255, 255, 255, .1);
+  border-radius: 20px 20px 0 0;
 
-  border-radius: 16px;
+  transform: translateY(110%);
 
-  box-shadow:
-    0 10px 40px rgba(0, 0, 0, .55);
-
-  z-index: 4000;
-
-  display: none;
-
-  transform: translateX(-50%);
+  transition:
+    transform .25s ease;
 }
 
 .comment-box.show {
-  display: block;
-}
-
-.comment-title {
-  font-size: 18px;
-  font-weight: 700;
-
-  margin-bottom: 10px;
-}
-
-.comments-list {
-  max-height: 240px;
-
-  overflow-y: auto;
-
-  margin-bottom: 10px;
-
-  scrollbar-width: none;
-}
-
-.comments-list::-webkit-scrollbar {
-  display: none;
+  transform: translateY(0);
 }
 
 .comment-box textarea {
   width: 100%;
-  min-height: 80px;
 
-  resize: none;
+  min-height: 90px;
 
-  outline: none;
+  margin-top: 12px;
+
+  padding: 12px;
+
+  border-radius: 10px;
 
   border: 1px solid #444;
-  border-radius: 8px;
-
-  padding: 10px;
 
   background: #111;
+
   color: #fff;
 
-  font-size: 15px;
-}
-
-.comment-box textarea::placeholder {
-  color: #888;
+  resize: none;
 }
 
 .comment-buttons {
   display: flex;
-  justify-content: flex-end;
 
-  gap: 8px;
+  gap: 10px;
 
   margin-top: 10px;
 }
 
 .comment-buttons button {
+  flex: 1;
+
+  padding: 12px;
+
   border: 0;
-  border-radius: 8px;
 
-  padding: 9px 15px;
+  border-radius: 9px;
 
-  font-weight: 600;
+  background: #333;
+
+  color: #fff;
 }
 
 #commentSend {
   background: #fe2c55;
-  color: #fff;
-}
-
-#commentCancel {
-  background: #555;
-  color: #fff;
 }
 
 
 /* =========================================================
-   HIDDEN UPLOAD INPUT
-   ========================================================= */
-
-#videoUpload {
-  display: none;
-}
-
-
-/* =========================================================
-   DISABLED BUTTON
-   ========================================================= */
-
-button:disabled {
-  opacity: .55;
-  cursor: not-allowed;
-}
-
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 600px) {
-
-  .wwc-top-bar {
-    height: 58px;
-  }
-
-  .wwc-top-tabs {
-    gap: 18px;
-  }
-
-  .wwc-top-tab {
-    font-size: 15px;
-  }
-
-  .wwc-search-btn {
-    right: 9px;
-    top: 8px;
-
-    width: 40px;
-    height: 40px;
-  }
-
-  .video-item .profile-area {
-    right: 9px;
-    bottom: 320px;
-
-    width: 65px;
-  }
-
-  .profile-photo-btn {
-    width: 50px;
-    height: 50px;
-  }
-
-  .video-item .follow-btn {
-    width: 64px;
-    height: 30px;
-
-    font-size: 11px;
-  }
-
-  .video-item .actions {
-    right: 9px;
-    bottom: 75px;
-
-    width: 54px;
-
-    gap: 9px;
-  }
-
-  .video-item .action-btn {
-    width: 47px;
-    height: 47px;
-  }
-
-  .action-icon {
-    font-size: 21px;
-  }
-
-  .video-info {
-    left: 12px;
-    right: 72px;
-    bottom: 76px;
-  }
-
-  .video-caption {
-    font-size: 13px;
-    line-height: 18px;
-  }
-
-  .video-music {
-    font-size: 11px;
-  }
-
-  .wwc-bottom-nav {
-    height: 62px;
-  }
-
-  .wwc-nav-btn {
-    width: 54px;
-    height: 54px;
-
-    font-size: 10px;
-  }
-
-  .wwc-nav-btn span:first-child {
-    font-size: 21px;
-  }
-
-  .wwc-create-btn {
-    width: 50px;
-    height: 36px;
-
-    font-size: 26px;
-  }
-
-  .profile-menu {
-    bottom: 68px;
-
-    width: calc(100% - 20px);
-
-    border-radius: 18px;
-
-    padding: 14px;
-  }
-
-  .profile-menu-title {
-    font-size: 18px;
-  }
-
-  .profile-menu-btn {
-    min-height: 50px;
-
-    font-size: 15px;
-  }
-
-  .comment-box {
-    bottom: 68px;
-
-    width: calc(100% - 20px);
-  }
-
-}
-
-
-/* =========================================================
-   SMALL MOBILE
+   SMALL PHONES
    ========================================================= */
 
 @media (max-width: 380px) {
 
-  .video-item .profile-area {
-    right: 7px;
-    bottom: 310px;
+  .profile-area {
+    left: 9px;
+    bottom: 100px;
   }
 
-  .video-item .actions {
-    right: 7px;
-    gap: 7px;
+  .actions {
+    right: 5px;
+    bottom: 105px;
+    gap: 11px;
   }
 
-  .video-item .action-btn {
-    width: 44px;
-    height: 44px;
+  .action-icon {
+    font-size: 25px;
   }
 
-  .video-info {
-    right: 67px;
+  .profile-username {
+    max-width: 95px;
   }
 
-  .wwc-nav-btn {
-    width: 50px;
-  }
-
-}
-
-
-/* =========================================================
-   SAFE AREA
-   ========================================================= */
-
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-
-  .wwc-bottom-nav {
-    padding-bottom:
-      env(safe-area-inset-bottom);
-  }
-
-  .video-info {
-    bottom:
-      calc(76px + env(safe-area-inset-bottom));
-  }
-
-  .video-item .actions {
-    bottom:
-      calc(76px + env(safe-area-inset-bottom));
+  .follow-btn {
+    padding: 6px 9px;
+    font-size: 12px;
   }
 
 }
-
-
-/* =========================================================
-   END
-   ========================================================= */
