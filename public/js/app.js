@@ -1,8 +1,10 @@
 /* =========================================================
-   WWC CORE v2
-   TikTok-style Dynamic Video Feed
-   Firebase + Like + Double Tap Like + Comment
-   Save + Follow + Share + Following Feed
+   WORLD WIDE CONNECT
+   WWC-CORE — REFACTORED APP.JS
+   TikTok Style Video Feed
+   Firebase Auth + Firestore
+   Like + Double Tap Like + Comment + Save + Follow + Share
+   Following Feed + Deep Link + Performance Improvements
    ========================================================= */
 
 import {
@@ -26,15 +28,14 @@ import {
   collection,
   addDoc,
   getDocs,
-  query,
-  orderBy,
-  limit,
-  startAfter,
   serverTimestamp,
   increment,
   arrayUnion,
   arrayRemove,
-  runTransaction
+  query,
+  orderBy,
+  limit,
+  where
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
@@ -43,7 +44,6 @@ import {
    ========================================================= */
 
 const firebaseConfig = {
-
   apiKey:
     "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
 
@@ -64,7 +64,6 @@ const firebaseConfig = {
 
   measurementId:
     "G-PKFJ5NEMGQ"
-
 };
 
 
@@ -77,11 +76,8 @@ const app =
     ? getApps()[0]
     : initializeApp(firebaseConfig);
 
-const auth =
-  getAuth(app);
-
-const db =
-  getFirestore(app);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 
 /* =========================================================
@@ -89,26 +85,21 @@ const db =
    ========================================================= */
 
 let currentUser = null;
-
 let currentProfile = null;
 
 let currentFeedMode = "forYou";
 
 let feedVideos = [];
 
-let lastFeedDoc = null;
-
 let isLoadingFeed = false;
 
-let hasMoreFeed = true;
-
 let activeCommentVideoId = null;
-
 let activeCommentButton = null;
 
 let feedObserver = null;
 
-const PAGE_SIZE = 10;
+let lastDoubleTapTime = 0;
+let lastDoubleTapVideoId = null;
 
 const DEFAULT_PHOTO =
   "./images/profile.png";
@@ -118,127 +109,54 @@ const DEFAULT_PHOTO =
    DOM HELPERS
    ========================================================= */
 
-const $ = (
-  selector,
-  root = document
-) =>
-  root.querySelector(selector);
+const $ = selector =>
+  document.querySelector(selector);
 
+const $$ = selector =>
+  document.querySelectorAll(selector);
 
-const $$ = (
-  selector,
-  root = document
-) =>
-  [...root.querySelectorAll(selector)];
-
-
-/* =========================================================
-   PAGE HELPER
-   ========================================================= */
 
 function openPage(file) {
-
-  window.location.href =
-    "./" + file;
-
+  window.location.href = "./" + file;
 }
 
 
 /* =========================================================
-   LOGIN CHECK
+   SECURITY / HTML
+   ========================================================= */
+
+function escapeHTML(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+function escapeAttribute(value) {
+  return escapeHTML(value);
+}
+
+
+/* =========================================================
+   LOGIN
    ========================================================= */
 
 function requireLogin() {
 
   if (currentUser) {
-
     return true;
-
   }
 
   alert(
     "🔐 এই কাজটি করতে আগে Login করুন।"
   );
 
-  openPage(
-    "auth.html"
-  );
+  openPage("auth.html");
 
   return false;
-
-}
-
-
-/* =========================================================
-   HTML SECURITY
-   ========================================================= */
-
-function escapeHTML(value) {
-
-  return String(value ?? "")
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-    .replace(
-      /</g,
-      "&lt;"
-    )
-    .replace(
-      />/g,
-      "&gt;"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-    .replace(
-      /'/g,
-      "&#039;"
-    );
-
-}
-
-
-function escapeAttribute(value) {
-
-  return escapeHTML(value);
-
-}
-
-
-/* =========================================================
-   USERNAME
-   ========================================================= */
-
-function cleanUsername(value) {
-
-  return String(
-    value || ""
-  )
-    .replace(
-      /^@/,
-      ""
-    )
-    .trim()
-    .toLowerCase();
-
-}
-
-
-/* =========================================================
-   VIDEO URL
-   ========================================================= */
-
-function videoURLOf(video) {
-
-  return (
-    video.videoURL ||
-    video.url ||
-    video.downloadURL ||
-    ""
-  );
-
 }
 
 
@@ -246,46 +164,34 @@ function videoURLOf(video) {
    TIMESTAMP
    ========================================================= */
 
-function timestampValue(value) {
+function getTimestampValue(timestamp) {
 
-  if (!value) {
-
+  if (!timestamp) {
     return 0;
-
   }
 
   if (
-    typeof value.toMillis ===
+    typeof timestamp.toMillis ===
     "function"
   ) {
-
-    return value.toMillis();
-
+    return timestamp.toMillis();
   }
 
   if (
-    typeof value.seconds ===
+    typeof timestamp.seconds ===
     "number"
   ) {
-
-    return (
-      value.seconds *
-      1000
-    );
-
+    return timestamp.seconds * 1000;
   }
 
   if (
-    typeof value ===
+    typeof timestamp ===
     "number"
   ) {
-
-    return value;
-
+    return timestamp;
   }
 
   return 0;
-
 }
 
 
@@ -293,302 +199,220 @@ function timestampValue(value) {
    USER PROFILE
    ========================================================= */
 
-async function createOrLoadUserProfile(
-  user
-) {
+async function createOrLoadUserProfile(user) {
 
-  const userRef =
-    doc(
-      db,
-      "users",
-      user.uid
-    );
+  try {
 
+    const userRef =
+      doc(
+        db,
+        "users",
+        user.uid
+      );
 
-  const snapshot =
-    await getDoc(
-      userRef
-    );
+    const snapshot =
+      await getDoc(userRef);
 
 
-  if (
-    !snapshot.exists()
-  ) {
+    if (!snapshot.exists()) {
 
-    currentProfile = {
+      currentProfile = {
 
-      uid:
-        user.uid,
+        uid:
+          user.uid,
 
-      name:
-        user.displayName ||
-        "WWC User",
+        name:
+          user.displayName ||
+          "WWC User",
 
-      username:
-        "wwc_" +
-        user.uid.slice(0, 6),
+        username:
+          "wwc_" +
+          user.uid.substring(0, 6),
 
-      email:
-        user.email ||
-        "",
+        email:
+          user.email || "",
 
-      photoURL:
-        user.photoURL ||
-        DEFAULT_PHOTO,
+        photoURL:
+          user.photoURL ||
+          DEFAULT_PHOTO,
 
-      bio:
-        "Welcome to World Wide Connect 🌍",
+        bio:
+          "Welcome to World Wide Connect 🌍",
 
-      followers:
-        0,
+        followers:
+          0,
 
-      following:
-        0,
+        following:
+          0,
 
-      likes:
-        0,
+        likes:
+          0,
 
-      followingIds:
-        [],
+        followingIds:
+          [],
 
-      followerIds:
-        [],
+        followerIds:
+          [],
 
-      createdAt:
-        serverTimestamp()
+        createdAt:
+          serverTimestamp()
 
-    };
+      };
 
 
-    await setDoc(
-      userRef,
-      currentProfile
-    );
-
-
-  } else {
-
-    currentProfile = {
-
-      uid:
-        user.uid,
-
-      ...snapshot.data()
-
-    };
-
-  }
-
-}
-
-
-/* =========================================================
-   FIND USER BY USERNAME
-   ========================================================= */
-
-async function findUserByUsername(
-  username
-) {
-
-  const clean =
-    cleanUsername(
-      username
-    );
-
-
-  if (!clean) {
-
-    return null;
-
-  }
-
-
-  /*
-     Fast lookup:
-     usernames/{username}
-  */
-
-  const indexRef =
-    doc(
-      db,
-      "usernames",
-      clean
-    );
-
-
-  const indexSnap =
-    await getDoc(
-      indexRef
-    );
-
-
-  if (
-    indexSnap.exists() &&
-    indexSnap.data().uid
-  ) {
-
-    const uid =
-      indexSnap.data().uid;
-
-
-    const userSnap =
-      await getDoc(
-        doc(
-          db,
-          "users",
-          uid
-        )
+      await setDoc(
+        userRef,
+        currentProfile
       );
 
 
-    if (
-      userSnap.exists()
-    ) {
+    } else {
 
-      return {
+      currentProfile =
+        snapshot.data();
 
-        uid:
-          uid,
 
-        ...userSnap.data()
+      /*
+       * Missing fields repair
+       */
 
-      };
+      const updates = {};
+
+      if (
+        !currentProfile.username
+      ) {
+        updates.username =
+          "wwc_" +
+          user.uid.substring(0, 6);
+      }
+
+      if (
+        !Array.isArray(
+          currentProfile.followingIds
+        )
+      ) {
+        updates.followingIds = [];
+      }
+
+      if (
+        !Array.isArray(
+          currentProfile.followerIds
+        )
+      ) {
+        updates.followerIds = [];
+      }
+
+      if (
+        Object.keys(updates).length
+      ) {
+
+        await updateDoc(
+          userRef,
+          updates
+        );
+
+        currentProfile = {
+          ...currentProfile,
+          ...updates
+        };
+
+      }
 
     }
 
-  }
 
+  } catch (error) {
 
-  /*
-     Backward compatibility
-  */
-
-  const usersSnapshot =
-    await getDocs(
-      collection(
-        db,
-        "users"
-      )
+    console.error(
+      "Profile error:",
+      error
     );
 
-
-  for (
-    const userDoc of
-    usersSnapshot.docs
-  ) {
-
-    const data =
-      userDoc.data();
-
-
-    if (
-      cleanUsername(
-        data.username
-      ) === clean
-    ) {
-
-      return {
-
-        uid:
-          userDoc.id,
-
-        ...data
-
-      };
-
-    }
+    currentProfile = null;
 
   }
-
-
-  return null;
 
 }
 
 
 /* =========================================================
-   FEED LOADING UI
+   AUTH STATE
    ========================================================= */
 
-function resetFeedUI() {
+onAuthStateChanged(
+  auth,
+  async user => {
 
-  const feed =
-    $("#video-feed");
+    currentUser = user;
 
 
-  if (!feed) {
+    if (user) {
 
-    return;
+      console.log(
+        "🌍 WWC Login:",
+        user.email ||
+        user.uid
+      );
+
+      await createOrLoadUserProfile(
+        user
+      );
+
+    } else {
+
+      currentProfile = null;
+
+    }
+
+
+    await loadVideoFeed();
 
   }
-
-
-  feed.innerHTML = `
-
-    <div class="feed-loading">
-
-      <span class="loading-spinner"></span>
-
-      <span>
-        Video Feed Loading...
-      </span>
-
-    </div>
-
-  `;
-
-}
+);
 
 
 /* =========================================================
    LOAD VIDEO FEED
    ========================================================= */
 
-async function loadVideoFeed({
-  reset = true
-} = {}) {
+async function loadVideoFeed() {
 
   const feed =
     $("#video-feed");
 
 
-  if (
-    !feed ||
-    isLoadingFeed
-  ) {
-
+  if (!feed) {
     return;
-
   }
 
 
-  if (reset) {
-
-    lastFeedDoc =
-      null;
-
-    hasMoreFeed =
-      true;
-
-    feedVideos =
-      [];
-
-    resetFeedUI();
-
-  }
-
-
-  if (
-    !hasMoreFeed
-  ) {
-
+  if (isLoadingFeed) {
     return;
+  }
+
+
+  isLoadingFeed = true;
+
+
+  /*
+   * Disconnect previous observer
+   */
+
+  if (feedObserver) {
+
+    feedObserver.disconnect();
+
+    feedObserver = null;
 
   }
 
 
-  isLoadingFeed =
-    true;
+  feed.innerHTML = `
+    <div class="feed-loading">
+      <div>⏳</div>
+      <div>Video Feed Loading...</div>
+    </div>
+  `;
 
 
   try {
@@ -600,197 +424,173 @@ async function loadVideoFeed({
       );
 
 
-    let videoQuery =
-      query(
-        videosRef,
-        orderBy(
-          "createdAt",
-          "desc"
-        ),
-        limit(
-          PAGE_SIZE
-        )
-      );
+    let snapshot;
 
 
-    if (
-      lastFeedDoc
-    ) {
+    /*
+     * First try indexed query.
+     */
 
-      videoQuery =
+    try {
+
+      const videoQuery =
         query(
           videosRef,
-
           orderBy(
             "createdAt",
             "desc"
           ),
-
-          startAfter(
-            lastFeedDoc
-          ),
-
-          limit(
-            PAGE_SIZE
-          )
+          limit(100)
         );
-
-    }
-
-
-    let snapshot;
-
-
-    try {
 
       snapshot =
         await getDocs(
           videoQuery
         );
 
-
     } catch (error) {
 
       console.warn(
-        "Ordered feed query failed:",
+        "Ordered video query failed:",
         error
       );
 
+      /*
+       * Fallback query
+       */
 
       snapshot =
         await getDocs(
           query(
             videosRef,
-            limit(
-              PAGE_SIZE
-            )
+            limit(100)
           )
         );
 
     }
 
 
-    if (
-      snapshot.empty
-    ) {
-
-      hasMoreFeed =
-        false;
+    let videos = [];
 
 
-      if (
-        reset &&
-        !feedVideos.length
-      ) {
+    snapshot.forEach(
+      videoDoc => {
+
+        const data =
+          videoDoc.data();
+
 
         if (
-          currentFeedMode ===
-          "following"
+          data.videoURL ||
+          data.url ||
+          data.downloadURL
         ) {
 
-          feed.innerHTML = `
+          videos.push({
 
-            <div class="feed-empty">
+            id:
+              videoDoc.id,
 
-              👥 আপনি এখনো কাউকে Follow করেননি।
+            ...data
 
-              <small>
-                For You থেকে Creator Follow করুন।
-              </small>
-
-            </div>
-
-          `;
-
-        } else {
-
-          feed.innerHTML = `
-
-            <div class="feed-empty">
-
-              🎬 এখনো কোনো ভিডিও নেই।
-
-              <small>
-                প্রথম ভিডিওটি আপনি Upload করুন।
-              </small>
-
-            </div>
-
-          `;
+          });
 
         }
 
       }
+    );
+
+
+    /*
+     * Client-side sorting fallback
+     */
+
+    videos.sort(
+      (a, b) =>
+        getTimestampValue(
+          b.createdAt
+        ) -
+        getTimestampValue(
+          a.createdAt
+        )
+    );
+
+
+    feedVideos =
+      videos;
+
+
+    /*
+     * Following filter
+     */
+
+    if (
+      currentFeedMode ===
+      "following"
+    ) {
+
+      const followingIds =
+        Array.isArray(
+          currentProfile?.followingIds
+        )
+          ? currentProfile.followingIds
+          : [];
+
+
+      videos =
+        videos.filter(
+          video =>
+            video.uid &&
+            followingIds.includes(
+              video.uid
+            )
+        );
+
+    }
+
+
+    /*
+     * Empty state
+     */
+
+    if (!videos.length) {
+
+      feed.innerHTML =
+        currentFeedMode ===
+        "following"
+
+          ? `
+            <div class="feed-empty">
+              👥 আপনি এখনো কাউকে Follow করেননি।
+              <small>
+                For You থেকে Creator Follow করুন।
+              </small>
+            </div>
+          `
+
+          : `
+            <div class="feed-empty">
+              🎬 এখনো কোনো ভিডিও নেই।
+              <small>
+                প্রথম ভিডিওটি আপনি Upload করুন।
+              </small>
+            </div>
+          `;
 
       return;
 
     }
 
 
-    lastFeedDoc =
-      snapshot.docs[
-        snapshot.docs.length - 1
-      ];
+    /*
+     * Render
+     */
+
+    feed.innerHTML = "";
 
 
-    const batch =
-      snapshot.docs
-        .map(
-          videoDoc => ({
-
-            id:
-              videoDoc.id,
-
-            ...videoDoc.data()
-
-          })
-        )
-        .filter(
-          video =>
-            videoURLOf(video)
-        );
-
-
-    const followingIds =
-      Array.isArray(
-        currentProfile?.followingIds
-      )
-        ? currentProfile.followingIds
-        : [];
-
-
-    const visibleVideos =
-      currentFeedMode ===
-      "following"
-
-        ? batch.filter(
-            video =>
-              followingIds.includes(
-                video.uid
-              )
-          )
-
-        : batch;
-
-
-    feedVideos.push(
-      ...visibleVideos
-    );
-
-
-    if (reset) {
-
-      feed.innerHTML =
-        "";
-
-    }
-
-
-    visibleVideos.forEach(
-      (
-        video,
-        index
-      ) => {
+    videos.forEach(
+      (video, index) => {
 
         createVideoCard(
           feed,
@@ -802,28 +602,11 @@ async function loadVideoFeed({
     );
 
 
-    if (
-      !visibleVideos.length &&
-      reset &&
-      currentFeedMode ===
-      "following"
-    ) {
+    /*
+     * Events
+     */
 
-      feed.innerHTML = `
-
-        <div class="feed-empty">
-
-          👥 আপনার Following creators-এর
-          কোনো video নেই।
-
-        </div>
-
-      `;
-
-    }
-
-
-    setupFeedObserver();
+    setupVideoObserver();
 
     setupVideoEvents();
 
@@ -831,49 +614,41 @@ async function loadVideoFeed({
 
     setupProfileButtons();
 
-    await restoreVisibleStates();
+    setupDoubleTapLike();
+
+    await restoreUserStates();
 
     handleSharedVideo();
 
 
-    hasMoreFeed =
-      snapshot.docs.length ===
-      PAGE_SIZE;
+    console.log(
+      "✅ WWC Videos:",
+      videos.length
+    );
 
 
   } catch (error) {
 
     console.error(
-      "Feed error:",
+      "Feed loading error:",
       error
     );
 
 
-    if (reset) {
-
-      feed.innerHTML = `
-
-        <div class="feed-error">
-
-          ❌ Video Feed load করা যায়নি।
-
-          <small>
-            ${escapeHTML(
-              error.message
-            )}
-          </small>
-
-        </div>
-
-      `;
-
-    }
-
+    feed.innerHTML = `
+      <div class="feed-error">
+        ❌ Video Feed load করা যায়নি।
+        <small>
+          ${escapeHTML(
+            error.message
+          )}
+        </small>
+      </div>
+    `;
 
   } finally {
 
-    isLoadingFeed =
-      false;
+    isLoadingFeed = false;
 
   }
 
@@ -891,14 +666,22 @@ function createVideoCard(
 ) {
 
   const videoId =
-    video.id;
+    video.id ||
+    "video_" + index;
 
 
   const username =
-    cleanUsername(
-      video.username
-    ) ||
-    "wwc_user";
+    String(
+      video.username ||
+      "wwc_user"
+    )
+      .replace(/^@/, "")
+      .trim();
+
+
+  const name =
+    video.name ||
+    "WWC User";
 
 
   const photo =
@@ -907,9 +690,15 @@ function createVideoCard(
 
 
   const videoURL =
-    videoURLOf(
-      video
-    );
+    video.videoURL ||
+    video.url ||
+    video.downloadURL ||
+    "";
+
+
+  const caption =
+    video.caption ||
+    "";
 
 
   const likes =
@@ -951,8 +740,7 @@ function createVideoCard(
 
 
   section.dataset.uid =
-    video.uid ||
-    "";
+    video.uid || "";
 
 
   section.dataset.username =
@@ -962,26 +750,19 @@ function createVideoCard(
   section.innerHTML = `
 
     <video
-
       class="feed-video"
-
       muted
-
       playsinline
-
       preload="metadata"
-
+      loop
     >
 
       <source
-        src="${escapeAttribute(
-          videoURL
-        )}"
+        src="${escapeAttribute(videoURL)}"
         type="video/mp4"
       >
 
-      Your browser does not support
-      video playback.
+      Your browser does not support video playback.
 
     </video>
 
@@ -989,14 +770,7 @@ function createVideoCard(
     <div class="video-overlay"></div>
 
 
-    <div class="video-loading-indicator">
-
-      <span class="loading-spinner"></span>
-
-    </div>
-
-
-    <div class="pause-indicator">
+    <div class="video-play-indicator">
       ▶
     </div>
 
@@ -1010,23 +784,13 @@ function createVideoCard(
       >
 
         <img
-
           class="profile-photo"
-
-          src="${escapeAttribute(
-            photo
-          )}"
-
-          alt="Profile"
-
+          src="${escapeAttribute(photo)}"
+          alt="${escapeAttribute(name)}"
           loading="lazy"
-
-          onerror="
-            this.src='${escapeAttribute(
-              DEFAULT_PHOTO
-            )}'
-          "
-
+          onerror="this.src='${escapeAttribute(
+            DEFAULT_PHOTO
+          )}'"
         >
 
       </button>
@@ -1036,27 +800,19 @@ function createVideoCard(
         class="username profile-username"
         type="button"
       >
-
-        @${escapeHTML(
-          username
-        )}
-
+        @${escapeHTML(username)}
       </button>
 
 
       <button
         class="follow-btn"
         type="button"
-        data-username="${escapeAttribute(
-          username
-        )}"
+        data-username="${escapeAttribute(username)}"
         data-uid="${escapeAttribute(
           video.uid || ""
         )}"
       >
-
         Follow
-
       </button>
 
     </div>
@@ -1142,27 +898,17 @@ function createVideoCard(
         class="username video-info-username"
         type="button"
       >
-
-        @${escapeHTML(
-          username
-        )}
-
+        @${escapeHTML(username)}
       </button>
 
 
       <div class="video-caption">
-
-        ${escapeHTML(
-          video.caption || ""
-        )}
-
+        ${escapeHTML(caption)}
       </div>
 
 
       <div class="video-music">
-
         🎵 Original sound - WWC
-
       </div>
 
     </div>
@@ -1178,10 +924,10 @@ function createVideoCard(
 
 
 /* =========================================================
-   SMOOTH AUTOPLAY OBSERVER
+   VIDEO OBSERVER
    ========================================================= */
 
-function setupFeedObserver() {
+function setupVideoObserver() {
 
   const feed =
     $("#video-feed");
@@ -1201,108 +947,156 @@ function setupFeedObserver() {
   }
 
 
-  feedObserver?.disconnect();
-
-
   feedObserver =
     new IntersectionObserver(
       entries => {
 
+        let bestVideo = null;
+        let bestRatio = 0;
+
+
         entries.forEach(
           entry => {
 
-            const video =
-              entry.target;
-
-
-            const item =
-              video.closest(
-                ".video-item"
-              );
-
-
             if (
               entry.isIntersecting &&
-              entry.intersectionRatio >=
-                0.72
+              entry.intersectionRatio >
+                bestRatio
             ) {
 
-              $$(".feed-video")
-                .forEach(
-                  other => {
+              bestRatio =
+                entry.intersectionRatio;
 
-                    if (
-                      other !==
-                      video
-                    ) {
-
-                      other.pause();
-
-                    }
-
-                  }
-                );
-
-
-              item?.classList.add(
-                "active-video"
-              );
-
-
-              video.play()
-                .then(
-                  () => {
-
-                    item?.classList.remove(
-                      "show-pause"
-                    );
-
-                  }
-                )
-                .catch(
-                  () => {}
-                );
-
-
-            } else {
-
-              video.pause();
-
-              item?.classList.remove(
-                "active-video"
-              );
+              bestVideo =
+                entry.target;
 
             }
 
           }
         );
 
+
+        /*
+         * Pause videos that are not visible.
+         */
+
+        videos.forEach(
+          video => {
+
+            if (
+              video !== bestVideo
+            ) {
+
+              video.pause();
+
+            }
+
+          }
+        );
+
+
+        if (
+          bestVideo &&
+          bestRatio >= 0.65
+        ) {
+
+          playVideoSmoothly(
+            bestVideo
+          );
+
+        }
+
       },
       {
+        root: feed,
 
-        root:
-          feed,
-
-        threshold:
-          [
-            0.2,
-            0.72,
-            0.9
-          ]
-
+        threshold: [
+          0.25,
+          0.5,
+          0.65,
+          0.8,
+          1
+        ]
       }
     );
 
 
   videos.forEach(
-    video => {
-
+    video =>
       feedObserver.observe(
         video
-      );
+      )
+  );
+
+
+  /*
+   * Initial video
+   */
+
+  requestAnimationFrame(
+    () => {
+
+      const first =
+        videos[0];
+
+      if (first) {
+        playVideoSmoothly(
+          first
+        );
+      }
 
     }
   );
+
+}
+
+
+/* =========================================================
+   SMOOTH VIDEO PLAY
+   ========================================================= */
+
+async function playVideoSmoothly(
+  video
+) {
+
+  if (!video) {
+    return;
+  }
+
+
+  try {
+
+    video.muted = true;
+
+    video.playsInline = true;
+
+    await video.play();
+
+
+    const item =
+      video.closest(
+        ".video-item"
+      );
+
+
+    item?.classList.add(
+      "is-playing"
+    );
+
+
+  } catch (error) {
+
+    /*
+     * Browser autoplay policy
+     * can reject play().
+     */
+
+    console.debug(
+      "Autoplay blocked:",
+      error
+    );
+
+  }
 
 }
 
@@ -1313,81 +1107,71 @@ function setupFeedObserver() {
 
 function setupVideoEvents() {
 
-  $$(".video-item")
+  $$(".feed-video")
     .forEach(
-      item => {
-
-        const video =
-          $(".feed-video", item);
-
-
-        if (
-          !video ||
-          video.dataset.eventsReady
-        ) {
-
-          return;
-
-        }
-
-
-        video.dataset.eventsReady =
-          "1";
-
-
-        video.addEventListener(
-          "waiting",
-          () => {
-
-            item.classList.add(
-              "buffering"
-            );
-
-          }
-        );
-
-
-        video.addEventListener(
-          "playing",
-          () => {
-
-            item.classList.remove(
-              "buffering"
-            );
-
-          }
-        );
-
+      video => {
 
         video.addEventListener(
           "click",
-          () => {
+          event => {
+
+            event.stopPropagation();
+
 
             if (
               video.paused
             ) {
 
-              video.play()
-                .catch(
-                  () => {}
-                );
-
-
-              item.classList.remove(
-                "show-pause"
+              playVideoSmoothly(
+                video
               );
-
 
             } else {
 
               video.pause();
 
 
-              item.classList.add(
-                "show-pause"
-              );
+              video
+                .closest(
+                  ".video-item"
+                )
+                ?.classList.remove(
+                  "is-playing"
+                );
 
             }
+
+          }
+        );
+
+
+        video.addEventListener(
+          "play",
+          () => {
+
+            video
+              .closest(
+                ".video-item"
+              )
+              ?.classList.add(
+                "is-playing"
+              );
+
+          }
+        );
+
+
+        video.addEventListener(
+          "pause",
+          () => {
+
+            video
+              .closest(
+                ".video-item"
+              )
+              ?.classList.remove(
+                "is-playing"
+              );
 
           }
         );
@@ -1397,82 +1181,34 @@ function setupVideoEvents() {
           "ended",
           () => {
 
+            const current =
+              video.closest(
+                ".video-item"
+              );
+
+
             const next =
-              item.nextElementSibling;
+              current
+                ?.nextElementSibling;
 
 
             if (
-              next?.classList.contains(
+              next &&
+              next.classList.contains(
                 "video-item"
               )
             ) {
 
               next.scrollIntoView({
-
                 behavior:
                   "smooth",
 
                 block:
                   "start"
-
               });
 
             }
 
-          }
-        );
-
-
-        let lastTap =
-          0;
-
-
-        video.addEventListener(
-          "touchend",
-          event => {
-
-            const now =
-              Date.now();
-
-
-            if (
-              now - lastTap <
-              300
-            ) {
-
-              event.preventDefault();
-
-
-              const likeButton =
-                $(".like-btn", item);
-
-
-              if (
-                currentUser &&
-                likeButton &&
-                !likeButton.classList.contains(
-                  "liked"
-                )
-              ) {
-
-                toggleLike(
-                  item.dataset.videoId,
-                  likeButton,
-                  true
-                );
-
-              }
-
-            }
-
-
-            lastTap =
-              now;
-
-          },
-          {
-            passive:
-              false
           }
         );
 
@@ -1483,19 +1219,204 @@ function setupVideoEvents() {
 
 
 /* =========================================================
-   DOUBLE TAP HEART
+   DOUBLE TAP LIKE
+   ========================================================= */
+
+function setupDoubleTapLike() {
+
+  $$(".video-item")
+    .forEach(
+      item => {
+
+        item.addEventListener(
+          "dblclick",
+          async event => {
+
+            /*
+             * Ignore buttons.
+             */
+
+            if (
+              event.target.closest(
+                "button"
+              )
+            ) {
+
+              return;
+
+            }
+
+
+            if (
+              !requireLogin()
+            ) {
+
+              return;
+
+            }
+
+
+            const videoId =
+              item.dataset.videoId;
+
+
+            const button =
+              item.querySelector(
+                ".like-btn"
+              );
+
+
+            if (
+              !videoId ||
+              !button
+            ) {
+
+              return;
+
+            }
+
+
+            showHeartAnimation(
+              item
+            );
+
+
+            const isLiked =
+              button.getAttribute(
+                "aria-pressed"
+              ) === "true";
+
+
+            /*
+             * Double tap only adds Like.
+             */
+
+            if (!isLiked) {
+
+              await toggleLike(
+                videoId,
+                button
+              );
+
+            }
+
+          }
+        );
+
+
+        /*
+         * Mobile touch double tap.
+         */
+
+        item.addEventListener(
+          "touchend",
+          async event => {
+
+            if (
+              event.target.closest(
+                "button"
+              )
+            ) {
+
+              return;
+
+            }
+
+
+            const now =
+              Date.now();
+
+
+            const videoId =
+              item.dataset.videoId;
+
+
+            if (
+              now -
+                lastDoubleTapTime <
+              320 &&
+              lastDoubleTapVideoId ===
+                videoId
+            ) {
+
+              event.preventDefault();
+
+
+              if (
+                !requireLogin()
+              ) {
+
+                return;
+
+              }
+
+
+              const button =
+                item.querySelector(
+                  ".like-btn"
+                );
+
+
+              if (!button) {
+                return;
+              }
+
+
+              showHeartAnimation(
+                item
+              );
+
+
+              const isLiked =
+                button.getAttribute(
+                  "aria-pressed"
+                ) === "true";
+
+
+              if (!isLiked) {
+
+                await toggleLike(
+                  videoId,
+                  button
+                );
+
+              }
+
+
+              lastDoubleTapTime = 0;
+
+              lastDoubleTapVideoId =
+                null;
+
+            } else {
+
+              lastDoubleTapTime =
+                now;
+
+              lastDoubleTapVideoId =
+                videoId;
+
+            }
+
+          },
+          {
+            passive: false
+          }
+        );
+
+      }
+    );
+
+}
+
+
+/* =========================================================
+   HEART ANIMATION
    ========================================================= */
 
 function showHeartAnimation(
   item
 ) {
-
-  if (!item) {
-
-    return;
-
-  }
-
 
   const heart =
     document.createElement(
@@ -1520,7 +1441,7 @@ function showHeartAnimation(
     () => {
 
       heart.classList.add(
-        "pop"
+        "show"
       );
 
     }
@@ -1533,7 +1454,7 @@ function showHeartAnimation(
       heart.remove();
 
     },
-    800
+    850
   );
 
 }
@@ -1554,19 +1475,6 @@ function setupProfileButtons() {
     .forEach(
       button => {
 
-        if (
-          button.dataset.ready
-        ) {
-
-          return;
-
-        }
-
-
-        button.dataset.ready =
-          "1";
-
-
         button.addEventListener(
           "click",
           event => {
@@ -1584,18 +1492,17 @@ function setupProfileButtons() {
               item?.dataset.username;
 
 
-            if (
-              username
-            ) {
-
-              openPage(
-                "profile.html?username=" +
-                encodeURIComponent(
-                  username
-                )
-              );
-
+            if (!username) {
+              return;
             }
+
+
+            openPage(
+              "profile.html?username=" +
+              encodeURIComponent(
+                username
+              )
+            );
 
           }
         );
@@ -1608,41 +1515,6 @@ function setupProfileButtons() {
     .forEach(
       button => {
 
-        if (
-          button.dataset.ready
-        ) {
-
-          return;
-
-        }
-
-
-        button.dataset.ready =
-          "1";
-
-
-        const targetUid =
-          button.dataset.uid;
-
-
-        if (
-          currentProfile?.followingIds
-            ?.includes(
-              targetUid
-            )
-        ) {
-
-          button.textContent =
-            "Following";
-
-
-          button.classList.add(
-            "following"
-          );
-
-        }
-
-
         button.addEventListener(
           "click",
           async event => {
@@ -1651,21 +1523,158 @@ function setupProfileButtons() {
 
 
             if (
-              requireLogin()
+              !requireLogin()
             ) {
 
-              await toggleFollow(
-                button.dataset.username,
-                button
-              );
+              return;
 
             }
+
+
+            await toggleFollow(
+              button.dataset.username,
+              button
+            );
 
           }
         );
 
       }
     );
+
+}
+
+
+/* =========================================================
+   FIND USER BY USERNAME
+   ========================================================= */
+
+async function findUserByUsername(
+  username
+) {
+
+  const clean =
+    String(username || "")
+      .replace(/^@/, "")
+      .trim()
+      .toLowerCase();
+
+
+  if (!clean) {
+    return null;
+  }
+
+
+  /*
+   * Preferred indexed query.
+   */
+
+  try {
+
+    const usersRef =
+      collection(
+        db,
+        "users"
+      );
+
+
+    const usernameQuery =
+      query(
+        usersRef,
+        where(
+          "usernameLower",
+          "==",
+          clean
+        ),
+        limit(1)
+      );
+
+
+    const snapshot =
+      await getDocs(
+        usernameQuery
+      );
+
+
+    if (
+      !snapshot.empty
+    ) {
+
+      const userDoc =
+        snapshot.docs[0];
+
+
+      return {
+        uid:
+          userDoc.id,
+
+        ...userDoc.data()
+      };
+
+    }
+
+  } catch (error) {
+
+    console.warn(
+      "usernameLower query failed:",
+      error
+    );
+
+  }
+
+
+  /*
+   * Compatibility fallback.
+   */
+
+  const snapshot =
+    await getDocs(
+      query(
+        collection(
+          db,
+          "users"
+        ),
+        limit(200)
+      )
+    );
+
+
+  for (
+    const userDoc of snapshot.docs
+  ) {
+
+    const data =
+      userDoc.data();
+
+
+    const dbUsername =
+      String(
+        data.username || ""
+      )
+        .replace(/^@/, "")
+        .trim()
+        .toLowerCase();
+
+
+    if (
+      dbUsername === clean
+    ) {
+
+      return {
+
+        uid:
+          userDoc.id,
+
+        ...data
+
+      };
+
+    }
+
+  }
+
+
+  return null;
 
 }
 
@@ -1679,15 +1688,23 @@ async function toggleFollow(
   button
 ) {
 
+  if (!currentUser) {
+    return;
+  }
+
+
   if (
-    !currentUser ||
-    !button ||
-    button.disabled
+    button.dataset.busy ===
+    "true"
   ) {
 
     return;
 
   }
+
+
+  button.dataset.busy =
+    "true";
 
 
   button.disabled =
@@ -1704,9 +1721,11 @@ async function toggleFollow(
 
     if (!target) {
 
-      throw new Error(
-        "User পাওয়া যায়নি।"
+      alert(
+        "❌ User পাওয়া যায়নি।"
       );
+
+      return;
 
     }
 
@@ -1716,9 +1735,11 @@ async function toggleFollow(
       currentUser.uid
     ) {
 
-      throw new Error(
-        "নিজের Profile Follow করা যাবে না।"
+      alert(
+        "⚠️ নিজের Profile Follow করা যাবে না।"
       );
+
+      return;
 
     }
 
@@ -1739,189 +1760,177 @@ async function toggleFollow(
       );
 
 
-    const result =
-      await runTransaction(
-        db,
-        async transaction => {
-
-          const mySnap =
-            await transaction.get(
-              myRef
-            );
-
-
-          const targetSnap =
-            await transaction.get(
-              targetRef
-            );
-
-
-          if (
-            !mySnap.exists() ||
-            !targetSnap.exists()
-          ) {
-
-            throw new Error(
-              "User profile পাওয়া যায়নি।"
-            );
-
-          }
-
-
-          const myData =
-            mySnap.data();
-
-
-          const targetData =
-            targetSnap.data();
-
-
-          const ids =
-            Array.isArray(
-              myData.followingIds
-            )
-              ? myData.followingIds
-              : [];
-
-
-          const following =
-            ids.includes(
-              target.uid
-            );
-
-
-          if (
-            following
-          ) {
-
-            transaction.update(
-              myRef,
-              {
-
-                followingIds:
-                  arrayRemove(
-                    target.uid
-                  ),
-
-                following:
-                  Math.max(
-                    0,
-                    Number(
-                      myData.following ||
-                      0
-                    ) - 1
-                  )
-
-              }
-            );
-
-
-            transaction.update(
-              targetRef,
-              {
-
-                followerIds:
-                  arrayRemove(
-                    currentUser.uid
-                  ),
-
-                followers:
-                  Math.max(
-                    0,
-                    Number(
-                      targetData.followers ||
-                      0
-                    ) - 1
-                  )
-
-              }
-            );
-
-
-          } else {
-
-            transaction.update(
-              myRef,
-              {
-
-                followingIds:
-                  arrayUnion(
-                    target.uid
-                  ),
-
-                following:
-                  increment(
-                    1
-                  )
-
-              }
-            );
-
-
-            transaction.update(
-              targetRef,
-              {
-
-                followerIds:
-                  arrayUnion(
-                    currentUser.uid
-                  ),
-
-                followers:
-                  increment(
-                    1
-                  )
-
-              }
-            );
-
-          }
-
-
-          return !following;
-
-        }
+    const mySnap =
+      await getDoc(
+        myRef
       );
 
 
-    const ids =
+    const targetSnap =
+      await getDoc(
+        targetRef
+      );
+
+
+    if (
+      !mySnap.exists() ||
+      !targetSnap.exists()
+    ) {
+
+      throw new Error(
+        "User profile পাওয়া যায়নি।"
+      );
+
+    }
+
+
+    const myData =
+      mySnap.data();
+
+
+    const followingIds =
       Array.isArray(
-        currentProfile?.followingIds
+        myData.followingIds
       )
-        ? [
-            ...currentProfile.followingIds
-          ]
+        ? myData.followingIds
         : [];
 
 
-    currentProfile.followingIds =
-      result
+    const isFollowing =
+      followingIds.includes(
+        target.uid
+      );
 
-        ? [
-            ...new Set(
-              [
-                ...ids,
+
+    if (isFollowing) {
+
+      await Promise.all([
+
+        updateDoc(
+          myRef,
+          {
+
+            followingIds:
+              arrayRemove(
                 target.uid
-              ]
-            )
-          ]
+              ),
 
-        : ids.filter(
+            following:
+              increment(-1)
+
+          }
+        ),
+
+        updateDoc(
+          targetRef,
+          {
+
+            followerIds:
+              arrayRemove(
+                currentUser.uid
+              ),
+
+            followers:
+              increment(-1)
+
+          }
+        )
+
+      ]);
+
+
+      button.textContent =
+        "Follow";
+
+
+      button.classList.remove(
+        "following"
+      );
+
+
+      if (currentProfile) {
+
+        currentProfile.followingIds =
+          followingIds.filter(
             id =>
               id !== target.uid
           );
 
+        currentProfile.following =
+          Math.max(
+            0,
+            Number(
+              currentProfile.following ||
+              0
+            ) - 1
+          );
 
-    button.textContent =
-      result
-        ? "Following"
-        : "Follow";
+      }
 
 
-    button.classList.toggle(
-      "following",
-      result
-    );
+    } else {
+
+      await Promise.all([
+
+        updateDoc(
+          myRef,
+          {
+
+            followingIds:
+              arrayUnion(
+                target.uid
+              ),
+
+            following:
+              increment(1)
+
+          }
+        ),
+
+        updateDoc(
+          targetRef,
+          {
+
+            followerIds:
+              arrayUnion(
+                currentUser.uid
+              ),
+
+            followers:
+              increment(1)
+
+          }
+        )
+
+      ]);
+
+
+      button.textContent =
+        "Following";
+
+
+      button.classList.add(
+        "following"
+      );
+
+
+      if (currentProfile) {
+
+        currentProfile.followingIds =
+          [
+            ...followingIds,
+            target.uid
+          ];
+
+        currentProfile.following =
+          Number(
+            currentProfile.following ||
+            0
+          ) + 1;
+
+      }
+
+    }
 
 
   } catch (error) {
@@ -1933,8 +1942,7 @@ async function toggleFollow(
 
 
     alert(
-      "❌ " +
-      error.message
+      "❌ Follow পরিবর্তন করা যায়নি।"
     );
 
 
@@ -1942,6 +1950,9 @@ async function toggleFollow(
 
     button.disabled =
       false;
+
+    button.dataset.busy =
+      "false";
 
   }
 
@@ -1955,189 +1966,13 @@ async function toggleFollow(
 function setupActionButtons() {
 
 
-  /* ---------------- LIKE ---------------- */
+  /*
+   * LIKE
+   */
 
   $$(".like-btn")
     .forEach(
       button => {
-
-        if (
-          button.dataset.ready
-        ) {
-
-          return;
-
-        }
-
-
-        button.dataset.ready =
-          "1";
-
-
-        button.addEventListener(
-          "click",
-          event => {
-
-            event.stopPropagation();
-
-
-            if (
-              !requireLogin()
-            ) {
-
-              return;
-
-            }
-
-
-            const item =
-              button.closest(
-                ".video-item"
-              );
-
-
-            toggleLike(
-              item?.dataset.videoId,
-              button
-            );
-
-          }
-        );
-
-      }
-    );
-
-
-  /* ---------------- SAVE ---------------- */
-
-  $$(".save-btn")
-    .forEach(
-      button => {
-
-        if (
-          button.dataset.ready
-        ) {
-
-          return;
-
-        }
-
-
-        button.dataset.ready =
-          "1";
-
-
-        button.addEventListener(
-          "click",
-          event => {
-
-            event.stopPropagation();
-
-
-            if (
-              !requireLogin()
-            ) {
-
-              return;
-
-            }
-
-
-            const item =
-              button.closest(
-                ".video-item"
-              );
-
-
-            toggleSave(
-              item?.dataset.videoId,
-              button
-            );
-
-          }
-        );
-
-      }
-    );
-
-
-  /* ---------------- COMMENT ---------------- */
-
-  $$(".comment-btn")
-    .forEach(
-      button => {
-
-        if (
-          button.dataset.ready
-        ) {
-
-          return;
-
-        }
-
-
-        button.dataset.ready =
-          "1";
-
-
-        button.addEventListener(
-          "click",
-          event => {
-
-            event.stopPropagation();
-
-
-            if (
-              !requireLogin()
-            ) {
-
-              return;
-
-            }
-
-
-            const item =
-              button.closest(
-                ".video-item"
-              );
-
-
-            activeCommentVideoId =
-              item?.dataset.videoId ||
-              null;
-
-
-            activeCommentButton =
-              button;
-
-
-            openCommentBox();
-
-          }
-        );
-
-      }
-    );
-
-
-  /* ---------------- SHARE ---------------- */
-
-  $$(".share-btn")
-    .forEach(
-      button => {
-
-        if (
-          button.dataset.ready
-        ) {
-
-          return;
-
-        }
-
-
-        button.dataset.ready =
-          "1";
-
 
         button.addEventListener(
           "click",
@@ -2146,72 +1981,177 @@ function setupActionButtons() {
             event.stopPropagation();
 
 
-            const id =
-              button
-                .closest(
-                  ".video-item"
-                )
-                ?.dataset
-                .videoId;
-
-
-            if (!id) {
-
+            if (
+              !requireLogin()
+            ) {
               return;
-
             }
 
 
-            const url =
-              `${location.origin}${location.pathname}?video=${encodeURIComponent(
-                id
-              )}`;
+            const item =
+              button.closest(
+                ".video-item"
+              );
 
 
-            try {
-
-              if (
-                navigator.share
-              ) {
-
-                await navigator.share({
-
-                  title:
-                    "World Wide Connect",
-
-                  text:
-                    "এই ভিডিওটি দেখুন 🌍",
-
-                  url:
-                    url
-
-                });
+            const videoId =
+              item?.dataset.videoId;
 
 
-              } else if (
-                navigator.clipboard
-              ) {
-
-                await navigator.clipboard.writeText(
-                  url
-                );
+            if (!videoId) {
+              return;
+            }
 
 
-                alert(
-                  "✅ Video link কপি হয়েছে।"
-                );
+            await toggleLike(
+              videoId,
+              button
+            );
+
+          }
+        );
+
+      }
+    );
 
 
-              } else {
+  /*
+   * SAVE
+   */
 
-                prompt(
-                  "Video link:",
-                  url
-                );
+  $$(".save-btn")
+    .forEach(
+      button => {
 
-              }
+        button.addEventListener(
+          "click",
+          async event => {
 
-            } catch (_) {}
+            event.stopPropagation();
+
+
+            if (
+              !requireLogin()
+            ) {
+              return;
+            }
+
+
+            const item =
+              button.closest(
+                ".video-item"
+              );
+
+
+            const videoId =
+              item?.dataset.videoId;
+
+
+            if (!videoId) {
+              return;
+            }
+
+
+            await toggleSave(
+              videoId,
+              button
+            );
+
+          }
+        );
+
+      }
+    );
+
+
+  /*
+   * COMMENT
+   */
+
+  $$(".comment-btn")
+    .forEach(
+      button => {
+
+        button.addEventListener(
+          "click",
+          async event => {
+
+            event.stopPropagation();
+
+
+            if (
+              !requireLogin()
+            ) {
+              return;
+            }
+
+
+            const item =
+              button.closest(
+                ".video-item"
+              );
+
+
+            const videoId =
+              item?.dataset.videoId;
+
+
+            if (!videoId) {
+              return;
+            }
+
+
+            activeCommentVideoId =
+              videoId;
+
+
+            activeCommentButton =
+              button;
+
+
+            await openCommentBox();
+
+          }
+        );
+
+      }
+    );
+
+
+  /*
+   * SHARE
+   */
+
+  $$(".share-btn")
+    .forEach(
+      button => {
+
+        button.addEventListener(
+          "click",
+          async event => {
+
+            event.stopPropagation();
+
+
+            const item =
+              button.closest(
+                ".video-item"
+              );
+
+
+            const videoId =
+              item?.dataset.videoId ||
+              "";
+
+
+            if (!videoId) {
+              return;
+            }
+
+
+            await shareVideo(
+              videoId
+            );
 
           }
         );
@@ -2228,20 +2168,21 @@ function setupActionButtons() {
 
 async function toggleLike(
   videoId,
-  button,
-  doubleTap = false
+  button
 ) {
 
   if (
-    !currentUser ||
-    !videoId ||
-    !button ||
-    button.disabled
+    button.dataset.busy ===
+    "true"
   ) {
 
     return;
 
   }
+
+
+  button.dataset.busy =
+    "true";
 
 
   button.disabled =
@@ -2274,11 +2215,24 @@ async function toggleLike(
       );
 
 
-    const liked =
-      likeSnap.exists();
+    const videoSnap =
+      await getDoc(
+        videoRef
+      );
 
 
-    if (!liked) {
+    if (!videoSnap.exists()) {
+
+      throw new Error(
+        "Video পাওয়া যায়নি।"
+      );
+
+    }
+
+
+    if (
+      !likeSnap.exists()
+    ) {
 
       await setDoc(
         likeRef,
@@ -2299,9 +2253,7 @@ async function toggleLike(
         {
 
           likeCount:
-            increment(
-              1
-            )
+            increment(1)
 
         }
       );
@@ -2318,22 +2270,12 @@ async function toggleLike(
       );
 
 
-      if (
-        doubleTap
-      ) {
-
-        showHeartAnimation(
-          button.closest(
-            ".video-item"
-          )
-        );
-
-      }
+      animateAction(
+        button
+      );
 
 
-    } else if (
-      !doubleTap
-    ) {
+    } else {
 
       await deleteDoc(
         likeRef
@@ -2345,9 +2287,7 @@ async function toggleLike(
         {
 
           likeCount:
-            increment(
-              -1
-            )
+            increment(-1)
 
         }
       );
@@ -2384,11 +2324,13 @@ async function toggleLike(
       "❌ Like পরিবর্তন করা যায়নি।"
     );
 
-
   } finally {
 
     button.disabled =
       false;
+
+    button.dataset.busy =
+      "false";
 
   }
 
@@ -2405,15 +2347,17 @@ async function toggleSave(
 ) {
 
   if (
-    !currentUser ||
-    !videoId ||
-    !button ||
-    button.disabled
+    button.dataset.busy ===
+    "true"
   ) {
 
     return;
 
   }
+
+
+  button.dataset.busy =
+    "true";
 
 
   button.disabled =
@@ -2446,11 +2390,24 @@ async function toggleSave(
       );
 
 
-    const saved =
-      saveSnap.exists();
+    const videoSnap =
+      await getDoc(
+        videoRef
+      );
 
 
-    if (!saved) {
+    if (!videoSnap.exists()) {
+
+      throw new Error(
+        "Video পাওয়া যায়নি।"
+      );
+
+    }
+
+
+    if (
+      !saveSnap.exists()
+    ) {
 
       await setDoc(
         saveRef,
@@ -2458,6 +2415,9 @@ async function toggleSave(
 
           uid:
             currentUser.uid,
+
+          videoId:
+            videoId,
 
           createdAt:
             serverTimestamp()
@@ -2471,9 +2431,7 @@ async function toggleSave(
         {
 
           saveCount:
-            increment(
-              1
-            )
+            increment(1)
 
         }
       );
@@ -2490,6 +2448,11 @@ async function toggleSave(
       );
 
 
+      animateAction(
+        button
+      );
+
+
     } else {
 
       await deleteDoc(
@@ -2502,9 +2465,7 @@ async function toggleSave(
         {
 
           saveCount:
-            increment(
-              -1
-            )
+            increment(-1)
 
         }
       );
@@ -2541,11 +2502,13 @@ async function toggleSave(
       "❌ Save পরিবর্তন করা যায়নি।"
     );
 
-
   } finally {
 
     button.disabled =
       false;
+
+    button.dataset.busy =
+      "false";
 
   }
 
@@ -2553,7 +2516,225 @@ async function toggleSave(
 
 
 /* =========================================================
-   REFRESH COUNTS
+   ACTION ANIMATION
+   ========================================================= */
+
+function animateAction(
+  button
+) {
+
+  button.classList.remove(
+    "action-pop"
+  );
+
+
+  void button.offsetWidth;
+
+
+  button.classList.add(
+    "action-pop"
+  );
+
+
+  setTimeout(
+    () => {
+
+      button.classList.remove(
+        "action-pop"
+      );
+
+    },
+    350
+  );
+
+}
+
+
+/* =========================================================
+   RESTORE USER STATES
+   ========================================================= */
+
+async function restoreUserStates() {
+
+  if (!currentUser) {
+    return;
+  }
+
+
+  const items =
+    [...$$(".video-item")];
+
+
+  /*
+   * Limit concurrent reads.
+   * This is still much lighter than reading
+   * entire likes/saves collections.
+   */
+
+  const chunks = [];
+
+
+  for (
+    let i = 0;
+    i < items.length;
+    i += 10
+  ) {
+
+    chunks.push(
+      items.slice(
+        i,
+        i + 10
+      )
+    );
+
+  }
+
+
+  for (
+    const chunk of chunks
+  ) {
+
+    await Promise.all(
+      chunk.map(
+        async item => {
+
+          const videoId =
+            item.dataset.videoId;
+
+
+          if (!videoId) {
+            return;
+          }
+
+
+          try {
+
+            const likeRef =
+              doc(
+                db,
+                "videos",
+                videoId,
+                "likes",
+                currentUser.uid
+              );
+
+
+            const saveRef =
+              doc(
+                db,
+                "videos",
+                videoId,
+                "saves",
+                currentUser.uid
+              );
+
+
+            const [
+              likeSnap,
+              saveSnap
+            ] =
+              await Promise.all([
+                getDoc(likeRef),
+                getDoc(saveRef)
+              ]);
+
+
+            const likeButton =
+              item.querySelector(
+                ".like-btn"
+              );
+
+
+            const saveButton =
+              item.querySelector(
+                ".save-btn"
+              );
+
+
+            if (
+              likeButton &&
+              likeSnap.exists()
+            ) {
+
+              likeButton.classList.add(
+                "liked"
+              );
+
+              likeButton.setAttribute(
+                "aria-pressed",
+                "true"
+              );
+
+            }
+
+
+            if (
+              saveButton &&
+              saveSnap.exists()
+            ) {
+
+              saveButton.classList.add(
+                "saved"
+              );
+
+              saveButton.setAttribute(
+                "aria-pressed",
+                "true"
+              );
+
+            }
+
+
+            /*
+             * Follow state
+             */
+
+            const followButton =
+              item.querySelector(
+                ".follow-btn"
+              );
+
+
+            const targetUid =
+              item.dataset.uid;
+
+
+            if (
+              followButton &&
+              targetUid &&
+              currentProfile?.followingIds
+                ?.includes(targetUid)
+            ) {
+
+              followButton.textContent =
+                "Following";
+
+              followButton.classList.add(
+                "following"
+              );
+
+            }
+
+          } catch (error) {
+
+            console.warn(
+              "State restore failed:",
+              error
+            );
+
+          }
+
+        }
+      )
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   COUNTS
    ========================================================= */
 
 async function refreshCounts(
@@ -2561,92 +2742,107 @@ async function refreshCounts(
   button
 ) {
 
-  const snap =
-    await getDoc(
+  try {
+
+    const videoRef =
       doc(
         db,
         "videos",
         videoId
-      )
+      );
+
+
+    const snap =
+      await getDoc(
+        videoRef
+      );
+
+
+    if (!snap.exists()) {
+      return;
+    }
+
+
+    const data =
+      snap.data();
+
+
+    const item =
+      button.closest(
+        ".video-item"
+      );
+
+
+    if (!item) {
+      return;
+    }
+
+
+    const like =
+      item.querySelector(
+        ".like-count"
+      );
+
+
+    const save =
+      item.querySelector(
+        ".save-count"
+      );
+
+
+    const comment =
+      item.querySelector(
+        ".comment-count"
+      );
+
+
+    if (like) {
+
+      like.textContent =
+        Math.max(
+          0,
+          Number(
+            data.likeCount ||
+            0
+          )
+        );
+
+    }
+
+
+    if (save) {
+
+      save.textContent =
+        Math.max(
+          0,
+          Number(
+            data.saveCount ||
+            0
+          )
+        );
+
+    }
+
+
+    if (comment) {
+
+      comment.textContent =
+        Math.max(
+          0,
+          Number(
+            data.commentCount ||
+            0
+          )
+        );
+
+    }
+
+  } catch (error) {
+
+    console.warn(
+      "Count refresh failed:",
+      error
     );
-
-
-  if (
-    !snap.exists()
-  ) {
-
-    return;
-
-  }
-
-
-  const item =
-    button.closest(
-      ".video-item"
-    );
-
-
-  if (!item) {
-
-    return;
-
-  }
-
-
-  const data =
-    snap.data();
-
-
-  const like =
-    $(".like-count", item);
-
-
-  const save =
-    $(".save-count", item);
-
-
-  const comment =
-    $(".comment-count", item);
-
-
-  if (like) {
-
-    like.textContent =
-      Math.max(
-        0,
-        Number(
-          data.likeCount ||
-          0
-        )
-      );
-
-  }
-
-
-  if (save) {
-
-    save.textContent =
-      Math.max(
-        0,
-        Number(
-          data.saveCount ||
-          0
-        )
-      );
-
-  }
-
-
-  if (comment) {
-
-    comment.textContent =
-      Math.max(
-        0,
-        Number(
-          data.commentCount ||
-          0
-        )
-      );
 
   }
 
@@ -2654,125 +2850,92 @@ async function refreshCounts(
 
 
 /* =========================================================
-   RESTORE LIKE / SAVE
+   SHARE
    ========================================================= */
 
-async function restoreVisibleStates() {
+async function shareVideo(
+  videoId
+) {
 
-  if (
-    !currentUser
-  ) {
+  /*
+   * Use a dedicated query parameter.
+   * This works better than relying only on hash.
+   */
 
-    return;
+  const url =
+    new URL(
+      window.location.href
+    );
+
+
+  url.searchParams.set(
+    "video",
+    videoId
+  );
+
+
+  url.hash = "";
+
+
+  const shareURL =
+    url.toString();
+
+
+  try {
+
+    if (
+      navigator.share
+    ) {
+
+      await navigator.share({
+
+        title:
+          "World Wide Connect",
+
+        text:
+          "এই ভিডিওটি দেখুন 🌍",
+
+        url:
+          shareURL
+
+      });
+
+
+    } else if (
+      navigator.clipboard
+    ) {
+
+      await navigator.clipboard.writeText(
+        shareURL
+      );
+
+
+      alert(
+        "✅ Video link কপি হয়েছে।"
+      );
+
+
+    } else {
+
+      prompt(
+        "Video link:",
+        shareURL
+      );
+
+    }
+
+  } catch (error) {
+
+    /*
+     * User cancelling share is normal.
+     */
+
+    console.debug(
+      "Share cancelled:",
+      error
+    );
 
   }
-
-
-  const items =
-    $$(".video-item");
-
-
-  await Promise.all(
-
-    items.map(
-      async item => {
-
-        const id =
-          item.dataset.videoId;
-
-
-        try {
-
-          const [
-            likeSnap,
-            saveSnap
-          ] =
-            await Promise.all([
-
-              getDoc(
-                doc(
-                  db,
-                  "videos",
-                  id,
-                  "likes",
-                  currentUser.uid
-                )
-              ),
-
-              getDoc(
-                doc(
-                  db,
-                  "videos",
-                  id,
-                  "saves",
-                  currentUser.uid
-                )
-              )
-
-            ]);
-
-
-          const likeButton =
-            $(".like-btn", item);
-
-
-          const saveButton =
-            $(".save-btn", item);
-
-
-          if (
-            likeButton
-          ) {
-
-            likeButton.classList.toggle(
-              "liked",
-              likeSnap.exists()
-            );
-
-
-            likeButton.setAttribute(
-              "aria-pressed",
-              String(
-                likeSnap.exists()
-              )
-            );
-
-          }
-
-
-          if (
-            saveButton
-          ) {
-
-            saveButton.classList.toggle(
-              "saved",
-              saveSnap.exists()
-            );
-
-
-            saveButton.setAttribute(
-              "aria-pressed",
-              String(
-                saveSnap.exists()
-              )
-            );
-
-          }
-
-
-        } catch (error) {
-
-          console.warn(
-            "State restore:",
-            error
-          );
-
-        }
-
-      }
-    )
-
-  );
 
 }
 
@@ -2784,36 +2947,27 @@ async function restoreVisibleStates() {
 const commentBox =
   $("#commentBox");
 
-
 const commentsList =
   $("#commentsList");
-
 
 const commentInput =
   $("#commentInput");
 
-
 const commentCancel =
   $("#commentCancel");
-
 
 const commentSend =
   $("#commentSend");
 
 
 /* =========================================================
-   OPEN COMMENT BOX
+   OPEN COMMENT
    ========================================================= */
 
 async function openCommentBox() {
 
-  if (
-    !commentBox ||
-    !activeCommentVideoId
-  ) {
-
+  if (!commentBox) {
     return;
-
   }
 
 
@@ -2828,20 +2982,12 @@ async function openCommentBox() {
   );
 
 
-  if (
-    commentsList
-  ) {
+  if (commentsList) {
 
     commentsList.innerHTML = `
-
       <div class="comment-loading">
-
-        <span class="loading-spinner"></span>
-
-        Comments Loading...
-
+        ⏳ Comments Loading...
       </div>
-
     `;
 
   }
@@ -2850,7 +2996,18 @@ async function openCommentBox() {
   await loadComments();
 
 
-  commentInput?.focus();
+  if (commentInput) {
+
+    commentInput.value = "";
+
+
+    setTimeout(
+      () =>
+        commentInput.focus(),
+      200
+    );
+
+  }
 
 }
 
@@ -2887,78 +3044,79 @@ async function loadComments() {
 
     try {
 
-      snapshot =
-        await getDocs(
-          query(
-            commentsRef,
-
-            orderBy(
-              "createdAt",
-              "desc"
-            ),
-
-            limit(
-              50
-            )
-          )
+      const commentsQuery =
+        query(
+          commentsRef,
+          orderBy(
+            "createdAt",
+            "desc"
+          ),
+          limit(100)
         );
 
 
-    } catch {
+      snapshot =
+        await getDocs(
+          commentsQuery
+        );
+
+
+    } catch (error) {
+
+      console.warn(
+        "Comment order query failed:",
+        error
+      );
+
 
       snapshot =
         await getDocs(
           query(
             commentsRef,
-            limit(
-              50
-            )
+            limit(100)
           )
         );
 
     }
 
 
-    const comments =
-      snapshot.docs
-        .map(
-          commentDoc => ({
-
-            id:
-              commentDoc.id,
-
-            ...commentDoc.data()
-
-          })
-        )
-        .sort(
-          (a, b) =>
-            timestampValue(
-              b.createdAt
-            ) -
-            timestampValue(
-              a.createdAt
-            )
-        );
-
-
     if (
-      !comments.length
+      snapshot.empty
     ) {
 
       commentsList.innerHTML = `
-
         <div class="no-comments">
-
           💬 এখনো কোনো Comment নেই।
-
         </div>
-
       `;
 
       return;
 
     }
+
+
+    const comments =
+      snapshot.docs.map(
+        commentDoc => ({
+
+          id:
+            commentDoc.id,
+
+          ...commentDoc.data()
+
+        })
+      );
+
+
+    comments.sort(
+      (a, b) =>
+        getTimestampValue(
+          b.createdAt
+        ) -
+        getTimestampValue(
+          a.createdAt
+        )
+    );
 
 
     commentsList.innerHTML =
@@ -2983,14 +3141,15 @@ async function loadComments() {
           <div class="comment-avatar">
 
             <img
-
               src="${escapeAttribute(
                 comment.photoURL ||
                 DEFAULT_PHOTO
               )}"
-
               alt="Profile"
-
+              loading="lazy"
+              onerror="this.src='${escapeAttribute(
+                DEFAULT_PHOTO
+              )}'"
             >
 
           </div>
@@ -2999,24 +3158,23 @@ async function loadComments() {
           <div class="comment-content">
 
             <strong>
-
               @${escapeHTML(
-                cleanUsername(
-                  comment.username
-                ) ||
-                "wwc_user"
+                String(
+                  comment.username ||
+                  "wwc_user"
+                ).replace(
+                  /^@/,
+                  ""
+                )
               )}
-
             </strong>
 
 
             <div>
-
               ${escapeHTML(
                 comment.text ||
                 ""
               )}
-
             </div>
 
           </div>
@@ -3041,13 +3199,9 @@ async function loadComments() {
 
 
     commentsList.innerHTML = `
-
       <div class="comment-error">
-
         ❌ Comments load করা যায়নি।
-
       </div>
-
     `;
 
   }
@@ -3056,17 +3210,22 @@ async function loadComments() {
 
 
 /* =========================================================
-   CLOSE COMMENT BOX
+   CLOSE COMMENT
    ========================================================= */
 
 function closeCommentBox() {
 
-  commentBox?.classList.remove(
+  if (!commentBox) {
+    return;
+  }
+
+
+  commentBox.classList.remove(
     "show"
   );
 
 
-  commentBox?.setAttribute(
+  commentBox.setAttribute(
     "aria-hidden",
     "true"
   );
@@ -3097,7 +3256,15 @@ commentSend?.addEventListener(
   async () => {
 
     if (
-      !requireLogin() ||
+      !requireLogin()
+    ) {
+
+      return;
+
+    }
+
+
+    if (
       !activeCommentVideoId
     ) {
 
@@ -3107,7 +3274,8 @@ commentSend?.addEventListener(
 
 
     const text =
-      commentInput?.value.trim();
+      commentInput?.value
+        ?.trim();
 
 
     if (!text) {
@@ -3116,24 +3284,49 @@ commentSend?.addEventListener(
         "⚠️ Comment লিখুন।"
       );
 
-
       commentInput?.focus();
-
 
       return;
 
     }
 
 
+    if (
+      text.length > 1000
+    ) {
+
+      alert(
+        "⚠️ Comment সর্বোচ্চ 1000 character হতে পারে।"
+      );
+
+      return;
+
+    }
+
+
+    if (
+      commentSend.dataset.busy ===
+      "true"
+    ) {
+
+      return;
+
+    }
+
+
+    commentSend.dataset.busy =
+      "true";
+
+
     commentSend.disabled =
       true;
 
 
+    const videoId =
+      activeCommentVideoId;
+
+
     try {
-
-      const videoId =
-        activeCommentVideoId;
-
 
       const commentsRef =
         collection(
@@ -3166,10 +3359,7 @@ commentSend?.addEventListener(
             DEFAULT_PHOTO,
 
           text:
-            text.slice(
-              0,
-              1000
-            ),
+            text,
 
           createdAt:
             serverTimestamp()
@@ -3187,9 +3377,7 @@ commentSend?.addEventListener(
         {
 
           commentCount:
-            increment(
-              1
-            )
+            increment(1)
 
         }
       );
@@ -3207,8 +3395,9 @@ commentSend?.addEventListener(
       }
 
 
-      commentInput.value =
-        "";
+      if (commentInput) {
+        commentInput.value = "";
+      }
 
 
       await loadComments();
@@ -3226,11 +3415,13 @@ commentSend?.addEventListener(
         "❌ Comment পাঠানো যায়নি।"
       );
 
-
     } finally {
 
       commentSend.disabled =
         false;
+
+      commentSend.dataset.busy =
+        "false";
 
     }
 
@@ -3239,7 +3430,7 @@ commentSend?.addEventListener(
 
 
 /* =========================================================
-   COMMENT ENTER
+   ENTER TO SEND COMMENT
    ========================================================= */
 
 commentInput?.addEventListener(
@@ -3262,163 +3453,92 @@ commentInput?.addEventListener(
 
 
 /* =========================================================
-   SHARED VIDEO
-   ========================================================= */
-
-function getSharedVideoId() {
-
-  const params =
-    new URLSearchParams(
-      location.search
-    );
-
-
-  return (
-    params.get(
-      "video"
-    ) ||
-    location.hash.slice(1) ||
-    ""
-  );
-
-}
-
-
-function handleSharedVideo() {
-
-  const id =
-    getSharedVideoId();
-
-
-  if (!id) {
-
-    return;
-
-  }
-
-
-  const item =
-    document.querySelector(
-      `[data-video-id="${CSS.escape(
-        id
-      )}"]`
-    );
-
-
-  if (!item) {
-
-    return;
-
-  }
-
-
-  setTimeout(
-    () => {
-
-      item.scrollIntoView({
-
-        behavior:
-          "smooth",
-
-        block:
-          "start"
-
-      });
-
-
-      const video =
-        $(".feed-video", item);
-
-
-      video?.play()
-        .catch(
-          () => {}
-        );
-
-    },
-    250
-  );
-
-}
-
-
-/* =========================================================
-   NAVIGATION
+   HOME
    ========================================================= */
 
 $("#homeBtn")?.addEventListener(
   "click",
-  () => {
-
+  () =>
     openPage(
       "index.html"
-    );
-
-  }
+    )
 );
 
+
+/* =========================================================
+   FRIENDS
+   ========================================================= */
 
 $("#friendsBtn")?.addEventListener(
   "click",
-  () => {
-
+  () =>
     openPage(
       "friends.html"
-    );
-
-  }
+    )
 );
 
+
+/* =========================================================
+   UPLOAD
+   ========================================================= */
 
 $("#uploadBtn")?.addEventListener(
   "click",
   () => {
 
     if (
-      requireLogin()
+      !requireLogin()
     ) {
-
-      openPage(
-        "upload.html"
-      );
-
+      return;
     }
+
+    openPage(
+      "upload.html"
+    );
 
   }
 );
 
+
+/* =========================================================
+   INBOX
+   ========================================================= */
 
 $("#inboxBtn")?.addEventListener(
   "click",
   () => {
 
     if (
-      requireLogin()
+      !requireLogin()
     ) {
-
-      openPage(
-        "inbox.html"
-      );
-
+      return;
     }
+
+    openPage(
+      "inbox.html"
+    );
 
   }
 );
 
+
+/* =========================================================
+   PROFILE
+   ========================================================= */
 
 $("#profileBtn")?.addEventListener(
   "click",
   () => {
 
     if (
-      requireLogin()
+      !requireLogin()
     ) {
-
-      openPage(
-        "profile.html"
-      );
-
+      return;
     }
+
+    openPage(
+      "profile.html"
+    );
 
   }
 );
@@ -3438,23 +3558,28 @@ $("#searchBtn")?.addEventListener(
       );
 
 
-    const username =
-      cleanUsername(
-        value
-      );
-
-
-    if (
-      username
-    ) {
-
-      openPage(
-        `profile.html?username=${encodeURIComponent(
-          username
-        )}`
-      );
-
+    if (!value) {
+      return;
     }
+
+
+    const username =
+      value
+        .trim()
+        .replace(/^@/, "");
+
+
+    if (!username) {
+      return;
+    }
+
+
+    openPage(
+      "profile.html?username=" +
+      encodeURIComponent(
+        username
+      )
+    );
 
   }
 );
@@ -3467,15 +3592,32 @@ $("#searchBtn")?.addEventListener(
 const profileMenu =
   $("#profileMenu");
 
+const profileMenuClose =
+  $("#profileMenuClose");
+
+const profileBtnMenu =
+  $("#profileBtnMenu");
+
+const loginBtn =
+  $("#loginBtn");
+
+const logoutBtn =
+  $("#logoutBtn");
+
 
 function closeProfileMenu() {
 
-  profileMenu?.classList.remove(
+  if (!profileMenu) {
+    return;
+  }
+
+
+  profileMenu.classList.remove(
     "show"
   );
 
 
-  profileMenu?.setAttribute(
+  profileMenu.setAttribute(
     "aria-hidden",
     "true"
   );
@@ -3485,12 +3627,17 @@ function closeProfileMenu() {
 
 function openProfileMenu() {
 
-  profileMenu?.classList.add(
+  if (!profileMenu) {
+    return;
+  }
+
+
+  profileMenu.classList.add(
     "show"
   );
 
 
-  profileMenu?.setAttribute(
+  profileMenu.setAttribute(
     "aria-hidden",
     "false"
   );
@@ -3498,203 +3645,274 @@ function openProfileMenu() {
 }
 
 
-$("#profileMenuClose")
-  ?.addEventListener(
-    "click",
-    closeProfileMenu
-  );
+profileMenuClose?.addEventListener(
+  "click",
+  closeProfileMenu
+);
 
 
-$("#profileBtnMenu")
-  ?.addEventListener(
-    "click",
-    () => {
+profileBtnMenu?.addEventListener(
+  "click",
+  () => {
 
-      closeProfileMenu();
+    closeProfileMenu();
 
 
-      if (
-        requireLogin()
-      ) {
-
-        openPage(
-          "profile.html"
-        );
-
-      }
-
+    if (
+      !requireLogin()
+    ) {
+      return;
     }
-  );
 
 
-$("#loginBtn")
-  ?.addEventListener(
-    "click",
-    () => {
+    openPage(
+      "profile.html"
+    );
 
-      closeProfileMenu();
+  }
+);
+
+
+loginBtn?.addEventListener(
+  "click",
+  () => {
+
+    closeProfileMenu();
+
+    openPage(
+      "auth.html"
+    );
+
+  }
+);
+
+
+logoutBtn?.addEventListener(
+  "click",
+  async () => {
+
+    try {
+
+      await signOut(
+        auth
+      );
+
+
+      alert(
+        "✅ Logout সফল হয়েছে"
+      );
+
 
       openPage(
         "auth.html"
       );
 
-    }
-  );
+
+    } catch (error) {
+
+      console.error(
+        "Logout error:",
+        error
+      );
 
 
-$("#logoutBtn")
-  ?.addEventListener(
-    "click",
-    async () => {
-
-      try {
-
-        await signOut(
-          auth
-        );
-
-
-        openPage(
-          "auth.html"
-        );
-
-
-      } catch (error) {
-
-        alert(
-          "❌ Logout করা যায়নি।"
-        );
-
-      }
+      alert(
+        "❌ Logout করা যায়নি।"
+      );
 
     }
-  );
 
-
-$("#menuBtn")
-  ?.addEventListener(
-    "click",
-    openProfileMenu
-  );
+  }
+);
 
 
 /* =========================================================
-   FOLLOWING TAB
+   TOP TABS
    ========================================================= */
 
-$("#followingTab")
-  ?.addEventListener(
-    "click",
-    async () => {
+const followingTab =
+  $("#followingTab");
 
-      currentFeedMode =
-        "following";
+const forYouTab =
+  $("#forYouTab");
 
 
-      $("#followingTab")
-        ?.classList.add(
-          "active"
-        );
+followingTab?.addEventListener(
+  "click",
+  async () => {
 
-
-      $("#forYouTab")
-        ?.classList.remove(
-          "active"
-        );
-
-
-      await loadVideoFeed({
-        reset:
-          true
-      });
-
+    if (
+      currentFeedMode ===
+      "following"
+    ) {
+      return;
     }
-  );
+
+
+    currentFeedMode =
+      "following";
+
+
+    followingTab.classList.add(
+      "active"
+    );
+
+
+    forYouTab?.classList.remove(
+      "active"
+    );
+
+
+    await loadVideoFeed();
+
+  }
+);
+
+
+forYouTab?.addEventListener(
+  "click",
+  async () => {
+
+    if (
+      currentFeedMode ===
+      "forYou"
+    ) {
+      return;
+    }
+
+
+    currentFeedMode =
+      "forYou";
+
+
+    forYouTab.classList.add(
+      "active"
+    );
+
+
+    followingTab?.classList.remove(
+      "active"
+    );
+
+
+    await loadVideoFeed();
+
+  }
+);
 
 
 /* =========================================================
-   FOR YOU TAB
+   HASH / SHARED VIDEO
    ========================================================= */
 
-$("#forYouTab")
-  ?.addEventListener(
-    "click",
-    async () => {
+function handleSharedVideo() {
 
-      currentFeedMode =
-        "forYou";
-
-
-      $("#forYouTab")
-        ?.classList.add(
-          "active"
-        );
+  const url =
+    new URL(
+      window.location.href
+    );
 
 
-      $("#followingTab")
-        ?.classList.remove(
-          "active"
-        );
+  /*
+   * New:
+   * ?video=VIDEO_ID
+   */
+
+  let videoId =
+    url.searchParams.get(
+      "video"
+    );
 
 
-      await loadVideoFeed({
-        reset:
-          true
-      });
+  /*
+   * Old:
+   * #VIDEO_ID
+   */
+
+  if (!videoId) {
+
+    const hash =
+      window.location.hash;
+
+
+    if (hash) {
+
+      videoId =
+        hash.substring(1);
 
     }
-  );
+
+  }
 
 
-/* =========================================================
-   INFINITE FEED
-   ========================================================= */
+  if (!videoId) {
+    return;
+  }
 
-$("#video-feed")
-  ?.addEventListener(
-    "scroll",
+
+  const selector =
+    `[data-video-id="${CSS.escape(
+      videoId
+    )}"]`;
+
+
+  const item =
+    document.querySelector(
+      selector
+    );
+
+
+  if (!item) {
+
+    console.warn(
+      "Shared video not found:",
+      videoId
+    );
+
+    return;
+
+  }
+
+
+  setTimeout(
     () => {
 
-      const feed =
-        $("#video-feed");
+      item.scrollIntoView({
+        behavior:
+          "smooth",
+
+        block:
+          "start"
+      });
 
 
-      if (
-        !feed ||
-        isLoadingFeed ||
-        !hasMoreFeed
-      ) {
-
-        return;
-
-      }
+      const video =
+        item.querySelector(
+          ".feed-video"
+        );
 
 
-      if (
-        feed.scrollTop +
-        feed.clientHeight >=
-        feed.scrollHeight -
-        feed.clientHeight *
-          1.5
-      ) {
+      if (video) {
 
-        loadVideoFeed({
-          reset:
-            false
-        });
+        setTimeout(
+          () =>
+            playVideoSmoothly(
+              video
+            ),
+          400
+        );
 
       }
 
     },
-    {
-      passive:
-        true
-    }
+    300
   );
+
+}
 
 
 /* =========================================================
-   ESCAPE
+   ESCAPE KEY
    ========================================================= */
 
 document.addEventListener(
@@ -3717,95 +3935,47 @@ document.addEventListener(
 
 
 /* =========================================================
-   AUTH STATE
+   PAGE VISIBILITY
    ========================================================= */
 
-onAuthStateChanged(
-  auth,
-  async user => {
+document.addEventListener(
+  "visibilitychange",
+  () => {
 
-    currentUser =
-      user;
+    if (
+      document.hidden
+    ) {
 
-
-    currentProfile =
-      null;
-
-
-    if (user) {
-
-      try {
-
-        await createOrLoadUserProfile(
-          user
+      $$(".feed-video")
+        .forEach(
+          video =>
+            video.pause()
         );
-
-
-        /*
-          Username index
-          usernames/{username}
-        */
-
-        const username =
-          cleanUsername(
-            currentProfile?.username
-          );
-
-
-        if (
-          username
-        ) {
-
-          const indexRef =
-            doc(
-              db,
-              "usernames",
-              username
-            );
-
-
-          const indexSnap =
-            await getDoc(
-              indexRef
-            );
-
-
-          if (
-            !indexSnap.exists()
-          ) {
-
-            await setDoc(
-              indexRef,
-              {
-                uid:
-                  user.uid
-              }
-            );
-
-          }
-
-        }
-
-
-      } catch (error) {
-
-        console.error(
-          "Profile error:",
-          error
-        );
-
-      }
 
     }
 
-
-    await loadVideoFeed({
-      reset:
-        true
-    });
-
   }
 );
+
+
+/* =========================================================
+   INITIAL UI
+   ========================================================= */
+
+function initializeUI() {
+
+  if (forYouTab) {
+
+    forYouTab.classList.add(
+      "active"
+    );
+
+  }
+
+}
+
+
+initializeUI();
 
 
 /* =========================================================
@@ -3813,5 +3983,5 @@ onAuthStateChanged(
    ========================================================= */
 
 console.log(
-  "🌍 WWC Core v2 loaded successfully"
+  "🌍 WWC-Core Refactored TikTok Feed loaded successfully"
 );
