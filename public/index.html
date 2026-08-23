@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
+
   <meta charset="UTF-8">
 
   <meta
@@ -20,26 +21,28 @@
     rel="stylesheet"
     href="./css/style.css"
   >
+
+  <!-- FONT AWESOME ICONS -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  >
+
 </head>
+
 
 <body>
 
-  <!-- =====================================================
-       WWC MAIN APP
-       ===================================================== -->
-
   <div id="app">
 
-    <!-- ===================================================
+
+    <!-- =================================================
          TOP BAR
-         Following | For You | Search
-         =================================================== -->
+         ================================================= -->
 
     <header class="wwc-top-bar">
 
       <div class="wwc-top-tabs">
-
-        <!-- FOLLOWING -->
 
         <button
           id="followingTab"
@@ -49,8 +52,6 @@
           Following
         </button>
 
-
-        <!-- FOR YOU -->
 
         <button
           id="forYouTab"
@@ -71,27 +72,30 @@
         type="button"
         aria-label="Search"
       >
-        <span>⌕</span>
+
+        <span>
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </span>
+
       </button>
 
     </header>
 
 
-    <!-- ===================================================
+
+    <!-- =================================================
          VIDEO FEED
-         =================================================== -->
+         ================================================= -->
 
     <main
       id="video-feed"
       aria-label="WWC Video Feed"
     >
 
-      <!-- Firebase থেকে ভিডিও এখানে আসবে -->
-
       <div class="feed-loading">
 
         <div>
-          ⏳
+          <i class="fa-solid fa-spinner fa-spin"></i>
         </div>
 
         <div>
@@ -103,9 +107,10 @@
     </main>
 
 
-    <!-- ===================================================
+
+    <!-- =================================================
          PROFILE MENU
-         =================================================== -->
+         ================================================= -->
 
     <div
       id="profileMenu"
@@ -116,7 +121,11 @@
       <div class="profile-menu-header">
 
         <div class="profile-menu-title">
-          👤 My Profile
+
+          <i class="fa-solid fa-user"></i>
+
+          My Profile
+
         </div>
 
 
@@ -126,50 +135,59 @@
           type="button"
           aria-label="Close"
         >
-          ✕
+
+          <i class="fa-solid fa-xmark"></i>
+
         </button>
 
       </div>
 
-
-      <!-- PROFILE -->
 
       <button
         id="profileBtnMenu"
         class="profile-menu-btn"
         type="button"
       >
-        👤 Profile
+
+        <i class="fa-solid fa-user"></i>
+
+        Profile
+
       </button>
 
-
-      <!-- LOGIN -->
 
       <button
         id="loginBtn"
         class="profile-menu-btn"
         type="button"
       >
-        🔐 Login / Register
+
+        <i class="fa-solid fa-right-to-bracket"></i>
+
+        Login / Register
+
       </button>
 
-
-      <!-- LOGOUT -->
 
       <button
         id="logoutBtn"
         class="profile-menu-btn logout-menu-btn"
         type="button"
       >
-        🚪 Logout
+
+        <i class="fa-solid fa-right-from-bracket"></i>
+
+        Logout
+
       </button>
 
     </div>
 
 
-    <!-- ===================================================
+
+    <!-- =================================================
          COMMENT BOX
-         =================================================== -->
+         ================================================= -->
 
     <div
       id="commentBox"
@@ -177,24 +195,21 @@
       aria-hidden="true"
     >
 
-      <!-- COMMENT HEADER -->
-
       <div class="comment-title">
-        💬 Comments
+
+        <i class="fa-regular fa-comment"></i>
+
+        Comments
+
       </div>
 
-
-      <!-- COMMENTS -->
 
       <div
         id="commentsList"
         class="comments-list"
       >
-        <!-- Comments will load here -->
       </div>
 
-
-      <!-- COMMENT INPUT -->
 
       <textarea
         id="commentInput"
@@ -202,8 +217,6 @@
         maxlength="500"
       ></textarea>
 
-
-      <!-- COMMENT BUTTONS -->
 
       <div class="comment-buttons">
 
@@ -227,9 +240,10 @@
     </div>
 
 
-    <!-- ===================================================
+
+    <!-- =================================================
          VIDEO UPLOAD INPUT
-         =================================================== -->
+         ================================================= -->
 
     <input
       id="videoUpload"
@@ -239,18 +253,18 @@
     >
 
 
-    <!-- ===================================================
+
+    <!-- =================================================
          BOTTOM NAVIGATION
-         =================================================== -->
+         ================================================= -->
 
     <nav
       class="wwc-bottom-nav"
       aria-label="Main navigation"
     >
 
-      <!-- =================================================
-           HOME
-           ================================================= -->
+
+      <!-- HOME -->
 
       <button
         class="wwc-nav-btn active"
@@ -259,7 +273,9 @@
       >
 
         <span class="nav-icon">
-          🏠
+
+          <i class="fa-solid fa-house"></i>
+
         </span>
 
         <span class="nav-label">
@@ -269,9 +285,8 @@
       </button>
 
 
-      <!-- =================================================
-           FRIENDS
-           ================================================= -->
+
+      <!-- FRIENDS -->
 
       <button
         class="wwc-nav-btn"
@@ -280,7 +295,9 @@
       >
 
         <span class="nav-icon">
-          👥
+
+          <i class="fa-solid fa-user-group"></i>
+
         </span>
 
         <span class="nav-label">
@@ -290,9 +307,8 @@
       </button>
 
 
-      <!-- =================================================
-           CREATE / UPLOAD
-           ================================================= -->
+
+      <!-- CREATE -->
 
       <button
         id="uploadBtn"
@@ -308,9 +324,8 @@
       </button>
 
 
-      <!-- =================================================
-           INBOX
-           ================================================= -->
+
+      <!-- INBOX -->
 
       <button
         class="wwc-nav-btn"
@@ -319,7 +334,9 @@
       >
 
         <span class="nav-icon">
-          💬
+
+          <i class="fa-regular fa-comment-dots"></i>
+
         </span>
 
         <span class="nav-label">
@@ -329,9 +346,8 @@
       </button>
 
 
-      <!-- =================================================
-           PROFILE
-           ================================================= -->
+
+      <!-- PROFILE -->
 
       <button
         id="profileBtn"
@@ -340,7 +356,9 @@
       >
 
         <span class="nav-icon">
-          👤
+
+          <i class="fa-regular fa-user"></i>
+
         </span>
 
         <span class="nav-label">
@@ -354,14 +372,16 @@
   </div>
 
 
-  <!-- =====================================================
+
+  <!-- =================================================
        MAIN APPLICATION JAVASCRIPT
-       ===================================================== -->
+       ================================================= -->
 
   <script
     type="module"
     src="./js/app.js"
   ></script>
+
 
 </body>
 </html>
