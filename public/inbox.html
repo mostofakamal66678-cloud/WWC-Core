@@ -2,11 +2,7 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
 
   <title>WWC Inbox</title>
@@ -68,9 +64,9 @@
       padding: 13px 15px;
       border: 1px solid #444;
       border-radius: 12px;
+      outline: none;
       background: #181818;
       color: #fff;
-      outline: none;
       font-size: 15px;
     }
 
@@ -79,33 +75,33 @@
     }
 
     .section-title {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: bold;
-      margin: 15px 3px 12px;
+      margin: 15px 3px 10px;
     }
 
-    #usersList {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+    #status {
+      text-align: center;
+      color: #999;
+      padding: 25px 10px;
     }
 
-    .user-card {
-      width: 100%;
+    .conversation {
       display: flex;
       align-items: center;
       gap: 12px;
+      width: 100%;
       padding: 13px;
-      border: 1px solid #333;
+      margin-bottom: 8px;
+      border: 1px solid #292929;
       border-radius: 13px;
-      background: #181818;
-      color: #fff;
+      background: #151515;
       cursor: pointer;
       text-align: left;
     }
 
-    .user-card:active {
-      background: #252525;
+    .conversation:active {
+      transform: scale(.99);
     }
 
     .avatar {
@@ -118,214 +114,64 @@
       flex-shrink: 0;
     }
 
-    .user-info {
+    .conversation-info {
       flex: 1;
       min-width: 0;
     }
 
-    .user-name {
+    .name-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .name {
       font-size: 16px;
       font-weight: bold;
-      margin-bottom: 5px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    .user-handle {
-      color: #999;
-      font-size: 13px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .chat-icon {
-      font-size: 21px;
+    .time {
+      color: #777;
+      font-size: 11px;
       flex-shrink: 0;
     }
 
-    .status {
-      text-align: center;
-      color: #999;
-      padding: 25px 10px;
+    .handle {
+      color: #888;
+      font-size: 12px;
+      margin-top: 3px;
     }
 
-    .error {
-      color: #ff6684;
+    .last-message {
+      color: #aaa;
+      font-size: 13px;
+      margin-top: 5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .empty {
       text-align: center;
-      padding: 45px 20px;
+      padding: 55px 20px;
+      color: #777;
       background: #111;
       border: 1px solid #222;
-      border-radius: 14px;
-      color: #888;
+      border-radius: 15px;
+      margin-top: 15px;
     }
 
     .empty-icon {
       font-size: 42px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
-    /* ==========================================
-       CHAT SCREEN
-       ========================================== */
-
-    #chatScreen {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: #000;
-      z-index: 500;
-    }
-
-    .chat-header {
-      height: 64px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 0 12px;
-      background: #111;
-      border-bottom: 1px solid #333;
-    }
-
-    .chat-back {
-      width: 42px;
-      height: 42px;
-      border: 0;
-      border-radius: 50%;
-      background: #222;
-      color: #fff;
-      font-size: 23px;
-      cursor: pointer;
-    }
-
-    .chat-avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: #333;
-    }
-
-    .chat-user-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .chat-user-name {
-      font-weight: bold;
-      font-size: 16px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .chat-user-handle {
-      color: #888;
-      font-size: 12px;
-    }
-
-    .profile-open-btn {
-      border: 0;
-      border-radius: 9px;
-      background: #222;
-      color: #fff;
-      padding: 9px;
-      cursor: pointer;
-    }
-
-    .messages {
-      position: absolute;
-      top: 64px;
-      bottom: 72px;
-      left: 0;
-      right: 0;
-      overflow-y: auto;
-      padding: 15px 12px;
-    }
-
-    .message-row {
-      display: flex;
-      margin: 8px 0;
-    }
-
-    .message-row.mine {
-      justify-content: flex-end;
-    }
-
-    .message-bubble {
-      max-width: 78%;
-      padding: 10px 13px;
-      border-radius: 16px;
-      background: #222;
-      color: #fff;
-      word-wrap: break-word;
-      white-space: pre-wrap;
-    }
-
-    .message-row.mine .message-bubble {
-      background: #fe2c55;
-    }
-
-    .message-time {
-      display: block;
-      font-size: 10px;
-      opacity: .65;
-      margin-top: 4px;
-      text-align: right;
-    }
-
-    .chat-input-area {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      min-height: 72px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px;
-      background: #111;
-      border-top: 1px solid #333;
-    }
-
-    #messageInput {
-      flex: 1;
-      min-width: 0;
-      resize: none;
-      height: 45px;
-      padding: 12px;
-      border: 1px solid #444;
-      border-radius: 22px;
-      outline: none;
-      background: #1c1c1c;
-      color: #fff;
-      font-size: 15px;
-    }
-
-    #sendBtn {
-      width: 45px;
-      height: 45px;
-      border: 0;
-      border-radius: 50%;
-      background: #fe2c55;
-      color: #fff;
-      font-size: 19px;
-      cursor: pointer;
-      flex-shrink: 0;
-    }
-
-    #sendBtn:disabled {
-      opacity: .5;
-    }
-
-    .no-messages {
-      text-align: center;
-      color: #777;
-      padding: 50px 15px;
+    .error {
+      color: #ff6684 !important;
     }
 
     @media (max-width: 500px) {
@@ -333,19 +179,11 @@
         padding-left: 9px;
         padding-right: 9px;
       }
-
-      .message-bubble {
-        max-width: 85%;
-      }
     }
   </style>
 </head>
 
 <body>
-
-  <!-- ==========================================
-       INBOX
-       ========================================== -->
 
   <header class="header">
 
@@ -353,6 +191,7 @@
       id="backBtn"
       class="back-btn"
       type="button"
+      aria-label="Back"
     >
       ←
     </button>
@@ -379,112 +218,21 @@
 
 
     <div class="section-title">
-      💬 Message
+      💬 Messages
     </div>
 
 
-    <div
-      id="status"
-      class="status"
-    >
-      ⏳ Users লোড হচ্ছে...
+    <div id="status">
+      ⏳ Inbox লোড হচ্ছে...
     </div>
 
 
-    <section id="usersList"></section>
+    <section id="conversationList"></section>
 
   </main>
 
 
-  <!-- ==========================================
-       CHAT SCREEN
-       ========================================== -->
-
-  <section id="chatScreen">
-
-    <header class="chat-header">
-
-      <button
-        id="chatBackBtn"
-        class="chat-back"
-        type="button"
-      >
-        ←
-      </button>
-
-
-      <img
-        id="chatAvatar"
-        class="chat-avatar"
-        src="./images/profile.png"
-        alt="User"
-      >
-
-
-      <div class="chat-user-info">
-
-        <div
-          id="chatUserName"
-          class="chat-user-name"
-        >
-          User
-        </div>
-
-        <div
-          id="chatUserHandle"
-          class="chat-user-handle"
-        >
-          @wwc_user
-        </div>
-
-      </div>
-
-
-      <button
-        id="profileOpenBtn"
-        class="profile-open-btn"
-        type="button"
-        aria-label="Open profile"
-      >
-        👤
-      </button>
-
-    </header>
-
-
-    <div
-      id="messages"
-      class="messages"
-    ></div>
-
-
-    <div class="chat-input-area">
-
-      <textarea
-        id="messageInput"
-        maxlength="1000"
-        placeholder="Message লিখুন..."
-      ></textarea>
-
-
-      <button
-        id="sendBtn"
-        type="button"
-        aria-label="Send message"
-      >
-        ➤
-      </button>
-
-    </div>
-
-  </section>
-
-
   <script type="module">
-
-    // ==========================================
-    // FIREBASE
-    // ==========================================
 
     import {
       getApps,
@@ -499,14 +247,14 @@
     import {
       getFirestore,
       collection,
+      query,
+      where,
+      orderBy,
+      limit,
+      onSnapshot,
       getDocs,
       doc,
-      getDoc,
-      addDoc,
-      query,
-      orderBy,
-      onSnapshot,
-      serverTimestamp
+      getDoc
     } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 
@@ -536,12 +284,11 @@
 
       measurementId:
         "G-PKFJ5NEMGQ"
-
     };
 
 
     // ==========================================
-    // START FIREBASE
+    // FIREBASE START
     // ==========================================
 
     const app =
@@ -566,58 +313,23 @@
     const searchInput =
       document.getElementById("searchInput");
 
+    const conversationList =
+      document.getElementById("conversationList");
+
     const status =
       document.getElementById("status");
-
-    const usersList =
-      document.getElementById("usersList");
-
-    const chatScreen =
-      document.getElementById("chatScreen");
-
-    const chatBackBtn =
-      document.getElementById("chatBackBtn");
-
-    const chatAvatar =
-      document.getElementById("chatAvatar");
-
-    const chatUserName =
-      document.getElementById("chatUserName");
-
-    const chatUserHandle =
-      document.getElementById("chatUserHandle");
-
-    const profileOpenBtn =
-      document.getElementById("profileOpenBtn");
-
-    const messages =
-      document.getElementById("messages");
-
-    const messageInput =
-      document.getElementById("messageInput");
-
-    const sendBtn =
-      document.getElementById("sendBtn");
 
 
     // ==========================================
     // VARIABLES
     // ==========================================
 
+    let currentUser = null;
+
+    let conversations = [];
+
     const defaultPhoto =
       "./images/profile.png";
-
-    let currentUser =
-      null;
-
-    let allUsers =
-      [];
-
-    let selectedUser =
-      null;
-
-    let unsubscribeMessages =
-      null;
 
 
     // ==========================================
@@ -632,78 +344,260 @@
     );
 
 
-    chatBackBtn.addEventListener(
-      "click",
-      closeChat
-    );
+    // ==========================================
+    // ESCAPE HTML
+    // ==========================================
+
+    function escapeHtml(value) {
+
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+    }
 
 
     // ==========================================
-    // LOAD USERS
+    // TIME FORMAT
     // ==========================================
 
-    async function loadUsers() {
+    function formatTime(timestamp) {
 
-      status.textContent =
-        "⏳ Users লোড হচ্ছে...";
-
-      status.classList.remove(
-        "error"
-      );
-
+      if (!timestamp) {
+        return "";
+      }
 
       try {
 
-        const snapshot =
-          await getDocs(
-            collection(
-              db,
-              "users"
-            )
-          );
+        const date =
+          timestamp.toDate
+            ? timestamp.toDate()
+            : new Date(timestamp);
 
-
-        allUsers = [];
-
-
-        snapshot.forEach(
-          userDoc => {
-
-            if (
-              userDoc.id ===
-              currentUser.uid
-            ) {
-              return;
-            }
-
-
-            allUsers.push({
-
-              uid:
-                userDoc.id,
-
-              ...userDoc.data()
-
-            });
-
+        return date.toLocaleDateString(
+          "bn-BD",
+          {
+            day: "numeric",
+            month: "short"
           }
         );
 
+      } catch (error) {
 
-        renderUsers(
-          allUsers
+        return "";
+
+      }
+
+    }
+
+
+    // ==========================================
+    // LOAD INBOX
+    // ==========================================
+
+    async function loadInbox() {
+
+      if (!currentUser) {
+        return;
+      }
+
+      status.classList.remove("error");
+
+      status.textContent =
+        "⏳ Conversations লোড হচ্ছে...";
+
+
+      /*
+       * conversations collection-এর প্রতিটি document
+       * এমনভাবে রাখার জন্য প্রস্তুত:
+       *
+       * conversations/{conversationId}
+       *
+       * members: [uid1, uid2]
+       * lastMessage: "Hello"
+       * lastMessageAt: Timestamp
+       */
+
+      try {
+
+        const conversationsRef =
+          collection(
+            db,
+            "conversations"
+          );
+
+
+        const inboxQuery =
+          query(
+            conversationsRef,
+            where(
+              "members",
+              "array-contains",
+              currentUser.uid
+            ),
+            orderBy(
+              "lastMessageAt",
+              "desc"
+            ),
+            limit(100)
+          );
+
+
+        onSnapshot(
+          inboxQuery,
+          async (snapshot) => {
+
+            const items = [];
+
+            for (
+              const conversationDoc
+              of snapshot.docs
+            ) {
+
+              const data =
+                conversationDoc.data();
+
+
+              const members =
+                Array.isArray(
+                  data.members
+                )
+                  ? data.members
+                  : [];
+
+
+              const otherUid =
+                members.find(
+                  uid =>
+                    uid !==
+                    currentUser.uid
+                );
+
+
+              if (!otherUid) {
+                continue;
+              }
+
+
+              let otherUser = null;
+
+
+              try {
+
+                const userSnapshot =
+                  await getDoc(
+                    doc(
+                      db,
+                      "users",
+                      otherUid
+                    )
+                  );
+
+
+                if (
+                  userSnapshot.exists()
+                ) {
+
+                  otherUser =
+                    userSnapshot.data();
+
+                }
+
+              } catch (error) {
+
+                console.error(
+                  "User profile error:",
+                  error
+                );
+
+              }
+
+
+              if (!otherUser) {
+                continue;
+              }
+
+
+              items.push({
+
+                id:
+                  conversationDoc.id,
+
+                uid:
+                  otherUid,
+
+                name:
+                  otherUser.name
+                  ||
+                  otherUser.displayName
+                  ||
+                  "WWC User",
+
+                username:
+                  String(
+                    otherUser.username
+                    || "wwc_user"
+                  ).replace(
+                    /^@/,
+                    ""
+                  ),
+
+                photoURL:
+                  otherUser.photoURL
+                  || defaultPhoto,
+
+                lastMessage:
+                  data.lastMessage
+                  || "No messages yet",
+
+                lastMessageAt:
+                  data.lastMessageAt
+                  || null
+
+              });
+
+            }
+
+
+            conversations =
+              items;
+
+
+            renderConversations(
+              filterConversations()
+            );
+
+          },
+          (error) => {
+
+            console.error(
+              "Inbox listener error:",
+              error
+            );
+
+            status.textContent =
+              "❌ Inbox লোড করা যায়নি।";
+
+            status.classList.add(
+              "error"
+            );
+
+          }
         );
 
 
       } catch (error) {
 
         console.error(
-          "Users error:",
+          "Inbox error:",
           error
         );
 
         status.textContent =
-          "❌ Users লোড করা যায়নি।";
+          "❌ Inbox চালু করা যায়নি।";
 
         status.classList.add(
           "error"
@@ -715,23 +609,22 @@
 
 
     // ==========================================
-    // RENDER USERS
+    // RENDER CONVERSATIONS
     // ==========================================
 
-    function renderUsers(
-      users
+    function renderConversations(
+      items
     ) {
 
-      usersList.innerHTML =
+      conversationList.innerHTML =
         "";
 
 
-      if (!users.length) {
+      if (!items.length) {
 
-        status.textContent =
-          "";
+        status.textContent = "";
 
-        usersList.innerHTML = `
+        conversationList.innerHTML = `
 
           <div class="empty">
 
@@ -740,8 +633,13 @@
             </div>
 
             <div>
-              এখনো অন্য কোনো User নেই।
+              এখনো কোনো Message নেই।
             </div>
+
+            <p>
+              Friends থেকে কোনো User-এর Profile খুলে
+              Message শুরু করতে পারবে।
+            </p>
 
           </div>
 
@@ -753,12 +651,12 @@
 
 
       status.textContent =
-        users.length +
-        " জন User";
+        items.length +
+        " টি Conversation";
 
 
-      users.forEach(
-        user => {
+      items.forEach(
+        (item) => {
 
           const button =
             document.createElement(
@@ -769,64 +667,55 @@
             "button";
 
           button.className =
-            "user-card";
+            "conversation";
 
           button.dataset.uid =
-            user.uid;
+            item.uid;
 
-
-          const name =
-            user.name
-            || user.displayName
-            || "WWC User";
-
-
-          let username =
-            user.username
-            || "wwc_user";
-
-
-          username =
-            String(username)
-              .replace(
-                /^@/,
-                ""
-              );
-
-
-          const photo =
-            user.photoURL
-            || defaultPhoto;
+          button.dataset.conversation =
+            item.id;
 
 
           button.innerHTML = `
 
             <img
               class="avatar"
-              src="${escapeHtml(photo)}"
+              src="${escapeHtml(item.photoURL)}"
               alt="Profile"
             >
 
-            <div class="user-info">
+            <div class="conversation-info">
 
-              <div class="user-name">
-                ${escapeHtml(name)}
+              <div class="name-row">
+
+                <div class="name">
+                  ${escapeHtml(item.name)}
+                </div>
+
+                <div class="time">
+                  ${escapeHtml(
+                    formatTime(
+                      item.lastMessageAt
+                    )
+                  )}
+                </div>
+
               </div>
 
-              <div class="user-handle">
-                @${escapeHtml(username)}
+              <div class="handle">
+                @${escapeHtml(item.username)}
               </div>
 
-            </div>
+              <div class="last-message">
+                ${escapeHtml(item.lastMessage)}
+              </div>
 
-            <div class="chat-icon">
-              💬
             </div>
 
           `;
 
 
-          usersList.appendChild(
+          conversationList.appendChild(
             button
           );
 
@@ -837,142 +726,52 @@
 
 
     // ==========================================
-    // ESCAPE HTML
+    // FILTER
     // ==========================================
 
-    function escapeHtml(
-      value
-    ) {
+    function filterConversations() {
 
-      return String(value || "")
-        .replace(
-          /&/g,
-          "&amp;"
-        )
-        .replace(
-          /</g,
-          "&lt;"
-        )
-        .replace(
-          />/g,
-          "&gt;"
-        )
-        .replace(
-          /"/g,
-          "&quot;"
-        )
-        .replace(
-          /'/g,
-          "&#039;"
-        );
+      const queryText =
+        searchInput.value
+          .trim()
+          .toLowerCase();
+
+
+      if (!queryText) {
+        return conversations;
+      }
+
+
+      return conversations.filter(
+        item => {
+
+          return (
+
+            item.name
+              .toLowerCase()
+              .includes(queryText)
+
+            ||
+
+            item.username
+              .toLowerCase()
+              .includes(queryText)
+
+          );
+
+        }
+      );
 
     }
 
-
-    // ==========================================
-    // SEARCH
-    // ==========================================
 
     searchInput.addEventListener(
       "input",
       () => {
 
-        const text =
-          searchInput.value
-            .trim()
-            .toLowerCase();
-
-
-        if (!text) {
-
-          renderUsers(
-            allUsers
-          );
-
-          return;
-
-        }
-
-
-        const filtered =
-          allUsers.filter(
-            user => {
-
-              const name =
-                String(
-                  user.name
-                  || user.displayName
-                  || ""
-                ).toLowerCase();
-
-
-              const username =
-                String(
-                  user.username
-                  || ""
-                )
-                  .replace(
-                    /^@/,
-                    ""
-                  )
-                  .toLowerCase();
-
-
-              return (
-                name.includes(text)
-                ||
-                username.includes(text)
-              );
-
-            }
-          );
-
-
-        renderUsers(
-          filtered
+        renderConversations(
+          filterConversations()
         );
-
-      }
-    );
-
-
-    // ==========================================
-    // USER CLICK
-    // ==========================================
-
-    usersList.addEventListener(
-      "click",
-      event => {
-
-        const card =
-          event.target.closest(
-            ".user-card"
-          );
-
-
-        if (!card) {
-          return;
-        }
-
-
-        const uid =
-          card.dataset.uid;
-
-
-        const user =
-          allUsers.find(
-            item =>
-              item.uid === uid
-          );
-
-
-        if (user) {
-
-          openChat(
-            user
-          );
-
-        }
 
       }
     );
@@ -982,498 +781,42 @@
     // OPEN CHAT
     // ==========================================
 
-    function openChat(
-      user
-    ) {
+    conversationList.addEventListener(
+      "click",
+      (event) => {
 
-      selectedUser =
-        user;
-
-
-      const name =
-        user.name
-        || user.displayName
-        || "WWC User";
-
-
-      let username =
-        user.username
-        || "wwc_user";
-
-
-      username =
-        String(username)
-          .replace(
-            /^@/,
-            ""
+        const conversation =
+          event.target.closest(
+            "[data-conversation]"
           );
 
 
-      chatUserName.textContent =
-        name;
+        if (!conversation) {
+          return;
+        }
 
 
-      chatUserHandle.textContent =
-        "@" + username;
+        const conversationId =
+          conversation.dataset.conversation;
 
 
-      chatAvatar.src =
-        user.photoURL
-        || defaultPhoto;
+        const uid =
+          conversation.dataset.uid;
 
 
-      chatScreen.style.display =
-        "block";
+        /*
+         * পরের ধাপে আমরা chat.html তৈরি করব।
+         *
+         * chat.html?uid=USER_UID&conversation=CONVERSATION_ID
+         */
 
-
-      messages.innerHTML = `
-
-        <div class="no-messages">
-          ⏳ Messages লোড হচ্ছে...
-        </div>
-
-      `;
-
-
-      listenToMessages();
-
-
-      setTimeout(
-        () => {
-          messageInput.focus();
-        },
-        100
-      );
-
-    }
-
-
-    // ==========================================
-    // CHAT ID
-    // ==========================================
-
-    function getChatId(
-      uid1,
-      uid2
-    ) {
-
-      return [
-        uid1,
-        uid2
-      ]
-        .sort()
-        .join("_");
-
-    }
-
-
-    // ==========================================
-    // LISTEN MESSAGES
-    // ==========================================
-
-    function listenToMessages() {
-
-      if (
-        !currentUser
-        ||
-        !selectedUser
-      ) {
-        return;
-      }
-
-
-      if (unsubscribeMessages) {
-
-        unsubscribeMessages();
-
-        unsubscribeMessages =
-          null;
-
-      }
-
-
-      const chatId =
-        getChatId(
-          currentUser.uid,
-          selectedUser.uid
-        );
-
-
-      const messagesRef =
-        collection(
-          db,
-          "chats",
-          chatId,
-          "messages"
-        );
-
-
-      const messagesQuery =
-        query(
-          messagesRef,
-          orderBy(
-            "createdAt",
-            "asc"
-          )
-        );
-
-
-      unsubscribeMessages =
-        onSnapshot(
-          messagesQuery,
-          snapshot => {
-
-            messages.innerHTML =
-              "";
-
-
-            if (
-              snapshot.empty
-            ) {
-
-              messages.innerHTML = `
-
-                <div class="no-messages">
-                  💬 এখনো কোনো Message নেই।<br>
-                  প্রথম Message পাঠান।
-                </div>
-
-              `;
-
-              return;
-
-            }
-
-
-            snapshot.forEach(
-              messageDoc => {
-
-                const data =
-                  messageDoc.data();
-
-
-                const row =
-                  document.createElement(
-                    "div"
-                  );
-
-
-                row.className =
-                  "message-row";
-
-
-                if (
-                  data.senderId ===
-                  currentUser.uid
-                ) {
-
-                  row.classList.add(
-                    "mine"
-                  );
-
-                }
-
-
-                const bubble =
-                  document.createElement(
-                    "div"
-                  );
-
-
-                bubble.className =
-                  "message-bubble";
-
-
-                bubble.textContent =
-                  data.text
-                  || "";
-
-
-                const time =
-                  document.createElement(
-                    "span"
-                  );
-
-
-                time.className =
-                  "message-time";
-
-
-                time.textContent =
-                  formatTime(
-                    data.createdAt
-                  );
-
-
-                bubble.appendChild(
-                  time
-                );
-
-
-                row.appendChild(
-                  bubble
-                );
-
-
-                messages.appendChild(
-                  row
-                );
-
-              }
-            );
-
-
-            scrollMessages();
-
-          },
-          error => {
-
-            console.error(
-              "Message listener error:",
-              error
-            );
-
-
-            messages.innerHTML = `
-
-              <div class="no-messages">
-                ❌ Messages লোড করা যায়নি।
-              </div>
-
-            `;
-
-          }
-        );
-
-    }
-
-
-    // ==========================================
-    // SEND MESSAGE
-    // ==========================================
-
-    async function sendMessage() {
-
-      if (
-        !currentUser
-        ||
-        !selectedUser
-      ) {
-        return;
-      }
-
-
-      const text =
-        messageInput.value.trim();
-
-
-      if (!text) {
-        return;
-      }
-
-
-      sendBtn.disabled =
-        true;
-
-
-      try {
-
-        const chatId =
-          getChatId(
-            currentUser.uid,
-            selectedUser.uid
+        window.location.href =
+          "./chat.html?uid=" +
+          encodeURIComponent(uid) +
+          "&conversation=" +
+          encodeURIComponent(
+            conversationId
           );
-
-
-        await addDoc(
-          collection(
-            db,
-            "chats",
-            chatId,
-            "messages"
-          ),
-          {
-
-            senderId:
-              currentUser.uid,
-
-            receiverId:
-              selectedUser.uid,
-
-            text:
-              text,
-
-            createdAt:
-              serverTimestamp()
-
-          }
-        );
-
-
-        messageInput.value =
-          "";
-
-
-        scrollMessages();
-
-
-      } catch (error) {
-
-        console.error(
-          "Send message error:",
-          error
-        );
-
-
-        alert(
-          "❌ Message পাঠানো যায়নি।"
-        );
-
-      }
-
-
-      sendBtn.disabled =
-        false;
-
-
-      messageInput.focus();
-
-    }
-
-
-    sendBtn.addEventListener(
-      "click",
-      sendMessage
-    );
-
-
-    // ==========================================
-    // ENTER TO SEND
-    // ==========================================
-
-    messageInput.addEventListener(
-      "keydown",
-      event => {
-
-        if (
-          event.key === "Enter"
-          &&
-          !event.shiftKey
-        ) {
-
-          event.preventDefault();
-
-          sendMessage();
-
-        }
-
-      }
-    );
-
-
-    // ==========================================
-    // SCROLL
-    // ==========================================
-
-    function scrollMessages() {
-
-      requestAnimationFrame(
-        () => {
-
-          messages.scrollTop =
-            messages.scrollHeight;
-
-        }
-      );
-
-    }
-
-
-    // ==========================================
-    // TIME
-    // ==========================================
-
-    function formatTime(
-      timestamp
-    ) {
-
-      if (
-        !timestamp
-        ||
-        !timestamp.toDate
-      ) {
-
-        return "";
-
-      }
-
-
-      const date =
-        timestamp.toDate();
-
-
-      return date.toLocaleTimeString(
-        "bn-BD",
-        {
-          hour: "numeric",
-          minute: "2-digit"
-        }
-      );
-
-    }
-
-
-    // ==========================================
-    // CLOSE CHAT
-    // ==========================================
-
-    function closeChat() {
-
-      if (
-        unsubscribeMessages
-      ) {
-
-        unsubscribeMessages();
-
-        unsubscribeMessages =
-          null;
-
-      }
-
-
-      selectedUser =
-        null;
-
-
-      chatScreen.style.display =
-        "none";
-
-
-      messages.innerHTML =
-        "";
-
-    }
-
-
-    // ==========================================
-    // OPEN USER PROFILE
-    // ==========================================
-
-    profileOpenBtn.addEventListener(
-      "click",
-      () => {
-
-        if (
-          selectedUser
-        ) {
-
-          window.location.href =
-            "user-profile.html?uid=" +
-            encodeURIComponent(
-              selectedUser.uid
-            );
-
-        }
 
       }
     );
@@ -1485,7 +828,7 @@
 
     onAuthStateChanged(
       auth,
-      async user => {
+      async (user) => {
 
         if (!user) {
 
@@ -1517,7 +860,7 @@
           user;
 
 
-        await loadUsers();
+        await loadInbox();
 
       }
     );
