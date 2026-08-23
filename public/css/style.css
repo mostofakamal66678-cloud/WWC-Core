@@ -1341,3 +1341,206 @@ button {
   }
 
 }
+/* =========================================================
+   WWC WHITE ACTION BUTTONS
+   Follow + Like + Comment + Save + Share
+   ========================================================= */
+
+/* FOLLOW BUTTON */
+.follow-btn {
+  padding: 9px 16px;
+
+  border: 1.5px solid #ffffff;
+  border-radius: 10px;
+
+  background: #ffffff;
+  color: #111111;
+
+  font-size: 14px;
+  font-weight: 800;
+
+  white-space: nowrap;
+
+  box-shadow:
+    0 3px 12px rgba(255, 255, 255, 0.35);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+/* Following অবস্থায় */
+.follow-btn.following {
+  background: #ffffff;
+  color: #111111;
+
+  border-color: #ffffff;
+
+  box-shadow:
+    0 3px 14px rgba(255, 255, 255, 0.45);
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+   ========================================================= */
+
+.action-btn {
+  width: 54px;
+  min-height: 58px;
+
+  padding: 7px 5px;
+
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  color: #111111;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 4px;
+
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.35),
+    0 0 12px rgba(255, 255, 255, 0.25);
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+
+/* ICON */
+.action-icon {
+  font-size: 27px;
+  line-height: 1;
+
+  filter:
+    drop-shadow(0 2px 3px rgba(0,0,0,.25));
+}
+
+
+/* COUNT / SHARE TEXT */
+.action-btn span:last-child {
+  color: #111111;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  line-height: 1.1;
+}
+
+
+/* =========================================================
+   LIKE
+   ========================================================= */
+
+.like-btn {
+  background: #ffffff;
+}
+
+.like-btn.liked {
+  background: #ffffff;
+
+  box-shadow:
+    0 0 18px rgba(255, 255, 255, 0.65);
+}
+
+.like-btn.liked .action-icon {
+  transform: scale(1.18);
+}
+
+
+/* =========================================================
+   COMMENT
+   ========================================================= */
+
+.comment-btn {
+  background: #ffffff;
+}
+
+
+/* =========================================================
+   SAVE
+   ========================================================= */
+
+.save-btn {
+  background: #ffffff;
+}
+
+.save-btn.saved {
+  background: #ffffff;
+
+  box-shadow:
+    0 0 18px rgba(255, 255, 255, 0.65);
+}
+
+.save-btn.saved .action-icon {
+  transform: scale(1.18);
+}
+
+
+/* =========================================================
+   SHARE
+   ========================================================= */
+
+.share-btn {
+  background: #ffffff;
+}
+
+
+/* =========================================================
+   BUTTON PRESS EFFECT
+   ========================================================= */
+
+.action-btn:active {
+  transform: scale(0.90);
+
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.follow-btn:active {
+  transform: scale(0.94);
+
+  box-shadow:
+    0 2px 8px rgba(255, 255, 255, 0.3);
+}
+
+
+/* =========================================================
+   MOBILE SIZE
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+  .action-btn {
+    width: 50px;
+    min-height: 54px;
+
+    border-radius: 14px;
+  }
+
+  .action-icon {
+    font-size: 24px;
+  }
+
+  .action-btn span:last-child {
+    font-size: 11px;
+  }
+
+  .follow-btn {
+    padding: 7px 12px;
+    font-size: 13px;
+  }
+
+}
