@@ -1,1509 +1,552 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>WWC My Profile</title>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+  <title>Profile · WWC</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
     }
-
+    
     body {
-      margin: 0;
       background: #000;
       color: #fff;
-      font-family: Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
       min-height: 100vh;
-    }
-
-    .header {
-      height: 64px;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      padding: 0 15px;
-      background: #111;
-      border-bottom: 1px solid #333;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      padding: 60px 20px 30px;
     }
-
+    
+    /* ===== ব্যাক বাটন ===== */
     .back-btn {
-      width: 42px;
-      height: 42px;
-      border: 0;
-      border-radius: 50%;
-      background: #222;
+      position: fixed;
+      top: 16px;
+      left: 16px;
       color: #fff;
-      font-size: 24px;
-      cursor: pointer;
-    }
-
-    .title {
-      margin-left: 15px;
-      font-size: 20px;
-      font-weight: bold;
-    }
-
-    .container {
-      max-width: 650px;
-      margin: auto;
-      padding-bottom: 80px;
-    }
-
-    .profile-header {
-      text-align: center;
-      padding: 35px 20px 25px;
-      border-bottom: 1px solid #333;
-    }
-
-    .photo-wrapper {
-      position: relative;
-      width: 120px;
-      height: 120px;
-      margin: auto;
-      cursor: pointer;
-    }
-
-    .profile-photo {
-      width: 120px;
-      height: 120px;
+      font-size: 22px;
+      background: rgba(255,255,255,0.1);
+      border: 0;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      object-fit: cover;
-      background: #333;
-      border: 3px solid #fff;
-      display: block;
-    }
-
-    .photo-edit {
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: #fe2c55;
-      border: 3px solid #000;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      backdrop-filter: blur(10px);
+      transition: background 0.2s;
+      z-index: 10;
     }
-
-    #photoInput {
-      display: none;
+    .back-btn:active {
+      background: rgba(255,255,255,0.2);
+      transform: scale(0.92);
     }
-
-    .photo-help {
-      color: #999;
-      font-size: 12px;
-      margin-top: 8px;
+    
+    /* ===== সেটিংস বাটন ===== */
+    .settings-btn {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      color: #fff;
+      font-size: 20px;
+      background: rgba(255,255,255,0.1);
+      border: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+      transition: background 0.2s;
+      z-index: 10;
     }
-
-    .name {
-      font-size: 25px;
-      margin: 14px 0 5px;
+    .settings-btn:active {
+      background: rgba(255,255,255,0.2);
+      transform: scale(0.92);
     }
-
-    .handle {
-      color: #999;
-      margin-bottom: 12px;
-    }
-
-    .bio {
-      color: #ddd;
-      line-height: 1.5;
-      max-width: 450px;
-      margin: 10px auto;
-    }
-
-    .country {
-      color: #999;
-      font-size: 14px;
+    
+    /* ===== প্রোফাইল সেকশন ===== */
+    .profile-section {
+      width: 100%;
+      max-width: 400px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       margin-top: 10px;
     }
-
-    .stats {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      margin: 22px 0;
-    }
-
-    .stat strong {
-      display: block;
-      font-size: 20px;
-    }
-
-    .stat span {
-      color: #999;
-      font-size: 13px;
-    }
-
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .main-btn {
-      border: 0;
-      border-radius: 9px;
-      padding: 11px 22px;
-      background: #fff;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .friends-btn {
-      background: #fe2c55;
-      color: #fff;
-    }
-
-    .logout-btn {
+    
+    .profile-pic {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: 3px solid #fff;
       background: #222;
-      color: #fff;
-      border: 1px solid #555;
-    }
-
-    .edit-box {
-      margin: 20px 15px;
-      padding: 20px;
-      background: #181818;
-      border: 1px solid #333;
-      border-radius: 15px;
-    }
-
-    .edit-title {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
-
-    .field {
-      margin-bottom: 13px;
-    }
-
-    .field label {
-      display: block;
-      color: #aaa;
-      font-size: 13px;
-      margin-bottom: 6px;
-    }
-
-    .field input,
-    .field textarea {
-      width: 100%;
-      padding: 12px;
-      border-radius: 9px;
-      border: 1px solid #444;
-      outline: none;
-      background: #111;
-      color: #fff;
-      font-size: 15px;
-      font-family: Arial, sans-serif;
-    }
-
-    .field textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
-
-    .save-btn {
-      width: 100%;
-      border: 0;
-      border-radius: 9px;
-      padding: 12px;
-      background: #fe2c55;
-      color: #fff;
-      font-size: 15px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .save-btn:disabled {
-      opacity: .6;
-      cursor: wait;
-    }
-
-    .status {
-      text-align: center;
-      min-height: 22px;
-      margin: 12px 15px;
-      color: #aaa;
-      font-size: 14px;
-    }
-
-    .error {
-      color: #ff6684;
-    }
-
-    .success {
-      color: #4ade80;
-    }
-
-    .videos-title {
-      padding: 18px 15px;
-      font-size: 18px;
-      font-weight: bold;
-      border-top: 1px solid #333;
-      border-bottom: 1px solid #333;
-    }
-
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2px;
-    }
-
-    .video-card {
-      background: #111;
-      aspect-ratio: 9 / 16;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      color: #888;
       overflow: hidden;
+      position: relative;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     }
-
-    .video-card video {
+    .profile-pic img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      display: block;
     }
-
-    .empty {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 45px 20px;
+    
+    /* ===== এডিট প্রোফাইল বাটন ===== */
+    .edit-profile-btn {
+      margin-top: 12px;
+      padding: 8px 24px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.15);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .edit-profile-btn:active {
+      transform: scale(0.95);
+      background: rgba(255,255,255,0.15);
+    }
+    
+    .profile-name {
+      font-size: 22px;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+    
+    .profile-username {
+      font-size: 14px;
       color: #888;
+      margin-top: 2px;
     }
-
-    .loading {
+    
+    .profile-bio {
+      font-size: 14px;
+      color: #aaa;
+      margin-top: 10px;
       text-align: center;
-      padding: 60px 20px;
+      line-height: 1.5;
+      max-width: 90%;
+    }
+    
+    /* ===== স্ট্যাটস ===== */
+    .stats {
+      display: flex;
+      gap: 35px;
+      margin: 20px 0 25px;
+      padding: 15px 0;
+      width: 100%;
+      justify-content: center;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .stats div {
+      text-align: center;
+    }
+    .stats .num {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .stats .label {
+      font-size: 12px;
+      color: #888;
+      margin-top: 2px;
+    }
+    
+    /* ===== ভিডিও গ্রিড ===== */
+    .video-grid-title {
+      width: 100%;
+      max-width: 400px;
+      font-size: 16px;
+      font-weight: 600;
+      margin: 10px 0 15px;
       color: #aaa;
     }
-
-    @media (max-width: 500px) {
-      .stats {
-        gap: 25px;
-      }
-
-      .profile-photo,
-      .photo-wrapper {
-        width: 105px;
-        height: 105px;
-      }
-
-      .name {
-        font-size: 23px;
-      }
+    .video-grid-title span {
+      color: #fff;
+    }
+    
+    .video-grid {
+      width: 100%;
+      max-width: 400px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+    
+    .video-grid-item {
+      aspect-ratio: 1 / 1;
+      background: #1a1a1a;
+      border-radius: 6px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: #444;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+    .video-grid-item:active {
+      transform: scale(0.96);
+    }
+    .video-grid-item img,
+    .video-grid-item video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .video-grid-item .play-icon {
+      position: absolute;
+      font-size: 20px;
+      color: #fff;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+    }
+    .video-grid-item .views {
+      position: absolute;
+      bottom: 6px;
+      left: 8px;
+      font-size: 11px;
+      color: #fff;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.9);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    /* ===== লোডিং ===== */
+    .loading {
+      color: #666;
+      font-size: 14px;
+      padding: 40px 0;
+      text-align: center;
+    }
+    .loading i {
+      margin-right: 8px;
+    }
+    
+    /* ===== লগআউট ===== */
+    .logout-btn {
+      margin-top: 30px;
+      padding: 12px 30px;
+      border-radius: 12px;
+      background: rgba(255,45,85,0.15);
+      color: #ff2d55;
+      font-size: 14px;
+      font-weight: 600;
+      border: 1px solid rgba(255,45,85,0.2);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .logout-btn:active {
+      transform: scale(0.95);
+      background: rgba(255,45,85,0.25);
+    }
+    
+    /* ===== অ্যানিমেশন ===== */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .profile-section {
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @media (min-width: 700px) {
+      .profile-section { max-width: 500px; }
+      .video-grid { max-width: 500px; }
+      .video-grid-title { max-width: 500px; }
     }
   </style>
 </head>
-
 <body>
 
-  <header class="header">
+  <!-- নেভিগেশন বাটন -->
+  <button class="back-btn" onclick="window.location.href='./index.html'">
+    <i class="fas fa-arrow-left"></i>
+  </button>
+  <button class="settings-btn" onclick="showToast('Settings coming soon')">
+    <i class="fas fa-cog"></i>
+  </button>
 
-    <button
-      type="button"
-      class="back-btn"
-      id="backBtn"
-    >
-      ←
-    </button>
-
-    <div class="title">
-      👤 My Profile
+  <!-- প্রোফাইল -->
+  <div class="profile-section" id="profileSection">
+    <div class="profile-pic" id="profilePic">
+      <i class="fas fa-user"></i>
     </div>
-
-  </header>
-
-
-  <div
-    id="loading"
-    class="loading"
-  >
-    ⏳ Profile লোড হচ্ছে...
+    
+    <div class="profile-name" id="profileName">Loading...</div>
+    <div class="profile-username" id="profileUsername">@loading</div>
+    <div class="profile-bio" id="profileBio">🌍 Welcome to World Wide Connect</div>
+    
+    <button class="edit-profile-btn" onclick="editProfile()">
+      <i class="fas fa-pen" style="margin-right:6px;"></i>Edit Profile
+    </button>
+    
+    <div class="stats">
+      <div>
+        <div class="num" id="followers">0</div>
+        <div class="label">Followers</div>
+      </div>
+      <div>
+        <div class="num" id="following">0</div>
+        <div class="label">Following</div>
+      </div>
+      <div>
+        <div class="num" id="likes">0</div>
+        <div class="label">Likes</div>
+      </div>
+    </div>
   </div>
 
+  <!-- ভিডিও গ্রিড -->
+  <div class="video-grid-title">📹 <span>My Videos</span></div>
+  <div class="video-grid" id="videoGrid">
+    <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading videos...</div>
+  </div>
 
-  <main
-    id="mainContainer"
-    class="container"
-    style="display:none;"
-  >
+  <!-- লগআউট -->
+  <button class="logout-btn" onclick="logout()">
+    <i class="fas fa-sign-out-alt" style="margin-right:8px;"></i>Logout
+  </button>
 
-    <section class="profile-header">
-
-      <!-- PROFILE PHOTO -->
-      <label
-        class="photo-wrapper"
-        for="photoInput"
-        title="ছবি পরিবর্তন করুন"
-      >
-
-        <img
-          id="profilePhoto"
-          class="profile-photo"
-          src="./images/profile.png"
-          alt="Profile"
-        >
-
-        <span class="photo-edit">
-          📷
-        </span>
-
-      </label>
-
-      <input
-        type="file"
-        id="photoInput"
-        accept="image/*"
-      >
-
-      <div class="photo-help">
-        ছবিতে ক্লিক করে Profile Photo পরিবর্তন করুন
-      </div>
-
-
-      <h1
-        id="profileName"
-        class="name"
-      >
-        WWC User
-      </h1>
-
-
-      <div
-        id="profileHandle"
-        class="handle"
-      >
-        @wwc_user
-      </div>
-
-
-      <div
-        id="profileBio"
-        class="bio"
-      >
-        Welcome to WWC 🌍
-      </div>
-
-
-      <div
-        id="profileCountry"
-        class="country"
-      ></div>
-
-
-      <div class="stats">
-
-        <div class="stat">
-          <strong id="followers">
-            0
-          </strong>
-          <span>
-            Followers
-          </span>
-        </div>
-
-        <div class="stat">
-          <strong id="following">
-            0
-          </strong>
-          <span>
-            Following
-          </span>
-        </div>
-
-        <div class="stat">
-          <strong id="likes">
-            0
-          </strong>
-          <span>
-            Likes
-          </span>
-        </div>
-
-      </div>
-
-
-      <div class="buttons">
-
-        <button
-          type="button"
-          class="main-btn friends-btn"
-          id="friendsBtn"
-        >
-          👥 Friends
-        </button>
-
-        <button
-          type="button"
-          class="main-btn logout-btn"
-          id="logoutBtn"
-        >
-          🚪 Logout
-        </button>
-
-      </div>
-
-    </section>
-
-
-    <!-- EDIT PROFILE -->
-
-    <section class="edit-box">
-
-      <div class="edit-title">
-        ✏️ Edit Profile
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Name
-        </label>
-
-        <input
-          type="text"
-          id="nameInput"
-          placeholder="আপনার নাম"
-          maxlength="50"
-        >
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Username
-        </label>
-
-        <input
-          type="text"
-          id="usernameInput"
-          placeholder="username"
-          maxlength="30"
-        >
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Bio
-        </label>
-
-        <textarea
-          id="bioInput"
-          placeholder="আপনার সম্পর্কে লিখুন..."
-          maxlength="200"
-        ></textarea>
-
-      </div>
-
-
-      <div class="field">
-
-        <label>
-          Country
-        </label>
-
-        <input
-          type="text"
-          id="countryInput"
-          placeholder="Bangladesh"
-          maxlength="50"
-        >
-
-      </div>
-
-
-      <button
-        type="button"
-        id="saveBtn"
-        class="save-btn"
-      >
-        💾 Save Profile
-      </button>
-
-    </section>
-
-
-    <div
-      id="status"
-      class="status"
-    ></div>
-
-
-    <!-- VIDEOS -->
-
-    <div class="videos-title">
-      🎬 My Videos
-    </div>
-
-    <section
-      id="videoGrid"
-      class="video-grid"
-    ></section>
-
-  </main>
-
+  <!-- টোস্ট মেসেজ -->
+  <div id="toast" style="
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: rgba(30,30,30,0.95);
+    color: #fff;
+    padding: 10px 22px;
+    border-radius: 22px;
+    font-size: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s;
+    z-index: 1000;
+    white-space: nowrap;
+  "></div>
 
   <script type="module">
-
-    // ==========================================
-    // FIREBASE IMPORT
-    // ==========================================
-
-    import {
-      getApps,
-      initializeApp
-    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-
-
-    import {
-      getAuth,
-      onAuthStateChanged,
-      signOut
+    import { 
+      getAuth, 
+      onAuthStateChanged, 
+      signOut 
     } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-
-
-    import {
-      getFirestore,
-      doc,
-      getDoc,
-      setDoc,
-      updateDoc
+    
+    import { 
+      initializeApp, 
+      getApps 
+    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    
+    import { 
+      getFirestore, 
+      doc, 
+      getDoc, 
+      collection, 
+      getDocs, 
+      query, 
+      where, 
+      orderBy, 
+      limit 
     } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
-
-    import {
-      getStorage,
-      ref,
-      uploadBytes,
-      getDownloadURL
-    } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
-
-
-    // ==========================================
-    // FIREBASE CONFIG
-    // ==========================================
-
+    // ===== Firebase Config =====
     const firebaseConfig = {
-
-      apiKey:
-        "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
-
-      authDomain:
-        "world-wide-connect-62c87.firebaseapp.com",
-
-      projectId:
-        "world-wide-connect-62c87",
-
-      storageBucket:
-        "world-wide-connect-62c87.firebasestorage.app",
-
-      messagingSenderId:
-        "93178453668",
-
-      appId:
-        "1:93178453668:web:2184630caa8e61f7445031",
-
-      measurementId:
-        "G-PKFJ5NEMGQ"
+      apiKey: "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
+      authDomain: "world-wide-connect-62c87.firebaseapp.com",
+      projectId: "world-wide-connect-62c87",
+      storageBucket: "world-wide-connect-62c87.firebasestorage.app",
+      messagingSenderId: "93178453668",
+      appId: "1:93178453668:web:2184630caa8e61f7445031"
     };
 
+    const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    // ==========================================
-    // FIREBASE START
-    // ==========================================
+    const defaultPhoto = "./images/profile.png";
+    let currentUserData = null;
 
-    const app =
-      getApps().length
-        ? getApps()[0]
-        : initializeApp(firebaseConfig);
-
-
-    const auth =
-      getAuth(app);
-
-
-    const db =
-      getFirestore(app);
-
-
-    const storage =
-      getStorage(app);
-
-
-    // ==========================================
-    // ELEMENTS
-    // ==========================================
-
-    const backBtn =
-      document.getElementById("backBtn");
-
-    const loading =
-      document.getElementById("loading");
-
-    const mainContainer =
-      document.getElementById("mainContainer");
-
-    const profilePhoto =
-      document.getElementById("profilePhoto");
-
-    const photoInput =
-      document.getElementById("photoInput");
-
-    const profileName =
-      document.getElementById("profileName");
-
-    const profileHandle =
-      document.getElementById("profileHandle");
-
-    const profileBio =
-      document.getElementById("profileBio");
-
-    const profileCountry =
-      document.getElementById("profileCountry");
-
-    const followers =
-      document.getElementById("followers");
-
-    const following =
-      document.getElementById("following");
-
-    const likes =
-      document.getElementById("likes");
-
-    const nameInput =
-      document.getElementById("nameInput");
-
-    const usernameInput =
-      document.getElementById("usernameInput");
-
-    const bioInput =
-      document.getElementById("bioInput");
-
-    const countryInput =
-      document.getElementById("countryInput");
-
-    const saveBtn =
-      document.getElementById("saveBtn");
-
-    const friendsBtn =
-      document.getElementById("friendsBtn");
-
-    const logoutBtn =
-      document.getElementById("logoutBtn");
-
-    const status =
-      document.getElementById("status");
-
-    const videoGrid =
-      document.getElementById("videoGrid");
-
-
-    // ==========================================
-    // VARIABLES
-    // ==========================================
-
-    const defaultPhoto =
-      "./images/profile.png";
-
-    let currentUser =
-      null;
-
-    let currentProfile =
-      {};
-
-
-    // ==========================================
-    // BACK
-    // ==========================================
-
-    backBtn.addEventListener(
-      "click",
-      () => {
-
-        history.back();
-
-      }
-    );
-
-
-    // ==========================================
-    // STATUS
-    // ==========================================
-
-    function showStatus(
-      text,
-      type = ""
-    ) {
-
-      status.textContent =
-        text;
-
-      status.className =
-        "status " + type;
-
+    // ===== টোস্ট =====
+    function showToast(text) {
+      const toast = document.getElementById('toast');
+      toast.textContent = text;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(20px)';
+      }, 2000);
     }
+    window.showToast = showToast;
 
-
-    // ==========================================
-    // LOAD PROFILE
-    // ==========================================
-
-    async function loadProfile() {
-
-      if (!currentUser) {
-        return;
-      }
-
-
+    // ===== লগআউট =====
+    window.logout = async function() {
       try {
+        await signOut(auth);
+        showToast('✅ Logged out successfully');
+        setTimeout(() => {
+          window.location.href = './auth.html';
+        }, 500);
+      } catch (e) {
+        console.error('Logout error:', e);
+        showToast('❌ Logout failed');
+      }
+    };
 
-        const userRef =
-          doc(
-            db,
-            "users",
-            currentUser.uid
-          );
+    // ===== এডিট প্রোফাইল =====
+    window.editProfile = function() {
+      showToast('✏️ Edit profile coming soon');
+    };
 
+    // ===== ভিডিও লোড =====
+    async function loadUserVideos(uid) {
+      const grid = document.getElementById('videoGrid');
+      
+      try {
+        const q = query(
+          collection(db, 'videos'),
+          where('uid', '==', uid),
+          orderBy('createdAt', 'desc'),
+          limit(9)
+        );
+        
+        const snap = await getDocs(q);
+        grid.innerHTML = '';
+        
+        if (snap.empty) {
+          grid.innerHTML = `
+            <div style="grid-column:1/-1;text-align:center;color:#555;padding:40px 0;font-size:14px;">
+              <i class="fas fa-video" style="font-size:30px;display:block;margin-bottom:10px;color:#333;"></i>
+              No videos yet
+            </div>
+          `;
+          return;
+        }
+        
+        snap.forEach(doc => {
+          const data = doc.data();
+          const div = document.createElement('div');
+          div.className = 'video-grid-item';
+          div.style.position = 'relative';
+          div.style.background = '#1a1a1a';
+          
+          // থাম্বনেইল বা প্লেসহোল্ডার
+          const thumb = data.thumbnail || data.photoURL || '';
+          if (thumb) {
+            div.innerHTML = `
+              <img src="${thumb}" alt="Video" onerror="this.style.display='none'">
+              <div class="play-icon" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);"><i class="fas fa-play-circle"></i></div>
+              <div class="views"><i class="fas fa-eye"></i> ${data.views || 0}</div>
+            `;
+          } else {
+            div.innerHTML = `
+              <div style="display:flex;flex-direction:column;align-items:center;color:#555;">
+                <i class="fas fa-video" style="font-size:24px;"></i>
+                <span style="font-size:10px;margin-top:4px;">${data.caption ? data.caption.substring(0,10) : 'Video'}</span>
+              </div>
+            `;
+          }
+          
+          div.addEventListener('click', () => {
+            window.location.href = `./index.html?video=${doc.id}`;
+          });
+          
+          grid.appendChild(div);
+        });
+        
+      } catch (e) {
+        console.error('Load videos error:', e);
+        grid.innerHTML = `
+          <div style="grid-column:1/-1;text-align:center;color:#666;padding:20px;font-size:13px;">
+            <i class="fas fa-exclamation-circle" style="margin-right:6px;"></i>
+            Could not load videos
+          </div>
+        `;
+      }
+    }
 
-        const snapshot =
-          await getDoc(
-            userRef
-          );
-
-
-        if (snapshot.exists()) {
-
-          currentProfile =
-            snapshot.data();
-
+    // ===== প্রোফাইল লোড =====
+    async function loadProfile(user) {
+      try {
+        const snap = await getDoc(doc(db, 'users', user.uid));
+        
+        if (snap.exists()) {
+          const data = snap.data();
+          currentUserData = data;
+          
+          document.getElementById('profileName').textContent = data.name || 'WWC User';
+          document.getElementById('profileUsername').textContent = '@' + (data.username || 'wwc_user');
+          document.getElementById('profileBio').textContent = data.bio || '🌍 Welcome to World Wide Connect';
+          document.getElementById('followers').textContent = formatNumber(data.followers || 0);
+          document.getElementById('following').textContent = formatNumber(data.following || 0);
+          document.getElementById('likes').textContent = formatNumber(data.likes || 0);
+          
+          // প্রোফাইল পিকচার
+          const pic = document.getElementById('profilePic');
+          if (data.photoURL && data.photoURL !== defaultPhoto) {
+            pic.innerHTML = `<img src="${data.photoURL}" alt="Profile" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-user\\'></i>'">`;
+          } else {
+            pic.innerHTML = '<i class="fas fa-user"></i>';
+          }
+          
+          // ইউজারের ভিডিও লোড
+          await loadUserVideos(user.uid);
         } else {
-
-          currentProfile = {
-
-            name:
-              currentUser.displayName
-              || "WWC User",
-
-            username:
-              "wwc_user",
-
-            bio:
-              "Welcome to WWC 🌍",
-
-            country:
-              "",
-
-            photoURL:
-              currentUser.photoURL
-              || defaultPhoto,
-
-            followers:
-              0,
-
-            following:
-              0,
-
-            likes:
-              0,
-
-            followingIds:
-              [],
-
-            followerIds:
-              [],
-
-            videos:
-              []
-
-          };
-
-
-          await setDoc(
-            userRef,
-            currentProfile
-          );
-
+          document.getElementById('profileName').textContent = 'Set up profile';
+          document.getElementById('profileUsername').textContent = '@' + user.uid.substring(0,8);
         }
-
-
-        renderProfile();
-
-
-      } catch (error) {
-
-        console.error(
-          "Profile load error:",
-          error
-        );
-
-
-        loading.textContent =
-          "❌ Profile লোড করা যায়নি।";
-
-        loading.style.color =
-          "#ff6684";
-
+      } catch (e) {
+        console.error('Profile load error:', e);
+        document.getElementById('profileName').textContent = 'Error loading profile';
       }
-
     }
 
-
-    // ==========================================
-    // RENDER PROFILE
-    // ==========================================
-
-    function renderProfile() {
-
-      const name =
-        currentProfile.name
-        || currentProfile.displayName
-        || "WWC User";
-
-
-      let username =
-        currentProfile.username
-        || "wwc_user";
-
-
-      username =
-        String(username)
-          .replace(
-            /^@/,
-            ""
-          );
-
-
-      const bio =
-        currentProfile.bio
-        || "Welcome to WWC 🌍";
-
-
-      const country =
-        currentProfile.country
-        || "";
-
-
-      profileName.textContent =
-        name;
-
-
-      profileHandle.textContent =
-        "@" + username;
-
-
-      profileBio.textContent =
-        bio;
-
-
-      profileCountry.textContent =
-        country
-          ? "🌍 " + country
-          : "";
-
-
-      profilePhoto.src =
-        currentProfile.photoURL
-        || defaultPhoto;
-
-
-      nameInput.value =
-        name;
-
-
-      usernameInput.value =
-        username;
-
-
-      bioInput.value =
-        currentProfile.bio
-        || "";
-
-
-      countryInput.value =
-        country;
-
-
-      followers.textContent =
-        Number(
-          currentProfile.followers
-          || 0
-        );
-
-
-      following.textContent =
-        Number(
-          currentProfile.following
-          || 0
-        );
-
-
-      likes.textContent =
-        Number(
-          currentProfile.likes
-          || 0
-        );
-
-
-      loading.style.display =
-        "none";
-
-
-      mainContainer.style.display =
-        "block";
-
-
-      renderVideos();
-
+    function formatNumber(num) {
+      num = Number(num) || 0;
+      if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+      if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+      return String(num);
     }
 
-
-    // ==========================================
-    // SAVE PROFILE
-    // ==========================================
-
-    saveBtn.addEventListener(
-      "click",
-      async () => {
-
-        if (!currentUser) {
-          return;
-        }
-
-
-        const name =
-          nameInput.value.trim();
-
-
-        const username =
-          usernameInput.value
-            .trim()
-            .replace(
-              /^@/,
-              ""
-            );
-
-
-        const bio =
-          bioInput.value.trim();
-
-
-        const country =
-          countryInput.value.trim();
-
-
-        if (!name) {
-
-          showStatus(
-            "❌ Name লিখুন।",
-            "error"
-          );
-
-          return;
-
-        }
-
-
-        if (!username) {
-
-          showStatus(
-            "❌ Username লিখুন।",
-            "error"
-          );
-
-          return;
-
-        }
-
-
-        saveBtn.disabled =
-          true;
-
-
-        showStatus(
-          "⏳ Profile Save হচ্ছে..."
-        );
-
-
-        try {
-
-          const userRef =
-            doc(
-              db,
-              "users",
-              currentUser.uid
-            );
-
-
-          await updateDoc(
-            userRef,
-            {
-
-              name:
-                name,
-
-              username:
-                username,
-
-              bio:
-                bio,
-
-              country:
-                country
-
-            }
-          );
-
-
-          currentProfile.name =
-            name;
-
-          currentProfile.username =
-            username;
-
-          currentProfile.bio =
-            bio;
-
-          currentProfile.country =
-            country;
-
-
-          renderProfile();
-
-
-          showStatus(
-            "✅ Profile সফলভাবে Save হয়েছে।",
-            "success"
-          );
-
-
-        } catch (error) {
-
-          console.error(
-            "Save profile error:",
-            error
-          );
-
-
-          showStatus(
-            "❌ Profile Save করা যায়নি।",
-            "error"
-          );
-
-        }
-
-
-        saveBtn.disabled =
-          false;
-
-      }
-    );
-
-
-    // ==========================================
-    // CHANGE PROFILE PHOTO
-    // ==========================================
-
-    photoInput.addEventListener(
-      "change",
-      async () => {
-
-        const file =
-          photoInput.files[0];
-
-
-        if (!file) {
-          return;
-        }
-
-
-        if (
-          !file.type.startsWith(
-            "image/"
-          )
-        ) {
-
-          showStatus(
-            "❌ শুধু Image নির্বাচন করুন।",
-            "error"
-          );
-
-          photoInput.value =
-            "";
-
-          return;
-
-        }
-
-
-        if (
-          file.size >
-          5 * 1024 * 1024
-        ) {
-
-          showStatus(
-            "❌ ছবির সাইজ 5MB-এর কম হতে হবে।",
-            "error"
-          );
-
-          photoInput.value =
-            "";
-
-          return;
-
-        }
-
-
-        try {
-
-          showStatus(
-            "⏳ Profile Photo Upload হচ্ছে..."
-          );
-
-
-          const storageRef =
-            ref(
-              storage,
-              "profilePhotos/"
-              +
-              currentUser.uid
-              +
-              "/profile.jpg"
-            );
-
-
-          const uploadResult =
-            await uploadBytes(
-              storageRef,
-              file,
-              {
-                contentType:
-                  file.type
-              }
-            );
-
-
-          const downloadURL =
-            await getDownloadURL(
-              uploadResult.ref
-            );
-
-
-          const userRef =
-            doc(
-              db,
-              "users",
-              currentUser.uid
-            );
-
-
-          await updateDoc(
-            userRef,
-            {
-
-              photoURL:
-                downloadURL
-
-            }
-          );
-
-
-          currentProfile.photoURL =
-            downloadURL;
-
-
-          profilePhoto.src =
-            downloadURL;
-
-
-          showStatus(
-            "✅ Profile Photo পরিবর্তন হয়েছে।",
-            "success"
-          );
-
-
-        } catch (error) {
-
-          console.error(
-            "Photo upload error:",
-            error
-          );
-
-
-          showStatus(
-            "❌ Profile Photo Upload করা যায়নি।",
-            "error"
-          );
-
-        }
-
-
-        photoInput.value =
-          "";
-
-      }
-    );
-
-
-    // ==========================================
-    // FRIENDS
-    // ==========================================
-
-    friendsBtn.addEventListener(
-      "click",
-      () => {
-
-        window.location.href =
-          "./friends.html";
-
-      }
-    );
-
-
-    // ==========================================
-    // LOGOUT
-    // ==========================================
-
-    logoutBtn.addEventListener(
-      "click",
-      async () => {
-
-        logoutBtn.disabled =
-          true;
-
-
-        showStatus(
-          "⏳ Logout হচ্ছে..."
-        );
-
-
-        try {
-
-          await signOut(
-            auth
-          );
-
-
-          window.location.href =
-            "./login.html";
-
-
-        } catch (error) {
-
-          console.error(
-            "Logout error:",
-            error
-          );
-
-
-          showStatus(
-            "❌ Logout করা যায়নি।",
-            "error"
-          );
-
-
-          logoutBtn.disabled =
-            false;
-
-        }
-
-      }
-    );
-
-
-    // ==========================================
-    // RENDER VIDEOS
-    // ==========================================
-
-    function renderVideos() {
-
-      videoGrid.innerHTML =
-        "";
-
-
-      const videos =
-        Array.isArray(
-          currentProfile.videos
-        )
-          ? currentProfile.videos
-          : [];
-
-
-      if (!videos.length) {
-
-        videoGrid.innerHTML = `
-
-          <div class="empty">
-
-            🎬 এখনো কোনো Video Upload করেননি।
-
+    // ===== AUTH =====
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        document.getElementById('profileName').textContent = 'Not Logged In';
+        document.getElementById('profileUsername').textContent = '@guest';
+        document.getElementById('videoGrid').innerHTML = `
+          <div style="grid-column:1/-1;text-align:center;color:#555;padding:40px 0;">
+            <i class="fas fa-lock" style="font-size:30px;display:block;margin-bottom:10px;color:#333;"></i>
+            <a href="./auth.html" style="color:#4f46e5;text-decoration:none;">Login to see your videos</a>
           </div>
-
         `;
-
         return;
-
       }
+      
+      await loadProfile(user);
+    });
 
-
-      videos.forEach(
-        (videoItem) => {
-
-          let videoUrl =
-            "";
-
-
-          if (
-            typeof videoItem ===
-            "string"
-          ) {
-
-            videoUrl =
-              videoItem;
-
-          } else if (
-            videoItem
-            &&
-            typeof videoItem ===
-            "object"
-          ) {
-
-            videoUrl =
-              videoItem.url
-              ||
-              videoItem.videoURL
-              ||
-              videoItem.downloadURL
-              ||
-              "";
-
-          }
-
-
-          if (!videoUrl) {
-            return;
-          }
-
-
-          const card =
-            document.createElement(
-              "div"
-            );
-
-
-          card.className =
-            "video-card";
-
-
-          const video =
-            document.createElement(
-              "video"
-            );
-
-
-          video.src =
-            videoUrl;
-
-          video.controls =
-            true;
-
-          video.muted =
-            true;
-
-          video.playsInline =
-            true;
-
-          video.preload =
-            "metadata";
-
-
-          card.appendChild(
-            video
-          );
-
-
-          videoGrid.appendChild(
-            card
-          );
-
-        }
-      );
-
-
-      if (
-        !videoGrid.children.length
-      ) {
-
-        videoGrid.innerHTML = `
-
-          <div class="empty">
-
-            🎬 কোনো Video পাওয়া যায়নি।
-
-          </div>
-
-        `;
-
-      }
-
-    }
-
-
-    // ==========================================
-    // AUTH
-    // ==========================================
-
-    onAuthStateChanged(
-      auth,
-      async (user) => {
-
-        if (!user) {
-
-          loading.textContent =
-            "❌ আগে Login করুন।";
-
-
-          setTimeout(
-            () => {
-
-              window.location.href =
-                "./login.html";
-
-            },
-            1000
-          );
-
-
-          return;
-
-        }
-
-
-        currentUser =
-          user;
-
-
-        await loadProfile();
-
-      }
-    );
-
+    console.log('✅ Profile page loaded');
   </script>
-
 </body>
-</html>
+</html>,
