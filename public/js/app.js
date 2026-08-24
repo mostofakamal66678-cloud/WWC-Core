@@ -21,7 +21,8 @@ import {
   runTransaction,
   query,
   orderBy,
-  serverTimestamp
+  serverTimestamp,
+  where
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 import {
@@ -62,11 +63,12 @@ let currentProfile = { followingIds: [], savedVideoIds: [] };
 let allVideos = [];
 let currentFeed = "foryou";
 let currentVideoId = null;
-let currentVideoElement = null;
 let toastTimer = null;
 let observer = null;
 let loadingFeed = false;
 let currentPlayingVideo = null;
+let isSearchMode = false;
+let searchResults = [];
 
 const defaultPhoto = "./images/profile.png";
 
@@ -111,7 +113,7 @@ function showToast(text) {
   toast.textContent = text;
   toast.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toast.classList.remove("show"), 1800);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 2000);
 }
 
 function withTimeout(promise, ms) {
@@ -280,6 +282,27 @@ function renderFeed() {
   if (!feed) return;
   feed.innerHTML = "";
   
+  // Search mode active থাকলে সার্চ রেজাল্ট দেখান
+  if (isSearchMode) {
+    if (!searchResults.length) {
+      feed.innerHTML = `
+        <div class="feed-message">
+          <div class="feed-message-inner">
+            <div class="feed-message-icon">🔍</div>
+            <div>"${escapeHtml(lastSearchQuery || '')}" এর জন্য কোনো ফলাফল পাওয়া যায়নি।</div>
+          </div>
+        </div>
+      `;
+      return;
+    }
+    searchResults.forEach(video => {
+      const item = createVideoItem(video);
+      feed.appendChild(item);
+    });
+    setupVideoObserver();
+    return;
+  }
+  
   let videos = [];
   
   if (currentFeed === "foryou") {
@@ -320,6 +343,91 @@ function renderFeed() {
   setupVideoObserver();
 }
 
+let lastSearchQuery = "";
+
+/* =====================================================
+   SEARCH - সম্পূর্ণ ফিক্সড
+===================================================== */
+
+function openSearch() {
+  isSearchMode = true;
+  lastSearchQuery = "";
+  
+  // সার্চ ইনপুট তৈরি করুন
+  const searchHTML = `
+    <div class="search-overlay" id="searchOverlay">
+      <div class="search-container">
+        <div class="search-header">
+          <input type="text" id="searchInput" placeholder="Search users, videos..." autofocus />
+          <button class="search-close-btn" onclick="closeSearch()">✕</button>
+        </div>
+        <div id="searchResults"></div>
+      </div>
+    </div>
+  `;
+  
+  // Append search UI
+  const existing = document.getElementById("searchOverlay");
+  if (existing) existing.remove();
+  
+  document.body.insertAdjacentHTML('beforeend', searchHTML);
+  
+  const input = document.getElementById("searchInput");
+  if (input) {
+    input.focus();
+    input.addEventListener("input", (e) => {
+      performSearch(e.target.value.trim());
+    });
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeSearch();
+      if (e.key === "Enter") {
+        const value = e.target.value.trim();
+        if (value) performSearch(value);
+      }
+    });
+  }
+}
+
+function performSearch(query) {
+  lastSearchQuery = query;
+  
+  if (!query) {
+    isSearchMode = false;
+    searchResults = [];
+    renderFeed();
+    return;
+  }
+  
+  const lowerQuery = query.toLowerCase();
+  searchResults = allVideos.filter(video => {
+    const username = getUsername(video).toLowerCase();
+    const name = String(video.name || video.displayName || "").toLowerCase();
+    const caption = String(video.caption || video.description || "").toLowerCase();
+    return username.includes(lowerQuery) || name.includes(lowerQuery) || caption.includes(lowerQuery);
+  });
+  
+  isSearchMode = true;
+  renderFeed();
+  
+  // Show result count
+  const resultsDiv = document.getElementById("searchResults");
+  if (resultsDiv) {
+    resultsDiv.innerHTML = `
+      <div style="color:#888;padding:10px;font-size:13px;">
+        ${searchResults.length} ফলাফল পাওয়া গেছে
+      </div>
+    `;
+  }
+}
+
+function closeSearch() {
+  isSearchMode = false;
+  searchResults = [];
+  const overlay = document.getElementById("searchOverlay");
+  if (overlay) overlay.remove();
+  renderFeed();
+}
+
 /* =====================================================
    CREATE VIDEO ITEM
 ===================================================== */
@@ -354,7 +462,7 @@ function createVideoItem(video) {
         <button class="tab ${currentFeed === "following" ? "active" : ""}" data-tab="following">Following</button>
         <button class="tab ${currentFeed === "foryou" ? "active" : ""}" data-tab="foryou">For You</button>
       </div>
-      <button class="search-btn" data-action="search"><i class="fas fa-search"></i></button>
+      <button class="search-btn" onclick="openSearch()"><i class="fas fa-search"></i></button>
     </div>
     <div class="action-bar">
       <div class="action">
@@ -486,6 +594,8 @@ if (feed) {
     // ===== Tab Switch =====
     const tab = e.target.closest("[data-tab]");
     if (tab) {
+      // Search mode থাকলে বন্ধ করুন
+      if (isSearchMode) closeSearch();
       switchFeed(tab.dataset.tab === "following" ? "following" : "foryou");
       return;
     }
@@ -506,7 +616,6 @@ if (feed) {
     else if (action === "share") await shareVideo(videoId, btn);
     else if (action === "follow") await toggleFollow(btn.dataset.creator, btn);
     else if (action === "sound") toggleSound(item, btn);
-    else if (action === "search") openSearch();
   });
 }
 
@@ -548,11 +657,14 @@ async function toggleLike(videoId, btn) {
 }
 
 /* =====================================================
-   SAVE - সম্পূর্ণ ফিক্সড
+   SAVE - সম্পূর্ণ ফিক্সড (এখন কাজ করবে)
 ===================================================== */
 
 async function toggleSave(videoId, btn) {
-  if (!currentUser) { showToast("আগে Login করুন"); return; }
+  if (!currentUser) { 
+    showToast("আগে Login করুন"); 
+    return; 
+  }
   if (btn.disabled) return;
   btn.disabled = true;
   
@@ -561,35 +673,68 @@ async function toggleSave(videoId, btn) {
     const userRef = doc(db, "users", currentUser.uid);
     
     const result = await runTransaction(db, async (t) => {
+      // 1. ভিডিও ডকুমেন্ট পড়ুন
       const vs = await t.get(videoRef);
-      if (!vs.exists()) throw new Error("NOT_FOUND");
+      if (!vs.exists()) throw new Error("VIDEO_NOT_FOUND");
       
       const data = vs.data();
+      
+      // 2. savedBy অ্যারে চেক করুন
       const savedBy = Array.isArray(data.savedBy) ? data.savedBy : [];
       const already = savedBy.includes(currentUser.uid);
       
-      const newSavedBy = already ? savedBy.filter(u => u !== currentUser.uid) : [...savedBy, currentUser.uid];
+      // 3. নতুন savedBy অ্যারে তৈরি করুন
+      const newSavedBy = already 
+        ? savedBy.filter(u => u !== currentUser.uid) 
+        : [...savedBy, currentUser.uid];
+      
+      // 4. নতুন saves কাউন্ট
       const newSaves = Math.max(0, number(data.saves) + (already ? -1 : 1));
       
-      t.update(videoRef, { savedBy: newSavedBy, saves: newSaves });
+      // 5. ভিডিও আপডেট করুন
+      t.update(videoRef, { 
+        savedBy: newSavedBy, 
+        saves: newSaves 
+      });
       
-      // Update user profile
+      // 6. ইউজার প্রোফাইল আপডেট করুন
       const us = await t.get(userRef);
       const uData = us.exists() ? us.data() : {};
       const oldSaved = Array.isArray(uData.savedVideoIds) ? uData.savedVideoIds : [];
-      const newUserSaved = already ? oldSaved.filter(id => id !== videoId) : (oldSaved.includes(videoId) ? oldSaved : [...oldSaved, videoId]);
+      
+      let newUserSaved;
+      if (already) {
+        newUserSaved = oldSaved.filter(id => id !== videoId);
+      } else {
+        newUserSaved = oldSaved.includes(videoId) ? oldSaved : [...oldSaved, videoId];
+      }
+      
       t.set(userRef, { savedVideoIds: newUserSaved }, { merge: true });
       
       return { saved: !already, saves: newSaves };
     });
     
+    // 7. UI আপডেট করুন
     btn.classList.toggle("saved", result.saved);
     const countEl = btn.querySelector(".action-count");
     if (countEl) countEl.textContent = formatNumber(result.saves);
+    
+    // 8. currentProfile আপডেট করুন
+    if (result.saved) {
+      if (!currentProfile.savedVideoIds) currentProfile.savedVideoIds = [];
+      if (!currentProfile.savedVideoIds.includes(videoId)) {
+        currentProfile.savedVideoIds.push(videoId);
+      }
+    } else {
+      if (currentProfile.savedVideoIds) {
+        currentProfile.savedVideoIds = currentProfile.savedVideoIds.filter(id => id !== videoId);
+      }
+    }
+    
     showToast(result.saved ? "🔖 Saved" : "Removed from saved");
   } catch (e) {
     console.error("Save error:", e);
-    showToast("Save করা যায়নি");
+    showToast("Save করা যায়নি: " + (e.message || "অজানা ত্রুটি"));
   }
   btn.disabled = false;
 }
@@ -653,7 +798,7 @@ async function toggleFollow(targetUid, btn) {
 }
 
 /* =====================================================
-   SOUND - সম্পূর্ণ ফিক্সড
+   SOUND
 ===================================================== */
 
 function toggleSound(item, btn) {
@@ -671,7 +816,7 @@ function toggleSound(item, btn) {
 }
 
 /* =====================================================
-   SHARE - সম্পূর্ণ ফিক্সড
+   SHARE
 ===================================================== */
 
 async function shareVideo(videoId, btn) {
@@ -706,7 +851,7 @@ async function shareVideo(videoId, btn) {
 }
 
 /* =====================================================
-   COMMENTS - সম্পূর্ণ ফিক্সড
+   COMMENTS
 ===================================================== */
 
 async function openComments(videoId) {
@@ -807,16 +952,6 @@ function switchFeed(mode) {
 }
 
 /* =====================================================
-   SEARCH
-===================================================== */
-
-function openSearch() {
-  showToast("🔍 Search feature coming soon");
-}
-
-function closeSearch() {}
-
-/* =====================================================
    NAVIGATION
 ===================================================== */
 
@@ -842,6 +977,68 @@ document.getElementById("commentInput")?.addEventListener("keydown", (e) => {
     addComment();
   }
 });
+
+/* =====================================================
+   SEARCH STYLES (Dynamic)
+===================================================== */
+
+const searchStyles = document.createElement("style");
+searchStyles.textContent = `
+  .search-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    background: rgba(0,0,0,0.92);
+    padding: 60px 20px 20px;
+    animation: fadeIn 0.2s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .search-container {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .search-header {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .search-header input {
+    flex: 1;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid #444;
+    background: #222;
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+  }
+  .search-header input:focus {
+    border-color: #777;
+  }
+  .search-header input::placeholder {
+    color: #666;
+  }
+  .search-close-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #333;
+    color: #fff;
+    font-size: 22px;
+    border: 0;
+    cursor: pointer;
+  }
+  .search-close-btn:active {
+    transform: scale(0.9);
+  }
+`;
+document.head.appendChild(searchStyles);
 
 /* =====================================================
    VISIBILITY CHANGE
