@@ -64,7 +64,6 @@
   <span class="title">Upload Video</span>
   <div class="placeholder"></div>
 </div>
-  
 <div class="upload-container">
   <div class="upload-box" id="uploadBox">
     <div class="placeholder-content" id="placeholderContent">
@@ -139,6 +138,8 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
+console.log("✅ Firebase Initialized!");
+
 const uploadBox = document.getElementById('uploadBox');
 const fileInput = document.getElementById('fileInput');
 const placeholderContent = document.getElementById('placeholderContent');
@@ -199,12 +200,17 @@ uploadBox.addEventListener('drop', (e) => {
 });
 uploadBox.addEventListener('click', (e) => { if (e.target.closest('.file-input')) return; fileInput.click(); });
 
+// =====================================================
+// ✅ UPLOAD - সম্পূর্ণ ফিক্সড
+// =====================================================
 uploadBtn.addEventListener('click', async () => {
   if (!selectedFile) { showToast('❌ Please select a video first'); return; }
   if (!currentUser) { showToast('🔐 Please login first'); return; }
+  
   uploadBtn.disabled = true;
   uploadBtn.classList.add('loading');
   uploadBtnText.textContent = 'Uploading...';
+  
   progressContainer.style.display = 'block';
   progressBar.style.width = '0%';
   progressPercent.textContent = '0%';
@@ -217,7 +223,10 @@ uploadBtn.addEventListener('click', async () => {
     const fileName = `video_${Date.now()}.${fileExt}`;
     const storageRef = ref(storage, `videos/${currentUser.uid}/${fileName}`);
     
+    console.log('📤 Uploading to:', storageRef.fullPath);
+    
     const uploadTask = uploadBytesResumable(storageRef, selectedFile);
+    
     const downloadURL = await new Promise((resolve, reject) => {
       uploadTask.on('state_changed',
         (snapshot) => {
@@ -225,13 +234,20 @@ uploadBtn.addEventListener('click', async () => {
           progressBar.style.width = progress + '%';
           progressPercent.textContent = Math.round(progress) + '%';
           progressText.textContent = progress < 100 ? `⏳ Uploading... ${Math.round(progress)}%` : '✅ Upload complete!';
+          console.log('📊 Progress:', Math.round(progress) + '%');
         },
-        (error) => { reject(error); },
+        (error) => {
+          console.error('❌ Upload error:', error);
+          reject(error);
+        },
         async () => {
           try {
             const url = await getDownloadURL(uploadTask.snapshot.ref);
+            console.log('✅ Download URL:', url);
             resolve(url);
-          } catch (e) { reject(e); }
+          } catch (e) {
+            reject(e);
+          }
         }
       );
     });
@@ -257,6 +273,7 @@ uploadBtn.addEventListener('click', async () => {
     };
     
     await addDoc(collection(db, 'videos'), videoData);
+    console.log('✅ Video saved to Firestore');
     
     progressStatus.textContent = '✅ Video uploaded successfully! 🎉';
     progressStatus.className = 'progress-status success';
@@ -282,6 +299,7 @@ uploadBtn.addEventListener('click', async () => {
       progressBar.style.width = '0%';
       progressPercent.textContent = '0%';
       progressStatus.textContent = '';
+      
       setTimeout(() => {
         if (confirm('🎉 Video uploaded! Go to Home?')) {
           window.location.href = './index.html';
@@ -289,7 +307,7 @@ uploadBtn.addEventListener('click', async () => {
       }, 500);
     }, 2000);
   } catch (error) {
-    console.error('Upload error:', error);
+    console.error('❌ Upload error:', error);
     progressStatus.textContent = '❌ Upload failed: ' + (error.message || 'Unknown error');
     progressStatus.className = 'progress-status error';
     progressText.textContent = '❌ Upload failed';
@@ -305,11 +323,13 @@ onAuthStateChanged(auth, (user) => {
   if (!user) {
     uploadBtn.disabled = true;
     uploadBtnText.textContent = 'Login to Upload';
+    showToast('🔐 Please login first');
   } else if (selectedFile) {
     uploadBtn.disabled = false;
     uploadBtnText.textContent = 'Upload Video';
   }
 });
+
 console.log('✅ Upload Page Loaded');
 </script>
 </body>
