@@ -27,23 +27,15 @@
     .empty-state i{font-size:45px;color:#333;display:block;margin-bottom:15px}
     .loading{text-align:center;color:#666;padding:40px 0}
     .loading i{margin-right:8px}
+    .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,0.95);color:#fff;padding:10px 22px;border-radius:22px;font-size:14px;opacity:0;pointer-events:none;transition:all .3s;z-index:1000;white-space:nowrap}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   </style>
 </head>
 <body>
-
-<button class="back-btn" onclick="window.location.href='./index.html'">
-  <i class="fas fa-arrow-left"></i>
-</button>
-
-<div class="header">
-  <h1><i class="fas fa-inbox" style="color:#25f4ee;margin-right:8px;"></i>Inbox</h1>
-  <p>আপনার মেসেজ এবং নোটিফিকেশন</p>
-</div>
-
-<div class="inbox-list" id="inboxList">
-  <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
-</div>
-
+<button class="back-btn" onclick="window.location.href='./index.html'"><i class="fas fa-arrow-left"></i></button>
+<div class="header"><h1><i class="fas fa-inbox" style="color:#25f4ee;margin-right:8px;"></i>Inbox</h1><p>আপনার মেসেজ এবং নোটিফিকেশন</p></div>
+<div class="inbox-list" id="inboxList"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
+<div class="toast" id="toast"></div>
 <script type="module">
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
@@ -57,19 +49,22 @@ const firebaseConfig = {
   messagingSenderId: "93178453668",
   appId: "1:93178453668:web:2184630caa8e61f7445031"
 };
-
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
 const defaultPhoto = "./images/profile.png";
+
+function showToast(text) {
+  const toast = document.getElementById('toast');
+  toast.textContent = text;
+  toast.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
+}
 
 async function loadInbox(user) {
   const list = document.getElementById('inboxList');
-  
   try {
-    // ইউজারের কমেন্টস থেকে নোটিফিকেশন তৈরি করুন
-    // অথবা ডামি ডেটা দেখান
     const dummyData = [
       { name: 'Alex Wander', msg: '❤️ Liked your video!', time: '2m ago', unread: true, photo: 'https://i.pravatar.cc/100?img=11' },
       { name: 'Luna Creates', msg: '💬 Commented: "Amazing video!"', time: '15m ago', unread: true, photo: 'https://i.pravatar.cc/100?img=25' },
@@ -77,73 +72,29 @@ async function loadInbox(user) {
       { name: 'Sara Khan', msg: '✅ Started following you', time: '3h ago', unread: false, photo: 'https://i.pravatar.cc/100?img=44' },
       { name: 'John Doe', msg: '📤 Shared your video', time: '5h ago', unread: false, photo: 'https://i.pravatar.cc/100?img=55' },
     ];
-    
     list.innerHTML = dummyData.map(item => `
       <div class="inbox-item" onclick="showToast('Opening message...')">
         <img src="${item.photo}" onerror="this.src='${defaultPhoto}'" alt="${item.name}">
-        <div class="info">
-          <div class="name">${item.name}</div>
-          <div class="msg">${item.msg}</div>
-        </div>
+        <div class="info"><div class="name">${item.name}</div><div class="msg">${item.msg}</div></div>
         <div class="time">${item.time}</div>
         ${item.unread ? '<div class="unread"></div>' : ''}
       </div>
     `).join('');
-    
-    // ইউজারের নিজের কমেন্টস লোড করার চেষ্টা
     try {
-      const q = query(
-        collection(db, 'comments'),
-        where('uid', '==', user.uid),
-        orderBy('createdAt', 'desc'),
-        limit(10)
-      );
+      const q = query(collection(db, 'comments'), where('uid', '==', user.uid), orderBy('createdAt', 'desc'), limit(10));
       const snap = await getDocs(q);
-      if (!snap.empty) {
-        // রিয়েল কমেন্টস পাওয়া গেলে ডামি ডেটা রিপ্লেস করুন
-        console.log('Found user comments:', snap.size);
-      }
-    } catch (e) {
-      console.log('Comments collection not ready yet');
-    }
-    
-  } catch (e) {
-    console.error('Inbox error:', e);
-    list.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i>Could not load inbox</div>`;
-  }
+      if (!snap.empty) console.log('Found user comments:', snap.size);
+    } catch (e) {}
+  } catch (e) { console.error('Inbox error:', e); list.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i>Could not load inbox</div>`; }
 }
-
-function showToast(text) {
-  const toast = document.createElement('div');
-  toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,0.95);color:#fff;padding:10px 22px;border-radius:22px;font-size:14px;opacity:0;pointer-events:none;transition:all 0.3s;z-index:1000;white-space:nowrap;';
-  toast.textContent = text;
-  document.body.appendChild(toast);
-  setTimeout(() => {
-    toast.style.opacity = '1';
-    toast.style.transform = 'translateX(-50%) translateY(0)';
-  }, 10);
-  setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateX(-50%) translateY(20px)';
-    setTimeout(() => toast.remove(), 300);
-  }, 2000);
-}
-window.showToast = showToast;
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    document.getElementById('inboxList').innerHTML = `
-      <div class="empty-state">
-        <i class="fas fa-lock"></i>
-        <div style="font-size:16px;color:#888;">Please login to see your messages</div>
-        <a href="./auth.html" style="color:#4f46e5;text-decoration:none;margin-top:10px;display:inline-block;">Login</a>
-      </div>
-    `;
+    document.getElementById('inboxList').innerHTML = `<div class="empty-state"><i class="fas fa-lock"></i><div style="font-size:16px;color:#888;">Please login to see your messages</div><a href="./auth.html" style="color:#4f46e5;text-decoration:none;margin-top:10px;display:inline-block;">Login</a></div>`;
     return;
   }
   await loadInbox(user);
 });
 </script>
-
 </body>
 </html>
