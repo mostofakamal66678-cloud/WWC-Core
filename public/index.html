@@ -1,1813 +1,625 @@
 <!DOCTYPE html>
 <html lang="bn">
-
-  
 <head>
-
-<meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0, viewport-fit=cover"
->
-
-<meta name="theme-color" content="#000000">
-
-<title>WWC - For You</title>
-
-<style>
-
-/* =====================================================
-   RESET
-===================================================== */
-
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
-html,
-body{
-  margin:0;
-  padding:0;
-  width:100%;
-  height:100%;
-  overflow:hidden;
-  background:#000;
-  color:#fff;
-  font-family:Arial,sans-serif;
-}
-
-body{
-  overscroll-behavior:none;
-}
-
-button,
-input{
-  font-family:inherit;
-}
-
-button{
-  -webkit-user-select:none;
-  user-select:none;
-}
-
-
-/* =====================================================
-   APP
-===================================================== */
-
-.app{
-  position:relative;
-  width:100%;
-  height:100dvh;
-  overflow:hidden;
-  background:#000;
-}
-
-
-/* =====================================================
-   FEED
-===================================================== */
-
-.feed{
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-
-  overflow-y:auto;
-  overflow-x:hidden;
-
-  scroll-snap-type:y mandatory;
-  scroll-behavior:smooth;
-
-  scrollbar-width:none;
-
-  overscroll-behavior-y:contain;
-
-  -webkit-overflow-scrolling:touch;
-}
-
-.feed::-webkit-scrollbar{
-  display:none;
-}
-
-
-/* =====================================================
-   VIDEO ITEM
-===================================================== */
-
-.video-item{
-  position:relative;
-
-  width:100%;
-  height:100dvh;
-  min-height:100dvh;
-
-  background:#000;
-
-  scroll-snap-align:start;
-  scroll-snap-stop:always;
-
-  overflow:hidden;
-
-  contain:layout paint style;
-}
-
-.video{
-  position:absolute;
-  inset:0;
-
-  width:100%;
-  height:100%;
-
-  object-fit:cover;
-
-  background:#000;
-
-  display:block;
-}
-
-
-/* =====================================================
-   VIDEO GRADIENT
-===================================================== */
-
-.video-item::after{
-  content:"";
-
-  position:absolute;
-
-  left:0;
-  right:0;
-  bottom:0;
-
-  height:48%;
-
-  background:
-    linear-gradient(
-      transparent,
-      rgba(0,0,0,.88)
-    );
-
-  pointer-events:none;
-
-  z-index:2;
-}
-
-
-/* =====================================================
-   TOP BAR
-===================================================== */
-
-.top-bar{
-  position:absolute;
-
-  top:0;
-  left:0;
-  right:0;
-
-  height:82px;
-
-  z-index:20;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  padding-top:env(safe-area-inset-top);
-
-  background:
-    linear-gradient(
-      rgba(0,0,0,.55),
-      transparent
-    );
-}
-
-.tabs{
-  display:flex;
-  align-items:center;
-  gap:30px;
-}
-
-.tab{
-  position:relative;
-
-  border:0;
-  background:transparent;
-
-  color:rgba(255,255,255,.65);
-
-  font-size:17px;
-  font-weight:bold;
-
-  padding:10px 3px;
-}
-
-.tab.active{
-  color:#fff;
-}
-
-.tab.active::after{
-  content:"";
-
-  position:absolute;
-
-  left:0;
-  right:0;
-
-  bottom:1px;
-
-  height:3px;
-
-  border-radius:10px;
-
-  background:#fff;
-}
-
-
-/* =====================================================
-   SEARCH
-===================================================== */
-
-.search-btn{
-  position:absolute;
-
-  right:12px;
-  top:50%;
-
-  transform:translateY(-50%);
-
-  width:45px;
-  height:45px;
-
-  border:0;
-  border-radius:50%;
-
-  background:rgba(0,0,0,.40);
-
-  color:#fff;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  backdrop-filter:blur(6px);
-}
-
-.search-btn svg{
-  width:28px;
-  height:28px;
-
-  fill:none;
-  stroke:#fff;
-  stroke-width:2;
-}
-
-
-/* =====================================================
-   RIGHT ACTION BAR
-===================================================== */
-
-.action-bar{
-  position:absolute;
-
-  right:7px;
-  bottom:108px;
-
-  z-index:30;
-
-  width:65px;
-
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-
-  gap:15px;
-}
-
-.action{
-  width:62px;
-
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-
-  border:0;
-  background:transparent;
-
-  color:#fff;
-
-  padding:0;
-}
-
-.action-icon{
-  width:51px;
-  height:51px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  border-radius:50%;
-
-  color:#fff;
-
-  filter:
-    drop-shadow(
-      0 2px 4px rgba(0,0,0,.8)
-    );
-
-  transition:transform .15s ease;
-}
-
-.action-icon svg{
-  width:39px;
-  height:39px;
-
-  fill:none;
-  stroke:currentColor;
-
-  stroke-width:2;
-
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-
-.action:active .action-icon{
-  transform:scale(.82);
-}
-
-.like-btn.liked .action-icon{
-  color:#ff3040;
-  transform:scale(1.08);
-}
-
-.like-btn.liked .action-icon svg{
-  fill:#ff3040;
-  stroke:#ff3040;
-}
-
-.save-btn.saved .action-icon{
-  color:#fff;
-}
-
-.save-btn.saved .action-icon svg{
-  fill:#fff;
-  stroke:#fff;
-}
-
-.action-count{
-  margin-top:1px;
-
-  color:#fff;
-
-  font-size:13px;
-  font-weight:bold;
-
-  text-shadow:
-    0 1px 4px #000;
-}
-
-
-/* =====================================================
-   CREATOR
-===================================================== */
-
-.creator-avatar{
-  position:relative;
-
-  width:53px;
-  height:53px;
-
-  border-radius:50%;
-
-  border:2px solid #fff;
-
-  overflow:visible;
-
-  margin-bottom:3px;
-}
-
-.creator-avatar img{
-  width:100%;
-  height:100%;
-
-  object-fit:cover;
-
-  border-radius:50%;
-
-  display:block;
-}
-
-.follow-plus{
-  position:absolute;
-
-  bottom:-7px;
-  left:50%;
-
-  transform:translateX(-50%);
-
-  width:24px;
-  height:24px;
-
-  border-radius:50%;
-
-  border:0;
-
-  background:#fff;
-  color:#000;
-
-  font-size:20px;
-  line-height:20px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  font-weight:bold;
-}
-
-.follow-plus.following{
-  font-size:14px;
-}
-
-
-/* =====================================================
-   VIDEO INFO
-===================================================== */
-
-.video-info{
-  position:absolute;
-
-  left:15px;
-  right:85px;
-  bottom:95px;
-
-  z-index:25;
-}
-
-.username{
-  font-size:18px;
-  font-weight:bold;
-
-  margin-bottom:8px;
-
-  text-shadow:
-    0 2px 4px rgba(0,0,0,.9);
-}
-
-.caption{
-  font-size:15px;
-
-  line-height:1.45;
-
-  margin-bottom:8px;
-
-  text-shadow:
-    0 2px 4px rgba(0,0,0,.9);
-}
-
-.sound{
-  display:flex;
-
-  align-items:center;
-
-  gap:6px;
-
-  font-size:14px;
-  font-weight:bold;
-
-  white-space:nowrap;
-
-  overflow:hidden;
-
-  text-overflow:ellipsis;
-
-  text-shadow:
-    0 2px 4px rgba(0,0,0,.9);
-}
-
-
-/* =====================================================
-   SOUND
-===================================================== */
-
-.sound-btn{
-  position:absolute;
-
-  left:14px;
-  bottom:150px;
-
-  z-index:35;
-
-  width:45px;
-  height:45px;
-
-  border:0;
-  border-radius:50%;
-
-  background:rgba(0,0,0,.45);
-
-  color:#fff;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  backdrop-filter:blur(5px);
-}
-
-.sound-btn svg{
-  width:25px;
-  height:25px;
-
-  fill:none;
-
-  stroke:#fff;
-
-  stroke-width:2;
-
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-
-
-/* =====================================================
-   PAUSE
-===================================================== */
-
-.pause-indicator{
-  position:absolute;
-
-  left:50%;
-  top:50%;
-
-  transform:
-    translate(-50%,-50%)
-    scale(.8);
-
-  width:70px;
-  height:70px;
-
-  border-radius:50%;
-
-  background:rgba(0,0,0,.5);
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  opacity:0;
-
-  pointer-events:none;
-
-  transition:.15s;
-
-  z-index:40;
-}
-
-.pause-indicator.show{
-  opacity:1;
-
-  transform:
-    translate(-50%,-50%)
-    scale(1);
-}
-
-.pause-indicator svg{
-  width:34px;
-  height:34px;
-
-  fill:#fff;
-}
-
-
-/* =====================================================
-   LOADER
-===================================================== */
-
-.video-loader{
-  position:absolute;
-
-  inset:0;
-
-  z-index:8;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  pointer-events:none;
-}
-
-.video-loader span{
-  width:35px;
-  height:35px;
-
-  border:3px solid rgba(255,255,255,.25);
-
-  border-top-color:#fff;
-
-  border-radius:50%;
-
-  animation:spin .8s linear infinite;
-}
-
-@keyframes spin{
-  to{
-    transform:rotate(360deg);
-  }
-}
-
-
-/* =====================================================
-   VIDEO ERROR
-===================================================== */
-
-.video-error{
-  position:absolute;
-
-  left:50%;
-  top:50%;
-
-  transform:translate(-50%,-50%);
-
-  z-index:45;
-
-  width:85%;
-  max-width:330px;
-
-  padding:20px;
-
-  border-radius:16px;
-
-  background:rgba(0,0,0,.80);
-
-  text-align:center;
-
-  display:none;
-}
-
-.video-error.show{
-  display:block;
-}
-
-.video-error-title{
-  font-size:18px;
-  font-weight:bold;
-
-  margin-bottom:8px;
-}
-
-.video-error-text{
-  color:#bbb;
-
-  font-size:13px;
-
-  line-height:1.5;
-
-  word-break:break-word;
-}
-
-
-/* =====================================================
-   BOTTOM NAV
-===================================================== */
-
-.bottom-nav{
-  position:fixed;
-
-  left:0;
-  right:0;
-  bottom:0;
-
-  height:72px;
-
-  z-index:100;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:space-around;
-
-  padding-bottom:
-    env(safe-area-inset-bottom);
-
-  background:
-    linear-gradient(
-      transparent,
-      rgba(0,0,0,.97) 28%
-    );
-}
-
-.nav-btn{
-  position:relative;
-
-  width:20%;
-  height:65px;
-
-  border:0;
-  background:transparent;
-
-  color:#fff;
-
-  display:flex;
-  flex-direction:column;
-
-  align-items:center;
-  justify-content:center;
-
-  gap:3px;
-
-  font-size:11px;
-  font-weight:bold;
-}
-
-.nav-btn svg{
-  width:29px;
-  height:29px;
-
-  fill:none;
-
-  stroke:currentColor;
-
-  stroke-width:2;
-
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-
-.upload-btn{
-  position:relative;
-
-  width:56px;
-  height:42px;
-
-  border:0;
-  border-radius:12px;
-
-  background:#fff;
-  color:#000;
-
-  display:flex;
-
-  align-items:center;
-  justify-content:center;
-
-  box-shadow:
-    -4px 0 0 #25f4ee,
-    4px 0 0 #fe2c55;
-}
-
-.upload-btn svg{
-  width:27px;
-  height:27px;
-
-  stroke:#000;
-
-  stroke-width:2.5;
-
-  fill:none;
-}
-
-.badge{
-  position:absolute;
-
-  top:2px;
-  right:15px;
-
-  min-width:20px;
-  height:20px;
-
-  padding:0 5px;
-
-  border-radius:10px;
-
-  background:#fe2c55;
-
-  color:#fff;
-
-  font-size:11px;
-
-  display:flex;
-
-  align-items:center;
-  justify-content:center;
-
-  font-weight:bold;
-}
-
-
-/* =====================================================
-   COMMENTS
-===================================================== */
-
-.comment-panel{
-  position:fixed;
-
-  left:0;
-  right:0;
-  bottom:0;
-
-  z-index:150;
-
-  height:55vh;
-
-  background:#111;
-
-  border-radius:
-    18px 18px 0 0;
-
-  transform:translateY(100%);
-
-  transition:transform .28s ease;
-
-  display:flex;
-
-  flex-direction:column;
-}
-
-.comment-panel.open{
-  transform:translateY(0);
-}
-
-.comment-header{
-  height:55px;
-
-  flex:none;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-
-  border-bottom:1px solid #333;
-
-  position:relative;
-
-  font-weight:bold;
-}
-
-.close-comments{
-  position:absolute;
-
-  right:15px;
-
-  border:0;
-
-  background:transparent;
-
-  color:#fff;
-
-  font-size:26px;
-}
-
-.comments-list{
-  flex:1;
-
-  overflow-y:auto;
-
-  padding:15px;
-}
-
-.comment{
-  padding:10px 0;
-
-  border-bottom:1px solid #222;
-
-  line-height:1.4;
-}
-
-.comment strong{
-  display:block;
-
-  margin-bottom:4px;
-}
-
-.comment-input{
-  display:flex;
-
-  gap:8px;
-
-  padding:10px;
-
-  border-top:1px solid #333;
-}
-
-.comment-input input{
-  flex:1;
-
-  min-width:0;
-
-  border:1px solid #444;
-
-  background:#222;
-
-  color:#fff;
-
-  border-radius:22px;
-
-  padding:12px 15px;
-
-  outline:none;
-}
-
-.comment-input button{
-  width:50px;
-
-  border:0;
-
-  border-radius:50%;
-
-  background:#fff;
-
-  color:#000;
-
-  font-size:18px;
-}
-
-
-/* =====================================================
-   SEARCH
-===================================================== */
-
-.search-panel{
-  position:fixed;
-
-  inset:0;
-
-  z-index:300;
-
-  background:#000;
-
-  display:none;
-
-  padding:15px;
-}
-
-.search-panel.open{
-  display:block;
-}
-
-.search-top{
-  display:flex;
-
-  align-items:center;
-
-  gap:10px;
-}
-
-.search-top input{
-  flex:1;
-
-  height:45px;
-
-  border:1px solid #444;
-
-  border-radius:10px;
-
-  background:#222;
-
-  color:#fff;
-
-  padding:0 14px;
-
-  font-size:16px;
-
-  outline:none;
-}
-
-.close-search{
-  width:45px;
-  height:45px;
-
-  border:0;
-
-  border-radius:50%;
-
-  background:#222;
-
-  color:#fff;
-
-  font-size:24px;
-}
-
-
-/* =====================================================
-   TOAST
-===================================================== */
-
-.toast{
-  position:fixed;
-
-  left:50%;
-
-  bottom:90px;
-
-  transform:
-    translateX(-50%)
-    translateY(20px);
-
-  z-index:500;
-
-  background:rgba(30,30,30,.96);
-
-  color:#fff;
-
-  padding:11px 18px;
-
-  border-radius:22px;
-
-  font-size:14px;
-
-  opacity:0;
-
-  pointer-events:none;
-
-  transition:.25s;
-
-  white-space:nowrap;
-}
-
-.toast.show{
-  opacity:1;
-
-  transform:
-    translateX(-50%)
-    translateY(0);
-}
-
-
-/* =====================================================
-   EMPTY
-===================================================== */
-
-.feed-message{
-  width:100%;
-
-  height:100dvh;
-
-  display:flex;
-
-  align-items:center;
-  justify-content:center;
-
-  text-align:center;
-
-  color:#aaa;
-
-  padding:30px;
-}
-
-.feed-message-inner{
-  max-width:320px;
-}
-
-.feed-message-icon{
-  font-size:45px;
-
-  margin-bottom:15px;
-}
-
-.retry-btn{
-  margin-top:18px;
-
-  border:0;
-
-  border-radius:22px;
-
-  padding:11px 20px;
-
-  background:#fff;
-
-  color:#000;
-
-  font-weight:bold;
-}
-
-
-/* =====================================================
-   DESKTOP
-===================================================== */
-
-@media(min-width:700px){
-
-  .video-item{
-    max-width:500px;
-    margin:auto;
-  }
-
-  .bottom-nav{
-    max-width:500px;
-
-    left:50%;
-    right:auto;
-
-    transform:translateX(-50%);
-  }
-
-}
-
-</style>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#000000" />
+  <title>WWC · TikTok Feed</title>
+  
+  <!-- Font Awesome 6 (ফ্রি আইকন) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  
+  <style>
+    /* ===== রিসেট ===== */
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      overscroll-behavior: none;
+    }
+    button {
+      border: 0;
+      outline: 0;
+      cursor: pointer;
+      background: transparent;
+      font-family: inherit;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    
+    /* ===== অ্যাপ ===== */
+    .app {
+      position: relative;
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background: #000;
+    }
+    
+    /* ===== ফিড ===== */
+    .feed {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+    }
+    .feed::-webkit-scrollbar { display: none; }
+    
+    /* ===== ভিডিও আইটেম ===== */
+    .video-item {
+      position: relative;
+      width: 100%;
+      height: 100dvh;
+      min-height: 100dvh;
+      background: #000;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      overflow: hidden;
+      contain: layout paint style;
+    }
+    
+    /* ===== ভিডিও ===== */
+    .video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #000;
+      display: block;
+    }
+    
+    /* ===== গ্রেডিয়েন্ট ওভারলে ===== */
+    .video-item::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 50%;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      pointer-events: none;
+      z-index: 2;
+    }
+    
+    /* ===== টপ বার ===== */
+    .top-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 82px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: env(safe-area-inset-top);
+      background: linear-gradient(rgba(0,0,0,0.6), transparent);
+      pointer-events: none;
+    }
+    .top-bar .tabs {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      pointer-events: auto;
+    }
+    .top-bar .tab {
+      position: relative;
+      background: transparent;
+      color: rgba(255,255,255,0.6);
+      font-size: 17px;
+      font-weight: 700;
+      padding: 8px 4px;
+      transition: color 0.2s;
+    }
+    .top-bar .tab.active {
+      color: #fff;
+    }
+    .top-bar .tab.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 3px;
+      border-radius: 10px;
+      background: #fff;
+    }
+    .search-btn {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.4);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      backdrop-filter: blur(6px);
+      font-size: 18px;
+    }
+    
+    /* ===== ডান পাশের অ্যাকশন বার ===== */
+    .action-bar {
+      position: absolute;
+      right: 8px;
+      bottom: 110px;
+      z-index: 30;
+      width: 62px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .action {
+      width: 58px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+    .action-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8));
+      transition: transform 0.15s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+    }
+    .action:active .action-icon { transform: scale(0.82); }
+    .action-count {
+      font-size: 12px;
+      font-weight: 700;
+      text-shadow: 0 1px 4px #000;
+      margin-top: 1px;
+    }
+    
+    /* ===== লাইক ===== */
+    .like-btn.liked .action-icon {
+      color: #ff2d55;
+      transform: scale(1.15);
+      animation: likePop 0.35s ease;
+    }
+    @keyframes likePop {
+      0% { transform: scale(0.7); }
+      40% { transform: scale(1.4); }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1.15); }
+    }
+    
+    /* ===== সেভ ===== */
+    .save-btn.saved .action-icon {
+      color: #ffd84d;
+      transform: scale(1.1);
+      animation: savePop 0.3s ease;
+    }
+    @keyframes savePop {
+      0% { transform: scale(0.7); }
+      60% { transform: scale(1.2); }
+      100% { transform: scale(1.1); }
+    }
+    
+    /* ===== ক্রিয়েটর ===== */
+    .creator-avatar {
+      position: relative;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      overflow: visible;
+    }
+    .creator-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
+    }
+    .follow-plus {
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fff;
+      color: #000;
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .follow-plus.following {
+      background: #ff2d55;
+      color: #fff;
+      font-size: 12px;
+    }
+    
+    /* ===== ভিডিও ইনফো ===== */
+    .video-info {
+      position: absolute;
+      left: 15px;
+      right: 85px;
+      bottom: 95px;
+      z-index: 25;
+    }
+    .video-info .username {
+      font-size: 17px;
+      font-weight: 700;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+      margin-bottom: 6px;
+    }
+    .video-info .caption {
+      font-size: 14px;
+      line-height: 1.5;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+    }
+    .video-info .sound {
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 8px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+    }
+    
+    /* ===== সাউন্ড বাটন ===== */
+    .sound-btn {
+      position: absolute;
+      left: 14px;
+      bottom: 155px;
+      z-index: 35;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.45);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(5px);
+      font-size: 18px;
+    }
+    
+    /* ===== পজ ইন্ডিকেটর ===== */
+    .pause-indicator {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.7);
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s;
+      z-index: 40;
+      font-size: 28px;
+    }
+    .pause-indicator.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    
+    /* ===== লোডার ===== */
+    .video-loader {
+      position: absolute;
+      inset: 0;
+      z-index: 8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .video-loader span {
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(255,255,255,0.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* ===== বটম নেভ ===== */
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 70px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding-bottom: env(safe-area-inset-bottom);
+      background: linear-gradient(transparent, rgba(0,0,0,0.95) 30%);
+    }
+    .nav-btn {
+      width: 20%;
+      height: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      color: rgba(255,255,255,0.6);
+      font-size: 10px;
+      font-weight: 700;
+      transition: color 0.2s;
+    }
+    .nav-btn.active { color: #fff; }
+    .nav-btn .nav-icon { font-size: 22px; }
+    .upload-btn {
+      width: 50px;
+      height: 38px;
+      border-radius: 10px;
+      background: #fff;
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 300;
+      box-shadow: -3px 0 0 #25f4ee, 3px 0 0 #fe2c55;
+    }
+    
+    /* ===== কমেন্ট প্যানেল ===== */
+    .comment-panel {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 150;
+      height: 55vh;
+      background: #111;
+      border-radius: 18px 18px 0 0;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    .comment-panel.open { transform: translateY(0); }
+    .comment-header {
+      height: 50px;
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #333;
+      font-weight: 700;
+      position: relative;
+    }
+    .close-comments {
+      position: absolute;
+      right: 15px;
+      color: #fff;
+      font-size: 24px;
+    }
+    .comments-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+    }
+    .comment {
+      padding: 10px 0;
+      border-bottom: 1px solid #222;
+      line-height: 1.4;
+    }
+    .comment strong { display: block; margin-bottom: 4px; }
+    .comment-input {
+      display: flex;
+      gap: 8px;
+      padding: 10px;
+      border-top: 1px solid #333;
+    }
+    .comment-input input {
+      flex: 1;
+      border: 1px solid #444;
+      background: #222;
+      color: #fff;
+      border-radius: 22px;
+      padding: 10px 15px;
+      outline: none;
+    }
+    .comment-input button {
+      width: 44px;
+      border-radius: 50%;
+      background: #fff;
+      color: #000;
+      font-size: 16px;
+    }
+    
+    /* ===== টোস্ট ===== */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 95px;
+      transform: translateX(-50%) translateY(20px);
+      z-index: 500;
+      background: rgba(30,30,30,0.95);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 22px;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s;
+      white-space: nowrap;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    
+    /* ===== মেসেজ ===== */
+    .feed-message {
+      width: 100%;
+      height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #aaa;
+      padding: 30px;
+    }
+    .feed-message-inner { max-width: 320px; }
+    .feed-message-icon { font-size: 45px; margin-bottom: 15px; }
+    .retry-btn {
+      margin-top: 18px;
+      border-radius: 22px;
+      padding: 10px 22px;
+      background: #fff;
+      color: #000;
+      font-weight: 700;
+    }
+    
+    /* ===== ডেস্কটপ ===== */
+    @media(min-width: 700px) {
+      .video-item { max-width: 500px; margin: auto; }
+      .bottom-nav { max-width: 500px; left: 50%; right: auto; transform: translateX(-50%); }
+    }
+  </style>
 </head>
-
-
 <body>
 
-
 <div class="app">
-
-
-<!-- ===================================================
-     FEED
-=================================================== -->
-
-<main
-  class="feed"
-  id="feed"
-></main>
-
-
-<!-- ===================================================
-     BOTTOM NAV
-=================================================== -->
-
-<nav class="bottom-nav">
-
-
-<button
-  class="nav-btn active"
-  type="button"
-  onclick="goHome()"
->
-
-<svg viewBox="0 0 24 24">
-
-<path
-  d="M3 11L12 3L21 11V21H14V15H10V21H3Z"
-/>
-
-</svg>
-
-<span>Home</span>
-
-</button>
-
-
-<button
-  class="nav-btn"
-  type="button"
-  onclick="goFriends()"
->
-
-<svg viewBox="0 0 24 24">
-
-<circle
-  cx="9"
-  cy="8"
-  r="3"
-/>
-
-<circle
-  cx="17"
-  cy="9"
-  r="2.5"
-/>
-
-<path
-  d="
-  M3 20
-  C3 16.5 5.5 14 9 14
-  C12.5 14 15 16.5 15 20
-  "
-/>
-
-<path
-  d="
-  M15 15
-  C18 15 20 17 20 20
-  "
-/>
-
-</svg>
-
-<span>Friends</span>
-
-</button>
-
-
-<button
-  class="nav-btn"
-  type="button"
-  onclick="uploadVideo()"
->
-
-<span class="upload-btn">
-
-<svg viewBox="0 0 24 24">
-
-<path d="M12 5V19"/>
-
-<path d="M5 12H19"/>
-
-</svg>
-
-</span>
-
-</button>
-
-
-<button
-  class="nav-btn"
-  type="button"
-  onclick="goInbox()"
->
-
-<svg viewBox="0 0 24 24">
-
-<path
-  d="M4 5H20V17H15L12 20L9 17H4Z"
-/>
-
-<path d="M8 10H16"/>
-
-<path d="M8 13H13"/>
-
-</svg>
-
-<span>Inbox</span>
-
-<span
-  class="badge"
-  id="inboxBadge"
->
-0
-</span>
-
-</button>
-
-
-<button
-  class="nav-btn"
-  type="button"
-  onclick="goProfile()"
->
-
-<svg viewBox="0 0 24 24">
-
-<circle
-  cx="12"
-  cy="8"
-  r="4"
-/>
-
-<path
-  d="
-  M4 21
-  C4 16.5 7.5 14 12 14
-  C16.5 14 20 16.5 20 21
-  "
-/>
-
-</svg>
-
-<span>Profile</span>
-
-</button>
-
-
-</nav>
-
-
-<!-- ===================================================
-     COMMENTS
-=================================================== -->
-
-<div
-  class="comment-panel"
-  id="commentPanel"
->
-
-<div class="comment-header">
-
-Comments
-
-<button
-  class="close-comments"
-  type="button"
-  onclick="closeComments()"
->
-×
-</button>
-
+  
+  <!-- ফিড -->
+  <main class="feed" id="feed"></main>
+  
+  <!-- বটম নেভ -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="goHome()">
+      <span class="nav-icon"><i class="fas fa-home"></i></span>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn" onclick="goFriends()">
+      <span class="nav-icon"><i class="fas fa-user-friends"></i></span>
+      <span>Friends</span>
+    </button>
+    <button class="nav-btn" onclick="uploadVideo()">
+      <span class="upload-btn"><i class="fas fa-plus"></i></span>
+    </button>
+    <button class="nav-btn" onclick="goInbox()">
+      <span class="nav-icon"><i class="fas fa-inbox"></i></span>
+      <span>Inbox</span>
+    </button>
+    <button class="nav-btn" onclick="goProfile()">
+      <span class="nav-icon"><i class="fas fa-user"></i></span>
+      <span>Profile</span>
+    </button>
+  </nav>
+  
+  <!-- কমেন্ট প্যানেল -->
+  <div class="comment-panel" id="commentPanel">
+    <div class="comment-header">
+      Comments
+      <button class="close-comments" onclick="closeComments()">✕</button>
+    </div>
+    <div class="comments-list" id="commentsList"></div>
+    <div class="comment-input">
+      <input id="commentInput" type="text" maxlength="500" placeholder="Add comment...">
+      <button onclick="addComment()">➤</button>
+    </div>
+  </div>
+  
+  <!-- টোস্ট -->
+  <div class="toast" id="toast"></div>
+  
 </div>
 
-
-<div
-  class="comments-list"
-  id="commentsList"
-></div>
-
-
-<div class="comment-input">
-
-<input
-  id="commentInput"
-  type="text"
-  maxlength="500"
-  placeholder="Add comment..."
->
-
-<button
-  id="commentSendButton"
-  type="button"
-  onclick="addComment()"
->
-➤
-</button>
-
-</div>
-
-</div>
-
-
-<!-- ===================================================
-     SEARCH
-=================================================== -->
-
-<div
-  class="search-panel"
-  id="searchPanel"
->
-
-<div class="search-top">
-
-<input
-  id="searchInput"
-  type="search"
-  placeholder="Search..."
->
-
-<button
-  class="close-search"
-  type="button"
-  onclick="closeSearch()"
->
-×
-</button>
-
-</div>
-
-</div>
-
-
-<!-- ===================================================
-     TOAST
-=================================================== -->
-
-<div
-  class="toast"
-  id="toast"
-></div>
-
-
-</div>
-
-
+<!-- ===== Firebase + Main App ===== -->
 <script type="module">
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import { getFirestore, collection, getDocs, getDoc, doc, setDoc, updateDoc, runTransaction, addDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+import { getStorage, ref, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
 
-
-/* =====================================================
-   FIREBASE APP
-===================================================== */
-
-import {
-  getApps,
-  initializeApp
-}
-from
-"https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-
-
-/* =====================================================
-   AUTH
-===================================================== */
-
-import {
-  getAuth,
-  onAuthStateChanged
-}
-from
-"https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-
-
-/* =====================================================
-   FIRESTORE
-===================================================== */
-
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  getDoc,
-  doc,
-  setDoc,
-  updateDoc,
-  arrayUnion,
-  arrayRemove,
-  increment,
-  addDoc,
-  serverTimestamp,
-  runTransaction
-}
-from
-"https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
-
-/* =====================================================
-   STORAGE
-===================================================== */
-
-import {
-  getStorage,
-  ref,
-  getDownloadURL
-}
-from
-"https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
-
-
-/* =====================================================
-   FIREBASE CONFIG
-===================================================== */
-
+// ===== Firebase Config =====
 const firebaseConfig = {
-
-  apiKey:
-    "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
-
-  authDomain:
-    "world-wide-connect-62c87.firebaseapp.com",
-
-  projectId:
-    "world-wide-connect-62c87",
-
-  storageBucket:
-    "world-wide-connect-62c87.firebasestorage.app",
-
-  messagingSenderId:
-    "93178453668",
-
-  appId:
-    "1:93178453668:web:2184630caa8e61f7445031",
-
-  measurementId:
-    "G-PKFJ5NEMGQ"
-
+  apiKey: "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
+  authDomain: "world-wide-connect-62c87.firebaseapp.com",
+  projectId: "world-wide-connect-62c87",
+  storageBucket: "world-wide-connect-62c87.firebasestorage.app",
+  messagingSenderId: "93178453668",
+  appId: "1:93178453668:web:2184630caa8e61f7445031",
+  measurementId: "G-PKFJ5NEMGQ"
 };
 
+// ===== Init Firebase =====
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
 
-/* =====================================================
-   INITIALIZE FIREBASE
-===================================================== */
-
-const app =
-  getApps().length
-    ? getApps()[0]
-    : initializeApp(firebaseConfig);
-
-
-const auth =
-  getAuth(app);
-
-
-const db =
-  getFirestore(app);
-
-
-const storage =
-  getStorage(app);
-
-
-/* =====================================================
-   GLOBAL
-===================================================== */
-
+// ===== Global State =====
 let currentUser = null;
-
 let currentProfile = {};
-
 let videos = [];
-
 let currentFeedMode = "forYou";
-
 let currentVideoId = null;
-
 let observer = null;
-
 let toastTimer = null;
-
 let loadingFeed = false;
-
 let currentPlayingVideo = null;
+const defaultPhoto = "./images/profile.png";
 
+// ===== Helpers =====
+function escapeHtml(v) { return String(v ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
+function number(v) { const n = Number(v); return Number.isFinite(n) ? n : 0; }
+function getFollowingIds() { return Array.isArray(currentProfile?.followingIds) ? currentProfile.followingIds : []; }
 
-/* =====================================================
-   DEFAULT IMAGE
-===================================================== */
-
-const defaultPhoto =
-  "./images/profile.png";
-
-
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
-
-function escapeHtml(value){
-
-  return String(
-    value ?? ""
-  )
-  .replace(/&/g,"&amp;")
-  .replace(/</g,"&lt;")
-  .replace(/>/g,"&gt;")
-  .replace(/"/g,"&quot;")
-  .replace(/'/g,"&#039;");
-
+function showToast(text) {
+  const toast = document.getElementById("toast");
+  toast.textContent = text;
+  toast.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove("show"), 1800);
 }
 
-
-/* =====================================================
-   NUMBER
-===================================================== */
-
-function number(value){
-
-  const n =
-    Number(value);
-
-  return Number.isFinite(n)
-    ? n
-    : 0;
-
+function withTimeout(promise, ms) {
+  return Promise.race([promise, new Promise((_,reject) => setTimeout(() => reject(new Error("Timeout")), ms))]);
 }
 
-
-/* =====================================================
-   TOAST
-===================================================== */
-
-function showToast(text){
-
-  const toast =
-    document.getElementById(
-      "toast"
-    );
-
-  toast.textContent =
-    text;
-
-  toast.classList.add(
-    "show"
-  );
-
-  clearTimeout(
-    toastTimer
-  );
-
-  toastTimer =
-    setTimeout(
-      () => {
-
-        toast.classList.remove(
-          "show"
-        );
-
-      },
-      1800
-    );
-
+function getUsername(video) {
+  return String(video.username || video.userName || video.handle || "wwc_user").replace(/^@/,"");
 }
 
-
-/* =====================================================
-   TIMEOUT
-===================================================== */
-
-function withTimeout(
-  promise,
-  ms
-){
-
-  return Promise.race([
-
-    promise,
-
-    new Promise(
-      (_,reject) => {
-
-        setTimeout(
-          () => {
-
-            reject(
-              new Error(
-                "Operation timeout"
-              )
-            );
-
-          },
-          ms
-        );
-
-      }
-    )
-
-  ]);
-
-}
-
-
-/* =====================================================
-   LOAD CURRENT PROFILE
-===================================================== */
-
-async function loadCurrentProfile(){
-
-  if(!currentUser){
-
-    return;
-
-  }
-
-
-  const userRef =
-    doc(
-      db,
-      "users",
-      currentUser.uid
-    );
-
-
-  try{
-
-    const snap =
-      await withTimeout(
-        getDoc(userRef),
-        7000
-      );
-
-
-    if(snap.exists()){
-
-      currentProfile =
-        snap.data();
-
-      return;
-
-    }
-
-
-    currentProfile = {
-
-      uid:
-        currentUser.uid,
-
-      name:
-        currentUser.displayName ||
-        "WWC User",
-
-      username:
-        "wwc_" +
-        currentUser.uid.substring(
-          0,
-          6
-        ),
-
-      email:
-        currentUser.email ||
-        "",
-
-      photoURL:
-        currentUser.photoURL ||
-        defaultPhoto,
-
-      followers:0,
-
-      following:0,
-
-      likes:0,
-
-      followerIds:[],
-
-      followingIds:[],
-
-      savedVideoIds:[]
-
-    };
-
-
-    await withTimeout(
-
-      setDoc(
-        userRef,
-        currentProfile
-      ),
-
-      7000
-
-    );
-
-
-  }catch(error){
-
-    console.error(
-      "Profile error:",
-      error
-    );
-
-
-    currentProfile = {
-
-      uid:
-        currentUser.uid,
-
-      name:
-        currentUser.displayName ||
-        "WWC User",
-
-      username:
-        "wwc_" +
-        currentUser.uid.substring(
-          0,
-          6
-        ),
-
-      photoURL:
-        currentUser.photoURL ||
-        defaultPhoto,
-
-      followingIds:[],
-
-      savedVideoIds:[]
-
-    };
-
-  }
-
-}
-
-
-/* =====================================================
-   FOLLOWING IDS
-===================================================== */
-
-function getFollowingIds(){
-
-  return Array.isArray(
-    currentProfile.followingIds
-  )
-    ? currentProfile.followingIds
-    : [];
-
-}
-
-
-/* =====================================================
-   GET USERNAME
-===================================================== */
-
-function getUsername(video){
-
-  return String(
-
-    video.username ||
-    video.userName ||
-    video.handle ||
-    "wwc_user"
-
-  ).replace(
-    /^@/,
-    ""
-  );
-
-}
-
-
-/* =====================================================
-   VIDEO URL
-===================================================== */
-
-async function resolveVideoURL(video){
-
+// ===== VIDEO URL RESOLVER (CDN + Google Drive + Local) =====
+async function resolveVideoURL(video) {
+  console.log("🔍 Resolving video:", video.id);
+  
+  // ১. সরাসরি URL (CDN, Firebase Storage, Google Drive)
   const directUrl =
-
     video.videoURL ||
     video.videoUrl ||
     video.downloadURL ||
@@ -1816,3425 +628,522 @@ async function resolveVideoURL(video){
     video.fileUrl ||
     video.url ||
     video.src;
-
-
-  if(directUrl){
-
+  
+  if (directUrl && directUrl.startsWith('http')) {
+    console.log("✅ Direct URL:", directUrl);
     return directUrl;
-
   }
-
-
-  const storagePath =
-
-    video.storagePath ||
-    video.filePath ||
-    video.storage ||
-    video.path;
-
-
-  if(storagePath){
-
-    try{
-
-      return await withTimeout(
-
-        getDownloadURL(
-          ref(
-            storage,
-            storagePath
-          )
-        ),
-
-        10000
-
-      );
-
-    }catch(error){
-
-      console.error(
-        "Storage URL error:",
-        error
-      );
-
-      return "";
-
-    }
-
+  
+  // ২. লোকাল ফাইল
+  if (video.localPath || video.localUrl || video.file) {
+    const local = video.localPath || video.localUrl || video.file;
+    console.log("📁 Local file:", local);
+    return local;
   }
-
-
+  
+  // ৩. Firebase Storage
+  const storagePath = video.storagePath || video.filePath || video.storage || video.path;
+  if (storagePath) {
+    try {
+      console.log("📦 Storage path:", storagePath);
+      const url = await withTimeout(getDownloadURL(ref(storage, storagePath)), 10000);
+      console.log("✅ Storage URL:", url);
+      return url;
+    } catch (e) { console.error("Storage error:", e); return ""; }
+  }
+  
+  // ৪. Google Drive Share Link (ফলোয়িং ফরম্যাট সাপোর্ট)
+  if (video.googleDriveId || video.gdriveId) {
+    const gid = video.googleDriveId || video.gdriveId;
+    return `https://drive.google.com/uc?export=download&id=${gid}`;
+  }
+  
+  console.warn("⚠️ No video URL found for:", video.id);
   return "";
-
 }
 
-
-/* =====================================================
-   VIDEO SCORE
-===================================================== */
-
-function scoreVideo(video){
-
-  const likes =
-    number(video.likes);
-
-  const comments =
-    number(video.comments);
-
-  const saves =
-    number(video.saves);
-
-  const shares =
-    number(video.shares);
-
-  const views =
-    number(video.views);
-
-
-  let score =
-
-    likes * 3 +
-
-    comments * 5 +
-
-    saves * 6 +
-
-    shares * 4 +
-
-    views * .2;
-
-
-  const creatorId =
-
-    video.creatorId ||
-    video.userId ||
-    video.uid ||
-    video.ownerId ||
-    "";
-
-
-  if(
-    getFollowingIds()
-      .includes(
-        creatorId
-      )
-  ){
-
-    score += 100;
-
-  }
-
-
-  return score;
-
-}
-
-
-/* =====================================================
-   LOAD VIDEOS
-===================================================== */
-
-async function loadVideos(){
-
-  if(
-    loadingFeed
-  ){
-
-    return;
-
-  }
-
-
-  loadingFeed =
-    true;
-
-
+// ===== LOAD VIDEOS =====
+async function loadVideos() {
+  if (loadingFeed) return;
+  loadingFeed = true;
   showLoading();
-
-
-  try{
-
-    const snap =
-      await withTimeout(
-
-        getDocs(
-          collection(
-            db,
-            "videos"
-          )
-        ),
-
-        10000
-
-      );
-
-
+  
+  try {
+    const q = query(collection(db, "videos"), orderBy("createdAt", "desc"));
+    const snap = await withTimeout(getDocs(q), 10000);
     videos = [];
-
-
-    snap.forEach(
-      videoDoc => {
-
-        videos.push({
-
-          id:
-            videoDoc.id,
-
-          ...videoDoc.data()
-
-        });
-
-      }
-    );
-
-
-    if(!videos.length){
-
-      loadingFeed =
-        false;
-
-      showEmpty(
-        "এখনো কোনো ভিডিও নেই।"
-      );
-
-      return;
-
+    snap.forEach(doc => { videos.push({ id: doc.id, ...doc.data() }); });
+    
+    if (!videos.length) { showEmpty("এখনো কোনো ভিডিও নেই।"); loadingFeed = false; return; }
+    
+    for (let i = 0; i < videos.length; i++) {
+      videos[i].resolvedVideoURL = await resolveVideoURL(videos[i]);
     }
-
-
-    for(
-      let i = 0;
-      i < videos.length;
-      i++
-    ){
-
-      videos[i].resolvedVideoURL =
-        await resolveVideoURL(
-          videos[i]
-        );
-
-    }
-
-
-    videos =
-      videos.filter(
-        video =>
-          !!video.resolvedVideoURL
-      );
-
-
+    videos = videos.filter(v => !!v.resolvedVideoURL);
     sortVideos();
-
     renderFeed();
-
-
-  }catch(error){
-
-    console.error(
-      "Load videos error:",
-      error
-    );
-
-
-    showError(
-      "ভিডিও লোড করা যায়নি। Firebase Firestore এবং Rules পরীক্ষা করুন।"
-    );
-
+  } catch (e) {
+    console.error("Load error:", e);
+    showError("ভিডিও লোড করা যায়নি। Firestore Rules চেক করুন।");
   }
-
-
-  loadingFeed =
-    false;
-
+  loadingFeed = false;
 }
 
-
-/* =====================================================
-   SORT
-===================================================== */
-
-function sortVideos(){
-
-  if(
-    currentFeedMode ===
-    "forYou"
-  ){
-
-    videos.sort(
-      (a,b) =>
-        scoreVideo(b) -
-        scoreVideo(a)
-    );
-
+function sortVideos() {
+  if (currentFeedMode === "forYou") {
+    videos.sort((a,b) => (number(b.likes)*3 + number(b.comments)*5 + number(b.saves)*6) - (number(a.likes)*3 + number(a.comments)*5 + number(a.saves)*6));
   }
-
 }
 
-
-/* =====================================================
-   FILTER
-===================================================== */
-
-function getFilteredVideos(){
-
-  if(
-    currentFeedMode ===
-    "following"
-  ){
-
-    const following =
-      getFollowingIds();
-
-
-    return videos.filter(
-      video => {
-
-        const creator =
-
-          video.creatorId ||
-          video.userId ||
-          video.uid ||
-          video.ownerId ||
-          "";
-
-
-        return following.includes(
-          creator
-        );
-
-      }
-    );
-
+function getFilteredVideos() {
+  if (currentFeedMode === "following") {
+    const following = getFollowingIds();
+    return videos.filter(v => following.includes(v.uid || v.creatorId || v.userId || ""));
   }
-
-
   return videos;
-
 }
 
-
-/* =====================================================
-   LOADING
-===================================================== */
-
-function showLoading(){
-
-  const feed =
-    document.getElementById(
-      "feed"
-    );
-
-
-  feed.innerHTML = `
-
-    <div class="feed-message">
-
-      <div class="feed-message-inner">
-
-        <div class="feed-message-icon">
-          ⏳
-        </div>
-
-        <div>
-          ভিডিও লোড হচ্ছে...
-        </div>
-
-      </div>
-
-    </div>
-
-  `;
-
+// ===== RENDER =====
+function showLoading() {
+  document.getElementById("feed").innerHTML = `<div class="feed-message"><div class="feed-message-inner"><div class="feed-message-icon">⏳</div><div>ভিডিও লোড হচ্ছে...</div></div></div>`;
+}
+function showEmpty(msg) {
+  document.getElementById("feed").innerHTML = `<div class="feed-message"><div class="feed-message-inner"><div class="feed-message-icon">🎬</div><div>${escapeHtml(msg)}</div></div></div>`;
+}
+function showError(msg) {
+  document.getElementById("feed").innerHTML = `<div class="feed-message"><div class="feed-message-inner"><div class="feed-message-icon">⚠️</div><div>${escapeHtml(msg)}</div><button class="retry-btn" onclick="reloadFeed()">আবার চেষ্টা করুন</button></div></div>`;
 }
 
-
-/* =====================================================
-   EMPTY
-===================================================== */
-
-function showEmpty(message){
-
-  const feed =
-    document.getElementById(
-      "feed"
-    );
-
-
-  feed.innerHTML = `
-
-    <div class="feed-message">
-
-      <div class="feed-message-inner">
-
-        <div class="feed-message-icon">
-          🎬
-        </div>
-
-        <div>
-          ${escapeHtml(message)}
-        </div>
-
-      </div>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =====================================================
-   ERROR
-===================================================== */
-
-function showError(message){
-
-  const feed =
-    document.getElementById(
-      "feed"
-    );
-
-
-  feed.innerHTML = `
-
-    <div class="feed-message">
-
-      <div class="feed-message-inner">
-
-        <div class="feed-message-icon">
-          ⚠️
-        </div>
-
-        <div>
-          ${escapeHtml(message)}
-        </div>
-
-        <button
-          class="retry-btn"
-          onclick="reloadFeed()"
-        >
-          আবার চেষ্টা করুন
-        </button>
-
-      </div>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =====================================================
-   RENDER FEED
-===================================================== */
-
-function renderFeed(){
-
-  const feed =
-    document.getElementById(
-      "feed"
-    );
-
-
-  const list =
-    getFilteredVideos();
-
-
-  feed.innerHTML =
-    "";
-
-
-  if(!list.length){
-
-    showEmpty(
-      currentFeedMode ===
-      "following"
-
-        ? "আপনি এখনো কাউকে Follow করেননি।"
-
-        : "কোনো ভিডিও পাওয়া যায়নি।"
-    );
-
-    return;
-
-  }
-
-
-  list.forEach(
-    (video,index) => {
-
-      feed.appendChild(
-        createVideoItem(
-          video,
-          index
-        )
-      );
-
-    }
-  );
-
-
+function renderFeed() {
+  const feed = document.getElementById("feed");
+  const list = getFilteredVideos();
+  feed.innerHTML = "";
+  if (!list.length) { showEmpty(currentFeedMode === "following" ? "আপনি এখনো কাউকে Follow করেননি।" : "কোনো ভিডিও পাওয়া যায়নি।"); return; }
+  
+  list.forEach((video, index) => {
+    feed.appendChild(createVideoItem(video, index));
+  });
   setupVideoObserver();
-
   preloadNearbyVideos();
-
 }
 
-
-/* =====================================================
-   CREATE VIDEO ITEM
-===================================================== */
-
-function createVideoItem(
-  video,
-  index
-){
-
-  const item =
-    document.createElement(
-      "section"
-    );
-
-
-  item.className =
-    "video-item";
-
-
-  item.dataset.videoId =
-    video.id;
-
-
-  const username =
-    getUsername(video);
-
-
-  const name =
-    video.name ||
-    video.displayName ||
-    username;
-
-
-  const photo =
-    video.photoURL ||
-    video.photo ||
-    defaultPhoto;
-
-
-  const caption =
-    video.caption ||
-    video.description ||
-    "";
-
-
-  const sound =
-    video.sound ||
-    "Original sound - WWC";
-
-
-  const creatorId =
-
-    video.creatorId ||
-    video.userId ||
-    video.uid ||
-    video.ownerId ||
-    "";
-
-
-  const following =
-    getFollowingIds()
-      .includes(
-        creatorId
-      );
-
-
-  const liked =
-
-    Array.isArray(
-      video.likedBy
-    ) &&
-    video.likedBy.includes(
-      currentUser.uid
-    );
-
-
-  const saved =
-
-    Array.isArray(
-      video.savedBy
-    ) &&
-    video.savedBy.includes(
-      currentUser.uid
-    );
-
-
-  const likes =
-    number(video.likes);
-
-
-  const comments =
-    number(video.comments);
-
-
-  const saves =
-    number(video.saves);
-
-
-  const shares =
-    number(video.shares);
-
-
-  const url =
-    video.resolvedVideoURL;
-
-
+// ===== CREATE VIDEO ITEM =====
+function createVideoItem(video, index) {
+  const item = document.createElement("section");
+  item.className = "video-item";
+  item.dataset.videoId = video.id;
+  
+  const username = getUsername(video);
+  const name = video.name || video.displayName || username;
+  const photo = video.photoURL || video.photo || defaultPhoto;
+  const caption = video.caption || video.description || "";
+  const sound = video.sound || "🎵 Original sound - WWC";
+  const creatorId = video.uid || video.creatorId || video.userId || "";
+  const following = getFollowingIds().includes(creatorId);
+  const liked = Array.isArray(video.likedBy) && video.likedBy.includes(currentUser?.uid);
+  const saved = Array.isArray(video.savedBy) && video.savedBy.includes(currentUser?.uid);
+  const likes = number(video.likes);
+  const comments = number(video.comments);
+  const saves = number(video.saves);
+  const shares = number(video.shares);
+  const url = video.resolvedVideoURL;
+  
+  // Google Drive URL হলে এক্সট্রা হ্যান্ডলিং
+  const isDrive = url && url.includes('drive.google.com');
+  const videoSrc = isDrive ? url : url;
+  
   item.innerHTML = `
-
-    <video
-      class="video"
-      src="${escapeHtml(url)}"
-      loop
-      muted
-      playsinline
-      webkit-playsinline
-      preload="metadata"
-    ></video>
-
-
-    <div class="video-loader">
-      <span></span>
-    </div>
-
-
-    <div class="video-error">
-
-      <div class="video-error-title">
-        ভিডিও চালানো যাচ্ছে না
-      </div>
-
-      <div class="video-error-text">
-        Firebase Storage URL পরীক্ষা করুন।
-      </div>
-
-    </div>
-
-
+    <video class="video" src="${escapeHtml(videoSrc)}" loop muted playsinline webkit-playsinline preload="metadata" ${isDrive ? 'crossorigin="anonymous"' : ''}></video>
+    <div class="video-loader"><span></span></div>
     <div class="top-bar">
-
       <div class="tabs">
-
-        <button
-          class="tab ${
-            currentFeedMode ===
-            "following"
-              ? "active"
-              : ""
-          }"
-          type="button"
-          data-tab="following"
-        >
-          Following
-        </button>
-
-
-        <button
-          class="tab ${
-            currentFeedMode ===
-            "forYou"
-              ? "active"
-              : ""
-          }"
-          type="button"
-          data-tab="forYou"
-        >
-          For You
-        </button>
-
+        <button class="tab ${currentFeedMode === "following" ? "active" : ""}" data-tab="following">Following</button>
+        <button class="tab ${currentFeedMode === "forYou" ? "active" : ""}" data-tab="forYou">For You</button>
       </div>
-
-
-      <button
-        class="search-btn"
-        type="button"
-        data-action="search"
-      >
-
-        <svg viewBox="0 0 24 24">
-
-          <circle
-            cx="11"
-            cy="11"
-            r="7"
-          />
-
-          <path
-            d="M16.5 16.5L22 22"
-          />
-
-        </svg>
-
-      </button>
-
+      <button class="search-btn" data-action="search"><i class="fas fa-search"></i></button>
     </div>
-
-
     <div class="action-bar">
-
-
       <div class="action">
-
         <div class="creator-avatar">
-
-          <img
-            src="${escapeHtml(photo)}"
-            alt="${escapeHtml(name)}"
-            onerror="this.src='./images/profile.png'"
-          >
-
-          ${
-            creatorId &&
-            creatorId !==
-              currentUser.uid
-
-              ? `
-
-                <button
-                  class="follow-plus ${
-                    following
-                      ? "following"
-                      : ""
-                  }"
-                  type="button"
-                  data-action="follow"
-                  data-creator="${escapeHtml(
-                    creatorId
-                  )}"
-                >
-                  ${
-                    following
-                      ? "✓"
-                      : "+"
-                  }
-                </button>
-
-              `
-
-              : ""
-          }
-
+          <img src="${escapeHtml(photo)}" alt="${escapeHtml(name)}" onerror="this.src='${defaultPhoto}'">
+          ${creatorId && creatorId !== currentUser?.uid ? `<button class="follow-plus ${following ? "following" : ""}" data-action="follow" data-creator="${escapeHtml(creatorId)}">${following ? "✓" : "+"}</button>` : ""}
         </div>
-
       </div>
-
-
-      <!-- LIKE -->
-
-      <button
-        class="action like-btn ${
-          liked
-            ? "liked"
-            : ""
-        }"
-        type="button"
-        data-action="like"
-      >
-
-        <span class="action-icon">
-
-          <svg viewBox="0 0 24 24">
-
-            <path
-              d="
-              M20.8 8.8
-              C20.8 5.8 18.7 4 16.2 4
-              C14.5 4 13 4.9 12 6.2
-              C11 4.9 9.5 4 7.8 4
-              C5.3 4 3.2 5.8 3.2 8.8
-              C3.2 13.1 7.3 16.2 12 20
-              C16.7 16.2 20.8 13.1 20.8 8.8Z
-              "
-            />
-
-          </svg>
-
-        </span>
-
-        <span class="action-count">
-          ${likes}
-        </span>
-
-      </button>
-
-
-      <!-- COMMENT -->
-
-      <button
-        class="action comment-btn"
-        type="button"
-        data-action="comment"
-      >
-
-        <span class="action-icon">
-
-          <svg viewBox="0 0 24 24">
-
-            <path
-              d="
-              M20 11.5
-              C20 15.6 16.4 19 12 19
-              C10.7 19 9.5 18.7 8.4 18.2
-              L4 20
-              L5.2 16.1
-              C3.9 14.8 3 13.2 3 11.5
-              C3 7.4 7 4 12 4
-              C17 4 20 7.4 20 11.5Z
-              "
-            />
-
-          </svg>
-
-        </span>
-
-        <span class="action-count">
-          ${comments}
-        </span>
-
-      </button>
-
-
-      <!-- SAVE -->
-
-      <button
-        class="action save-btn ${
-          saved
-            ? "saved"
-            : ""
-        }"
-        type="button"
-        data-action="save"
-      >
-
-        <span class="action-icon">
-
-          <svg viewBox="0 0 24 24">
-
-            <path
-              d="
-              M6 4
-              C6 3.4 6.4 3 7 3
-              H17
-              C17.6 3 18 3.4 18 4
-              V21
-              L12 17.2
-              L6 21
-              Z
-              "
-            />
-
-          </svg>
-
-        </span>
-
-        <span class="action-count">
-          ${saves}
-        </span>
-
-      </button>
-
-
-      <!-- SHARE -->
-
-      <button
-        class="action"
-        type="button"
-        data-action="share"
-      >
-
-        <span class="action-icon">
-
-          <svg viewBox="0 0 24 24">
-
-            <path d="M22 2L11 13"/>
-
-            <path
-              d="
-              M22 2
-              L15 22
-              L11 13
-              L2 9
-              Z
-              "
-            />
-
-          </svg>
-
-        </span>
-
-        <span class="action-count">
-          ${shares}
-        </span>
-
-      </button>
-
-
+      <button class="action like-btn ${liked ? "liked" : ""}" data-action="like"><span class="action-icon"><i class="fas fa-heart"></i></span><span class="action-count">${likes}</span></button>
+      <button class="action comment-btn" data-action="comment"><span class="action-icon"><i class="fas fa-comment"></i></span><span class="action-count">${comments}</span></button>
+      <button class="action save-btn ${saved ? "saved" : ""}" data-action="save"><span class="action-icon"><i class="fas fa-bookmark"></i></span><span class="action-count">${saves}</span></button>
+      <button class="action share-btn" data-action="share"><span class="action-icon"><i class="fas fa-share"></i></span><span class="action-count">${shares}</span></button>
     </div>
-
-
-    <!-- SOUND -->
-
-    <button
-      class="sound-btn"
-      type="button"
-      data-action="sound"
-    >
-
-      <svg viewBox="0 0 24 24">
-
-        <path
-          d="M11 5L6 9H3V15H6L11 19Z"
-        />
-
-        <path
-          d="M17 9L21 15"
-        />
-
-        <path
-          d="M21 9L17 15"
-        />
-
-      </svg>
-
-    </button>
-
-
-    <!-- INFO -->
-
+    <button class="sound-btn" data-action="sound"><i class="fas fa-volume-up"></i></button>
     <div class="video-info">
-
-      <div class="username">
-        @${escapeHtml(username)}
-      </div>
-
-      <div class="caption">
-        ${escapeHtml(caption)}
-      </div>
-
-      <div class="sound">
-        🎵 ${escapeHtml(sound)}
-      </div>
-
+      <div class="username">@${escapeHtml(username)}</div>
+      <div class="caption">${escapeHtml(caption)}</div>
+      <div class="sound">${escapeHtml(sound)}</div>
     </div>
-
-
-    <!-- PAUSE -->
-
-    <div class="pause-indicator">
-
-      <svg viewBox="0 0 24 24">
-
-        <rect
-          x="6"
-          y="4"
-          width="4"
-          height="16"
-          rx="1"
-        />
-
-        <rect
-          x="14"
-          y="4"
-          width="4"
-          height="16"
-          rx="1"
-        />
-
-      </svg>
-
-    </div>
-
+    <div class="pause-indicator"><i class="fas fa-pause"></i></div>
   `;
-
-
-  const video =
-    item.querySelector(
-      ".video"
-    );
-
-
-  const loader =
-    item.querySelector(
-      ".video-loader"
-    );
-
-
-  const errorBox =
-    item.querySelector(
-      ".video-error"
-    );
-
-
-  video.addEventListener(
-    "loadeddata",
-    () => {
-
-      loader.style.display =
-        "none";
-
-      errorBox.classList.remove(
-        "show"
-      );
-
-    }
-  );
-
-
-  video.addEventListener(
-    "canplay",
-    () => {
-
-      loader.style.display =
-        "none";
-
-    }
-  );
-
-
-  video.addEventListener(
-    "playing",
-    () => {
-
-      loader.style.display =
-        "none";
-
-      errorBox.classList.remove(
-        "show"
-      );
-
-    }
-  );
-
-
-  video.addEventListener(
-    "waiting",
-    () => {
-
-      loader.style.display =
-        "flex";
-
-    }
-  );
-
-
-  video.addEventListener(
-    "error",
-    () => {
-
-      loader.style.display =
-        "none";
-
-      errorBox.classList.add(
-        "show"
-      );
-
-      console.error(
-        "VIDEO ERROR:",
-        url
-      );
-
-    }
-  );
-
-
-  item.addEventListener(
-    "click",
-    event => {
-
-      if(
-        event.target.closest(
-          "button"
-        )
-      ){
-
-        return;
-
-      }
-
-
-      togglePlayPause(
-        item
-      );
-
-    }
-  );
-
-
+  
+  // ভিডিও ইভেন্ট
+  const videoEl = item.querySelector(".video");
+  const loader = item.querySelector(".video-loader");
+  
+  videoEl.addEventListener("loadeddata", () => { loader.style.display = "none"; });
+  videoEl.addEventListener("playing", () => { loader.style.display = "none"; });
+  videoEl.addEventListener("waiting", () => { loader.style.display = "flex"; });
+  videoEl.addEventListener("error", () => { loader.style.display = "none"; console.error("Video error:", url); });
+  
+  // ক্লিক = পজ/প্লে
+  item.addEventListener("click", (e) => {
+    if (e.target.closest("button")) return;
+    togglePlayPause(item);
+  });
+  
   return item;
-
 }
 
-
-/* =====================================================
-   PLAY / PAUSE
-===================================================== */
-
-function togglePlayPause(item){
-
-  const video =
-    item.querySelector(
-      ".video"
-    );
-
-
-  const indicator =
-    item.querySelector(
-      ".pause-indicator"
-    );
-
-
-  if(video.paused){
-
+// ===== PLAY/PAUSE =====
+function togglePlayPause(item) {
+  const video = item.querySelector(".video");
+  const indicator = item.querySelector(".pause-indicator");
+  if (video.paused) {
     playVideo(video);
-
-    indicator.classList.remove(
-      "show"
-    );
-
-  }else{
-
+    indicator.classList.remove("show");
+  } else {
     video.pause();
-
-    indicator.classList.add(
-      "show"
-    );
-
+    indicator.classList.add("show");
   }
-
 }
 
-
-/* =====================================================
-   PLAY VIDEO
-===================================================== */
-
-async function playVideo(video){
-
-  if(
-    currentPlayingVideo &&
-    currentPlayingVideo !== video
-  ){
-
-    try{
-
-      currentPlayingVideo.pause();
-
-    }catch(error){}
-
+async function playVideo(video) {
+  if (currentPlayingVideo && currentPlayingVideo !== video) {
+    try { currentPlayingVideo.pause(); } catch(e) {}
   }
-
-
-  currentPlayingVideo =
-    video;
-
-
-  video.muted =
-    true;
-
-
-  try{
-
-    await video.play();
-
-  }catch(error){
-
-    console.warn(
-      "Play error:",
-      error
-    );
-
-  }
-
+  currentPlayingVideo = video;
+  video.muted = true;
+  try { await video.play(); } catch(e) { console.warn("Play error:", e); }
 }
 
+// ===== VIDEO OBSERVER =====
+function setupVideoObserver() {
+  if (observer) observer.disconnect();
+  const items = [...document.querySelectorAll(".video-item")];
+  if (!items.length) return;
+  observer = new IntersectionObserver((entries) => {
+    items.forEach(item => {
+      const video = item.querySelector(".video");
+      const rect = item.getBoundingClientRect();
+      const visible = Math.min(window.innerHeight, rect.bottom) - Math.max(0, rect.top);
+      const percentage = visible / window.innerHeight;
+      if (percentage > 0.6) { playVideo(video); }
+      else { video.pause(); }
+    });
+    preloadNearbyVideos();
+  }, { threshold: [0.3, 0.5, 0.7, 0.9] });
+  items.forEach(item => observer.observe(item));
+  // প্রথমটি প্লে করো
+  const first = items[0];
+  if (first) { setTimeout(() => { const v = first.querySelector(".video"); if (v) playVideo(v); }, 300); }
+}
 
-/* =====================================================
-   VIDEO OBSERVER
-===================================================== */
-
-function setupVideoObserver(){
-
-  if(observer){
-
-    observer.disconnect();
-
+function preloadNearbyVideos() {
+  const items = [...document.querySelectorAll(".video-item")];
+  if (!items.length) return;
+  let activeIndex = 0;
+  items.forEach((item, i) => {
+    const rect = item.getBoundingClientRect();
+    if (Math.abs(rect.top) < window.innerHeight * 0.5) activeIndex = i;
+  });
+  for (let i = activeIndex; i < Math.min(items.length, activeIndex + 3); i++) {
+    const v = items[i]?.querySelector(".video");
+    if (v) v.preload = "auto";
   }
+}
 
+// ===== FEED ACTIONS =====
+document.getElementById("feed").addEventListener("click", async (e) => {
+  const tab = e.target.closest("[data-tab]");
+  if (tab) { switchFeed(tab.dataset.tab === "following" ? "following" : "forYou"); return; }
+  const btn = e.target.closest("[data-action]");
+  if (!btn) return;
+  const item = btn.closest(".video-item");
+  if (!item) return;
+  const videoId = item.dataset.videoId;
+  const action = btn.dataset.action;
+  
+  if (action === "like") await toggleLike(videoId, btn);
+  else if (action === "save") await toggleSave(videoId, btn);
+  else if (action === "comment") await openComments(videoId);
+  else if (action === "share") await shareVideo(videoId, btn);
+  else if (action === "follow") await toggleFollow(btn.dataset.creator, btn);
+  else if (action === "sound") toggleSound(item, btn);
+  else if (action === "search") openSearch();
+});
 
-  const items =
-    [
-      ...document.querySelectorAll(
-        ".video-item"
-      )
-    ];
+// ===== LIKE =====
+async function toggleLike(videoId, btn) {
+  if (!currentUser) { showToast("আগে Login করুন"); return; }
+  if (btn.disabled) return;
+  btn.disabled = true;
+  try {
+    const videoRef = doc(db, "videos", videoId);
+    const result = await runTransaction(db, async (t) => {
+      const snap = await t.get(videoRef);
+      if (!snap.exists()) throw new Error("NOT_FOUND");
+      const data = snap.data();
+      const likedBy = Array.isArray(data.likedBy) ? data.likedBy : [];
+      const already = likedBy.includes(currentUser.uid);
+      const newLikedBy = already ? likedBy.filter(u => u !== currentUser.uid) : [...likedBy, currentUser.uid];
+      const newLikes = Math.max(0, number(data.likes) + (already ? -1 : 1));
+      t.update(videoRef, { likedBy: newLikedBy, likes: newLikes });
+      return { liked: !already, likes: newLikes };
+    });
+    btn.classList.toggle("liked", result.liked);
+    btn.querySelector(".action-count").textContent = result.likes;
+  } catch(e) { console.error(e); showToast("Like করা যায়নি"); }
+  btn.disabled = false;
+}
 
+// ===== SAVE =====
+async function toggleSave(videoId, btn) {
+  if (!currentUser) { showToast("আগে Login করুন"); return; }
+  if (btn.disabled) return;
+  btn.disabled = true;
+  try {
+    const videoRef = doc(db, "videos", videoId);
+    const userRef = doc(db, "users", currentUser.uid);
+    const result = await runTransaction(db, async (t) => {
+      const vs = await t.get(videoRef);
+      if (!vs.exists()) throw new Error("NOT_FOUND");
+      const data = vs.data();
+      const savedBy = Array.isArray(data.savedBy) ? data.savedBy : [];
+      const already = savedBy.includes(currentUser.uid);
+      const newSavedBy = already ? savedBy.filter(u => u !== currentUser.uid) : [...savedBy, currentUser.uid];
+      const newSaves = Math.max(0, number(data.saves) + (already ? -1 : 1));
+      t.update(videoRef, { savedBy: newSavedBy, saves: newSaves });
+      // user profile update
+      const us = await t.get(userRef);
+      const uData = us.exists() ? us.data() : {};
+      const oldSaved = Array.isArray(uData.savedVideoIds) ? uData.savedVideoIds : [];
+      const newUserSaved = already ? oldSaved.filter(id => id !== videoId) : (oldSaved.includes(videoId) ? oldSaved : [...oldSaved, videoId]);
+      t.set(userRef, { savedVideoIds: newUserSaved }, { merge: true });
+      return { saved: !already, saves: newSaves };
+    });
+    btn.classList.toggle("saved", result.saved);
+    btn.querySelector(".action-count").textContent = result.saves;
+    showToast(result.saved ? "🔖 Saved" : "Saved থেকে সরানো হয়েছে");
+  } catch(e) { console.error(e); showToast("Save করা যায়নি"); }
+  btn.disabled = false;
+}
 
-  if(!items.length){
-
-    return;
-
-  }
-
-
-  observer =
-    new IntersectionObserver(
-
-      entries => {
-
-        items.forEach(
-          item => {
-
-            const video =
-              item.querySelector(
-                ".video"
-              );
-
-
-            const rect =
-              item.getBoundingClientRect();
-
-
-            const visible =
-              Math.min(
-                window.innerHeight,
-                rect.bottom
-              )
-              -
-              Math.max(
-                0,
-                rect.top
-              );
-
-
-            const percentage =
-              visible /
-              window.innerHeight;
-
-
-            if(
-              percentage > .65
-            ){
-
-              playVideo(video);
-
-            }else{
-
-              video.pause();
-
-            }
-
-          }
-        );
-
-
-        preloadNearbyVideos();
-
-      },
-
-      {
-        threshold:[
-          .25,
-          .5,
-          .65,
-          .8,
-          .95
-        ]
+// ===== FOLLOW =====
+async function toggleFollow(targetUid, btn) {
+  if (!currentUser || !targetUid || targetUid === currentUser.uid) return;
+  btn.disabled = true;
+  try {
+    const myRef = doc(db, "users", currentUser.uid);
+    const targetRef = doc(db, "users", targetUid);
+    const result = await runTransaction(db, async (t) => {
+      const ms = await t.get(myRef);
+      const ts = await t.get(targetRef);
+      if (!ms.exists() || !ts.exists()) throw new Error("PROFILE_NOT_FOUND");
+      const mData = ms.data();
+      const tData = ts.data();
+      const following = Array.isArray(mData.followingIds) ? mData.followingIds : [];
+      const followers = Array.isArray(tData.followerIds) ? tData.followerIds : [];
+      const already = following.includes(targetUid);
+      if (already) {
+        t.update(myRef, { followingIds: following.filter(id => id !== targetUid), following: Math.max(0, number(mData.following) - 1) });
+        t.update(targetRef, { followerIds: followers.filter(id => id !== currentUser.uid), followers: Math.max(0, number(tData.followers) - 1) });
+      } else {
+        t.update(myRef, { followingIds: [...following, targetUid], following: number(mData.following) + 1 });
+        t.update(targetRef, { followerIds: [...followers, currentUser.uid], followers: number(tData.followers) + 1 });
       }
+      return { following: !already };
+    });
+    btn.classList.toggle("following", result.following);
+    btn.textContent = result.following ? "✓" : "+";
+    const ms = await getDoc(doc(db, "users", currentUser.uid));
+    if (ms.exists()) currentProfile = ms.data();
+    showToast(result.following ? "Following" : "Unfollow");
+  } catch(e) { console.error(e); showToast("Follow করা যায়নি"); }
+  btn.disabled = false;
+}
 
-    );
+// ===== SOUND =====
+function toggleSound(item, btn) {
+  const video = item.querySelector(".video");
+  if (video.muted) {
+    video.muted = false;
+    btn.innerHTML = '<i class="fas fa-volume-up"></i>';
+    playVideo(video);
+    showToast("🔊 Sound On");
+  } else {
+    video.muted = true;
+    btn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+    showToast("🔇 Sound Off");
+  }
+}
 
-
-  items.forEach(
-    item => {
-
-      observer.observe(
-        item
-      );
-
+// ===== SHARE =====
+async function shareVideo(videoId, btn) {
+  if (!currentUser) { showToast("আগে Login করুন"); return; }
+  if (btn.disabled) return;
+  btn.disabled = true;
+  try {
+    const videoRef = doc(db, "videos", videoId);
+    const snap = await getDoc(videoRef);
+    if (snap.exists()) {
+      const newShares = number(snap.data().shares) + 1;
+      await updateDoc(videoRef, { shares: newShares });
+      btn.querySelector(".action-count").textContent = newShares;
     }
-  );
-
-
-  const first =
-    items[0];
-
-
-  if(first){
-
-    const video =
-      first.querySelector(
-        ".video"
-      );
-
-
-    setTimeout(
-      () => {
-
-        playVideo(video);
-
-      },
-      300
-    );
-
-  }
-
+    const url = new URL(window.location.href);
+    url.searchParams.set("video", videoId);
+    if (navigator.share) {
+      try { await navigator.share({ title: "WWC", text: "এই ভিডিওটি দেখুন", url: url.toString() }); } catch(e) {}
+    } else {
+      await navigator.clipboard.writeText(url.toString());
+      showToast("🔗 Link Copy হয়েছে");
+    }
+  } catch(e) { console.error(e); showToast("Share করা যায়নি"); }
+  btn.disabled = false;
 }
 
-
-/* =====================================================
-   PRELOAD
-===================================================== */
-
-function preloadNearbyVideos(){
-
-  const items =
-    [
-      ...document.querySelectorAll(
-        ".video-item"
-      )
-    ];
-
-
-  if(!items.length){
-
-    return;
-
-  }
-
-
-  let activeIndex =
-    0;
-
-
-  items.forEach(
-    (item,index) => {
-
-      const rect =
-        item.getBoundingClientRect();
-
-
-      if(
-        Math.abs(rect.top)
-        <
-        window.innerHeight * .5
-      ){
-
-        activeIndex =
-          index;
-
-      }
-
-    }
-  );
-
-
-  for(
-    let i = activeIndex;
-    i <
-    Math.min(
-      items.length,
-      activeIndex + 3
-    );
-    i++
-  ){
-
-    const video =
-      items[i].querySelector(
-        ".video"
-      );
-
-
-    if(video){
-
-      video.preload =
-        "auto";
-
-    }
-
-  }
-
+// ===== COMMENTS =====
+async function openComments(videoId) {
+  currentVideoId = videoId;
+  document.getElementById("commentPanel").classList.add("open");
+  await loadComments(videoId);
 }
-
-
-/* =====================================================
-   FEED ACTIONS
-===================================================== */
-
-document
-  .getElementById("feed")
-  .addEventListener(
-    "click",
-    async event => {
-
-      const tab =
-        event.target.closest(
-          "[data-tab]"
-        );
-
-
-      if(tab){
-
-        switchFeed(
-          tab.dataset.tab ===
-          "following"
-            ? "following"
-            : "forYou"
-        );
-
-        return;
-
-      }
-
-
-      const button =
-        event.target.closest(
-          "[data-action]"
-        );
-
-
-      if(!button){
-
-        return;
-
-      }
-
-
-      const item =
-        button.closest(
-          ".video-item"
-        );
-
-
-      if(!item){
-
-        return;
-
-      }
-
-
-      const videoId =
-        item.dataset.videoId;
-
-
-      const action =
-        button.dataset.action;
-
-
-      if(action === "like"){
-
-        await toggleLike(
-          videoId,
-          button
-        );
-
-      }
-
-
-      else if(action === "save"){
-
-        await toggleSave(
-          videoId,
-          button
-        );
-
-      }
-
-
-      else if(action === "comment"){
-
-        await openComments(
-          videoId
-        );
-
-      }
-
-
-      else if(action === "share"){
-
-        await shareVideo(
-          videoId,
-          button
-        );
-
-      }
-
-
-      else if(action === "follow"){
-
-        await toggleFollow(
-          button.dataset.creator,
-          button
-        );
-
-      }
-
-
-      else if(action === "sound"){
-
-        toggleSound(
-          item,
-          button
-        );
-
-      }
-
-
-      else if(action === "search"){
-
-        openSearch();
-
-      }
-
-    }
-  );
-
-
-/* =====================================================
-   LIKE
-===================================================== */
-
-async function toggleLike(
-  videoId,
-  button
-){
-
-  if(!currentUser){
-
-    showToast(
-      "আগে Login করুন"
-    );
-
-    return;
-
-  }
-
-
-  if(button.disabled){
-
-    return;
-
-  }
-
-
-  button.disabled =
-    true;
-
-
-  try{
-
-    const videoRef =
-      doc(
-        db,
-        "videos",
-        videoId
-      );
-
-
-    const result =
-      await runTransaction(
-        db,
-        async transaction => {
-
-          const snap =
-            await transaction.get(
-              videoRef
-            );
-
-
-          if(!snap.exists()){
-
-            throw new Error(
-              "VIDEO_NOT_FOUND"
-            );
-
-          }
-
-
-          const data =
-            snap.data();
-
-
-          const likedBy =
-            Array.isArray(
-              data.likedBy
-            )
-              ? data.likedBy
-              : [];
-
-
-          const alreadyLiked =
-            likedBy.includes(
-              currentUser.uid
-            );
-
-
-          let newLikedBy;
-          let newLikes;
-
-
-          if(alreadyLiked){
-
-            newLikedBy =
-              likedBy.filter(
-                uid =>
-                  uid !==
-                  currentUser.uid
-              );
-
-
-            newLikes =
-              Math.max(
-                0,
-                number(data.likes) - 1
-              );
-
-          }else{
-
-            newLikedBy =
-              [
-                ...likedBy,
-                currentUser.uid
-              ];
-
-
-            newLikes =
-              number(data.likes) + 1;
-
-          }
-
-
-          transaction.update(
-            videoRef,
-            {
-
-              likedBy:
-                newLikedBy,
-
-              likes:
-                newLikes
-
-            }
-          );
-
-
-          return {
-
-            liked:
-              !alreadyLiked,
-
-            likes:
-              newLikes
-
-          };
-
-        }
-      );
-
-
-    button.classList.toggle(
-      "liked",
-      result.liked
-    );
-
-
-    button
-      .querySelector(
-        ".action-count"
-      )
-      .textContent =
-        result.likes;
-
-
-    showToast(
-      result.liked
-        ? "❤️ Like সংরক্ষণ হয়েছে"
-        : "Like সরানো হয়েছে"
-    );
-
-
-  }catch(error){
-
-    console.error(
-      "Like error:",
-      error
-    );
-
-
-    showToast(
-      "Like সংরক্ষণ করা যায়নি"
-    );
-
-  }finally{
-
-    button.disabled =
-      false;
-
-  }
-
-}
-
-
-/* =====================================================
-   SAVE
-===================================================== */
-
-async function toggleSave(
-  videoId,
-  button
-){
-
-  if(!currentUser){
-
-    showToast(
-      "আগে Login করুন"
-    );
-
-    return;
-
-  }
-
-
-  if(button.disabled){
-
-    return;
-
-  }
-
-
-  button.disabled =
-    true;
-
-
-  try{
-
-    const videoRef =
-      doc(
-        db,
-        "videos",
-        videoId
-      );
-
-
-    const userRef =
-      doc(
-        db,
-        "users",
-        currentUser.uid
-      );
-
-
-    const result =
-      await runTransaction(
-        db,
-        async transaction => {
-
-          const videoSnap =
-            await transaction.get(
-              videoRef
-            );
-
-
-          const userSnap =
-            await transaction.get(
-              userRef
-            );
-
-
-          if(!videoSnap.exists()){
-
-            throw new Error(
-              "VIDEO_NOT_FOUND"
-            );
-
-          }
-
-
-          const data =
-            videoSnap.data();
-
-
-          const savedBy =
-            Array.isArray(
-              data.savedBy
-            )
-              ? data.savedBy
-              : [];
-
-
-          const alreadySaved =
-            savedBy.includes(
-              currentUser.uid
-            );
-
-
-          let newSavedBy;
-          let newSaves;
-
-
-          if(alreadySaved){
-
-            newSavedBy =
-              savedBy.filter(
-                uid =>
-                  uid !==
-                  currentUser.uid
-              );
-
-
-            newSaves =
-              Math.max(
-                0,
-                number(data.saves) - 1
-              );
-
-          }else{
-
-            newSavedBy =
-              [
-                ...savedBy,
-                currentUser.uid
-              ];
-
-
-            newSaves =
-              number(data.saves) + 1;
-
-          }
-
-
-          transaction.update(
-            videoRef,
-            {
-
-              savedBy:
-                newSavedBy,
-
-              saves:
-                newSaves
-
-            }
-          );
-
-
-          const userData =
-            userSnap.exists()
-              ? userSnap.data()
-              : {};
-
-
-          const oldSaved =
-            Array.isArray(
-              userData.savedVideoIds
-            )
-              ? userData.savedVideoIds
-              : [];
-
-
-          let newUserSaved;
-
-
-          if(alreadySaved){
-
-            newUserSaved =
-              oldSaved.filter(
-                id =>
-                  id !==
-                  videoId
-              );
-
-          }else{
-
-            newUserSaved =
-              oldSaved.includes(
-                videoId
-              )
-                ? oldSaved
-                : [
-                    ...oldSaved,
-                    videoId
-                  ];
-
-          }
-
-
-          transaction.set(
-            userRef,
-            {
-
-              savedVideoIds:
-                newUserSaved
-
-            },
-            {
-              merge:true
-            }
-          );
-
-
-          return {
-
-            saved:
-              !alreadySaved,
-
-            saves:
-              newSaves
-
-          };
-
-        }
-      );
-
-
-    button.classList.toggle(
-      "saved",
-      result.saved
-    );
-
-
-    button
-      .querySelector(
-        ".action-count"
-      )
-      .textContent =
-        result.saves;
-
-
-    showToast(
-      result.saved
-        ? "🔖 ভিডিও Saved হয়েছে"
-        : "Saved থেকে সরানো হয়েছে"
-    );
-
-
-  }catch(error){
-
-    console.error(
-      "Save error:",
-      error
-    );
-
-
-    showToast(
-      "Save সংরক্ষণ করা যায়নি"
-    );
-
-  }finally{
-
-    button.disabled =
-      false;
-
-  }
-
-}
-
-
-/* =====================================================
-   SHARE
-===================================================== */
-
-async function shareVideo(
-  videoId,
-  button
-){
-
-  if(!currentUser){
-
-    showToast(
-      "আগে Login করুন"
-    );
-
-    return;
-
-  }
-
-
-  if(button.disabled){
-
-    return;
-
-  }
-
-
-  button.disabled =
-    true;
-
-
-  try{
-
-    const videoRef =
-      doc(
-        db,
-        "videos",
-        videoId
-      );
-
-
-    const snap =
-      await getDoc(
-        videoRef
-      );
-
-
-    if(!snap.exists()){
-
-      throw new Error(
-        "VIDEO_NOT_FOUND"
-      );
-
-    }
-
-
-    const data =
-      snap.data();
-
-
-    const newShares =
-      number(data.shares) + 1;
-
-
-    await updateDoc(
-      videoRef,
-      {
-
-        shares:
-          newShares
-
-      }
-    );
-
-
-    const url =
-      new URL(
-        window.location.href
-      );
-
-
-    url.searchParams.set(
-      "video",
-      videoId
-    );
-
-
-    const shareData = {
-
-      title:
-        "WWC-Core",
-
-      text:
-        "এই ভিডিওটি WWC-Core এ দেখুন।",
-
-      url:
-        url.toString()
-
-    };
-
-
-    let shared =
-      false;
-
-
-    if(
-      navigator.share
-    ){
-
-      try{
-
-        await navigator.share(
-          shareData
-        );
-
-        shared =
-          true;
-
-      }catch(error){
-
-        if(
-          error?.name !==
-          "AbortError"
-        ){
-
-          console.warn(
-            "Native share error:",
-            error
-          );
-
-        }
-
-      }
-
-    }
-
-
-    if(!shared){
-
-      try{
-
-        await navigator.clipboard.writeText(
-          url.toString()
-        );
-
-        showToast(
-          "🔗 Link Copy হয়েছে"
-        );
-
-      }catch(error){
-
-        showToast(
-          "Share Link তৈরি হয়েছে"
-        );
-
-      }
-
-    }
-
-
-    button
-      .querySelector(
-        ".action-count"
-      )
-      .textContent =
-        newShares;
-
-
-  }catch(error){
-
-    console.error(
-      "Share error:",
-      error
-    );
-
-
-    showToast(
-      "Share সংরক্ষণ করা যায়নি"
-    );
-
-  }finally{
-
-    button.disabled =
-      false;
-
-  }
-
-}
-
-
-/* =====================================================
-   FOLLOW
-===================================================== */
-
-async function toggleFollow(
-  targetUid,
-  button
-){
-
-  if(
-    !currentUser ||
-    !targetUid ||
-    targetUid ===
-      currentUser.uid
-  ){
-
-    return;
-
-  }
-
-
-  button.disabled =
-    true;
-
-
-  try{
-
-    const myRef =
-      doc(
-        db,
-        "users",
-        currentUser.uid
-      );
-
-
-    const targetRef =
-      doc(
-        db,
-        "users",
-        targetUid
-      );
-
-
-    const result =
-      await runTransaction(
-        db,
-        async transaction => {
-
-          const mySnap =
-            await transaction.get(
-              myRef
-            );
-
-
-          const targetSnap =
-            await transaction.get(
-              targetRef
-            );
-
-
-          if(
-            !mySnap.exists() ||
-            !targetSnap.exists()
-          ){
-
-            throw new Error(
-              "PROFILE_NOT_FOUND"
-            );
-
-          }
-
-
-          const myData =
-            mySnap.data();
-
-
-          const targetData =
-            targetSnap.data();
-
-
-          const followingIds =
-            Array.isArray(
-              myData.followingIds
-            )
-              ? myData.followingIds
-              : [];
-
-
-          const followerIds =
-            Array.isArray(
-              targetData.followerIds
-            )
-              ? targetData.followerIds
-              : [];
-
-
-          const alreadyFollowing =
-            followingIds.includes(
-              targetUid
-            );
-
-
-          if(alreadyFollowing){
-
-            transaction.update(
-              myRef,
-              {
-
-                followingIds:
-                  followingIds.filter(
-                    id =>
-                      id !==
-                      targetUid
-                  ),
-
-                following:
-                  Math.max(
-                    0,
-                    number(
-                      myData.following
-                    ) - 1
-                  )
-
-              }
-            );
-
-
-            transaction.update(
-              targetRef,
-              {
-
-                followerIds:
-                  followerIds.filter(
-                    id =>
-                      id !==
-                      currentUser.uid
-                  ),
-
-                followers:
-                  Math.max(
-                    0,
-                    number(
-                      targetData.followers
-                    ) - 1
-                  )
-
-              }
-            );
-
-
-          }else{
-
-            transaction.update(
-              myRef,
-              {
-
-                followingIds:
-                  [
-                    ...followingIds,
-                    targetUid
-                  ],
-
-                following:
-                  number(
-                    myData.following
-                  ) + 1
-
-              }
-            );
-
-
-            transaction.update(
-              targetRef,
-              {
-
-                followerIds:
-                  [
-                    ...followerIds,
-                    currentUser.uid
-                  ],
-
-                followers:
-                  number(
-                    targetData.followers
-                  ) + 1
-
-              }
-            );
-
-          }
-
-
-          return {
-            following:
-              !alreadyFollowing
-          };
-
-        }
-      );
-
-
-    button.classList.toggle(
-      "following",
-      result.following
-    );
-
-
-    button.textContent =
-      result.following
-        ? "✓"
-        : "+";
-
-
-    const mySnap =
-      await getDoc(
-        myRef
-      );
-
-
-    if(mySnap.exists()){
-
-      currentProfile =
-        mySnap.data();
-
-    }
-
-
-    showToast(
-      result.following
-        ? "Following করা হয়েছে"
-        : "Unfollow করা হয়েছে"
-    );
-
-
-  }catch(error){
-
-    console.error(
-      "Follow error:",
-      error
-    );
-
-
-    showToast(
-      "Follow পরিবর্তন করা যায়নি"
-    );
-
-  }finally{
-
-    button.disabled =
-      false;
-
-  }
-
-}
-
-
-/* =====================================================
-   SOUND
-===================================================== */
-
-function toggleSound(
-  item,
-  button
-){
-
-  const video =
-    item.querySelector(
-      ".video"
-    );
-
-
-  if(video.muted){
-
-    video.muted =
-      false;
-
-
-    button.innerHTML = `
-
-      <svg viewBox="0 0 24 24">
-
-        <path
-          d="M11 5L6 9H3V15H6L11 19Z"
-        />
-
-        <path
-          d="M15 9C17 10.5 17 13.5 15 15"
-        />
-
-        <path
-          d="M18 6C21 9 21 15 18 18"
-        />
-
-      </svg>
-
-    `;
-
-
-    playVideo(
-      video
-    );
-
-
-    showToast(
-      "Sound চালু হয়েছে"
-    );
-
-
-  }else{
-
-    video.muted =
-      true;
-
-
-    button.innerHTML = `
-
-      <svg viewBox="0 0 24 24">
-
-        <path
-          d="M11 5L6 9H3V15H6L11 19Z"
-        />
-
-        <path
-          d="M17 9L21 15"
-        />
-
-        <path
-          d="M21 9L17 15"
-        />
-
-      </svg>
-
-    `;
-
-
-    showToast(
-      "Sound বন্ধ হয়েছে"
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   COMMENTS
-===================================================== */
-
-async function openComments(
-  videoId
-){
-
-  currentVideoId =
-    videoId;
-
-
-  document
-    .getElementById(
-      "commentPanel"
-    )
-    .classList.add(
-      "open"
-    );
-
-
-  await loadComments(
-    videoId
-  );
-
-}
-
-
-/* =====================================================
-   LOAD COMMENTS
-===================================================== */
-
-async function loadComments(
-  videoId
-){
-
-  const list =
-    document.getElementById(
-      "commentsList"
-    );
-
-
-  list.innerHTML = `
-
-    <div
-      style="
-        text-align:center;
-        color:#888;
-        padding:25px;
-      "
-    >
-      Comments লোড হচ্ছে...
-    </div>
-
-  `;
-
-
-  try{
-
-    const commentsRef =
-      collection(
-        db,
-        "videos",
-        videoId,
-        "comments"
-      );
-
-
-    const snap =
-      await withTimeout(
-        getDocs(
-          commentsRef
-        ),
-        8000
-      );
-
-
-    list.innerHTML =
-      "";
-
-
-    if(snap.empty){
-
-      list.innerHTML = `
-
-        <div
-          style="
-            text-align:center;
-            color:#777;
-            padding:30px;
-          "
-        >
-          এখনো কোনো Comment নেই।
-        </div>
-
-      `;
-
-      return;
-
-    }
-
-
+function closeComments() { document.getElementById("commentPanel").classList.remove("open"); }
+
+async function loadComments(videoId) {
+  const list = document.getElementById("commentsList");
+  list.innerHTML = '<div style="text-align:center;color:#888;padding:25px;">Loading...</div>';
+  try {
+    const snap = await withTimeout(getDocs(collection(db, "videos", videoId, "comments")), 8000);
+    list.innerHTML = "";
+    if (snap.empty) { list.innerHTML = '<div style="text-align:center;color:#777;padding:30px;">No comments yet.</div>'; return; }
     const comments = [];
-
-
-    snap.forEach(
-      commentDoc => {
-
-        comments.push({
-
-          id:
-            commentDoc.id,
-
-          ...commentDoc.data()
-
-        });
-
-      }
-    );
-
-
-    comments.sort(
-      (a,b) => {
-
-        const aTime =
-          a.createdAt?.seconds ||
-          0;
-
-        const bTime =
-          b.createdAt?.seconds ||
-          0;
-
-
-        return (
-          aTime -
-          bTime
-        );
-
-      }
-    );
-
-
-    comments.forEach(
-      data => {
-
-        const comment =
-          document.createElement(
-            "div"
-          );
-
-
-        comment.className =
-          "comment";
-
-
-        comment.innerHTML = `
-
-          <strong>
-            ${escapeHtml(
-              data.username ||
-              data.name ||
-              "WWC User"
-            )}
-          </strong>
-
-          ${escapeHtml(
-            data.text ||
-            ""
-          )}
-
-        `;
-
-
-        list.appendChild(
-          comment
-        );
-
-      }
-    );
-
-
-  }catch(error){
-
-    console.error(
-      "Comments error:",
-      error
-    );
-
-
-    list.innerHTML = `
-
-      <div
-        style="
-          text-align:center;
-          color:#ff667f;
-          padding:25px;
-        "
-      >
-        Comments লোড করা যায়নি।
-      </div>
-
-    `;
-
-  }
-
+    snap.forEach(d => comments.push({ id: d.id, ...d.data() }));
+    comments.sort((a,b) => (a.createdAt?.seconds||0) - (b.createdAt?.seconds||0));
+    comments.forEach(data => {
+      const div = document.createElement("div");
+      div.className = "comment";
+      div.innerHTML = `<strong>${escapeHtml(data.username || data.name || "WWC User")}</strong>${escapeHtml(data.text || "")}`;
+      list.appendChild(div);
+    });
+  } catch(e) { list.innerHTML = '<div style="text-align:center;color:#ff667f;padding:25px;">Comments লোড করা যায়নি।</div>'; }
 }
 
-
-/* =====================================================
-   ADD COMMENT
-===================================================== */
-
-async function addComment(){
-
-  const input =
-    document.getElementById(
-      "commentInput"
-    );
-
-
-  const text =
-    input.value.trim();
-
-
-  if(!text){
-
-    return;
-
-  }
-
-
-  if(
-    !currentUser ||
-    !currentVideoId
-  ){
-
-    showToast(
-      "আগে Login করুন"
-    );
-
-    return;
-
-  }
-
-
-  const sendButton =
-    document.getElementById(
-      "commentSendButton"
-    );
-
-
-  sendButton.disabled =
-    true;
-
-
-  try{
-
-    const videoRef =
-      doc(
-        db,
-        "videos",
-        currentVideoId
-      );
-
-
-    const videoSnap =
-      await getDoc(
-        videoRef
-      );
-
-
-    if(!videoSnap.exists()){
-
-      throw new Error(
-        "VIDEO_NOT_FOUND"
-      );
-
-    }
-
-
-    const username =
-      String(
-        currentProfile.username ||
-        currentProfile.name ||
-        "WWC User"
-      ).replace(
-        /^@/,
-        ""
-      );
-
-
-    await addDoc(
-
-      collection(
-        db,
-        "videos",
-        currentVideoId,
-        "comments"
-      ),
-
-      {
-
-        uid:
-          currentUser.uid,
-
-        username:
-          username,
-
-        name:
-          currentProfile.name ||
-          "WWC User",
-
-        photoURL:
-          currentProfile.photoURL ||
-          defaultPhoto,
-
-        text:
-          text,
-
-        createdAt:
-          serverTimestamp()
-
-      }
-
-    );
-
-
-    const newComments =
-      number(
-        videoSnap.data().comments
-      ) + 1;
-
-
-    await updateDoc(
-      videoRef,
-      {
-
-        comments:
-          newComments
-
-      }
-    );
-
-
-    input.value =
-      "";
-
-
-    await loadComments(
-      currentVideoId
-    );
-
-
-    updateCommentCount(
-      currentVideoId,
-      newComments
-    );
-
-
-    showToast(
-      "💬 Comment সংরক্ষণ হয়েছে"
-    );
-
-
-  }catch(error){
-
-    console.error(
-      "Comment error:",
-      error
-    );
-
-
-    showToast(
-      "Comment সংরক্ষণ করা যায়নি"
-    );
-
-  }finally{
-
-    sendButton.disabled =
-      false;
-
-  }
-
+async function addComment() {
+  const input = document.getElementById("commentInput");
+  const text = input.value.trim();
+  if (!text || !currentUser || !currentVideoId) return;
+  const sendBtn = document.getElementById("commentSend");
+  if (sendBtn) sendBtn.disabled = true;
+  try {
+    const videoRef = doc(db, "videos", currentVideoId);
+    const username = String(currentProfile.username || currentProfile.name || "WWC User").replace(/^@/,"");
+    await addDoc(collection(db, "videos", currentVideoId, "comments"), {
+      uid: currentUser.uid, username, name: currentProfile.name || "WWC User",
+      photoURL: currentProfile.photoURL || defaultPhoto, text,
+      createdAt: serverTimestamp()
+    });
+    const vs = await getDoc(videoRef);
+    const newComments = number(vs.data()?.comments) + 1;
+    await updateDoc(videoRef, { comments: newComments });
+    input.value = "";
+    await loadComments(currentVideoId);
+    updateCommentCount(currentVideoId, newComments);
+    showToast("💬 Comment Added");
+  } catch(e) { console.error(e); showToast("Comment করা যায়নি"); }
+  if (sendBtn) sendBtn.disabled = false;
 }
 
-
-/* =====================================================
-   UPDATE COMMENT COUNT
-===================================================== */
-
-function updateCommentCount(
-  videoId,
-  count
-){
-
-  const item =
-    document.querySelector(
-      `.video-item[data-video-id="${CSS.escape(videoId)}"]`
-    );
-
-
-  if(!item){
-
-    return;
-
+function updateCommentCount(videoId, count) {
+  const item = document.querySelector(`.video-item[data-video-id="${CSS.escape(videoId)}"]`);
+  if (item) {
+    const btn = item.querySelector('[data-action="comment"]');
+    if (btn) { const el = btn.querySelector(".action-count"); if (el) el.textContent = count; }
   }
-
-
-  const button =
-    item.querySelector(
-      '[data-action="comment"]'
-    );
-
-
-  if(button){
-
-    const countEl =
-      button.querySelector(
-        ".action-count"
-      );
-
-
-    if(countEl){
-
-      countEl.textContent =
-        count;
-
-    }
-
-  }
-
 }
 
-
-/* =====================================================
-   CLOSE COMMENTS
-===================================================== */
-
-function closeComments(){
-
-  document
-    .getElementById(
-      "commentPanel"
-    )
-    .classList.remove(
-      "open"
-    );
-
+// ===== SEARCH =====
+function openSearch() {
+  const panel = document.getElementById("searchPanel");
+  if (panel) { panel.classList.add("open"); setTimeout(() => document.getElementById("searchInput")?.focus(), 100); }
 }
-
-
-/* =====================================================
-   SEARCH
-===================================================== */
-
-function openSearch(){
-
-  document
-    .getElementById(
-      "searchPanel"
-    )
-    .classList.add(
-      "open"
-    );
-
-
-  setTimeout(
-    () => {
-
-      document
-        .getElementById(
-          "searchInput"
-        )
-        .focus();
-
-    },
-    100
-  );
-
-}
-
-
-function closeSearch(){
-
-  document
-    .getElementById(
-      "searchPanel"
-    )
-    .classList.remove(
-      "open"
-    );
-
-}
-
-
-/* =====================================================
-   SEARCH INPUT
-===================================================== */
-
-document
-  .getElementById(
-    "searchInput"
-  )
-  .addEventListener(
-    "input",
-    event => {
-
-      const q =
-        event.target.value
-          .trim()
-          .toLowerCase();
-
-
-      if(!q){
-
-        renderFeed();
-
-        return;
-
-      }
-
-
-      const filtered =
-        videos.filter(
-          video => {
-
-            const username =
-              getUsername(
-                video
-              ).toLowerCase();
-
-
-            const name =
-              String(
-                video.name ||
-                video.displayName ||
-                ""
-              ).toLowerCase();
-
-
-            const caption =
-              String(
-                video.caption ||
-                video.description ||
-                ""
-              ).toLowerCase();
-
-
-            return (
-
-              username.includes(q) ||
-
-              name.includes(q) ||
-
-              caption.includes(q)
-
-            );
-
-          }
-        );
-
-
-      renderSearchResults(
-        filtered
-      );
-
-    }
-  );
-
-
-/* =====================================================
-   SEARCH RESULTS
-===================================================== */
-
-function renderSearchResults(
-  list
-){
-
-  const feed =
-    document.getElementById(
-      "feed"
-    );
-
-
-  feed.innerHTML =
-    "";
-
-
-  if(!list.length){
-
-    showEmpty(
-      "কোনো ভিডিও পাওয়া যায়নি।"
-    );
-
-    return;
-
-  }
-
-
-  list.forEach(
-    (video,index) => {
-
-      feed.appendChild(
-        createVideoItem(
-          video,
-          index
-        )
-      );
-
-    }
-  );
-
-
-  setupVideoObserver();
-
-  preloadNearbyVideos();
-
-}
-
-
-/* =====================================================
-   SWITCH FEED
-===================================================== */
-
-function switchFeed(
-  mode
-){
-
-  currentFeedMode =
-    mode;
-
-
+function closeSearch() { document.getElementById("searchPanel")?.classList.remove("open"); }
+
+// ===== SWITCH FEED =====
+function switchFeed(mode) {
+  currentFeedMode = mode;
   sortVideos();
-
   renderFeed();
-
 }
 
+// ===== NAVIGATION =====
+window.goHome = () => window.location.href = "./index.html";
+window.goFriends = () => window.location.href = "./friends.html";
+window.goInbox = () => window.location.href = "./inbox.html";
+window.goProfile = () => window.location.href = "./profile.html";
+window.uploadVideo = () => window.location.href = "./upload.html";
+window.reloadFeed = () => { loadingFeed = false; loadVideos(); };
+window.closeComments = closeComments;
+window.closeSearch = closeSearch;
 
-/* =====================================================
-   RELOAD
-===================================================== */
-
-async function reloadFeed(){
-
-  loadingFeed =
-    false;
-
-
+// ===== AUTH =====
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    document.getElementById("feed").innerHTML = `
+      <div class="feed-message">
+        <div class="feed-message-inner">
+          <div class="feed-message-icon">🔐</div>
+          <div>আগে Login করুন।</div>
+          <button class="retry-btn" onclick="window.location.href='./auth.html'">Login</button>
+        </div>
+      </div>`;
+    return;
+  }
+  currentUser = user;
+  // Load profile
+  try {
+    const snap = await getDoc(doc(db, "users", user.uid));
+    if (snap.exists()) currentProfile = snap.data();
+    else {
+      currentProfile = { uid: user.uid, name: user.displayName || "WWC User", username: "wwc_" + user.uid.substring(0,6), photoURL: user.photoURL || defaultPhoto, followingIds: [], savedVideoIds: [] };
+      await setDoc(doc(db, "users", user.uid), currentProfile);
+    }
+  } catch(e) { console.error("Profile error:", e); }
   await loadVideos();
+});
 
-}
+// ===== COMMENT ENTER =====
+document.getElementById("commentInput")?.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); addComment(); } });
 
-
-/* =====================================================
-   COMMENT ENTER
-===================================================== */
-
-document
-  .getElementById(
-    "commentInput"
-  )
-  .addEventListener(
-    "keydown",
-    event => {
-
-      if(
-        event.key ===
-        "Enter"
-      ){
-
-        event.preventDefault();
-
-        addComment();
-
-      }
-
-    }
-  );
-
-
-/* =====================================================
-   NAVIGATION
-===================================================== */
-
-window.goHome =
-function(){
-
-  window.location.href =
-    "./index.html";
-
-};
-
-
-window.goFriends =
-function(){
-
-  window.location.href =
-    "./friends.html";
-
-};
-
-
-window.goInbox =
-function(){
-
-  window.location.href =
-    "./inbox.html";
-
-};
-
-
-window.goProfile =
-function(){
-
-  window.location.href =
-    "./profile.html";
-
-};
-
-
-window.uploadVideo =
-function(){
-
-  window.location.href =
-    "./upload.html";
-
-};
-
-
-window.closeComments =
-  closeComments;
-
-
-window.closeSearch =
-  closeSearch;
-
-
-window.reloadFeed =
-  reloadFeed;
-
-
-/* =====================================================
-   AUTH
-===================================================== */
-
-onAuthStateChanged(
-  auth,
-  async user => {
-
-    if(!user){
-
-      document
-        .getElementById(
-          "feed"
-        )
-        .innerHTML = `
-
-          <div class="feed-message">
-
-            <div class="feed-message-inner">
-
-              <div class="feed-message-icon">
-                🔐
-              </div>
-
-              <div>
-                আগে Login করুন।
-              </div>
-
-              <button
-                class="retry-btn"
-                onclick="
-                  window.location.href='./auth.html'
-                "
-              >
-                Login
-              </button>
-
-            </div>
-
-          </div>
-
-        `;
-
-      return;
-
-    }
-
-
-    currentUser =
-      user;
-
-
-    /*
-      গুরুত্বপূর্ণ:
-      আগে Profile load হবে,
-      তারপর Videos load হবে।
-    */
-
-    await loadCurrentProfile();
-
-    await loadVideos();
-
+// ===== VISIBILITY =====
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) { document.querySelectorAll(".video").forEach(v => v.pause()); }
+  else {
+    const items = [...document.querySelectorAll(".video-item")];
+    let best = null, bestRatio = 0;
+    items.forEach(item => {
+      const rect = item.getBoundingClientRect();
+      const visible = Math.min(window.innerHeight, rect.bottom) - Math.max(0, rect.top);
+      const ratio = visible / window.innerHeight;
+      if (ratio > bestRatio) { bestRatio = ratio; best = item; }
+    });
+    if (best) { const v = best.querySelector(".video"); if (v) playVideo(v); }
   }
-);
+});
 
+// ===== KEYBOARD SHORTCUT =====
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") { closeComments(); closeSearch(); }
+});
 
-/* =====================================================
-   PAGE VISIBILITY
-===================================================== */
-
-document.addEventListener(
-  "visibilitychange",
-  () => {
-
-    if(document.hidden){
-
-      document
-        .querySelectorAll(
-          ".video"
-        )
-        .forEach(
-          video => {
-
-            video.pause();
-
-          }
-        );
-
-
-    }else{
-
-      const items =
-        [
-          ...document.querySelectorAll(
-            ".video-item"
-          )
-        ];
-
-
-      let best =
-        null;
-
-
-      let bestRatio =
-        0;
-
-
-      items.forEach(
-        item => {
-
-          const rect =
-            item.getBoundingClientRect();
-
-
-          const visible =
-            Math.min(
-              window.innerHeight,
-              rect.bottom
-            )
-            -
-            Math.max(
-              0,
-              rect.top
-            );
-
-
-          const ratio =
-            visible /
-            window.innerHeight;
-
-
-          if(
-            ratio >
-            bestRatio
-          ){
-
-            bestRatio =
-              ratio;
-
-            best =
-              item;
-
-          }
-
-        }
-      );
-
-
-      if(best){
-
-        const video =
-          best.querySelector(
-            ".video"
-          );
-
-
-        if(video){
-
-          playVideo(
-            video
-          );
-
-        }
-
-      }
-
-    }
-
-  }
-);
-
-
-/* =====================================================
-   SCROLL
-===================================================== */
-
-document
-  .getElementById(
-    "feed"
-  )
-  .addEventListener(
-    "scroll",
-    () => {
-
-      clearTimeout(
-        window.__feedScrollTimer
-      );
-
-
-      window.__feedScrollTimer =
-        setTimeout(
-          () => {
-
-            preloadNearbyVideos();
-
-          },
-          100
-        );
-
-    },
-    {
-      passive:true
-    }
-  );
-
-
-/* =====================================================
-   BACK BUTTON
-===================================================== */
-
-window.addEventListener(
-  "popstate",
-  () => {
-
-    closeComments();
-
-    closeSearch();
-
-  }
-);
-
+console.log("🚀 WWC TikTok Feed Loaded Successfully!");
 </script>
-
 </body>
-
 </html>
