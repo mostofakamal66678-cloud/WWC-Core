@@ -2,91 +2,403 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#000000" />
   <title>Upload · WWC</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;min-height:100vh;padding:60px 16px 30px}
-    .back-btn{position:fixed;top:16px;left:16px;color:#fff;font-size:20px;background:rgba(255,255,255,0.1);border:0;width:44px;height:44px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);z-index:10}
-    .back-btn:active{transform:scale(0.92);background:rgba(255,255,255,0.2)}
-    .header{text-align:center;margin-bottom:25px}
-    .header h1{font-size:22px;font-weight:700}
-    .header p{color:#888;font-size:13px;margin-top:4px}
-    .upload-container{max-width:500px;margin:0 auto}
-    .upload-box{border:2px dashed #333;border-radius:20px;padding:50px 20px;text-align:center;cursor:pointer;transition:border-color 0.3s,background 0.3s}
-    .upload-box:hover{border-color:#555;background:rgba(255,255,255,0.02)}
-    .upload-box.dragover{border-color:#25f4ee;background:rgba(37,244,238,0.05)}
-    .upload-box i{font-size:50px;color:#555;display:block;margin-bottom:15px}
-    .upload-box .title{font-size:16px;font-weight:600;margin-bottom:6px}
-    .upload-box .sub{font-size:13px;color:#666}
-    .upload-box input{display:none}
-    .preview{display:none;margin-top:20px;border-radius:12px;overflow:hidden;background:#111}
-    .preview video{width:100%;max-height:400px;object-fit:contain;display:block}
-    .form-group{margin-top:16px}
-    .form-group label{display:block;font-size:13px;font-weight:600;color:#888;margin-bottom:6px}
-    .form-group input,.form-group textarea{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #333;background:#111;color:#fff;font-size:14px;outline:none}
-    .form-group input:focus,.form-group textarea:focus{border-color:#555}
-    .form-group textarea{min-height:80px;resize:vertical;font-family:inherit}
-    .upload-btn-submit{width:100%;padding:14px;border-radius:12px;background:#fff;color:#000;font-size:16px;font-weight:700;border:0;cursor:pointer;margin-top:16px;transition:transform 0.15s,opacity 0.15s}
-    .upload-btn-submit:active{transform:scale(0.98)}
-    .upload-btn-submit:disabled{opacity:0.5;cursor:not-allowed}
-    .progress{display:none;margin-top:12px;height:4px;background:#222;border-radius:4px;overflow:hidden}
-    .progress .bar{height:100%;background:#25f4ee;width:0%;transition:width 0.3s}
-    .status{text-align:center;margin-top:10px;font-size:14px;color:#888}
-    .status.success{color:#25f4ee}
-    .status.error{color:#ff2d55}
+    /* =====================================================
+       TIKTOK STYLE UPLOAD PAGE
+    ===================================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      background: #000;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-top: 50px;
+      padding-bottom: 80px;
+      overflow-x: hidden;
+    }
+    
+    /* ===== টপ বার ===== */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      background: rgba(0,0,0,0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .top-bar .back-btn {
+      color: #fff;
+      font-size: 22px;
+      background: none;
+      border: 0;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .top-bar .back-btn:active { transform: scale(0.9); }
+    .top-bar .title {
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .top-bar .placeholder { width: 40px; }
+    
+    /* ===== মেইন কন্টেইনার ===== */
+    .upload-container {
+      flex: 1;
+      padding: 16px;
+      max-width: 500px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    
+    /* ===== টিকটক স্টাইল আপলোড বক্স ===== */
+    .upload-box {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #1a1a1a;
+      aspect-ratio: 9 / 16;
+      max-height: 70vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed #333;
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .upload-box.dragover {
+      border-color: #25f4ee;
+      background: rgba(37, 244, 238, 0.05);
+    }
+    .upload-box .placeholder-content {
+      text-align: center;
+      color: #666;
+      padding: 30px;
+    }
+    .upload-box .placeholder-content i {
+      font-size: 60px;
+      color: #444;
+      display: block;
+      margin-bottom: 15px;
+    }
+    .upload-box .placeholder-content .main-text {
+      font-size: 18px;
+      font-weight: 600;
+      color: #aaa;
+    }
+    .upload-box .placeholder-content .sub-text {
+      font-size: 13px;
+      color: #555;
+      margin-top: 6px;
+    }
+    .upload-box .placeholder-content .format-text {
+      font-size: 12px;
+      color: #444;
+      margin-top: 4px;
+    }
+    .upload-box video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: #000;
+    }
+    .upload-box .file-input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 2;
+    }
+    
+    /* ===== প্রিভিউ ওভারলে ===== */
+    .preview-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      z-index: 3;
+      display: none;
+    }
+    .preview-overlay .file-name {
+      font-size: 13px;
+      color: #aaa;
+      font-weight: 600;
+    }
+    .preview-overlay .file-size {
+      font-size: 12px;
+      color: #666;
+    }
+    
+    /* ===== ফর্ম ===== */
+    .form-section {
+      margin-top: 16px;
+    }
+    .form-group {
+      margin-bottom: 14px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #888;
+      margin-bottom: 6px;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid #333;
+      background: #111;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.3s;
+      font-family: inherit;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: #555;
+    }
+    .form-group textarea {
+      min-height: 70px;
+      resize: vertical;
+    }
+    .form-group .char-count {
+      text-align: right;
+      font-size: 12px;
+      color: #555;
+      margin-top: 4px;
+    }
+    
+    /* ===== আপলোড বাটন ===== */
+    .upload-btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #25f4ee, #fe2c55);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+      border: 0;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .upload-btn:active { transform: scale(0.98); }
+    .upload-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .upload-btn .btn-text {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    /* ===== প্রগ্রেস ===== */
+    .progress-container {
+      display: none;
+      margin-top: 16px;
+      background: #1a1a1a;
+      border-radius: 12px;
+      padding: 16px 20px;
+    }
+    .progress-container .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 8px;
+    }
+    .progress-container .progress-bar {
+      height: 4px;
+      background: #333;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-container .progress-bar .bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #25f4ee, #fe2c55);
+      transition: width 0.3s;
+      border-radius: 4px;
+    }
+    .progress-container .progress-status {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #888;
+    }
+    .progress-container .progress-status.success { color: #25f4ee; }
+    .progress-container .progress-status.error { color: #fe2c55; }
+    
+    /* ===== টোস্ট ===== */
+    .toast {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(30,30,30,0.95);
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 22px;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s;
+      z-index: 1000;
+      white-space: nowrap;
+      backdrop-filter: blur(10px);
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    
+    /* ===== টিপস ===== */
+    .tips {
+      margin-top: 12px;
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .tips .tip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #555;
+      background: #111;
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+    .tips .tip i { font-size: 12px; color: #444; }
+    
+    /* ===== রেস্পন্সিভ ===== */
+    @media (max-width: 480px) {
+      .upload-box { aspect-ratio: 9 / 16; max-height: 60vh; }
+      .upload-box .placeholder-content i { font-size: 45px; }
+      .upload-box .placeholder-content .main-text { font-size: 16px; }
+    }
+    
+    @media (min-width: 700px) {
+      .upload-container { padding: 20px; }
+    }
   </style>
 </head>
 <body>
 
-<button class="back-btn" onclick="window.location.href='./index.html'">
-  <i class="fas fa-arrow-left"></i>
-</button>
-
-<div class="header">
-  <h1><i class="fas fa-cloud-upload-alt" style="color:#25f4ee;margin-right:8px;"></i>Upload Video</h1>
-  <p>ভিডিও আপলোড করুন এবং শেয়ার করুন</p>
+<!-- ===== টপ বার ===== -->
+<div class="top-bar">
+  <button class="back-btn" onclick="window.location.href='./index.html'">
+    <i class="fas fa-arrow-left"></i>
+  </button>
+  <span class="title">Upload Video</span>
+  <div class="placeholder"></div>
 </div>
 
+<!-- ===== মেইন কন্টেইনার ===== -->
 <div class="upload-container">
+  
+  <!-- আপলোড বক্স -->
   <div class="upload-box" id="uploadBox">
-    <i class="fas fa-cloud-upload-alt"></i>
-    <div class="title">Select a video</div>
-    <div class="sub">MP4, WebM, or MOV • Max 100MB</div>
-    <input type="file" id="fileInput" accept="video/*">
+    <div class="placeholder-content" id="placeholderContent">
+      <i class="fas fa-cloud-upload-alt"></i>
+      <div class="main-text">Select a video</div>
+      <div class="sub-text">Tap to browse</div>
+      <div class="format-text">MP4, WebM, MOV • Max 100MB</div>
+    </div>
+    <video id="videoPreview" muted playsinline></video>
+    <div class="preview-overlay" id="previewOverlay">
+      <div class="file-name" id="fileName">video.mp4</div>
+      <div class="file-size" id="fileSize">0 MB</div>
+    </div>
+    <input type="file" class="file-input" id="fileInput" accept="video/*" />
   </div>
   
-  <div class="preview" id="preview">
-    <video id="videoPreview" controls></video>
+  <!-- ফর্ম -->
+  <div class="form-section">
+    <div class="form-group">
+      <label><i class="fas fa-quote-right" style="color:#555;margin-right:6px;"></i>Caption</label>
+      <input type="text" id="captionInput" placeholder="Write a caption..." maxlength="200" />
+      <div class="char-count"><span id="charCount">0</span>/200</div>
+    </div>
+    
+    <div class="form-group">
+      <label><i class="fas fa-music" style="color:#555;margin-right:6px;"></i>Sound / Music</label>
+      <input type="text" id="soundInput" placeholder="Original sound - WWC" />
+    </div>
+    
+    <!-- আপলোড বাটন -->
+    <button class="upload-btn" id="uploadBtn" disabled>
+      <span class="btn-text">
+        <i class="fas fa-upload"></i>
+        <span id="uploadBtnText">Upload Video</span>
+      </span>
+    </button>
+    
+    <!-- প্রগ্রেস -->
+    <div class="progress-container" id="progressContainer">
+      <div class="progress-info">
+        <span id="progressText">Uploading...</span>
+        <span id="progressPercent">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="bar" id="progressBar"></div>
+      </div>
+      <div class="progress-status" id="progressStatus"></div>
+    </div>
+    
+    <!-- টিপস -->
+    <div class="tips">
+      <span class="tip"><i class="fas fa-clock"></i> 60s max</span>
+      <span class="tip"><i class="fas fa-crop-alt"></i> 9:16 ratio</span>
+      <span class="tip"><i class="fas fa-file-video"></i> MP4 preferred</span>
+    </div>
   </div>
-  
-  <div class="form-group">
-    <label>Caption</label>
-    <input type="text" id="captionInput" placeholder="Write a caption..." maxlength="200">
-  </div>
-  
-  <div class="form-group">
-    <label>Sound / Music</label>
-    <input type="text" id="soundInput" placeholder="Original sound - WWC">
-  </div>
-  
-  <div class="progress" id="progress">
-    <div class="bar" id="progressBar"></div>
-  </div>
-  
-  <div class="status" id="status"></div>
-  
-  <button class="upload-btn-submit" id="uploadBtn" disabled>Upload Video</button>
 </div>
+
+<!-- ===== টোস্ট ===== -->
+<div class="toast" id="toast"></div>
 
 <script type="module">
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-import { getFirestore, doc, setDoc, serverTimestamp, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
 
+// ===== Firebase Config =====
 const firebaseConfig = {
   apiKey: "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
   authDomain: "world-wide-connect-62c87.firebaseapp.com",
@@ -101,35 +413,81 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
+// ===== ডম রেফারেন্স =====
 const uploadBox = document.getElementById('uploadBox');
 const fileInput = document.getElementById('fileInput');
-const preview = document.getElementById('preview');
+const placeholderContent = document.getElementById('placeholderContent');
 const videoPreview = document.getElementById('videoPreview');
+const previewOverlay = document.getElementById('previewOverlay');
+const fileName = document.getElementById('fileName');
+const fileSize = document.getElementById('fileSize');
 const captionInput = document.getElementById('captionInput');
 const soundInput = document.getElementById('soundInput');
 const uploadBtn = document.getElementById('uploadBtn');
-const progress = document.getElementById('progress');
+const uploadBtnText = document.getElementById('uploadBtnText');
+const progressContainer = document.getElementById('progressContainer');
 const progressBar = document.getElementById('progressBar');
-const status = document.getElementById('status');
+const progressText = document.getElementById('progressText');
+const progressPercent = document.getElementById('progressPercent');
+const progressStatus = document.getElementById('progressStatus');
+const charCount = document.getElementById('charCount');
+const toast = document.getElementById('toast');
 
 let selectedFile = null;
 let currentUser = null;
+let toastTimer = null;
 
-onAuthStateChanged(auth, (user) => {
-  currentUser = user;
-  if (!user) {
-    status.textContent = '🔐 Please login to upload';
-    status.className = 'status error';
-    uploadBtn.disabled = true;
-  } else {
-    status.textContent = '';
-    status.className = 'status';
+// ===== চার কাউন্ট =====
+captionInput.addEventListener('input', () => {
+  charCount.textContent = captionInput.value.length;
+});
+
+// ===== টোস্ট =====
+function showToast(text) {
+  toast.textContent = text;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// ===== ফাইল হ্যান্ডেল =====
+function handleFile(file) {
+  if (!file) return;
+  
+  if (!file.type.startsWith('video/')) {
+    showToast('❌ Please select a video file');
+    return;
+  }
+  
+  if (file.size > 100 * 1024 * 1024) {
+    showToast('❌ File too large. Max 100MB');
+    return;
+  }
+  
+  selectedFile = file;
+  uploadBtn.disabled = false;
+  
+  // প্রিভিউ দেখান
+  placeholderContent.style.display = 'none';
+  videoPreview.style.display = 'block';
+  videoPreview.src = URL.createObjectURL(file);
+  videoPreview.load();
+  
+  previewOverlay.style.display = 'block';
+  fileName.textContent = file.name;
+  fileSize.textContent = (file.size / 1024 / 1024).toFixed(1) + ' MB';
+  
+  showToast('✅ Video selected');
+}
+
+// ===== ফাইল সিলেক্ট =====
+fileInput.addEventListener('change', (e) => {
+  if (e.target.files.length) {
+    handleFile(e.target.files[0]);
   }
 });
 
-// ফাইল সিলেক্ট
-uploadBox.addEventListener('click', () => fileInput.click());
-
+// ===== ড্র্যাগ অ্যান্ড ড্রপ =====
 uploadBox.addEventListener('dragover', (e) => {
   e.preventDefault();
   uploadBox.classList.add('dragover');
@@ -147,49 +505,28 @@ uploadBox.addEventListener('drop', (e) => {
   }
 });
 
-fileInput.addEventListener('change', (e) => {
-  if (e.target.files.length) {
-    handleFile(e.target.files[0]);
-  }
+// ===== ক্লিক =====
+uploadBox.addEventListener('click', (e) => {
+  if (e.target.closest('.file-input')) return;
+  fileInput.click();
 });
 
-function handleFile(file) {
-  if (!file.type.startsWith('video/')) {
-    status.textContent = '❌ Please select a video file';
-    status.className = 'status error';
-    return;
-  }
-  
-  if (file.size > 100 * 1024 * 1024) {
-    status.textContent = '❌ File too large. Max 100MB';
-    status.className = 'status error';
-    return;
-  }
-  
-  selectedFile = file;
-  uploadBtn.disabled = false;
-  
-  // প্রিভিউ
-  preview.style.display = 'block';
-  videoPreview.src = URL.createObjectURL(file);
-  videoPreview.load();
-  
-  status.textContent = `✅ ${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB)`;
-  status.className = 'status success';
-}
-
-// আপলোড
+// ===== আপলোড =====
 uploadBtn.addEventListener('click', async () => {
-  if (!selectedFile || !currentUser) return;
+  if (!selectedFile || !currentUser) {
+    showToast('❌ Please select a video first');
+    return;
+  }
   
   uploadBtn.disabled = true;
-  progress.style.display = 'block';
+  uploadBtnText.textContent = 'Uploading...';
+  progressContainer.style.display = 'block';
   progressBar.style.width = '0%';
-  status.textContent = '⏳ Uploading...';
-  status.className = 'status';
+  progressPercent.textContent = '0%';
+  progressStatus.textContent = '⏳ Uploading to WWC...';
+  progressStatus.className = 'progress-status';
   
   try {
-    // 1. স্টোরেজে আপলোড
     const fileName = `${Date.now()}_${selectedFile.name}`;
     const storageRef = ref(storage, `videos/${currentUser.uid}/${fileName}`);
     const uploadTask = uploadBytesResumable(storageRef, selectedFile);
@@ -199,20 +536,23 @@ uploadBtn.addEventListener('click', async () => {
         (snapshot) => {
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           progressBar.style.width = progress + '%';
+          progressPercent.textContent = Math.round(progress) + '%';
+          progressText.textContent = progress < 100 ? '⏳ Uploading...' : '✅ Upload complete!';
         },
         (error) => reject(error),
         async () => {
           try {
             const url = await getDownloadURL(uploadTask.snapshot.ref);
             resolve(url);
-          } catch (e) {
-            reject(e);
-          }
+          } catch (e) { reject(e); }
         }
       );
     });
     
-    // 2. ফায়ারস্টোরে সেভ
+    // ফায়ারস্টোরে সেভ
+    progressText.textContent = '📝 Saving to database...';
+    progressStatus.textContent = '📝 Saving...';
+    
     const videoData = {
       uid: currentUser.uid,
       videoURL: downloadURL,
@@ -232,32 +572,62 @@ uploadBtn.addEventListener('click', async () => {
     
     await addDoc(collection(db, 'videos'), videoData);
     
-    status.textContent = '✅ Upload successful!';
-    status.className = 'status success';
+    // সফল
+    progressStatus.textContent = '✅ Video uploaded successfully! 🎉';
+    progressStatus.className = 'progress-status success';
     progressBar.style.width = '100%';
+    progressPercent.textContent = '100%';
+    progressText.textContent = '🎉 Done!';
+    
+    showToast('🎉 Video uploaded successfully!');
     
     // রিসেট
     setTimeout(() => {
       selectedFile = null;
       fileInput.value = '';
-      preview.style.display = 'none';
       videoPreview.src = '';
+      videoPreview.style.display = 'none';
+      placeholderContent.style.display = 'block';
+      previewOverlay.style.display = 'none';
       captionInput.value = '';
       soundInput.value = '';
+      charCount.textContent = '0';
       uploadBtn.disabled = true;
-      progress.style.display = 'none';
+      uploadBtnText.textContent = 'Upload Video';
+      progressContainer.style.display = 'none';
       progressBar.style.width = '0%';
-      status.textContent = '🎬 Ready for next upload';
-      status.className = 'status';
-    }, 3000);
+      progressPercent.textContent = '0%';
+      progressStatus.textContent = '';
+      
+      // হোমে যেতে চাইলে
+      setTimeout(() => {
+        if (confirm('🎉 Video uploaded! Go to Home?')) {
+          window.location.href = './index.html';
+        }
+      }, 500);
+    }, 2000);
     
   } catch (e) {
     console.error('Upload error:', e);
-    status.textContent = '❌ Upload failed: ' + (e.message || 'Unknown error');
-    status.className = 'status error';
+    progressStatus.textContent = '❌ Upload failed: ' + (e.message || 'Unknown error');
+    progressStatus.className = 'progress-status error';
+    showToast('❌ Upload failed');
     uploadBtn.disabled = false;
+    uploadBtnText.textContent = 'Retry Upload';
   }
 });
+
+// ===== অথ =====
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+  if (!user) {
+    uploadBtn.disabled = true;
+    uploadBtnText.textContent = 'Login to Upload';
+    showToast('🔐 Please login first');
+  }
+});
+
+console.log('🎬 TikTok Style Upload Page Loaded');
 </script>
 
 </body>
