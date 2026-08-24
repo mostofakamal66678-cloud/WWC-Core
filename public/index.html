@@ -7,7 +7,7 @@
   <title>WWC · Home</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
-    /* ===== সমস্ত CSS আগের মতো ===== */
+    /* ===== CSS (আগের মতো) ===== */
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
     html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;overscroll-behavior:none}
     button{border:0;outline:0;cursor:pointer;background:transparent;font-family:inherit;-webkit-user-select:none;user-select:none}
@@ -69,7 +69,6 @@
     .feed-message-inner{max-width:320px}
     .feed-message-icon{font-size:45px;margin-bottom:15px}
     .retry-btn{margin-top:18px;border-radius:22px;padding:10px 22px;background:#fff;color:#000;font-weight:700;border:0;cursor:pointer}
-    /* ===== সার্চ ওভারলে ===== */
     .search-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;background:rgba(0,0,0,0.95);padding:60px 20px 20px;animation:fadeIn .25s ease}
     @keyframes fadeIn{from{opacity:0;transform:scale(0.98)}to{opacity:1;transform:scale(1)}}
     .search-container{max-width:600px;margin:0 auto}
@@ -85,7 +84,7 @@
     .search-result-item .info{flex:1}
     .search-result-item .info .name{font-weight:600}
     .search-result-item .info .desc{font-size:12px;color:#888}
-    @media(min-width:700px){.video-item{max-width:500px;margin:auto}.bottom-nav{max-width:500px;left:50%;right:auto;transform:translateX(-50%)}}
+    @media(min-width:700px){.video-item{max-width:500px;margin:auto}.bottom-nav{max-width:500px;left:50%;right:auto;transform:translateX(-50%)}
   </style>
 </head>
 <body>
@@ -171,18 +170,22 @@ function showToast(text) {
   toast.textContent = text;
   toast.classList.add("show");
   clearTimeout(window._toastTimer);
-  window._toastTimer = setTimeout(() => toast.classList.remove("show"), 2000);
+  window._toastTimer = setTimeout(() => toast.classList.remove("show"), 2500);
 }
 
 function withTimeout(promise, ms) {
   return Promise.race([promise, new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), ms))]);
 }
 
-// ===== Navigation =====
+// =====================================================
+// ✅ NAVIGATION
+// =====================================================
 document.getElementById("navHome").addEventListener("click", () => { window.location.href = "./index.html"; });
 document.getElementById("navFriends").addEventListener("click", () => { window.location.href = "./friends.html"; });
 document.getElementById("navUpload").addEventListener("click", () => { window.location.href = "./upload.html"; });
 document.getElementById("navInbox").addEventListener("click", () => { window.location.href = "./inbox.html"; });
+
+// ✅ Profile Button - সম্পূর্ণ ফিক্সড
 document.getElementById("navProfile").addEventListener("click", () => {
   if (currentUser) {
     window.location.href = `./profile.html?uid=${currentUser.uid}`;
@@ -221,6 +224,7 @@ async function loadVideos() {
       allVideos[i].resolvedVideoURL = await resolveVideoURL(allVideos[i]);
     }
     allVideos = allVideos.filter(v => !!v.resolvedVideoURL);
+    console.log("✅ Videos loaded:", allVideos.length);
     renderFeed();
   } catch (e) {
     console.error("Load videos error:", e);
@@ -229,7 +233,7 @@ async function loadVideos() {
 }
 
 // =====================================================
-// ✅ SEARCH - সম্পূর্ণ ফিক্সড
+// ✅ SEARCH
 // =====================================================
 function openSearch() {
   isSearchMode = true;
@@ -489,7 +493,6 @@ feed?.addEventListener("click", async (e) => {
     return; 
   }
   
-  // Search button
   if (e.target.closest("#searchBtn") || e.target.closest(".search-btn")) {
     openSearch();
     return;
@@ -567,6 +570,8 @@ async function toggleSave(videoId, btn) {
     const countEl = btn.querySelector(".action-count");
     if (countEl) countEl.textContent = formatNumber(result.saves);
     showToast(result.saved ? "🔖 Saved" : "Removed");
+    
+    // Update local profile
     if (result.saved) {
       if (!currentProfile.savedVideoIds) currentProfile.savedVideoIds = [];
       if (!currentProfile.savedVideoIds.includes(videoId)) {
@@ -577,7 +582,7 @@ async function toggleSave(videoId, btn) {
         currentProfile.savedVideoIds = currentProfile.savedVideoIds.filter(id => id !== videoId);
       }
     }
-  } catch(e) { console.error("Save error:", e); showToast("Save failed"); }
+  } catch(e) { console.error("Save error:", e); showToast("Save failed: " + e.message); }
   btn.disabled = false;
 }
 
@@ -728,6 +733,7 @@ async function loadCurrentProfile() {
   try {
     const snap = await getDoc(doc(db, "users", currentUser.uid));
     if (snap.exists()) { currentProfile = snap.data(); }
+    console.log("👤 Profile loaded:", currentProfile);
   } catch(e) { console.error("Profile error:", e); }
 }
 
@@ -749,6 +755,7 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
   currentUser = user;
+  console.log("👤 User logged in:", currentUser.uid);
   await loadCurrentProfile();
   await loadVideos();
 });
