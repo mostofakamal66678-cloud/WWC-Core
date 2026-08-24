@@ -7,333 +7,62 @@
   <title>Profile · WWC</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
-    /* =====================================================
-       TIKTOK STYLE PROFILE
-    ===================================================== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-    
-    body {
-      background: #000;
-      color: #fff;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      min-height: 100vh;
-      padding-top: 50px;
-      padding-bottom: 80px;
-      overflow-x: hidden;
-    }
-    
-    /* ===== টপ বার ===== */
-    .top-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
-      background: rgba(0,0,0,0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-    }
-    .top-bar .back-btn {
-      color: #fff;
-      font-size: 22px;
-      background: none;
-      border: 0;
-      cursor: pointer;
-      width: 40px;
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-    }
-    .top-bar .back-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.9); }
-    .top-bar .title { font-size: 17px; font-weight: 700; }
-    .top-bar .placeholder { width: 40px; }
-    
-    /* ===== প্রোফাইল কন্টেইনার ===== */
-    .profile-container {
-      max-width: 500px;
-      margin: 0 auto;
-      padding: 0 16px;
-      animation: fadeIn 0.3s ease;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* ===== প্রোফাইল হেডার ===== */
-    .profile-header {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 16px 0;
-    }
-    .profile-pic {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      border: 3px solid #fff;
-      background: #222;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      color: #666;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-    .profile-pic img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .profile-info { flex: 1; }
-    .profile-info .name {
-      font-size: 20px;
-      font-weight: 700;
-    }
-    .profile-info .username {
-      font-size: 14px;
-      color: #888;
-      margin-top: 2px;
-    }
-    .profile-info .bio {
-      font-size: 13px;
-      color: #aaa;
-      margin-top: 4px;
-      line-height: 1.4;
-    }
-    
-    /* ===== ফলো বাটন ===== */
-    .follow-btn {
-      padding: 8px 20px;
-      border-radius: 22px;
-      font-size: 14px;
-      font-weight: 700;
-      border: 0;
-      cursor: pointer;
-      transition: all 0.2s;
-      flex-shrink: 0;
-    }
-    .follow-btn:active { transform: scale(0.95); }
-    .follow-btn.follow {
-      background: #fff;
-      color: #000;
-    }
-    .follow-btn.following {
-      background: rgba(255,255,255,0.1);
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.3);
-    }
-    .follow-btn.following:hover {
-      background: rgba(255,45,85,0.2);
-      border-color: #ff2d55;
-      color: #ff2d55;
-    }
-    
-    /* ===== স্ট্যাটস ===== */
-    .stats {
-      display: flex;
-      gap: 30px;
-      padding: 16px 0;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      margin-bottom: 16px;
-    }
-    .stats .stat { text-align: center; cursor: pointer; }
-    .stats .stat .num {
-      font-size: 18px;
-      font-weight: 700;
-    }
-    .stats .stat .label {
-      font-size: 12px;
-      color: #888;
-      margin-top: 2px;
-    }
-    
-    /* ===== ট্যাব ===== */
-    .tabs {
-      display: flex;
-      gap: 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      margin-bottom: 12px;
-    }
-    .tabs .tab {
-      flex: 1;
-      padding: 12px;
-      text-align: center;
-      font-size: 14px;
-      font-weight: 600;
-      color: #666;
-      background: none;
-      border: 0;
-      cursor: pointer;
-      transition: all 0.2s;
-      position: relative;
-    }
-    .tabs .tab.active {
-      color: #fff;
-    }
-    .tabs .tab.active::after {
-      content: "";
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 30px;
-      height: 3px;
-      border-radius: 3px;
-      background: #fff;
-    }
-    .tabs .tab:active { transform: scale(0.95); }
-    
-    /* ===== ভিডিও গ্রিড ===== */
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 3px;
-    }
-    .video-grid-item {
-      position: relative;
-      aspect-ratio: 1 / 1;
-      background: #111;
-      border-radius: 4px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: transform 0.15s;
-    }
-    .video-grid-item:active { transform: scale(0.96); }
-    .video-grid-item img,
-    .video-grid-item video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .video-grid-item .overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-    .video-grid-item:active .overlay { opacity: 1; }
-    .video-grid-item .overlay i {
-      font-size: 30px;
-      color: #fff;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-    }
-    .video-grid-item .views {
-      position: absolute;
-      bottom: 6px;
-      left: 8px;
-      font-size: 11px;
-      color: #fff;
-      text-shadow: 0 1px 6px rgba(0,0,0,0.9);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .video-grid-item .duration {
-      position: absolute;
-      bottom: 6px;
-      right: 8px;
-      font-size: 11px;
-      color: #fff;
-      background: rgba(0,0,0,0.6);
-      padding: 2px 6px;
-      border-radius: 4px;
-    }
-    
-    /* ===== খালি অবস্থা ===== */
-    .empty-state {
-      grid-column: 1 / -1;
-      text-align: center;
-      color: #555;
-      padding: 50px 20px;
-    }
-    .empty-state i {
-      font-size: 40px;
-      color: #333;
-      display: block;
-      margin-bottom: 12px;
-    }
-    .empty-state .text { font-size: 14px; }
-    
-    /* ===== লোডিং ===== */
-    .loading {
-      grid-column: 1 / -1;
-      text-align: center;
-      color: #555;
-      padding: 40px 0;
-    }
-    .loading i { margin-right: 8px; }
-    
-    /* ===== টোস্ট ===== */
-    .toast {
-      position: fixed;
-      bottom: 90px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: rgba(30,30,30,0.95);
-      color: #fff;
-      padding: 10px 22px;
-      border-radius: 22px;
-      font-size: 14px;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.3s;
-      z-index: 1000;
-      white-space: nowrap;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.05);
-    }
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-    
-    /* ===== রেস্পন্সিভ ===== */
-    @media (max-width: 480px) {
-      .profile-pic { width: 65px; height: 65px; font-size: 26px; }
-      .profile-info .name { font-size: 17px; }
-      .stats { gap: 20px; }
-      .stats .stat .num { font-size: 16px; }
-    }
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;min-height:100vh;padding-top:50px;padding-bottom:80px;overflow-x:hidden}
+    .top-bar{position:fixed;top:0;left:0;right:0;z-index:100;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.06)}
+    .top-bar .back-btn{color:#fff;font-size:22px;background:none;border:0;cursor:pointer;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:50%}
+    .top-bar .back-btn:active{background:rgba(255,255,255,0.1);transform:scale(0.9)}
+    .top-bar .title{font-size:17px;font-weight:700}
+    .top-bar .placeholder{width:40px}
+    .profile-container{max-width:500px;margin:0 auto;padding:0 16px;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .profile-header{display:flex;align-items:center;gap:16px;padding:16px 0}
+    .profile-pic{width:80px;height:80px;border-radius:50%;border:3px solid #fff;background:#222;display:flex;align-items:center;justify-content:center;font-size:32px;color:#666;overflow:hidden;flex-shrink:0}
+    .profile-pic img{width:100%;height:100%;object-fit:cover}
+    .profile-info{flex:1}
+    .profile-info .name{font-size:20px;font-weight:700}
+    .profile-info .username{font-size:14px;color:#888;margin-top:2px}
+    .profile-info .bio{font-size:13px;color:#aaa;margin-top:4px;line-height:1.4}
+    .follow-btn{padding:8px 20px;border-radius:22px;font-size:14px;font-weight:700;border:0;cursor:pointer;transition:all .2s;flex-shrink:0}
+    .follow-btn:active{transform:scale(0.95)}
+    .follow-btn.follow{background:#fff;color:#000}
+    .follow-btn.following{background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.3)}
+    .stats{display:flex;gap:30px;padding:16px 0;border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:16px}
+    .stats .stat{text-align:center;cursor:pointer}
+    .stats .stat .num{font-size:18px;font-weight:700}
+    .stats .stat .label{font-size:12px;color:#888;margin-top:2px}
+    .tabs{display:flex;gap:0;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:12px}
+    .tabs .tab{flex:1;padding:12px;text-align:center;font-size:14px;font-weight:600;color:#666;background:none;border:0;cursor:pointer;transition:all .2s;position:relative}
+    .tabs .tab.active{color:#fff}
+    .tabs .tab.active::after{content:"";position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:30px;height:3px;border-radius:3px;background:#fff}
+    .tabs .tab:active{transform:scale(0.95)}
+    .video-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+    .video-grid-item{position:relative;aspect-ratio:1/1;background:#111;border-radius:4px;overflow:hidden;cursor:pointer;transition:transform .15s}
+    .video-grid-item:active{transform:scale(0.96)}
+    .video-grid-item img,.video-grid-item video{width:100%;height:100%;object-fit:cover}
+    .video-grid-item .overlay{position:absolute;inset:0;background:rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
+    .video-grid-item:active .overlay{opacity:1}
+    .video-grid-item .overlay i{font-size:30px;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,0.5)}
+    .video-grid-item .views{position:absolute;bottom:6px;left:8px;font-size:11px;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,0.9);display:flex;align-items:center;gap:4px}
+    .empty-state{grid-column:1/-1;text-align:center;color:#555;padding:50px 20px}
+    .empty-state i{font-size:40px;color:#333;display:block;margin-bottom:12px}
+    .empty-state .text{font-size:14px}
+    .loading{grid-column:1/-1;text-align:center;color:#555;padding:40px 0}
+    .loading i{margin-right:8px}
+    .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,0.95);color:#fff;padding:10px 22px;border-radius:22px;font-size:14px;opacity:0;pointer-events:none;transition:all .3s;z-index:1000;white-space:nowrap;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.05)}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    @media(max-width:480px){.profile-pic{width:65px;height:65px;font-size:26px}.profile-info .name{font-size:17px}.stats{gap:20px}.stats .stat .num{font-size:16px}}
   </style>
 </head>
 <body>
-
-<!-- ===== টপ বার ===== -->
 <div class="top-bar">
-  <button class="back-btn" onclick="window.location.href='./index.html'">
-    <i class="fas fa-arrow-left"></i>
-  </button>
+  <button class="back-btn" onclick="window.location.href='./index.html'"><i class="fas fa-arrow-left"></i></button>
   <span class="title" id="pageTitle">Profile</span>
   <div class="placeholder"></div>
 </div>
-
-<!-- ===== প্রোফাইল ===== -->
 <div class="profile-container" id="profileContainer">
-  
-  <!-- প্রোফাইল হেডার -->
   <div class="profile-header">
-    <div class="profile-pic" id="profilePic">
-      <i class="fas fa-user"></i>
-    </div>
+    <div class="profile-pic" id="profilePic"><i class="fas fa-user"></i></div>
     <div class="profile-info">
       <div class="name" id="profileName">Loading...</div>
       <div class="username" id="profileUsername">@loading</div>
@@ -341,58 +70,23 @@
     </div>
     <button class="follow-btn follow" id="followBtn" style="display:none;">Follow</button>
   </div>
-  
-  <!-- স্ট্যাটস -->
   <div class="stats">
-    <div class="stat">
-      <div class="num" id="followers">0</div>
-      <div class="label">Followers</div>
-    </div>
-    <div class="stat">
-      <div class="num" id="following">0</div>
-      <div class="label">Following</div>
-    </div>
-    <div class="stat">
-      <div class="num" id="likes">0</div>
-      <div class="label">Likes</div>
-    </div>
+    <div class="stat"><div class="num" id="followers">0</div><div class="label">Followers</div></div>
+    <div class="stat"><div class="num" id="following">0</div><div class="label">Following</div></div>
+    <div class="stat"><div class="num" id="likes">0</div><div class="label">Likes</div></div>
   </div>
-  
-  <!-- ট্যাব -->
   <div class="tabs">
     <button class="tab active" data-tab="videos"><i class="fas fa-grid"></i> Videos</button>
     <button class="tab" data-tab="saved"><i class="fas fa-bookmark"></i> Saved</button>
   </div>
-  
-  <!-- ভিডিও গ্রিড -->
-  <div class="video-grid" id="videoGrid">
-    <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading videos...</div>
-  </div>
+  <div class="video-grid" id="videoGrid"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading videos...</div></div>
 </div>
-
-<!-- ===== টোস্ট ===== -->
 <div class="toast" id="toast"></div>
-
 <script type="module">
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-import { 
-  getFirestore, 
-  doc, 
-  getDoc, 
-  getDocs, 
-  collection, 
-  query, 
-  where, 
-  orderBy, 
-  updateDoc, 
-  runTransaction,
-  arrayUnion,
-  arrayRemove,
-  limit 
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, getDocs, collection, query, where, orderBy, updateDoc, runTransaction, limit } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
-// ===== Firebase Config =====
 const firebaseConfig = {
   apiKey: "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
   authDomain: "world-wide-connect-62c87.firebaseapp.com",
@@ -401,12 +95,10 @@ const firebaseConfig = {
   messagingSenderId: "93178453668",
   appId: "1:93178453668:web:2184630caa8e61f7445031"
 };
-
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// ===== DOM রেফারেন্স =====
 const profilePic = document.getElementById('profilePic');
 const profileName = document.getElementById('profileName');
 const profileUsername = document.getElementById('profileUsername');
@@ -420,17 +112,13 @@ const pageTitle = document.getElementById('pageTitle');
 const toast = document.getElementById('toast');
 
 let currentUser = null;
-let profileUser = null;
 let profileData = null;
 let userVideos = [];
-let isOwnProfile = false;
 let isFollowing = false;
 let toastTimer = null;
 let currentTab = 'videos';
-
 const defaultPhoto = './images/profile.png';
 
-// ===== টোস্ট =====
 function showToast(text) {
   toast.textContent = text;
   toast.classList.add('show');
@@ -438,7 +126,6 @@ function showToast(text) {
   toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
-// ===== ফরম্যাট নাম্বার =====
 function formatNumber(num) {
   num = Number(num) || 0;
   if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
@@ -446,343 +133,162 @@ function formatNumber(num) {
   return String(num);
 }
 
-// ===== ইউজারনেম ফরম্যাট =====
 function getUsername(data) {
   if (data.username) return data.username.startsWith('@') ? data.username : '@' + data.username;
   return '@' + (data.uid?.substring(0, 8) || 'user');
 }
 
-// ===== প্রোফাইল লোড =====
 async function loadProfile(userId) {
   try {
     const userRef = doc(db, 'users', userId);
     const snap = await getDoc(userRef);
-    
-    if (!snap.exists()) {
-      showToast('❌ User not found');
-      return;
-    }
-    
+    if (!snap.exists()) { showToast('❌ User not found'); return; }
     profileData = snap.data();
-    profileUser = { uid: userId, ...profileData };
-    
-    // প্রোফাইল UI আপডেট
     const name = profileData.name || 'WWC User';
     const username = getUsername(profileData);
     const bio = profileData.bio || '🌍 Welcome to WWC';
     const photo = profileData.photoURL || defaultPhoto;
-    
     profileName.textContent = name;
     profileUsername.textContent = username;
     profileBio.textContent = bio;
     pageTitle.textContent = name;
-    
-    // প্রোফাইল পিক
     if (photo && photo !== defaultPhoto) {
       profilePic.innerHTML = `<img src="${photo}" onerror="this.parentElement.innerHTML='<i class=\\'fas fa-user\\'></i>'">`;
     } else {
       profilePic.innerHTML = '<i class="fas fa-user"></i>';
     }
-    
-    // স্ট্যাটস
     followersEl.textContent = formatNumber(profileData.followers || 0);
     followingEl.textContent = formatNumber(profileData.following || 0);
     likesEl.textContent = formatNumber(profileData.likes || 0);
-    
-    // ফলো বাটন দেখান
     if (currentUser && userId !== currentUser.uid) {
       followBtn.style.display = 'block';
       isFollowing = (profileData.followerIds || []).includes(currentUser.uid);
-      updateFollowBtn();
-    } else if (currentUser && userId === currentUser.uid) {
-      followBtn.style.display = 'none';
-      isOwnProfile = true;
+      followBtn.textContent = isFollowing ? 'Following' : 'Follow';
+      followBtn.className = isFollowing ? 'follow-btn following' : 'follow-btn follow';
     } else {
       followBtn.style.display = 'none';
     }
-    
-    // ভিডিও লোড
     await loadUserVideos(userId);
-    
-  } catch (e) {
-    console.error('Load profile error:', e);
-    showToast('❌ Could not load profile');
-  }
+  } catch (e) { console.error('Load profile error:', e); showToast('❌ Could not load profile'); }
 }
 
-// ===== ফলো বাটন আপডেট =====
-function updateFollowBtn() {
-  if (isFollowing) {
-    followBtn.textContent = 'Following';
-    followBtn.className = 'follow-btn following';
-  } else {
-    followBtn.textContent = 'Follow';
-    followBtn.className = 'follow-btn follow';
-  }
-}
-
-// ===== ফলো/আনফলো =====
 followBtn.addEventListener('click', async () => {
-  if (!currentUser || !profileUser) return;
-  
+  if (!currentUser || !profileData) return;
   followBtn.disabled = true;
   followBtn.textContent = '...';
-  
   try {
     const myRef = doc(db, 'users', currentUser.uid);
-    const targetRef = doc(db, 'users', profileUser.uid);
-    
+    const targetRef = doc(db, 'users', profileData.uid);
     await runTransaction(db, async (t) => {
       const mySnap = await t.get(myRef);
       const targetSnap = await t.get(targetRef);
-      
       if (!mySnap.exists() || !targetSnap.exists()) return;
-      
       const myData = mySnap.data();
       const targetData = targetSnap.data();
-      
       const followingIds = Array.isArray(myData.followingIds) ? myData.followingIds : [];
       const followerIds = Array.isArray(targetData.followerIds) ? targetData.followerIds : [];
-      
       if (isFollowing) {
-        // আনফলো
-        t.update(myRef, {
-          followingIds: followingIds.filter(id => id !== profileUser.uid),
-          following: Math.max(0, (myData.following || 0) - 1)
-        });
-        t.update(targetRef, {
-          followerIds: followerIds.filter(id => id !== currentUser.uid),
-          followers: Math.max(0, (targetData.followers || 0) - 1)
-        });
+        t.update(myRef, { followingIds: followingIds.filter(id => id !== profileData.uid), following: Math.max(0, (myData.following || 0) - 1) });
+        t.update(targetRef, { followerIds: followerIds.filter(id => id !== currentUser.uid), followers: Math.max(0, (targetData.followers || 0) - 1) });
       } else {
-        // ফলো
-        t.update(myRef, {
-          followingIds: [...followingIds, profileUser.uid],
-          following: (myData.following || 0) + 1
-        });
-        t.update(targetRef, {
-          followerIds: [...followerIds, currentUser.uid],
-          followers: (targetData.followers || 0) + 1
-        });
+        t.update(myRef, { followingIds: [...followingIds, profileData.uid], following: (myData.following || 0) + 1 });
+        t.update(targetRef, { followerIds: [...followerIds, currentUser.uid], followers: (targetData.followers || 0) + 1 });
       }
     });
-    
     isFollowing = !isFollowing;
-    updateFollowBtn();
-    
-    // স্ট্যাটস আপডেট
-    const newSnap = await getDoc(doc(db, 'users', profileUser.uid));
+    followBtn.textContent = isFollowing ? 'Following' : 'Follow';
+    followBtn.className = isFollowing ? 'follow-btn following' : 'follow-btn follow';
+    const newSnap = await getDoc(doc(db, 'users', profileData.uid));
     if (newSnap.exists()) {
       const data = newSnap.data();
       followersEl.textContent = formatNumber(data.followers || 0);
     }
-    
     showToast(isFollowing ? '✅ Following' : 'Unfollowed');
-    
-  } catch (e) {
-    console.error('Follow error:', e);
-    showToast('❌ Could not follow/unfollow');
-  }
-  
+  } catch (e) { console.error('Follow error:', e); showToast('❌ Could not follow/unfollow'); }
   followBtn.disabled = false;
 });
 
-// ===== ইউজার ভিডিও লোড =====
 async function loadUserVideos(userId) {
   videoGrid.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading videos...</div>';
-  
   try {
-    const q = query(
-      collection(db, 'videos'),
-      where('uid', '==', userId),
-      orderBy('createdAt', 'desc'),
-      limit(30)
-    );
-    
+    const q = query(collection(db, 'videos'), where('uid', '==', userId), orderBy('createdAt', 'desc'), limit(30));
     const snap = await getDocs(q);
     userVideos = [];
-    snap.forEach(doc => {
-      userVideos.push({ id: doc.id, ...doc.data() });
-    });
-    
+    snap.forEach(doc => userVideos.push({ id: doc.id, ...doc.data() }));
     renderVideos(userVideos);
-    
-  } catch (e) {
-    console.error('Load videos error:', e);
-    videoGrid.innerHTML = `
-      <div class="empty-state">
-        <i class="fas fa-exclamation-circle"></i>
-        <div class="text">Could not load videos</div>
-      </div>
-    `;
-  }
+  } catch (e) { console.error('Load videos error:', e); videoGrid.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><div class="text">Could not load videos</div></div>`; }
 }
 
-// ===== ভিডিও রেন্ডার =====
 function renderVideos(videos) {
   if (!videos.length) {
-    videoGrid.innerHTML = `
-      <div class="empty-state">
-        <i class="fas fa-video"></i>
-        <div class="text">No videos yet</div>
-      </div>
-    `;
+    videoGrid.innerHTML = `<div class="empty-state"><i class="fas fa-video"></i><div class="text">No videos yet</div></div>`;
     return;
   }
-  
   videoGrid.innerHTML = '';
-  
   videos.forEach(video => {
     const item = document.createElement('div');
     item.className = 'video-grid-item';
-    
     const thumb = video.thumbnail || video.photoURL || '';
     const views = video.views || 0;
-    const duration = video.duration || '';
-    
     if (thumb) {
-      item.innerHTML = `
-        <img src="${thumb}" onerror="this.style.display='none'">
-        <div class="overlay"><i class="fas fa-play"></i></div>
-        <div class="views"><i class="fas fa-eye"></i> ${formatNumber(views)}</div>
-        ${duration ? `<div class="duration">${duration}</div>` : ''}
-      `;
+      item.innerHTML = `<img src="${thumb}" onerror="this.style.display='none'"><div class="overlay"><i class="fas fa-play"></i></div><div class="views"><i class="fas fa-eye"></i> ${formatNumber(views)}</div>`;
     } else {
-      item.innerHTML = `
-        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#555;">
-          <i class="fas fa-video" style="font-size:28px;"></i>
-          <span style="font-size:10px;margin-top:4px;">${(video.caption || 'Video').substring(0, 15)}</span>
-        </div>
-        <div class="views"><i class="fas fa-eye"></i> ${formatNumber(views)}</div>
-      `;
+      item.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#555;"><i class="fas fa-video" style="font-size:28px;"></i><span style="font-size:10px;margin-top:4px;">${(video.caption || 'Video').substring(0, 15)}</span></div><div class="views"><i class="fas fa-eye"></i> ${formatNumber(views)}</div>`;
     }
-    
-    item.addEventListener('click', () => {
-      // ভিডিও ফিডে যান
-      window.location.href = `./index.html?video=${video.id}`;
-    });
-    
+    item.addEventListener('click', () => window.location.href = `./index.html?video=${video.id}`);
     videoGrid.appendChild(item);
   });
 }
 
-// ===== ট্যাব =====
 document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
     currentTab = tab.dataset.tab;
-    
-    if (currentTab === 'videos') {
-      renderVideos(userVideos);
-    } else if (currentTab === 'saved') {
-      loadSavedVideos();
-    }
+    if (currentTab === 'videos') renderVideos(userVideos);
+    else if (currentTab === 'saved') loadSavedVideos();
   });
 });
 
-// ===== সেভ করা ভিডিও =====
 async function loadSavedVideos() {
   if (!currentUser) {
-    videoGrid.innerHTML = `
-      <div class="empty-state">
-        <i class="fas fa-lock"></i>
-        <div class="text">Login to see saved videos</div>
-      </div>
-    `;
+    videoGrid.innerHTML = `<div class="empty-state"><i class="fas fa-lock"></i><div class="text">Login to see saved videos</div></div>`;
     return;
   }
-  
   videoGrid.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading saved videos...</div>';
-  
   try {
-    const savedIds = currentProfile?.savedVideoIds || [];
+    const snap = await getDoc(doc(db, 'users', currentUser.uid));
+    const savedIds = snap.exists() ? (snap.data().savedVideoIds || []) : [];
     if (!savedIds.length) {
-      videoGrid.innerHTML = `
-        <div class="empty-state">
-          <i class="fas fa-bookmark"></i>
-          <div class="text">No saved videos yet</div>
-        </div>
-      `;
+      videoGrid.innerHTML = `<div class="empty-state"><i class="fas fa-bookmark"></i><div class="text">No saved videos yet</div></div>`;
       return;
     }
-    
     const videos = [];
     for (const id of savedIds) {
       try {
-        const snap = await getDoc(doc(db, 'videos', id));
-        if (snap.exists()) {
-          videos.push({ id: snap.id, ...snap.data() });
-        }
+        const vs = await getDoc(doc(db, 'videos', id));
+        if (vs.exists()) videos.push({ id: vs.id, ...vs.data() });
       } catch (e) {}
     }
-    
     renderVideos(videos);
-    
-  } catch (e) {
-    console.error('Load saved error:', e);
-    videoGrid.innerHTML = `
-      <div class="empty-state">
-        <i class="fas fa-exclamation-circle"></i>
-        <div class="text">Could not load saved videos</div>
-      </div>
-    `;
-  }
+  } catch (e) { console.error('Load saved error:', e); videoGrid.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i><div class="text">Could not load saved videos</div></div>`; }
 }
 
-let currentProfile = { savedVideoIds: [] };
-
-// ===== ইউআরএল থেকে ইউজার আইডি =====
-function getUserIdFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  const uid = params.get('uid');
-  if (uid) return uid;
-  return currentUser?.uid || null;
-}
-
-// =====================================================
-// ✅ AUTH - সম্পূর্ণ
-// =====================================================
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
-  
   if (!user) {
     profileName.textContent = 'Not Logged In';
     profileUsername.textContent = '@guest';
     profileBio.textContent = '🔐 Please login to view profile';
-    followersEl.textContent = '0';
-    followingEl.textContent = '0';
-    likesEl.textContent = '0';
-    videoGrid.innerHTML = `
-      <div class="empty-state">
-        <i class="fas fa-lock"></i>
-        <div class="text">Please <a href="./auth.html" style="color:#4f46e5;">login</a> to view profile</div>
-      </div>
-    `;
+    followersEl.textContent = '0'; followingEl.textContent = '0'; likesEl.textContent = '0';
+    videoGrid.innerHTML = `<div class="empty-state"><i class="fas fa-lock"></i><div class="text">Please <a href="./auth.html" style="color:#4f46e5;">login</a> to view profile</div></div>`;
     return;
   }
-  
-  // কারেন্ট ইউজারের প্রোফাইল লোড
-  try {
-    const snap = await getDoc(doc(db, 'users', user.uid));
-    if (snap.exists()) {
-      currentProfile = snap.data();
-    }
-  } catch (e) {}
-  
-  // ইউআরএল থেকে ইউজার আইডি বা নিজের
-  const targetUid = getUserIdFromURL() || user.uid;
-  
-  if (targetUid === user.uid) {
-    isOwnProfile = true;
-    followBtn.style.display = 'none';
-  }
-  
+  const params = new URLSearchParams(window.location.search);
+  const targetUid = params.get('uid') || user.uid;
   await loadProfile(targetUid);
 });
-
-console.log('✅ TikTok Style Profile Page Loaded');
+console.log('✅ Profile Page Loaded');
 </script>
-
 </body>
 </html>
