@@ -69,6 +69,7 @@ let loadingFeed = false;
 let currentPlayingVideo = null;
 let isSearchMode = false;
 let searchResults = [];
+let lastSearchQuery = "";
 
 const defaultPhoto = "./images/profile.png";
 
@@ -77,7 +78,6 @@ const defaultPhoto = "./images/profile.png";
 ===================================================== */
 
 const feed = document.getElementById("feed");
-const loading = document.getElementById("loading");
 
 /* =====================================================
    HELPERS
@@ -173,7 +173,6 @@ onAuthStateChanged(auth, async user => {
   
   await loadCurrentProfile();
   await loadVideos();
-  if (loading) loading.classList.add("hide");
 });
 
 /* =====================================================
@@ -282,14 +281,13 @@ function renderFeed() {
   if (!feed) return;
   feed.innerHTML = "";
   
-  // Search mode active থাকলে সার্চ রেজাল্ট দেখান
   if (isSearchMode) {
     if (!searchResults.length) {
       feed.innerHTML = `
         <div class="feed-message">
           <div class="feed-message-inner">
             <div class="feed-message-icon">🔍</div>
-            <div>"${escapeHtml(lastSearchQuery || '')}" এর জন্য কোনো ফলাফল পাওয়া যায়নি।</div>
+            <div>"${escapeHtml(lastSearchQuery)}" এর জন্য কোনো ফলাফল পাওয়া যায়নি।</div>
           </div>
         </div>
       `;
@@ -343,17 +341,14 @@ function renderFeed() {
   setupVideoObserver();
 }
 
-let lastSearchQuery = "";
-
 /* =====================================================
-   SEARCH - সম্পূর্ণ ফিক্সড
+   SEARCH
 ===================================================== */
 
-function openSearch() {
+window.openSearch = function() {
   isSearchMode = true;
   lastSearchQuery = "";
   
-  // সার্চ ইনপুট তৈরি করুন
   const searchHTML = `
     <div class="search-overlay" id="searchOverlay">
       <div class="search-container">
@@ -366,7 +361,6 @@ function openSearch() {
     </div>
   `;
   
-  // Append search UI
   const existing = document.getElementById("searchOverlay");
   if (existing) existing.remove();
   
@@ -386,7 +380,7 @@ function openSearch() {
       }
     });
   }
-}
+};
 
 function performSearch(query) {
   lastSearchQuery = query;
@@ -409,24 +403,43 @@ function performSearch(query) {
   isSearchMode = true;
   renderFeed();
   
-  // Show result count
   const resultsDiv = document.getElementById("searchResults");
   if (resultsDiv) {
     resultsDiv.innerHTML = `
-      <div style="color:#888;padding:10px;font-size:13px;">
+      <div style="color:#888;padding:10px 0 15px;font-size:13px;border-bottom:1px solid #222;">
+        <i class="fas fa-search" style="margin-right:8px;"></i>
         ${searchResults.length} ফলাফল পাওয়া গেছে
       </div>
+      ${searchResults.map(v => `
+        <div class="search-result-item" onclick="goToVideo('${v.id}')">
+          <img src="${escapeHtml(v.photoURL || v.photo || defaultPhoto)}" onerror="this.src='${defaultPhoto}'">
+          <div class="info">
+            <div class="name">@${escapeHtml(getUsername(v))}</div>
+            <div class="desc">${escapeHtml((v.caption || v.description || "").substring(0, 50))}</div>
+          </div>
+        </div>
+      `).join('')}
     `;
   }
 }
 
-function closeSearch() {
+window.goToVideo = function(videoId) {
+  closeSearch();
+  const item = document.querySelector(`.video-item[data-video-id="${CSS.escape(videoId)}"]`);
+  if (item) {
+    item.scrollIntoView({ behavior: "smooth", block: "start" });
+    const video = item.querySelector(".video");
+    if (video) playVideo(video);
+  }
+};
+
+window.closeSearch = function() {
   isSearchMode = false;
   searchResults = [];
   const overlay = document.getElementById("searchOverlay");
   if (overlay) overlay.remove();
   renderFeed();
-}
+};
 
 /* =====================================================
    CREATE VIDEO ITEM
@@ -499,7 +512,6 @@ function createVideoItem(video) {
     <div class="pause-indicator"><i class="fas fa-pause"></i></div>
   `;
   
-  // ===== Video Events =====
   const videoEl = item.querySelector(".video");
   const loader = item.querySelector(".video-loader");
   
@@ -511,7 +523,6 @@ function createVideoItem(video) {
     console.error("Video error:", url);
   });
   
-  // ===== Click = Play/Pause =====
   item.addEventListener("click", (e) => {
     if (e.target.closest("button")) return;
     togglePlayPause(item);
@@ -586,21 +597,18 @@ function setupVideoObserver() {
 }
 
 /* =====================================================
-   FEED ACTIONS (Click Delegation)
+   FEED ACTIONS
 ===================================================== */
 
 if (feed) {
   feed.addEventListener("click", async (e) => {
-    // ===== Tab Switch =====
     const tab = e.target.closest("[data-tab]");
     if (tab) {
-      // Search mode থাকলে বন্ধ করুন
       if (isSearchMode) closeSearch();
       switchFeed(tab.dataset.tab === "following" ? "following" : "foryou");
       return;
     }
     
-    // ===== Action Buttons =====
     const btn = e.target.closest("[data-action]");
     if (!btn) return;
     
@@ -620,7 +628,7 @@ if (feed) {
 }
 
 /* =====================================================
-   LIKE - সম্পূর্ণ ফিক্সড
+   LIKE
 ===================================================== */
 
 async function toggleLike(videoId, btn) {
@@ -657,14 +665,11 @@ async function toggleLike(videoId, btn) {
 }
 
 /* =====================================================
-   SAVE - সম্পূর্ণ ফিক্সড (এখন কাজ করবে)
+   SAVE
 ===================================================== */
 
 async function toggleSave(videoId, btn) {
-  if (!currentUser) { 
-    showToast("আগে Login করুন"); 
-    return; 
-  }
+  if (!currentUser) { showToast("আগে Login করুন"); return; }
   if (btn.disabled) return;
   btn.disabled = true;
   
@@ -673,31 +678,18 @@ async function toggleSave(videoId, btn) {
     const userRef = doc(db, "users", currentUser.uid);
     
     const result = await runTransaction(db, async (t) => {
-      // 1. ভিডিও ডকুমেন্ট পড়ুন
       const vs = await t.get(videoRef);
       if (!vs.exists()) throw new Error("VIDEO_NOT_FOUND");
       
       const data = vs.data();
-      
-      // 2. savedBy অ্যারে চেক করুন
       const savedBy = Array.isArray(data.savedBy) ? data.savedBy : [];
       const already = savedBy.includes(currentUser.uid);
       
-      // 3. নতুন savedBy অ্যারে তৈরি করুন
-      const newSavedBy = already 
-        ? savedBy.filter(u => u !== currentUser.uid) 
-        : [...savedBy, currentUser.uid];
-      
-      // 4. নতুন saves কাউন্ট
+      const newSavedBy = already ? savedBy.filter(u => u !== currentUser.uid) : [...savedBy, currentUser.uid];
       const newSaves = Math.max(0, number(data.saves) + (already ? -1 : 1));
       
-      // 5. ভিডিও আপডেট করুন
-      t.update(videoRef, { 
-        savedBy: newSavedBy, 
-        saves: newSaves 
-      });
+      t.update(videoRef, { savedBy: newSavedBy, saves: newSaves });
       
-      // 6. ইউজার প্রোফাইল আপডেট করুন
       const us = await t.get(userRef);
       const uData = us.exists() ? us.data() : {};
       const oldSaved = Array.isArray(uData.savedVideoIds) ? uData.savedVideoIds : [];
@@ -714,12 +706,10 @@ async function toggleSave(videoId, btn) {
       return { saved: !already, saves: newSaves };
     });
     
-    // 7. UI আপডেট করুন
     btn.classList.toggle("saved", result.saved);
     const countEl = btn.querySelector(".action-count");
     if (countEl) countEl.textContent = formatNumber(result.saves);
     
-    // 8. currentProfile আপডেট করুন
     if (result.saved) {
       if (!currentProfile.savedVideoIds) currentProfile.savedVideoIds = [];
       if (!currentProfile.savedVideoIds.includes(videoId)) {
@@ -734,13 +724,13 @@ async function toggleSave(videoId, btn) {
     showToast(result.saved ? "🔖 Saved" : "Removed from saved");
   } catch (e) {
     console.error("Save error:", e);
-    showToast("Save করা যায়নি: " + (e.message || "অজানা ত্রুটি"));
+    showToast("Save করা যায়নি");
   }
   btn.disabled = false;
 }
 
 /* =====================================================
-   FOLLOW - সম্পূর্ণ ফিক্সড
+   FOLLOW
 ===================================================== */
 
 async function toggleFollow(targetUid, btn) {
@@ -861,23 +851,23 @@ async function openComments(videoId) {
   await loadComments(videoId);
 }
 
-function closeComments() {
+window.closeComments = function() {
   const panel = document.getElementById("commentPanel");
   if (panel) panel.classList.remove("open");
-}
+};
 
 async function loadComments(videoId) {
   const list = document.getElementById("commentsList");
   if (!list) return;
   
-  list.innerHTML = '<div style="text-align:center;color:#888;padding:25px;">Loading...</div>';
+  list.innerHTML = '<div style="text-align:center;color:#888;padding:25px;"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
   
   try {
     const snap = await withTimeout(getDocs(collection(db, "videos", videoId, "comments")), 8000);
     list.innerHTML = "";
     
     if (snap.empty) {
-      list.innerHTML = '<div style="text-align:center;color:#777;padding:30px;">No comments yet.</div>';
+      list.innerHTML = '<div style="text-align:center;color:#777;padding:30px;">No comments yet. Be the first! 💬</div>';
       return;
     }
     
@@ -888,7 +878,11 @@ async function loadComments(videoId) {
     comments.forEach(data => {
       const div = document.createElement("div");
       div.className = "comment";
-      div.innerHTML = `<strong>${escapeHtml(data.username || data.name || "WWC User")}</strong>${escapeHtml(data.text || "")}`;
+      div.innerHTML = `
+        <strong>${escapeHtml(data.username || data.name || "WWC User")}</strong>
+        ${escapeHtml(data.text || "")}
+        <div style="font-size:10px;color:#666;margin-top:2px;">${data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString() : ''}</div>
+      `;
       list.appendChild(div);
     });
   } catch (e) {
@@ -896,7 +890,7 @@ async function loadComments(videoId) {
   }
 }
 
-async function addComment() {
+window.addComment = async function() {
   const input = document.getElementById("commentInput");
   if (!input) return;
   const text = input.value.trim();
@@ -928,7 +922,7 @@ async function addComment() {
     console.error("Comment error:", e);
     showToast("Comment করা যায়নি");
   }
-}
+};
 
 function updateCommentCount(videoId, count) {
   const item = document.querySelector(`.video-item[data-video-id="${CSS.escape(videoId)}"]`);
@@ -952,20 +946,39 @@ function switchFeed(mode) {
 }
 
 /* =====================================================
-   NAVIGATION
+   NAVIGATION - টিকটকের মতো
 ===================================================== */
 
-window.goHome = function() { window.location.href = "./index.html"; };
-window.goFriends = function() { window.location.href = "./friends.html"; };
-window.goInbox = function() { window.location.href = "./inbox.html"; };
-window.goProfile = function() { window.location.href = "./profile.html"; };
-window.uploadVideo = function() { window.location.href = "./upload.html"; };
-window.reloadFeed = function() { loadingFeed = false; loadVideos(); };
-window.closeComments = closeComments;
-window.addComment = addComment;
-window.openSearch = openSearch;
-window.closeSearch = closeSearch;
-window.switchFeed = switchFeed;
+window.goHome = function() { 
+  // ইতিমধ্যে home তে আছি, feed রিফ্রেশ করুন
+  if (window.location.pathname.includes('index.html') || window.location.pathname === '/' || window.location.pathname === '/WWC-Core/') {
+    renderFeed();
+    showToast("🏠 Home");
+  } else {
+    window.location.href = "./index.html";
+  }
+};
+
+window.goFriends = function() {
+  window.location.href = "./friends.html";
+};
+
+window.goUpload = function() {
+  window.location.href = "./upload.html";
+};
+
+window.goInbox = function() {
+  window.location.href = "./inbox.html";
+};
+
+window.goProfile = function() {
+  window.location.href = "./profile.html";
+};
+
+window.reloadFeed = function() { 
+  loadingFeed = false; 
+  loadVideos(); 
+};
 
 /* =====================================================
    COMMENT ENTER KEY
@@ -974,71 +987,26 @@ window.switchFeed = switchFeed;
 document.getElementById("commentInput")?.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     e.preventDefault();
-    addComment();
+    window.addComment();
   }
 });
 
 /* =====================================================
-   SEARCH STYLES (Dynamic)
+   SHOW LOADING
 ===================================================== */
 
-const searchStyles = document.createElement("style");
-searchStyles.textContent = `
-  .search-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1000;
-    background: rgba(0,0,0,0.92);
-    padding: 60px 20px 20px;
-    animation: fadeIn 0.2s ease;
+function showLoading() {
+  if (feed) {
+    feed.innerHTML = `
+      <div class="feed-message">
+        <div class="feed-message-inner">
+          <div class="feed-message-icon">⏳</div>
+          <div>ভিডিও লোড হচ্ছে...</div>
+        </div>
+      </div>
+    `;
   }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  .search-container {
-    max-width: 600px;
-    margin: 0 auto;
-  }
-  .search-header {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  .search-header input {
-    flex: 1;
-    padding: 14px 18px;
-    border-radius: 12px;
-    border: 1px solid #444;
-    background: #222;
-    color: #fff;
-    font-size: 16px;
-    outline: none;
-  }
-  .search-header input:focus {
-    border-color: #777;
-  }
-  .search-header input::placeholder {
-    color: #666;
-  }
-  .search-close-btn {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: #333;
-    color: #fff;
-    font-size: 22px;
-    border: 0;
-    cursor: pointer;
-  }
-  .search-close-btn:active {
-    transform: scale(0.9);
-  }
-`;
-document.head.appendChild(searchStyles);
+}
 
 /* =====================================================
    VISIBILITY CHANGE
@@ -1066,21 +1034,4 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-/* =====================================================
-   LOADING
-===================================================== */
-
-function showLoading() {
-  if (feed) {
-    feed.innerHTML = `
-      <div class="feed-message">
-        <div class="feed-message-inner">
-          <div class="feed-message-icon">⏳</div>
-          <div>ভিডিও লোড হচ্ছে...</div>
-        </div>
-      </div>
-    `;
-  }
-}
-
-console.log("✅ WWC App.js Loaded Successfully!");
+console.log("✅ WWC TikTok App Loaded Successfully!");
