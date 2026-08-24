@@ -1,1527 +1,598 @@
-/* =========================================================
-   WORLD WIDE CONNECT
-   WWC TIKTOK STYLE FEED
-   CLEAN MOBILE UI
-   ========================================================= */
+/* =====================================================
+   TIKTOK STYLE CSS
+===================================================== */
 
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
   margin: 0;
   padding: 0;
 }
 
-html,
-body {
+html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-
   background: #000;
   color: #fff;
-
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-}
-
-body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
   overscroll-behavior: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-button,
-input,
-textarea {
-  font-family: inherit;
 }
 
 button {
   border: 0;
   outline: 0;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+  background: transparent;
+  font-family: inherit;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
-button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-
-/* =========================================================
-   APP
-   ========================================================= */
-
-#app {
+/* ===== অ্যাপ ===== */
+.app {
   position: relative;
-
   width: 100%;
   height: 100dvh;
-
   overflow: hidden;
-
   background: #000;
 }
 
-
-/* =========================================================
-   TOP BAR
-   ========================================================= */
-
-.wwc-top-bar {
-  position: fixed;
-
-  top: 0;
-  left: 0;
-
-  z-index: 1000;
-
-  width: 100%;
-  height: 68px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding-top: env(safe-area-inset-top);
-
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.72),
-      rgba(0, 0, 0, 0)
-    );
-
-  pointer-events: none;
-}
-
-.wwc-top-tabs {
-  display: flex;
-  align-items: center;
-
-  gap: 26px;
-
-  pointer-events: auto;
-}
-
-.wwc-top-tab {
-  position: relative;
-
-  padding: 8px 2px;
-
-  background: transparent;
-
-  color: rgba(255, 255, 255, 0.65);
-
-  font-size: 15px;
-  font-weight: 700;
-
-  text-shadow:
-    0 1px 5px rgba(0, 0, 0, 0.8);
-}
-
-.wwc-top-tab.active {
-  color: #fff;
-}
-
-.wwc-top-tab.active::after {
-  content: "";
-
+/* ===== ফিড ===== */
+.feed {
   position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+.feed::-webkit-scrollbar { display: none; }
 
+/* ===== ভিডিও আইটেম ===== */
+.video-item {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+  background: #000;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  overflow: hidden;
+}
+
+/* ===== ভিডিও ===== */
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+  display: block;
+}
+
+/* ===== গ্রেডিয়েন্ট ওভারলে ===== */
+.video-item::after {
+  content: "";
+  position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-
-  height: 3px;
-
-  border-radius: 10px;
-
-  background: #fff;
+  height: 50%;
+  background: linear-gradient(transparent, rgba(0,0,0,0.85));
+  pointer-events: none;
+  z-index: 2;
 }
 
-.wwc-search-btn {
+/* ===== টপ বার ===== */
+.top-bar {
   position: absolute;
-
-  right: 12px;
-
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 82px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: env(safe-area-inset-top);
+  background: linear-gradient(rgba(0,0,0,0.6), transparent);
+  pointer-events: none;
+}
+.top-bar .tabs {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  pointer-events: auto;
+}
+.top-bar .tab {
+  position: relative;
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  font-size: 17px;
+  font-weight: 700;
+  padding: 8px 4px;
+  transition: color 0.2s;
+}
+.top-bar .tab.active { color: #fff; }
+.top-bar .tab.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  border-radius: 10px;
+  background: #fff;
+}
+.search-btn {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
   width: 42px;
   height: 42px;
-
+  border-radius: 50%;
+  background: rgba(0,0,0,0.4);
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  border-radius: 50%;
-
-  background: rgba(0, 0, 0, 0.25);
-
-  color: #fff;
-
-  font-size: 22px;
-
   pointer-events: auto;
-
-  transition:
-    transform 0.15s ease,
-    background 0.15s ease;
+  backdrop-filter: blur(6px);
+  font-size: 18px;
 }
 
-.wwc-search-btn:active {
-  transform: scale(0.88);
-  background: rgba(255, 255, 255, 0.12);
-}
-
-
-/* =========================================================
-   VIDEO FEED
-   ========================================================= */
-
-#video-feed {
+/* ===== ডান পাশের অ্যাকশন বার ===== */
+.action-bar {
   position: absolute;
-
-  inset: 0;
-
-  width: 100%;
-  height: 100%;
-
-  overflow-x: hidden;
-  overflow-y: auto;
-
-  background: #000;
-
-  scroll-snap-type: y mandatory;
-
-  scrollbar-width: none;
-
-  -webkit-overflow-scrolling: touch;
-
-  overscroll-behavior-y: contain;
-}
-
-#video-feed::-webkit-scrollbar {
-  display: none;
-}
-
-
-/* =========================================================
-   VIDEO ITEM
-   ========================================================= */
-
-.video-item {
-  position: relative;
-
-  width: 100%;
-  height: 100dvh;
-
-  min-height: 100dvh;
-
-  overflow: hidden;
-
-  background: #000;
-
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-}
-
-
-/* =========================================================
-   VIDEO
-   ========================================================= */
-
-.feed-video {
-  position: absolute;
-
-  inset: 0;
-
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-
-  background: #000;
-
-  cursor: pointer;
-}
-
-
-/* =========================================================
-   VIDEO OVERLAY
-   ========================================================= */
-
-.video-overlay {
-  position: absolute;
-
-  inset: 0;
-
-  z-index: 2;
-
-  pointer-events: none;
-
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.45) 0%,
-      rgba(0, 0, 0, 0.05) 23%,
-      rgba(0, 0, 0, 0) 50%,
-      rgba(0, 0, 0, 0.16) 65%,
-      rgba(0, 0, 0, 0.84) 100%
-    );
-}
-
-
-/* =========================================================
-   TIKTOK STYLE RIGHT ACTION BAR
-   ========================================================= */
-
-.actions {
-  position: absolute;
-
   right: 8px;
-  bottom: 132px;
-
-  z-index: 100;
-
+  bottom: 110px;
+  z-index: 30;
   width: 62px;
-
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  gap: 18px;
-
-  pointer-events: auto;
+  gap: 14px;
 }
-
-
-/* =========================================================
-   ACTION BUTTON
-   ========================================================= */
-
-.action-btn {
-  position: relative;
-
+.action {
   width: 58px;
-  min-height: 61px;
-
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-
-  gap: 3px;
-
-  padding: 0;
-
-  background: transparent;
-
+  justify-content: center;
   color: #fff;
-
-  text-shadow:
-    0 1px 4px rgba(0, 0, 0, 0.9);
-
-  transition:
-    transform 0.12s ease;
+  background: transparent;
+  padding: 0;
 }
-
-.action-btn:active {
-  transform: scale(0.88);
-}
-
-
-/* =========================================================
-   TIKTOK STYLE ICON
-   ========================================================= */
-
 .action-icon {
-  position: relative;
-
   width: 48px;
   height: 48px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  background: transparent;
-
+  font-size: 30px;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8));
+  transition: transform 0.15s cubic-bezier(0.2, 0.9, 0.3, 1.2);
   color: #fff;
-
-  font-size: 31px;
-  line-height: 1;
-
-  filter:
-    drop-shadow(
-      0 2px 4px rgba(0, 0, 0, 0.75)
-    );
-
-  transition:
-    transform 0.18s cubic-bezier(
-      0.2,
-      0.8,
-      0.3,
-      1.2
-    ),
-    color 0.18s ease;
+}
+.action:active .action-icon { transform: scale(0.82); }
+.action-count {
+  font-size: 12px;
+  font-weight: 700;
+  text-shadow: 0 1px 4px #000;
+  margin-top: 1px;
+  color: #fff;
 }
 
-
-/* =========================================================
-   LIKE
-   ========================================================= */
-
-.like-btn .action-icon {
-  font-size: 34px;
-}
-
+/* ===== লাইক ===== */
 .like-btn.liked .action-icon {
   color: #ff2d55;
-
-  transform:
-    scale(1.18);
-
-  animation:
-    wwc-like-pop 0.32s ease;
+  transform: scale(1.15);
+  animation: likePop 0.35s ease;
+}
+@keyframes likePop {
+  0% { transform: scale(0.7); }
+  40% { transform: scale(1.4); }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1.15); }
 }
 
-@keyframes wwc-like-pop {
-
-  0% {
-    transform: scale(0.65);
-  }
-
-  55% {
-    transform: scale(1.32);
-  }
-
-  100% {
-    transform: scale(1.18);
-  }
-
-}
-
-
-/* =========================================================
-   SAVE
-   ========================================================= */
-
+/* ===== সেভ ===== */
 .save-btn.saved .action-icon {
   color: #ffd84d;
-
-  transform:
-    scale(1.12);
-
-  animation:
-    wwc-save-pop 0.25s ease;
+  transform: scale(1.1);
+  animation: savePop 0.3s ease;
+}
+@keyframes savePop {
+  0% { transform: scale(0.7); }
+  60% { transform: scale(1.2); }
+  100% { transform: scale(1.1); }
 }
 
-@keyframes wwc-save-pop {
-
-  0% {
-    transform: scale(0.75);
-  }
-
-  70% {
-    transform: scale(1.2);
-  }
-
-  100% {
-    transform: scale(1.12);
-  }
-
+/* ===== ক্রিয়েটর ===== */
+.creator-avatar {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  overflow: visible;
 }
-
-
-/* =========================================================
-   COUNTS
-   ========================================================= */
-
-.like-count,
-.comment-count,
-.save-count,
-.share-label {
+.creator-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
   display: block;
-
-  min-width: 24px;
-
-  color: #fff;
-
-  font-size: 12px;
-  line-height: 15px;
-
-  font-weight: 700;
-
-  text-align: center;
-
-  text-shadow:
-    0 1px 4px rgba(0, 0, 0, 0.9);
 }
-
-
-/* =========================================================
-   SHARE LABEL
-   ========================================================= */
-
-.share-label {
-  margin-top: 0;
-}
-
-
-/* =========================================================
-   DOUBLE TAP HEART
-   ========================================================= */
-
-.double-tap-heart {
+.follow-plus {
   position: absolute;
-
+  bottom: -6px;
   left: 50%;
-  top: 50%;
-
-  z-index: 500;
-
-  width: 120px;
-  height: 120px;
-
+  transform: translateX(-50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  color: #000;
+  font-size: 18px;
+  font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  transform:
-    translate(-50%, -50%)
-    scale(0);
-
-  pointer-events: none;
-
+  transition: all 0.2s;
+}
+.follow-plus.following {
+  background: #ff2d55;
   color: #fff;
-
-  font-size: 105px;
-
-  text-shadow:
-    0 5px 25px rgba(0, 0, 0, 0.5);
-
-  opacity: 0;
-}
-
-.double-tap-heart.show {
-  animation:
-    wwc-double-heart 0.75s
-    cubic-bezier(
-      0.18,
-      0.89,
-      0.32,
-      1.28
-    );
-}
-
-@keyframes wwc-double-heart {
-
-  0% {
-    opacity: 0;
-    transform:
-      translate(-50%, -50%)
-      scale(0.2)
-      rotate(-10deg);
-  }
-
-  20% {
-    opacity: 1;
-    transform:
-      translate(-50%, -50%)
-      scale(1.15)
-      rotate(0deg);
-  }
-
-  45% {
-    opacity: 1;
-    transform:
-      translate(-50%, -50%)
-      scale(0.98);
-  }
-
-  75% {
-    opacity: 0.85;
-    transform:
-      translate(-50%, -50%)
-      scale(1.04);
-  }
-
-  100% {
-    opacity: 0;
-    transform:
-      translate(-50%, -50%)
-      scale(1.35);
-  }
-
-}
-
-
-/* =========================================================
-   PROFILE AREA
-   ========================================================= */
-
-.profile-area {
-  position: absolute;
-
-  left: 14px;
-  bottom: 145px;
-
-  z-index: 100;
-
-  display: flex;
-  align-items: center;
-
-  gap: 8px;
-
-  max-width: calc(100% - 90px);
-
-  pointer-events: auto;
-}
-
-
-/* =========================================================
-   PROFILE PHOTO
-   ========================================================= */
-
-.profile-photo-btn {
-  position: relative;
-
-  flex-shrink: 0;
-
-  width: 48px;
-  height: 48px;
-
-  padding: 2px;
-
-  border-radius: 50%;
-
-  background: #fff;
-
-  box-shadow:
-    0 2px 10px rgba(0, 0, 0, 0.45);
-}
-
-.profile-photo {
-  display: block;
-
-  width: 100%;
-  height: 100%;
-
-  object-fit: cover;
-
-  border-radius: 50%;
-
-  background: #222;
-}
-
-
-/* =========================================================
-   USERNAME
-   ========================================================= */
-
-.profile-username {
-  max-width: 125px;
-
-  overflow: hidden;
-
-  text-overflow: ellipsis;
-
-  white-space: nowrap;
-
-  background: transparent;
-
-  color: #fff;
-
-  font-size: 14px;
-  font-weight: 800;
-
-  text-shadow:
-    0 1px 5px rgba(0, 0, 0, 0.9);
-}
-
-
-/* =========================================================
-   FOLLOW BUTTON
-   ========================================================= */
-
-.follow-btn {
-  flex-shrink: 0;
-
-  min-width: 72px;
-
-  padding: 7px 12px;
-
-  border-radius: 6px;
-
-  background: #fff;
-
-  color: #111;
-
   font-size: 12px;
-  font-weight: 800;
-
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.25);
-
-  transition:
-    transform 0.15s ease,
-    background 0.15s ease;
 }
 
-.follow-btn:active {
-  transform: scale(0.92);
-}
-
-.follow-btn.following {
-  background:
-    rgba(255, 255, 255, 0.18);
-
-  color: #fff;
-
-  border:
-    1px solid rgba(255, 255, 255, 0.7);
-}
-
-
-/* =========================================================
-   VIDEO INFO
-   ========================================================= */
-
+/* ===== ভিডিও ইনফো ===== */
 .video-info {
   position: absolute;
-
-  left: 14px;
-  right: 82px;
-  bottom: 72px;
-
-  z-index: 90;
-
-  text-shadow:
-    0 1px 5px rgba(0, 0, 0, 0.9);
+  left: 15px;
+  right: 85px;
+  bottom: 95px;
+  z-index: 25;
 }
-
-.video-info-username {
-  display: block;
-
-  margin-bottom: 7px;
-
-  background: transparent;
-
-  color: #fff;
-
-  font-size: 15px;
-  font-weight: 800;
+.video-info .username {
+  font-size: 17px;
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+  margin-bottom: 6px;
 }
-
-.video-caption {
-  max-width: 100%;
-
-  color: #fff;
-
+.video-info .caption {
   font-size: 14px;
-  line-height: 1.45;
-
-  word-break: break-word;
+  line-height: 1.5;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+}
+.video-info .sound {
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 8px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.9);
 }
 
-.video-music {
-  margin-top: 7px;
-
-  color: rgba(255, 255, 255, 0.92);
-
-  font-size: 12px;
+/* ===== সাউন্ড বাটন ===== */
+.sound-btn {
+  position: absolute;
+  left: 14px;
+  bottom: 155px;
+  z-index: 35;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.45);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  font-size: 18px;
 }
 
+/* ===== পজ ইন্ডিকেটর ===== */
+.pause-indicator {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0.7);
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s;
+  z-index: 40;
+  font-size: 28px;
+}
+.pause-indicator.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
 
-/* =========================================================
-   BOTTOM NAVIGATION
-   ========================================================= */
+/* ===== লোডার ===== */
+.video-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.video-loader span {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(255,255,255,0.2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-.wwc-bottom-nav {
+/* ===== টিকটক স্টাইল বটম নেভ ===== */
+.bottom-nav {
   position: fixed;
-
   left: 0;
+  right: 0;
   bottom: 0;
-
-  z-index: 2000;
-
-  width: 100%;
-
-  min-height: 68px;
-
+  height: 75px;
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: space-around;
-
-  padding:
-    3px
-    8px
-    calc(3px + env(safe-area-inset-bottom))
-    8px;
-
-  background:
-    rgba(0, 0, 0, 0.94);
-
-  border-top:
-    1px solid rgba(255, 255, 255, 0.08);
-
-  backdrop-filter:
-    blur(10px);
-
-  -webkit-backdrop-filter:
-    blur(10px);
+  padding-bottom: env(safe-area-inset-bottom);
+  background: linear-gradient(transparent, rgba(0,0,0,0.95) 25%);
+  border-top: 1px solid rgba(255,255,255,0.05);
 }
-
-.wwc-nav-btn {
+.nav-btn {
   width: 20%;
-  height: 58px;
-
+  height: 65px;
   display: flex;
   flex-direction: column;
-
   align-items: center;
   justify-content: center;
-
-  gap: 3px;
-
+  gap: 2px;
+  color: rgba(255,255,255,0.5);
+  font-size: 10px;
+  font-weight: 600;
+  transition: color 0.2s;
+  position: relative;
   background: transparent;
-
-  color: rgba(255, 255, 255, 0.62);
-
-  transition:
-    transform 0.12s ease;
 }
-
-.wwc-nav-btn.active {
+.nav-btn.active { color: #fff; }
+.nav-btn .nav-icon { font-size: 24px; }
+.nav-btn .badge {
+  position: absolute;
+  top: 4px;
+  right: 50%;
+  transform: translateX(calc(50% + 18px));
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fe2c55;
   color: #fff;
-}
-
-.wwc-nav-btn:active {
-  transform: scale(0.9);
-}
-
-.nav-icon {
-  font-size: 22px;
-  line-height: 1;
-}
-
-.nav-label {
   font-size: 10px;
   font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
 }
-
-
-/* =========================================================
-   CREATE BUTTON
-   ========================================================= */
-
-.wwc-create-btn {
-  width: 48px;
+.upload-btn {
+  width: 50px;
   height: 38px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 11px;
-
-  background: #fff;
-
-  color: #000;
-
-  font-size: 29px;
-  font-weight: 300;
-
-  box-shadow:
-    0 0 0 2px
-    rgba(255, 255, 255, 0.35);
-
-  transition:
-    transform 0.15s ease;
-}
-
-.wwc-create-btn:active {
-  transform: scale(0.88);
-}
-
-
-/* =========================================================
-   LOADING
-   ========================================================= */
-
-.feed-loading {
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: #000;
-
-  color: #fff;
-
-  text-align: center;
-
-  font-size: 15px;
-}
-
-
-/* =========================================================
-   EMPTY / ERROR
-   ========================================================= */
-
-.feed-empty,
-.feed-error {
-  width: 100%;
-  height: 100%;
-
-  display: flex;
-  flex-direction: column;
-
-  align-items: center;
-  justify-content: center;
-
-  gap: 10px;
-
-  padding: 30px;
-
-  background: #000;
-
-  color: #fff;
-
-  text-align: center;
-
-  line-height: 1.6;
-}
-
-.feed-empty small,
-.feed-error small {
-  color: rgba(255, 255, 255, 0.65);
-}
-
-
-/* =========================================================
-   PROFILE MENU
-   ========================================================= */
-
-.profile-menu {
-  position: fixed;
-
-  top: 0;
-  right: 0;
-
-  z-index: 5000;
-
-  width: min(330px, 90vw);
-  height: 100dvh;
-
-  padding:
-    calc(25px + env(safe-area-inset-top))
-    18px
-    25px;
-
-  background:
-    rgba(18, 18, 18, 0.98);
-
-  transform:
-    translateX(110%);
-
-  transition:
-    transform 0.25s ease;
-
-  box-shadow:
-    -12px 0 45px rgba(0, 0, 0, 0.55);
-}
-
-.profile-menu.show {
-  transform: translateX(0);
-}
-
-.profile-menu-header {
-  display: flex;
-
-  align-items: center;
-  justify-content: space-between;
-
-  margin-bottom: 30px;
-}
-
-.profile-menu-title {
-  color: #fff;
-
-  font-size: 20px;
-  font-weight: 800;
-}
-
-.profile-menu-close {
-  width: 40px;
-  height: 40px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 50%;
-
-  background: #252525;
-
-  color: #fff;
-
-  font-size: 17px;
-}
-
-.profile-menu-btn {
-  width: 100%;
-
-  padding: 15px;
-
-  margin-bottom: 10px;
-
   border-radius: 10px;
-
-  background: #252525;
-
-  color: #fff;
-
-  text-align: left;
-
-  font-size: 15px;
-  font-weight: 700;
+  background: #fff;
+  color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 300;
+  box-shadow: -3px 0 0 #25f4ee, 3px 0 0 #fe2c55;
+  transition: transform 0.15s;
 }
+.upload-btn:active { transform: scale(0.9); }
 
-.profile-menu-btn:active {
-  background: #333;
-}
-
-.logout-menu-btn {
-  color: #ff6d6d;
-}
-
-
-/* =========================================================
-   COMMENT BOX
-   ========================================================= */
-
-.comment-box {
+/* ===== কমেন্ট প্যানেল ===== */
+.comment-panel {
   position: fixed;
-
   left: 0;
   right: 0;
   bottom: 0;
-
-  z-index: 6000;
-
-  width: 100%;
-  height: min(75dvh, 680px);
-
+  z-index: 150;
+  height: 55vh;
+  background: #111;
+  border-radius: 18px 18px 0 0;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
   display: flex;
   flex-direction: column;
-
-  background: #111;
-
-  border-radius:
-    20px
-    20px
-    0
-    0;
-
-  box-shadow:
-    0 -12px 45px rgba(0, 0, 0, 0.6);
-
-  transform:
-    translateY(110%);
-
-  transition:
-    transform 0.25s ease;
 }
-
-.comment-box.show {
-  transform:
-    translateY(0);
-}
-
-.comment-title {
-  min-height: 58px;
-
+.comment-panel.open { transform: translateY(0); }
+.comment-header {
+  height: 50px;
+  flex: none;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-
-  padding: 0 17px;
-
-  border-bottom:
-    1px solid #292929;
-
+  justify-content: center;
+  border-bottom: 1px solid #333;
+  font-weight: 700;
+  position: relative;
   color: #fff;
-
-  font-size: 16px;
-  font-weight: 800;
 }
-
-.comment-close {
-  width: 36px;
-  height: 36px;
-
-  border-radius: 50%;
-
-  background: #292929;
-
+.close-comments {
+  position: absolute;
+  right: 15px;
   color: #fff;
-
-  font-size: 16px;
+  font-size: 24px;
+  background: transparent;
+  border: 0;
 }
-
 .comments-list {
   flex: 1;
-
   overflow-y: auto;
-
-  padding: 10px 15px;
-
-  scrollbar-width: thin;
-
-  overscroll-behavior: contain;
+  padding: 15px;
+  color: #fff;
 }
-
-.comment-item {
+.comment {
+  padding: 10px 0;
+  border-bottom: 1px solid #222;
+  line-height: 1.4;
+  color: #eee;
+}
+.comment strong { display: block; margin-bottom: 4px; color: #fff; }
+.comment-input {
   display: flex;
-
-  gap: 10px;
-
-  padding: 11px 0;
-
-  border-bottom:
-    1px solid
-    rgba(255, 255, 255, 0.07);
+  gap: 8px;
+  padding: 10px;
+  border-top: 1px solid #333;
 }
-
-.comment-avatar {
-  width: 38px;
-  height: 38px;
-
-  flex-shrink: 0;
-
-  overflow: hidden;
-
+.comment-input input {
+  flex: 1;
+  border: 1px solid #444;
+  background: #222;
+  color: #fff;
+  border-radius: 22px;
+  padding: 10px 15px;
+  outline: none;
+}
+.comment-input input::placeholder { color: #666; }
+.comment-input button {
+  width: 44px;
   border-radius: 50%;
-
-  background: #333;
+  background: #fff;
+  color: #000;
+  font-size: 16px;
+  border: 0;
 }
 
-.comment-avatar img {
-  display: block;
+/* ===== টোস্ট ===== */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 95px;
+  transform: translateX(-50%) translateY(20px);
+  z-index: 500;
+  background: rgba(30,30,30,0.95);
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 22px;
+  font-size: 14px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
 
+/* ===== মেসেজ ===== */
+.feed-message {
   width: 100%;
-  height: 100%;
+  height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #aaa;
+  padding: 30px;
+}
+.feed-message-inner { max-width: 320px; }
+.feed-message-icon { font-size: 45px; margin-bottom: 15px; }
+.retry-btn {
+  margin-top: 18px;
+  border-radius: 22px;
+  padding: 10px 22px;
+  background: #fff;
+  color: #000;
+  font-weight: 700;
+  border: 0;
+}
 
+/* ===== সার্চ ওভারলে ===== */
+.search-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: rgba(0,0,0,0.95);
+  padding: 60px 20px 20px;
+  animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+.search-container { max-width: 600px; margin: 0 auto; }
+.search-header {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.search-header input {
+  flex: 1;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid #444;
+  background: #222;
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+}
+.search-header input:focus { border-color: #777; }
+.search-header input::placeholder { color: #666; }
+.search-close-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #333;
+  color: #fff;
+  font-size: 22px;
+  border: 0;
+  cursor: pointer;
+}
+.search-close-btn:active { transform: scale(0.9); }
+.search-result-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid #222;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  cursor: pointer;
+}
+.search-result-item:active { background: #222; }
+.search-result-item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   object-fit: cover;
 }
-
-.comment-content {
-  flex: 1;
-
-  color: #eee;
-
-  font-size: 13px;
-
-  line-height: 1.5;
-}
-
-.comment-content strong {
-  display: block;
-
-  margin-bottom: 2px;
-
-  color: #fff;
-}
-
-.comment-loading,
-.no-comments,
-.comment-error {
-  padding: 35px 10px;
-
-  color: rgba(255, 255, 255, 0.7);
-
-  text-align: center;
-}
-
-#commentInput {
-  width: calc(100% - 24px);
-
-  min-height: 60px;
-
-  margin: 8px 12px;
-
-  padding: 12px;
-
-  resize: none;
-
-  outline: none;
-
-  border:
-    1px solid #333;
-
-  border-radius: 12px;
-
-  background: #1c1c1c;
-
-  color: #fff;
-
-  font-size: 14px;
-}
-
-#commentInput::placeholder {
-  color:
-    rgba(255, 255, 255, 0.45);
-}
-
-.comment-buttons {
-  display: flex;
-
-  gap: 10px;
-
-  padding:
-    0
-    12px
-    calc(
-      12px +
-      env(safe-area-inset-bottom)
-    );
-}
-
-.comment-buttons button {
-  flex: 1;
-
-  padding: 13px;
-
-  border-radius: 9px;
-
-  font-weight: 800;
-}
-
-#commentCancel {
-  background: #292929;
-
-  color: #fff;
-}
-
-#commentSend {
-  background: #fff;
-
-  color: #000;
-}
-
-
-/* =========================================================
-   PROFILE BUTTONS
-   ========================================================= */
-
-.profile-photo-btn:active,
-.profile-username:active,
-.video-info-username:active {
-  opacity: 0.75;
-}
-
-
-/* =========================================================
-   MOBILE
-   ========================================================= */
-
-@media (max-width: 600px) {
-
-  .actions {
-    right: 7px;
-    bottom: 128px;
-    gap: 17px;
-  }
-
-  .action-btn {
-    width: 56px;
-  }
-
-  .action-icon {
-    width: 46px;
-    height: 46px;
-  }
-
-  .profile-area {
-    left: 13px;
-    bottom: 143px;
-  }
-
-  .video-info {
-    left: 13px;
-    right: 78px;
-    bottom: 72px;
-  }
-
-}
-
-
-/* =========================================================
-   SMALL PHONES
-   ========================================================= */
-
-@media (max-width: 360px) {
-
-  .wwc-top-tabs {
-    gap: 18px;
-  }
-
-  .wwc-top-tab {
-    font-size: 14px;
-  }
-
-  .profile-area {
-    left: 10px;
-  }
-
-  .profile-photo-btn {
-    width: 43px;
-    height: 43px;
-  }
-
-  .follow-btn {
-    min-width: 65px;
-    padding: 6px 9px;
-  }
-
-  .actions {
-    right: 4px;
-    gap: 12px;
-  }
-
-  .action-icon {
-    width: 42px;
-    height: 42px;
-    font-size: 28px;
-  }
-
-  .like-btn .action-icon {
-    font-size: 31px;
-  }
-
-  .video-info {
-    left: 10px;
-    right: 68px;
-  }
-
-}
-
-
-/* =========================================================
-   DESKTOP
-   ========================================================= */
-
-@media (min-width: 700px) {
-
-  #app {
-    max-width: 520px;
-
-    margin: 0 auto;
-
-    box-shadow:
-      0 0 70px
-      rgba(0, 0, 0, 0.75);
-  }
-
-  .wwc-top-bar {
-    max-width: 520px;
-
-    left: 50%;
-
-    transform:
-      translateX(-50%);
-  }
-
-  .wwc-bottom-nav {
-    max-width: 520px;
-
-    left: 50%;
-
-    transform:
-      translateX(-50%);
-  }
-
-}
-
-
-/* =========================================================
-   REDUCED MOTION
-   ========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-
-    scroll-behavior: auto !important;
-
-    transition-duration: 0.01ms !important;
-  }
-
-}
-/* =========================================================
-   TIKTOK STYLE LIKE ANIMATION
-   ========================================================= */
-
-.like-btn.liked .action-icon {
-  animation: wwcLikePop 0.35s ease;
-}
-
-@keyframes wwcLikePop {
-  0% {
-    transform: scale(1);
-  }
-
-  35% {
-    transform: scale(1.45);
-  }
-
-  65% {
-    transform: scale(0.88);
-  }
-
-  100% {
-    transform: scale(1.08);
-  }
-}
-
-
-/* =========================================================
-   DOUBLE TAP HEART EFFECT
-   ========================================================= */
-
-.double-tap-heart {
-  position: absolute;
-
-  left: 50%;
-  top: 50%;
-
-  z-index: 100;
-
-  pointer-events: none;
-
-  font-size: 95px;
-
-  transform:
-    translate(-50%, -50%)
-    scale(0.4);
-
-  opacity: 0;
-
-  animation:
-    wwcDoubleHeart 0.75s
-    cubic-bezier(0.2, 0.8, 0.3, 1)
-    forwards;
-
-  filter:
-    drop-shadow(
-      0 4px 12px
-      rgba(0, 0, 0, 0.35)
-    );
-}
-
-@keyframes wwcDoubleHeart {
-
-  0% {
-    opacity: 0;
-    transform:
-      translate(-50%, -50%)
-      scale(0.4);
-  }
-
-  20% {
-    opacity: 1;
-    transform:
-      translate(-50%, -50%)
-      scale(1.2);
-  }
-
-  45% {
-    opacity: 1;
-    transform:
-      translate(-50%, -50%)
-      scale(1);
-  }
-
-  100% {
-    opacity: 0;
-    transform:
-      translate(-50%, -50%)
-      scale(1.35);
-  }
-}
-
-
-/* =========================================================
-   BUTTON PRESS EFFECT
-   ========================================================= */
-
-.action-btn:active .action-icon {
-  transform: scale(0.82);
-}
-
-.like-btn.liked .action-icon {
-  text-shadow:
-    0 0 10px rgba(255, 70, 70, 0.65);
-}
-
-.save-btn.saved .action-icon {
-  text-shadow:
-    0 0 10px rgba(255, 255, 255, 0.45);
-}
-
-
-/* =========================================================
-   FOLLOW BUTTON ANIMATION
-   ========================================================= */
-
-.follow-btn {
-  transition:
-    transform 0.15s ease,
-    background 0.2s ease,
-    color 0.2s ease;
-}
-
-.follow-btn.following {
-  animation:
-    wwcFollowPop 0.25s ease;
-}
-
-@keyframes wwcFollowPop {
-
-  0% {
-    transform: scale(0.9);
-  }
-
-  60% {
-    transform: scale(1.06);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
-
-/* =========================================================
-   SHARE / COMMENT / SAVE FEEDBACK
-   ========================================================= */
-
-.comment-btn .action-icon,
-.save-btn .action-icon,
-.share-btn .action-icon {
-  transition:
-    transform 0.18s ease;
-}
-
-.comment-btn:active .action-icon,
-.save-btn:active .action-icon,
-.share-btn:active .action-icon {
-  transform: scale(0.8);
+.search-result-item .info { flex: 1; }
+.search-result-item .info .name { font-weight: 600; }
+.search-result-item .info .desc { font-size: 12px; color: #888; }
+
+/* ===== ডেস্কটপ ===== */
+@media(min-width: 700px) {
+  .video-item { max-width: 500px; margin: auto; }
+  .bottom-nav { max-width: 500px; left: 50%; right: auto; transform: translateX(-50%); }
 }
