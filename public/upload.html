@@ -1,24 +1,264 @@
 <!DOCTYPE html>
-<html>
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Upload</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;color:#fff;font-family:Arial,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh}
-h1{font-size:24px;margin-bottom:10px}
-p{color:#888}
-.upload-box{border:2px dashed #444;border-radius:20px;padding:40px;text-align:center;margin:20px 0;width:80%;max-width:400px}
-.upload-box i{font-size:50px;color:#555}
-.back-btn{position:fixed;top:20px;left:20px;color:#fff;font-size:24px;background:none;border:0;cursor:pointer}
-</style>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+  <title>Upload · WWC</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;min-height:100vh;padding:60px 16px 30px}
+    .back-btn{position:fixed;top:16px;left:16px;color:#fff;font-size:20px;background:rgba(255,255,255,0.1);border:0;width:44px;height:44px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);z-index:10}
+    .back-btn:active{transform:scale(0.92);background:rgba(255,255,255,0.2)}
+    .header{text-align:center;margin-bottom:25px}
+    .header h1{font-size:22px;font-weight:700}
+    .header p{color:#888;font-size:13px;margin-top:4px}
+    .upload-container{max-width:500px;margin:0 auto}
+    .upload-box{border:2px dashed #333;border-radius:20px;padding:50px 20px;text-align:center;cursor:pointer;transition:border-color 0.3s,background 0.3s}
+    .upload-box:hover{border-color:#555;background:rgba(255,255,255,0.02)}
+    .upload-box.dragover{border-color:#25f4ee;background:rgba(37,244,238,0.05)}
+    .upload-box i{font-size:50px;color:#555;display:block;margin-bottom:15px}
+    .upload-box .title{font-size:16px;font-weight:600;margin-bottom:6px}
+    .upload-box .sub{font-size:13px;color:#666}
+    .upload-box input{display:none}
+    .preview{display:none;margin-top:20px;border-radius:12px;overflow:hidden;background:#111}
+    .preview video{width:100%;max-height:400px;object-fit:contain;display:block}
+    .form-group{margin-top:16px}
+    .form-group label{display:block;font-size:13px;font-weight:600;color:#888;margin-bottom:6px}
+    .form-group input,.form-group textarea{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #333;background:#111;color:#fff;font-size:14px;outline:none}
+    .form-group input:focus,.form-group textarea:focus{border-color:#555}
+    .form-group textarea{min-height:80px;resize:vertical;font-family:inherit}
+    .upload-btn-submit{width:100%;padding:14px;border-radius:12px;background:#fff;color:#000;font-size:16px;font-weight:700;border:0;cursor:pointer;margin-top:16px;transition:transform 0.15s,opacity 0.15s}
+    .upload-btn-submit:active{transform:scale(0.98)}
+    .upload-btn-submit:disabled{opacity:0.5;cursor:not-allowed}
+    .progress{display:none;margin-top:12px;height:4px;background:#222;border-radius:4px;overflow:hidden}
+    .progress .bar{height:100%;background:#25f4ee;width:0%;transition:width 0.3s}
+    .status{text-align:center;margin-top:10px;font-size:14px;color:#888}
+    .status.success{color:#25f4ee}
+    .status.error{color:#ff2d55}
+  </style>
 </head>
 <body>
-<button class="back-btn" onclick="window.location.href='./index.html'"><i class="fas fa-arrow-left"></i></button>
-<h1>📤 Upload Video</h1>
-<p>ভিডিও আপলোড করুন</p>
-<div class="upload-box">
-  <i class="fas fa-cloud-upload-alt"></i>
-  <p style="margin-top:15px;color:#666;">Coming soon...</p>
+
+<button class="back-btn" onclick="window.location.href='./index.html'">
+  <i class="fas fa-arrow-left"></i>
+</button>
+
+<div class="header">
+  <h1><i class="fas fa-cloud-upload-alt" style="color:#25f4ee;margin-right:8px;"></i>Upload Video</h1>
+  <p>ভিডিও আপলোড করুন এবং শেয়ার করুন</p>
 </div>
+
+<div class="upload-container">
+  <div class="upload-box" id="uploadBox">
+    <i class="fas fa-cloud-upload-alt"></i>
+    <div class="title">Select a video</div>
+    <div class="sub">MP4, WebM, or MOV • Max 100MB</div>
+    <input type="file" id="fileInput" accept="video/*">
+  </div>
+  
+  <div class="preview" id="preview">
+    <video id="videoPreview" controls></video>
+  </div>
+  
+  <div class="form-group">
+    <label>Caption</label>
+    <input type="text" id="captionInput" placeholder="Write a caption..." maxlength="200">
+  </div>
+  
+  <div class="form-group">
+    <label>Sound / Music</label>
+    <input type="text" id="soundInput" placeholder="Original sound - WWC">
+  </div>
+  
+  <div class="progress" id="progress">
+    <div class="bar" id="progressBar"></div>
+  </div>
+  
+  <div class="status" id="status"></div>
+  
+  <button class="upload-btn-submit" id="uploadBtn" disabled>Upload Video</button>
+</div>
+
+<script type="module">
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import { getFirestore, doc, setDoc, serverTimestamp, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
+  authDomain: "world-wide-connect-62c87.firebaseapp.com",
+  projectId: "world-wide-connect-62c87",
+  storageBucket: "world-wide-connect-62c87.firebasestorage.app",
+  messagingSenderId: "93178453668",
+  appId: "1:93178453668:web:2184630caa8e61f7445031"
+};
+
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+const uploadBox = document.getElementById('uploadBox');
+const fileInput = document.getElementById('fileInput');
+const preview = document.getElementById('preview');
+const videoPreview = document.getElementById('videoPreview');
+const captionInput = document.getElementById('captionInput');
+const soundInput = document.getElementById('soundInput');
+const uploadBtn = document.getElementById('uploadBtn');
+const progress = document.getElementById('progress');
+const progressBar = document.getElementById('progressBar');
+const status = document.getElementById('status');
+
+let selectedFile = null;
+let currentUser = null;
+
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+  if (!user) {
+    status.textContent = '🔐 Please login to upload';
+    status.className = 'status error';
+    uploadBtn.disabled = true;
+  } else {
+    status.textContent = '';
+    status.className = 'status';
+  }
+});
+
+// ফাইল সিলেক্ট
+uploadBox.addEventListener('click', () => fileInput.click());
+
+uploadBox.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadBox.classList.add('dragover');
+});
+
+uploadBox.addEventListener('dragleave', () => {
+  uploadBox.classList.remove('dragover');
+});
+
+uploadBox.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadBox.classList.remove('dragover');
+  if (e.dataTransfer.files.length) {
+    handleFile(e.dataTransfer.files[0]);
+  }
+});
+
+fileInput.addEventListener('change', (e) => {
+  if (e.target.files.length) {
+    handleFile(e.target.files[0]);
+  }
+});
+
+function handleFile(file) {
+  if (!file.type.startsWith('video/')) {
+    status.textContent = '❌ Please select a video file';
+    status.className = 'status error';
+    return;
+  }
+  
+  if (file.size > 100 * 1024 * 1024) {
+    status.textContent = '❌ File too large. Max 100MB';
+    status.className = 'status error';
+    return;
+  }
+  
+  selectedFile = file;
+  uploadBtn.disabled = false;
+  
+  // প্রিভিউ
+  preview.style.display = 'block';
+  videoPreview.src = URL.createObjectURL(file);
+  videoPreview.load();
+  
+  status.textContent = `✅ ${file.name} (${(file.size / 1024 / 1024).toFixed(1)} MB)`;
+  status.className = 'status success';
+}
+
+// আপলোড
+uploadBtn.addEventListener('click', async () => {
+  if (!selectedFile || !currentUser) return;
+  
+  uploadBtn.disabled = true;
+  progress.style.display = 'block';
+  progressBar.style.width = '0%';
+  status.textContent = '⏳ Uploading...';
+  status.className = 'status';
+  
+  try {
+    // 1. স্টোরেজে আপলোড
+    const fileName = `${Date.now()}_${selectedFile.name}`;
+    const storageRef = ref(storage, `videos/${currentUser.uid}/${fileName}`);
+    const uploadTask = uploadBytesResumable(storageRef, selectedFile);
+    
+    const downloadURL = await new Promise((resolve, reject) => {
+      uploadTask.on('state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          progressBar.style.width = progress + '%';
+        },
+        (error) => reject(error),
+        async () => {
+          try {
+            const url = await getDownloadURL(uploadTask.snapshot.ref);
+            resolve(url);
+          } catch (e) {
+            reject(e);
+          }
+        }
+      );
+    });
+    
+    // 2. ফায়ারস্টোরে সেভ
+    const videoData = {
+      uid: currentUser.uid,
+      videoURL: downloadURL,
+      caption: captionInput.value.trim() || 'No caption',
+      sound: soundInput.value.trim() || 'Original sound - WWC',
+      username: currentUser.displayName || 'wwc_user',
+      name: currentUser.displayName || 'WWC User',
+      photoURL: currentUser.photoURL || './images/profile.png',
+      likes: 0,
+      comments: 0,
+      saves: 0,
+      shares: 0,
+      likedBy: [],
+      savedBy: [],
+      createdAt: serverTimestamp()
+    };
+    
+    await addDoc(collection(db, 'videos'), videoData);
+    
+    status.textContent = '✅ Upload successful!';
+    status.className = 'status success';
+    progressBar.style.width = '100%';
+    
+    // রিসেট
+    setTimeout(() => {
+      selectedFile = null;
+      fileInput.value = '';
+      preview.style.display = 'none';
+      videoPreview.src = '';
+      captionInput.value = '';
+      soundInput.value = '';
+      uploadBtn.disabled = true;
+      progress.style.display = 'none';
+      progressBar.style.width = '0%';
+      status.textContent = '🎬 Ready for next upload';
+      status.className = 'status';
+    }, 3000);
+    
+  } catch (e) {
+    console.error('Upload error:', e);
+    status.textContent = '❌ Upload failed: ' + (e.message || 'Unknown error');
+    status.className = 'status error';
+    uploadBtn.disabled = false;
+  }
+});
+</script>
+
 </body>
 </html>
