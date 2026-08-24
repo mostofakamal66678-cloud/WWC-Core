@@ -7,9 +7,7 @@
   <title>WWC · Home</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
-    /* =====================================================
-       TIKTOK STYLE CSS
-    ===================================================== */
+    /* ===== সমস্ত CSS আগের মতো ===== */
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
     html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;overscroll-behavior:none}
     button{border:0;outline:0;cursor:pointer;background:transparent;font-family:inherit;-webkit-user-select:none;user-select:none}
@@ -24,9 +22,9 @@
     .top-bar .tab{position:relative;background:transparent;color:rgba(255,255,255,0.6);font-size:17px;font-weight:700;padding:8px 4px;transition:color .2s}
     .top-bar .tab.active{color:#fff}
     .top-bar .tab.active::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;border-radius:10px;background:#fff}
-    .search-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,0.4);color:#fff;display:flex;align-items:center;justify-content:center;pointer-events:auto;backdrop-filter:blur(6px);font-size:18px}
+    .search-btn{position:absolute;right:14px;top:50%;transform:translateY(-50%);width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,0.4);color:#fff;display:flex;align-items:center;justify-content:center;pointer-events:auto;backdrop-filter:blur(6px);font-size:18px;border:0;cursor:pointer}
     .action-bar{position:absolute;right:8px;bottom:110px;z-index:30;width:62px;display:flex;flex-direction:column;align-items:center;gap:14px}
-    .action{width:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;background:transparent;padding:0}
+    .action{width:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;background:transparent;padding:0;border:0;cursor:pointer}
     .action-icon{width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-size:30px;filter:drop-shadow(0 2px 6px rgba(0,0,0,0.8));transition:transform .15s cubic-bezier(0.2,0.9,0.3,1.2);color:#fff}
     .action:active .action-icon{transform:scale(0.82)}
     .action-count{font-size:12px;font-weight:700;text-shadow:0 1px 4px #000;margin-top:1px;color:#fff}
@@ -36,20 +34,20 @@
     @keyframes savePop{0%{transform:scale(0.7)}60%{transform:scale(1.2)}100%{transform:scale(1.1)}}
     .creator-avatar{position:relative;width:50px;height:50px;border-radius:50%;border:2px solid #fff;overflow:visible;cursor:pointer}
     .creator-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
-    .follow-plus{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:22px;height:22px;border-radius:50%;background:#fff;color:#000;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .2s}
+    .follow-plus{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);width:22px;height:22px;border-radius:50%;background:#fff;color:#000;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .2s;border:0;cursor:pointer}
     .follow-plus.following{background:#ff2d55;color:#fff;font-size:12px}
     .video-info{position:absolute;left:15px;right:85px;bottom:95px;z-index:25}
     .video-info .username{font-size:17px;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,0.9);margin-bottom:6px;cursor:pointer}
     .video-info .caption{font-size:14px;line-height:1.5;text-shadow:0 2px 8px rgba(0,0,0,0.9)}
     .video-info .sound{font-size:13px;font-weight:600;margin-top:8px;text-shadow:0 2px 8px rgba(0,0,0,0.9)}
-    .sound-btn{position:absolute;left:14px;bottom:155px;z-index:35;width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,0.45);color:#fff;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(5px);font-size:18px}
+    .sound-btn{position:absolute;left:14px;bottom:155px;z-index:35;width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,0.45);color:#fff;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(5px);font-size:18px;border:0;cursor:pointer}
     .pause-indicator{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(0.7);width:65px;height:65px;border-radius:50%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:all .2s;z-index:40;font-size:28px}
     .pause-indicator.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
     .video-loader{position:absolute;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;pointer-events:none}
     .video-loader span{width:32px;height:32px;border:3px solid rgba(255,255,255,0.2);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
     @keyframes spin{to{transform:rotate(360deg)}}
     .bottom-nav{position:fixed;left:0;right:0;bottom:0;height:75px;z-index:100;display:flex;align-items:center;justify-content:space-around;padding-bottom:env(safe-area-inset-bottom);background:linear-gradient(transparent,rgba(0,0,0,0.95) 25%);border-top:1px solid rgba(255,255,255,0.05)}
-    .nav-btn{width:20%;height:65px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:rgba(255,255,255,0.5);font-size:10px;font-weight:600;transition:color .2s;position:relative;background:transparent}
+    .nav-btn{width:20%;height:65px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:rgba(255,255,255,0.5);font-size:10px;font-weight:600;transition:color .2s;position:relative;background:transparent;border:0;cursor:pointer}
     .nav-btn.active{color:#fff}
     .nav-btn .nav-icon{font-size:24px}
     .upload-btn{width:50px;height:38px;border-radius:10px;background:#fff;color:#000;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:300;box-shadow:-3px 0 0 #25f4ee,3px 0 0 #fe2c55;transition:transform .15s}
@@ -57,21 +55,37 @@
     .comment-panel{position:fixed;left:0;right:0;bottom:0;z-index:150;height:55vh;background:#111;border-radius:18px 18px 0 0;transform:translateY(100%);transition:transform .3s cubic-bezier(0.2,0.9,0.3,1);display:flex;flex-direction:column}
     .comment-panel.open{transform:translateY(0)}
     .comment-header{height:50px;flex:none;display:flex;align-items:center;justify-content:center;border-bottom:1px solid #333;font-weight:700;position:relative;color:#fff}
-    .close-comments{position:absolute;right:15px;color:#fff;font-size:24px;background:transparent;border:0}
+    .close-comments{position:absolute;right:15px;color:#fff;font-size:24px;background:transparent;border:0;cursor:pointer}
     .comments-list{flex:1;overflow-y:auto;padding:15px;color:#fff}
     .comment{padding:10px 0;border-bottom:1px solid #222;line-height:1.4;color:#eee}
     .comment strong{display:block;margin-bottom:4px;color:#fff}
     .comment-input{display:flex;gap:8px;padding:10px;border-top:1px solid #333}
-    .comment-input input{flex:1;border:1px solid #444;background:#222;color:#fff;border-radius:22px;padding:10px 15px;outline:none}
+    .comment-input input{flex:1;border:1px solid #444;background:#222;color:#fff;border-radius:22px;padding:10px 15px;outline:none;font-family:inherit}
     .comment-input input::placeholder{color:#666}
-    .comment-input button{width:44px;border-radius:50%;background:#fff;color:#000;font-size:16px;border:0}
+    .comment-input button{width:44px;border-radius:50%;background:#fff;color:#000;font-size:16px;border:0;cursor:pointer}
     .toast{position:fixed;left:50%;bottom:95px;transform:translateX(-50%) translateY(20px);z-index:500;background:rgba(30,30,30,0.95);color:#fff;padding:10px 20px;border-radius:22px;font-size:14px;opacity:0;pointer-events:none;transition:all .25s;white-space:nowrap}
     .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
     .feed-message{width:100%;height:100dvh;display:flex;align-items:center;justify-content:center;text-align:center;color:#aaa;padding:30px}
     .feed-message-inner{max-width:320px}
     .feed-message-icon{font-size:45px;margin-bottom:15px}
-    .retry-btn{margin-top:18px;border-radius:22px;padding:10px 22px;background:#fff;color:#000;font-weight:700;border:0}
-    @media(min-width:700px){.video-item{max-width:500px;margin:auto}.bottom-nav{max-width:500px;left:50%;right:auto;transform:translateX(-50%)}
+    .retry-btn{margin-top:18px;border-radius:22px;padding:10px 22px;background:#fff;color:#000;font-weight:700;border:0;cursor:pointer}
+    /* ===== সার্চ ওভারলে ===== */
+    .search-overlay{position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;background:rgba(0,0,0,0.95);padding:60px 20px 20px;animation:fadeIn .25s ease}
+    @keyframes fadeIn{from{opacity:0;transform:scale(0.98)}to{opacity:1;transform:scale(1)}}
+    .search-container{max-width:600px;margin:0 auto}
+    .search-header{display:flex;gap:10px;margin-bottom:20px}
+    .search-header input{flex:1;padding:14px 18px;border-radius:12px;border:1px solid #444;background:#222;color:#fff;font-size:16px;outline:none}
+    .search-header input:focus{border-color:#777}
+    .search-header input::placeholder{color:#666}
+    .search-close-btn{width:50px;height:50px;border-radius:50%;background:#333;color:#fff;font-size:22px;border:0;cursor:pointer}
+    .search-close-btn:active{transform:scale(0.9)}
+    .search-result-item{padding:12px 16px;border-bottom:1px solid #222;display:flex;align-items:center;gap:12px;color:#fff;cursor:pointer}
+    .search-result-item:active{background:#222}
+    .search-result-item img{width:40px;height:40px;border-radius:50%;object-fit:cover}
+    .search-result-item .info{flex:1}
+    .search-result-item .info .name{font-weight:600}
+    .search-result-item .info .desc{font-size:12px;color:#888}
+    @media(min-width:700px){.video-item{max-width:500px;margin:auto}.bottom-nav{max-width:500px;left:50%;right:auto;transform:translateX(-50%)}}
   </style>
 </head>
 <body>
@@ -80,36 +94,19 @@
   <main class="feed" id="feed"></main>
   
   <nav class="bottom-nav">
-    <button class="nav-btn active" onclick="goHome()">
-      <span class="nav-icon"><i class="fas fa-home"></i></span>
-      <span>Home</span>
-    </button>
-    <button class="nav-btn" onclick="goFriends()">
-      <span class="nav-icon"><i class="fas fa-user-friends"></i></span>
-      <span>Friends</span>
-    </button>
-    <button class="nav-btn" onclick="goUpload()">
-      <span class="upload-btn"><i class="fas fa-plus"></i></span>
-    </button>
-    <button class="nav-btn" onclick="goInbox()">
-      <span class="nav-icon"><i class="fas fa-inbox"></i></span>
-      <span>Inbox</span>
-    </button>
-    <button class="nav-btn" onclick="goProfile()">
-      <span class="nav-icon"><i class="fas fa-user"></i></span>
-      <span>Profile</span>
-    </button>
+    <button class="nav-btn active" id="navHome"><span class="nav-icon"><i class="fas fa-home"></i></span><span>Home</span></button>
+    <button class="nav-btn" id="navFriends"><span class="nav-icon"><i class="fas fa-user-friends"></i></span><span>Friends</span></button>
+    <button class="nav-btn" id="navUpload"><span class="upload-btn"><i class="fas fa-plus"></i></span></button>
+    <button class="nav-btn" id="navInbox"><span class="nav-icon"><i class="fas fa-inbox"></i></span><span>Inbox</span></button>
+    <button class="nav-btn" id="navProfile"><span class="nav-icon"><i class="fas fa-user"></i></span><span>Profile</span></button>
   </nav>
   
   <div class="comment-panel" id="commentPanel">
-    <div class="comment-header">
-      <span>Comments</span>
-      <button class="close-comments" onclick="closeComments()">✕</button>
-    </div>
+    <div class="comment-header"><span>Comments</span><button class="close-comments" id="closeCommentsBtn">✕</button></div>
     <div class="comments-list" id="commentsList"></div>
     <div class="comment-input">
       <input id="commentInput" type="text" maxlength="500" placeholder="Add comment...">
-      <button onclick="addComment()"><i class="fas fa-paper-plane"></i></button>
+      <button id="commentSendBtn"><i class="fas fa-paper-plane"></i></button>
     </div>
   </div>
   
@@ -134,7 +131,6 @@ const firebaseConfig = {
   measurementId: "G-PKFJ5NEMGQ"
 };
 
-// ===== Init Firebase =====
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
@@ -151,7 +147,17 @@ let currentFeed = "foryou";
 let currentVideoId = null;
 let observer = null;
 let currentPlayingVideo = null;
+let isSearchMode = false;
+let searchResults = [];
+let lastSearchQuery = "";
 const defaultPhoto = "./images/profile.png";
+
+// ===== DOM Refs =====
+const feed = document.getElementById("feed");
+const toast = document.getElementById("toast");
+const commentPanel = document.getElementById("commentPanel");
+const commentsList = document.getElementById("commentsList");
+const commentInput = document.getElementById("commentInput");
 
 // ===== Helpers =====
 function escapeHtml(v) { return String(v ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;"); }
@@ -161,7 +167,6 @@ function getFollowingIds() { return Array.isArray(currentProfile?.followingIds) 
 function getUsername(video) { return String(video.username || video.userName || video.handle || "wwc_user").replace(/^@/,""); }
 
 function showToast(text) {
-  const toast = document.getElementById("toast");
   if (!toast) return;
   toast.textContent = text;
   toast.classList.add("show");
@@ -174,17 +179,17 @@ function withTimeout(promise, ms) {
 }
 
 // ===== Navigation =====
-window.goHome = function() { window.location.href = "./index.html"; };
-window.goFriends = function() { window.location.href = "./friends.html"; };
-window.goUpload = function() { window.location.href = "./upload.html"; };
-window.goInbox = function() { window.location.href = "./inbox.html"; };
-window.goProfile = function() { 
+document.getElementById("navHome").addEventListener("click", () => { window.location.href = "./index.html"; });
+document.getElementById("navFriends").addEventListener("click", () => { window.location.href = "./friends.html"; });
+document.getElementById("navUpload").addEventListener("click", () => { window.location.href = "./upload.html"; });
+document.getElementById("navInbox").addEventListener("click", () => { window.location.href = "./inbox.html"; });
+document.getElementById("navProfile").addEventListener("click", () => {
   if (currentUser) {
     window.location.href = `./profile.html?uid=${currentUser.uid}`;
   } else {
     window.location.href = "./auth.html";
   }
-};
+});
 
 // =====================================================
 // ✅ VIDEO URL RESOLVER
@@ -219,17 +224,124 @@ async function loadVideos() {
     renderFeed();
   } catch (e) {
     console.error("Load videos error:", e);
-    document.getElementById("feed").innerHTML = `<div class="feed-message"><div class="feed-message-inner"><div class="feed-message-icon">⚠️</div><div>Could not load videos</div></div></div>`;
+    if (feed) feed.innerHTML = `<div class="feed-message"><div class="feed-message-inner"><div class="feed-message-icon">⚠️</div><div>Could not load videos</div></div></div>`;
   }
+}
+
+// =====================================================
+// ✅ SEARCH - সম্পূর্ণ ফিক্সড
+// =====================================================
+function openSearch() {
+  isSearchMode = true;
+  lastSearchQuery = "";
+  
+  const searchHTML = `
+    <div class="search-overlay" id="searchOverlay">
+      <div class="search-container">
+        <div class="search-header">
+          <input type="text" id="searchInput" placeholder="Search users, videos..." autofocus />
+          <button class="search-close-btn" id="searchCloseBtn">✕</button>
+        </div>
+        <div id="searchResults"></div>
+      </div>
+    </div>
+  `;
+  
+  const existing = document.getElementById("searchOverlay");
+  if (existing) existing.remove();
+  
+  document.body.insertAdjacentHTML('beforeend', searchHTML);
+  
+  const input = document.getElementById("searchInput");
+  const closeBtn = document.getElementById("searchCloseBtn");
+  
+  if (input) {
+    input.focus();
+    input.addEventListener("input", (e) => {
+      performSearch(e.target.value.trim());
+    });
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeSearch();
+      if (e.key === "Enter") {
+        const value = e.target.value.trim();
+        if (value) performSearch(value);
+      }
+    });
+  }
+  
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeSearch);
+  }
+}
+
+function performSearch(query) {
+  lastSearchQuery = query;
+  
+  if (!query) {
+    isSearchMode = false;
+    searchResults = [];
+    renderFeed();
+    return;
+  }
+  
+  const lowerQuery = query.toLowerCase();
+  searchResults = allVideos.filter(video => {
+    const username = getUsername(video).toLowerCase();
+    const name = String(video.name || video.displayName || "").toLowerCase();
+    const caption = String(video.caption || video.description || "").toLowerCase();
+    return username.includes(lowerQuery) || name.includes(lowerQuery) || caption.includes(lowerQuery);
+  });
+  
+  isSearchMode = true;
+  renderFeed();
+  
+  const resultsDiv = document.getElementById("searchResults");
+  if (resultsDiv) {
+    resultsDiv.innerHTML = `
+      <div style="color:#888;padding:10px 0 15px;font-size:13px;border-bottom:1px solid #222;">
+        <i class="fas fa-search" style="margin-right:8px;"></i>
+        ${searchResults.length} results found
+      </div>
+      ${searchResults.map(v => `
+        <div class="search-result-item" onclick="window.location.href='./index.html?video=${v.id}'">
+          <img src="${escapeHtml(v.photoURL || v.photo || defaultPhoto)}" onerror="this.src='${defaultPhoto}'">
+          <div class="info">
+            <div class="name">@${escapeHtml(getUsername(v))}</div>
+            <div class="desc">${escapeHtml((v.caption || v.description || "").substring(0, 50))}</div>
+          </div>
+        </div>
+      `).join('')}
+    `;
+  }
+}
+
+function closeSearch() {
+  isSearchMode = false;
+  searchResults = [];
+  const overlay = document.getElementById("searchOverlay");
+  if (overlay) overlay.remove();
+  renderFeed();
 }
 
 // =====================================================
 // ✅ RENDER FEED
 // =====================================================
 function renderFeed() {
-  const feed = document.getElementById("feed");
   if (!feed) return;
   feed.innerHTML = "";
+  
+  if (isSearchMode) {
+    if (!searchResults.length) {
+      feed.innerHTML = `<div class="feed-message"><div class="feed-message-inner"><div class="feed-message-icon">🔍</div><div>"${escapeHtml(lastSearchQuery)}" - No results found</div></div></div>`;
+      return;
+    }
+    searchResults.forEach(video => {
+      const item = createVideoItem(video);
+      feed.appendChild(item);
+    });
+    setupVideoObserver();
+    return;
+  }
   
   let videos = currentFeed === "foryou" ? [...allVideos] : allVideos.filter(v => getFollowingIds().includes(v.uid));
   
@@ -278,11 +390,11 @@ function createVideoItem(video) {
         <button class="tab ${currentFeed === "following" ? "active" : ""}" data-tab="following">Following</button>
         <button class="tab ${currentFeed === "foryou" ? "active" : ""}" data-tab="foryou">For You</button>
       </div>
-      <button class="search-btn" onclick="showToast('🔍 Search coming soon')"><i class="fas fa-search"></i></button>
+      <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i></button>
     </div>
     <div class="action-bar">
       <div class="action">
-        <div class="creator-avatar" onclick="window.location.href='./profile.html?uid=${creatorId}'" style="cursor:pointer;">
+        <div class="creator-avatar" onclick="window.location.href='./profile.html?uid=${creatorId}'">
           <img src="${escapeHtml(avatar)}" alt="${escapeHtml(name)}" onerror="this.src='${defaultPhoto}'">
           ${creatorId && creatorId !== currentUser?.uid ? `
             <button class="follow-plus ${isFollowing ? "following" : ""}" data-action="follow" data-creator="${escapeHtml(creatorId)}">${isFollowing ? "✓" : "+"}</button>
@@ -296,7 +408,7 @@ function createVideoItem(video) {
     </div>
     <button class="sound-btn" data-action="sound"><i class="fas fa-volume-up"></i></button>
     <div class="video-info">
-      <div class="username" onclick="window.location.href='./profile.html?uid=${creatorId}'" style="cursor:pointer;">@${escapeHtml(username)}</div>
+      <div class="username" onclick="window.location.href='./profile.html?uid=${creatorId}'">@${escapeHtml(username)}</div>
       <div class="caption">${escapeHtml(caption)}</div>
       <div class="sound">${escapeHtml(sound)}</div>
     </div>
@@ -368,9 +480,20 @@ function setupVideoObserver() {
 // =====================================================
 // ✅ FEED ACTIONS
 // =====================================================
-document.getElementById("feed")?.addEventListener("click", async (e) => {
+feed?.addEventListener("click", async (e) => {
   const tab = e.target.closest("[data-tab]");
-  if (tab) { currentFeed = tab.dataset.tab === "following" ? "following" : "foryou"; renderFeed(); return; }
+  if (tab) { 
+    if (isSearchMode) closeSearch();
+    currentFeed = tab.dataset.tab === "following" ? "following" : "foryou"; 
+    renderFeed(); 
+    return; 
+  }
+  
+  // Search button
+  if (e.target.closest("#searchBtn") || e.target.closest(".search-btn")) {
+    openSearch();
+    return;
+  }
   
   const btn = e.target.closest("[data-action]");
   if (!btn) return;
@@ -408,13 +531,14 @@ async function toggleLike(videoId, btn) {
       return { liked: !already, likes: newLikes };
     });
     btn.classList.toggle("liked", result.liked);
-    btn.querySelector(".action-count").textContent = formatNumber(result.likes);
+    const countEl = btn.querySelector(".action-count");
+    if (countEl) countEl.textContent = formatNumber(result.likes);
   } catch(e) { console.error("Like error:", e); showToast("Like failed"); }
   btn.disabled = false;
 }
 
 // =====================================================
-// ✅ SAVE
+// ✅ SAVE - সম্পূর্ণ ফিক্সড
 // =====================================================
 async function toggleSave(videoId, btn) {
   if (!currentUser) { showToast("Please login first"); return; }
@@ -440,8 +564,19 @@ async function toggleSave(videoId, btn) {
       return { saved: !already, saves: newSaves };
     });
     btn.classList.toggle("saved", result.saved);
-    btn.querySelector(".action-count").textContent = formatNumber(result.saves);
+    const countEl = btn.querySelector(".action-count");
+    if (countEl) countEl.textContent = formatNumber(result.saves);
     showToast(result.saved ? "🔖 Saved" : "Removed");
+    if (result.saved) {
+      if (!currentProfile.savedVideoIds) currentProfile.savedVideoIds = [];
+      if (!currentProfile.savedVideoIds.includes(videoId)) {
+        currentProfile.savedVideoIds.push(videoId);
+      }
+    } else {
+      if (currentProfile.savedVideoIds) {
+        currentProfile.savedVideoIds = currentProfile.savedVideoIds.filter(id => id !== videoId);
+      }
+    }
   } catch(e) { console.error("Save error:", e); showToast("Save failed"); }
   btn.disabled = false;
 }
@@ -476,6 +611,7 @@ async function toggleFollow(targetUid, btn) {
     btn.textContent = result.following ? "✓" : "+";
     const ms = await getDoc(doc(db, "users", currentUser.uid));
     if (ms.exists()) currentProfile = ms.data();
+    showToast(result.following ? "✅ Following" : "Unfollowed");
   } catch(e) { console.error("Follow error:", e); showToast("Follow failed"); }
   btn.disabled = false;
 }
@@ -510,7 +646,8 @@ async function shareVideo(videoId, btn) {
     if (snap.exists()) {
       const newShares = number(snap.data().shares) + 1;
       await updateDoc(videoRef, { shares: newShares });
-      btn.querySelector(".action-count").textContent = formatNumber(newShares);
+      const countEl = btn.querySelector(".action-count");
+      if (countEl) countEl.textContent = formatNumber(newShares);
     }
     const url = new URL(window.location.href);
     url.searchParams.set("video", videoId);
@@ -529,22 +666,21 @@ async function shareVideo(videoId, btn) {
 // =====================================================
 async function openComments(videoId) {
   currentVideoId = videoId;
-  document.getElementById("commentPanel").classList.add("open");
+  commentPanel.classList.add("open");
   await loadComments(videoId);
 }
 
-window.closeComments = function() {
-  document.getElementById("commentPanel").classList.remove("open");
-};
+document.getElementById("closeCommentsBtn")?.addEventListener("click", () => {
+  commentPanel.classList.remove("open");
+});
 
 async function loadComments(videoId) {
-  const list = document.getElementById("commentsList");
-  if (!list) return;
-  list.innerHTML = '<div style="text-align:center;color:#888;padding:25px;">Loading...</div>';
+  if (!commentsList) return;
+  commentsList.innerHTML = '<div style="text-align:center;color:#888;padding:25px;">Loading...</div>';
   try {
     const snap = await withTimeout(getDocs(collection(db, "videos", videoId, "comments")), 8000);
-    list.innerHTML = "";
-    if (snap.empty) { list.innerHTML = '<div style="text-align:center;color:#777;padding:30px;">No comments yet.</div>'; return; }
+    commentsList.innerHTML = "";
+    if (snap.empty) { commentsList.innerHTML = '<div style="text-align:center;color:#777;padding:30px;">No comments yet.</div>'; return; }
     const comments = [];
     snap.forEach(d => comments.push({ id: d.id, ...d.data() }));
     comments.sort((a,b) => (a.createdAt?.seconds||0) - (b.createdAt?.seconds||0));
@@ -552,15 +688,19 @@ async function loadComments(videoId) {
       const div = document.createElement("div");
       div.className = "comment";
       div.innerHTML = `<strong>${escapeHtml(data.username || data.name || "WWC User")}</strong>${escapeHtml(data.text || "")}`;
-      list.appendChild(div);
+      commentsList.appendChild(div);
     });
-  } catch(e) { list.innerHTML = '<div style="text-align:center;color:#ff667f;padding:25px;">Could not load comments</div>'; }
+  } catch(e) { commentsList.innerHTML = '<div style="text-align:center;color:#ff667f;padding:25px;">Could not load comments</div>'; }
 }
 
-window.addComment = async function() {
-  const input = document.getElementById("commentInput");
-  if (!input) return;
-  const text = input.value.trim();
+document.getElementById("commentSendBtn")?.addEventListener("click", addComment);
+commentInput?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") { e.preventDefault(); addComment(); }
+});
+
+async function addComment() {
+  if (!commentInput) return;
+  const text = commentInput.value.trim();
   if (!text || !currentUser || !currentVideoId) return;
   try {
     const videoRef = doc(db, "videos", currentVideoId);
@@ -572,15 +712,13 @@ window.addComment = async function() {
     const vs = await getDoc(videoRef);
     const newComments = number(vs.data()?.comments) + 1;
     await updateDoc(videoRef, { comments: newComments });
-    input.value = "";
+    commentInput.value = "";
     await loadComments(currentVideoId);
     const item = document.querySelector(`.video-item[data-video-id="${CSS.escape(currentVideoId)}"]`);
     if (item) { const btn = item.querySelector('[data-action="comment"]'); if (btn) btn.querySelector(".action-count").textContent = formatNumber(newComments); }
     showToast("💬 Comment Added");
   } catch(e) { console.error("Comment error:", e); showToast("Comment failed"); }
-};
-
-document.getElementById("commentInput")?.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); window.addComment(); } });
+}
 
 // =====================================================
 // ✅ LOAD CURRENT PROFILE
@@ -598,14 +736,16 @@ async function loadCurrentProfile() {
 // =====================================================
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    document.getElementById("feed").innerHTML = `
-      <div class="feed-message">
-        <div class="feed-message-inner">
-          <div class="feed-message-icon">🔐</div>
-          <div>Please login to continue</div>
-          <button class="retry-btn" onclick="window.location.href='./auth.html'">Login</button>
-        </div>
-      </div>`;
+    if (feed) {
+      feed.innerHTML = `
+        <div class="feed-message">
+          <div class="feed-message-inner">
+            <div class="feed-message-icon">🔐</div>
+            <div>Please login to continue</div>
+            <button class="retry-btn" onclick="window.location.href='./auth.html'">Login</button>
+          </div>
+        </div>`;
+    }
     return;
   }
   currentUser = user;
@@ -631,7 +771,7 @@ document.addEventListener("visibilitychange", () => {
   }
 });
 
-console.log('✅ WWC Home Page Loaded!');
+console.log('✅ WWC Home Page Loaded - All features fixed!');
 </script>
 </body>
 </html>
