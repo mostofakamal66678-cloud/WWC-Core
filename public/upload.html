@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
     /* =====================================================
-       TIKTOK STYLE UPLOAD PAGE
+       TIKTOK STYLE UPLOAD - FIXED
     ===================================================== */
     * {
       margin: 0;
@@ -22,10 +22,8 @@
       color: #fff;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
       padding-top: 50px;
-      padding-bottom: 80px;
+      padding-bottom: 30px;
       overflow-x: hidden;
     }
     
@@ -41,7 +39,7 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 16px;
-      background: rgba(0,0,0,0.9);
+      background: rgba(0,0,0,0.95);
       backdrop-filter: blur(10px);
       border-bottom: 1px solid rgba(255,255,255,0.06);
     }
@@ -56,31 +54,28 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      border-radius: 50%;
     }
-    .top-bar .back-btn:active { transform: scale(0.9); }
-    .top-bar .title {
-      font-size: 17px;
-      font-weight: 700;
-    }
+    .top-bar .back-btn:active { background: rgba(255,255,255,0.1); transform: scale(0.9); }
+    .top-bar .title { font-size: 17px; font-weight: 700; }
     .top-bar .placeholder { width: 40px; }
     
     /* ===== মেইন কন্টেইনার ===== */
     .upload-container {
-      flex: 1;
       padding: 16px;
       max-width: 500px;
       margin: 0 auto;
       width: 100%;
     }
     
-    /* ===== টিকটক স্টাইল আপলোড বক্স ===== */
+    /* ===== আপলোড বক্স ===== */
     .upload-box {
       position: relative;
       border-radius: 16px;
       overflow: hidden;
-      background: #1a1a1a;
+      background: #111;
       aspect-ratio: 9 / 16;
-      max-height: 70vh;
+      max-height: 55vh;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -98,20 +93,20 @@
       padding: 30px;
     }
     .upload-box .placeholder-content i {
-      font-size: 60px;
+      font-size: 55px;
       color: #444;
       display: block;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
     .upload-box .placeholder-content .main-text {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 600;
       color: #aaa;
     }
     .upload-box .placeholder-content .sub-text {
       font-size: 13px;
       color: #555;
-      margin-top: 6px;
+      margin-top: 4px;
     }
     .upload-box .placeholder-content .format-text {
       font-size: 12px;
@@ -122,7 +117,7 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      display: block;
+      display: none;
       background: #000;
     }
     .upload-box .file-input {
@@ -139,28 +134,24 @@
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 20px;
-      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      padding: 16px 20px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
       z-index: 3;
       display: none;
     }
     .preview-overlay .file-name {
-      font-size: 13px;
-      color: #aaa;
+      font-size: 14px;
+      color: #fff;
       font-weight: 600;
     }
     .preview-overlay .file-size {
       font-size: 12px;
-      color: #666;
+      color: #888;
     }
     
     /* ===== ফর্ম ===== */
-    .form-section {
-      margin-top: 16px;
-    }
-    .form-group {
-      margin-bottom: 14px;
-    }
+    .form-section { margin-top: 16px; }
+    .form-group { margin-bottom: 14px; }
     .form-group label {
       display: block;
       font-size: 13px;
@@ -182,11 +173,9 @@
       font-family: inherit;
     }
     .form-group input:focus,
-    .form-group textarea:focus {
-      border-color: #555;
-    }
+    .form-group textarea:focus { border-color: #555; }
     .form-group textarea {
-      min-height: 70px;
+      min-height: 60px;
       resize: vertical;
     }
     .form-group .char-count {
@@ -209,8 +198,6 @@
       cursor: pointer;
       transition: all 0.3s;
       margin-top: 8px;
-      position: relative;
-      overflow: hidden;
     }
     .upload-btn:active { transform: scale(0.98); }
     .upload-btn:disabled {
@@ -224,38 +211,52 @@
       justify-content: center;
       gap: 10px;
     }
+    .upload-btn .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    .upload-btn.loading .spinner { display: inline-block; }
+    .upload-btn.loading .btn-icon { display: none; }
+    
+    @keyframes spin { to { transform: rotate(360deg); } }
     
     /* ===== প্রগ্রেস ===== */
     .progress-container {
       display: none;
       margin-top: 16px;
-      background: #1a1a1a;
+      background: #111;
       border-radius: 12px;
       padding: 16px 20px;
+      border: 1px solid #222;
     }
     .progress-container .progress-info {
       display: flex;
       justify-content: space-between;
       font-size: 13px;
       color: #888;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
     .progress-container .progress-bar {
-      height: 4px;
-      background: #333;
-      border-radius: 4px;
+      height: 6px;
+      background: #222;
+      border-radius: 6px;
       overflow: hidden;
     }
     .progress-container .progress-bar .bar {
       height: 100%;
       width: 0%;
       background: linear-gradient(90deg, #25f4ee, #fe2c55);
-      transition: width 0.3s;
-      border-radius: 4px;
+      transition: width 0.3s ease;
+      border-radius: 6px;
     }
     .progress-container .progress-status {
       text-align: center;
-      margin-top: 10px;
+      margin-top: 12px;
       font-size: 14px;
       color: #888;
     }
@@ -279,6 +280,7 @@
       z-index: 1000;
       white-space: nowrap;
       backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.05);
     }
     .toast.show {
       opacity: 1;
@@ -287,9 +289,9 @@
     
     /* ===== টিপস ===== */
     .tips {
-      margin-top: 12px;
+      margin-top: 14px;
       display: flex;
-      gap: 12px;
+      gap: 10px;
       justify-content: center;
       flex-wrap: wrap;
     }
@@ -300,20 +302,23 @@
       font-size: 11px;
       color: #555;
       background: #111;
-      padding: 6px 12px;
+      padding: 6px 14px;
       border-radius: 20px;
+      border: 1px solid #1a1a1a;
     }
     .tips .tip i { font-size: 12px; color: #444; }
     
-    /* ===== রেস্পন্সিভ ===== */
-    @media (max-width: 480px) {
-      .upload-box { aspect-ratio: 9 / 16; max-height: 60vh; }
-      .upload-box .placeholder-content i { font-size: 45px; }
-      .upload-box .placeholder-content .main-text { font-size: 16px; }
+    /* ===== অ্যানিমেশন ===== */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
+    .upload-container { animation: fadeIn 0.3s ease; }
     
-    @media (min-width: 700px) {
-      .upload-container { padding: 20px; }
+    @media (max-width: 480px) {
+      .upload-box { aspect-ratio: 9 / 16; max-height: 50vh; }
+      .upload-box .placeholder-content i { font-size: 40px; }
+      .upload-box .placeholder-content .main-text { font-size: 15px; }
     }
   </style>
 </head>
@@ -363,7 +368,8 @@
     <!-- আপলোড বাটন -->
     <button class="upload-btn" id="uploadBtn" disabled>
       <span class="btn-text">
-        <i class="fas fa-upload"></i>
+        <span class="spinner"></span>
+        <span class="btn-icon"><i class="fas fa-upload"></i></span>
         <span id="uploadBtnText">Upload Video</span>
       </span>
     </button>
@@ -371,7 +377,7 @@
     <!-- প্রগ্রেস -->
     <div class="progress-container" id="progressContainer">
       <div class="progress-info">
-        <span id="progressText">Uploading...</span>
+        <span id="progressText">⏳ Uploading...</span>
         <span id="progressPercent">0%</span>
       </div>
       <div class="progress-bar">
@@ -413,7 +419,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// ===== ডম রেফারেন্স =====
+// ===== DOM রেফারেন্স =====
 const uploadBox = document.getElementById('uploadBox');
 const fileInput = document.getElementById('fileInput');
 const placeholderContent = document.getElementById('placeholderContent');
@@ -436,6 +442,7 @@ const toast = document.getElementById('toast');
 let selectedFile = null;
 let currentUser = null;
 let toastTimer = null;
+let uploadTask = null;
 
 // ===== চার কাউন্ট =====
 captionInput.addEventListener('input', () => {
@@ -466,8 +473,10 @@ function handleFile(file) {
   
   selectedFile = file;
   uploadBtn.disabled = false;
+  uploadBtnText.textContent = 'Upload Video';
+  uploadBtn.classList.remove('loading');
   
-  // প্রিভিউ দেখান
+  // প্রিভিউ
   placeholderContent.style.display = 'none';
   videoPreview.style.display = 'block';
   videoPreview.src = URL.createObjectURL(file);
@@ -511,40 +520,67 @@ uploadBox.addEventListener('click', (e) => {
   fileInput.click();
 });
 
-// ===== আপলোড =====
+// =====================================================
+// ✅ আপলোড - সম্পূর্ণ ফিক্সড
+// =====================================================
 uploadBtn.addEventListener('click', async () => {
-  if (!selectedFile || !currentUser) {
+  if (!selectedFile) {
     showToast('❌ Please select a video first');
     return;
   }
   
+  if (!currentUser) {
+    showToast('🔐 Please login first');
+    return;
+  }
+  
+  // বাটন ডিজেবল
   uploadBtn.disabled = true;
+  uploadBtn.classList.add('loading');
   uploadBtnText.textContent = 'Uploading...';
+  
+  // প্রগ্রেস দেখান
   progressContainer.style.display = 'block';
   progressBar.style.width = '0%';
   progressPercent.textContent = '0%';
   progressStatus.textContent = '⏳ Uploading to WWC...';
   progressStatus.className = 'progress-status';
+  progressText.textContent = '⏳ Uploading...';
   
   try {
-    const fileName = `${Date.now()}_${selectedFile.name}`;
+    // ফাইল নাম তৈরি
+    const fileExt = selectedFile.name.split('.').pop();
+    const fileName = `video_${Date.now()}.${fileExt}`;
     const storageRef = ref(storage, `videos/${currentUser.uid}/${fileName}`);
-    const uploadTask = uploadBytesResumable(storageRef, selectedFile);
     
+    // আপলোড শুরু
+    uploadTask = uploadBytesResumable(storageRef, selectedFile);
+    
+    // আপলোড ট্র্যাক
     const downloadURL = await new Promise((resolve, reject) => {
       uploadTask.on('state_changed',
         (snapshot) => {
+          // প্রগ্রেস আপডেট
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           progressBar.style.width = progress + '%';
           progressPercent.textContent = Math.round(progress) + '%';
-          progressText.textContent = progress < 100 ? '⏳ Uploading...' : '✅ Upload complete!';
+          
+          if (progress < 100) {
+            progressText.textContent = `⏳ Uploading... ${Math.round(progress)}%`;
+          } else {
+            progressText.textContent = '✅ Upload complete!';
+          }
         },
-        (error) => reject(error),
+        (error) => {
+          reject(error);
+        },
         async () => {
           try {
             const url = await getDownloadURL(uploadTask.snapshot.ref);
             resolve(url);
-          } catch (e) { reject(e); }
+          } catch (e) {
+            reject(e);
+          }
         }
       );
     });
@@ -572,7 +608,7 @@ uploadBtn.addEventListener('click', async () => {
     
     await addDoc(collection(db, 'videos'), videoData);
     
-    // সফল
+    // ✅ সফল
     progressStatus.textContent = '✅ Video uploaded successfully! 🎉';
     progressStatus.className = 'progress-status success';
     progressBar.style.width = '100%';
@@ -581,7 +617,7 @@ uploadBtn.addEventListener('click', async () => {
     
     showToast('🎉 Video uploaded successfully!');
     
-    // রিসেট
+    // রিসেট ফর্ম
     setTimeout(() => {
       selectedFile = null;
       fileInput.value = '';
@@ -593,6 +629,7 @@ uploadBtn.addEventListener('click', async () => {
       soundInput.value = '';
       charCount.textContent = '0';
       uploadBtn.disabled = true;
+      uploadBtn.classList.remove('loading');
       uploadBtnText.textContent = 'Upload Video';
       progressContainer.style.display = 'none';
       progressBar.style.width = '0%';
@@ -607,12 +644,18 @@ uploadBtn.addEventListener('click', async () => {
       }, 500);
     }, 2000);
     
-  } catch (e) {
-    console.error('Upload error:', e);
-    progressStatus.textContent = '❌ Upload failed: ' + (e.message || 'Unknown error');
+  } catch (error) {
+    console.error('Upload error:', error);
+    
+    // ❌ এরর
+    progressStatus.textContent = '❌ Upload failed: ' + (error.message || 'Unknown error');
     progressStatus.className = 'progress-status error';
-    showToast('❌ Upload failed');
+    progressText.textContent = '❌ Upload failed';
+    
+    showToast('❌ Upload failed: ' + (error.message || 'Unknown error'));
+    
     uploadBtn.disabled = false;
+    uploadBtn.classList.remove('loading');
     uploadBtnText.textContent = 'Retry Upload';
   }
 });
@@ -624,11 +667,16 @@ onAuthStateChanged(auth, (user) => {
     uploadBtn.disabled = true;
     uploadBtnText.textContent = 'Login to Upload';
     showToast('🔐 Please login first');
+  } else {
+    if (selectedFile) {
+      uploadBtn.disabled = false;
+      uploadBtnText.textContent = 'Upload Video';
+    }
   }
 });
 
-console.log('🎬 TikTok Style Upload Page Loaded');
+console.log('🎬 TikTok Style Upload Page Loaded Successfully!');
 </script>
 
 </body>
-</html>
+  </html>
