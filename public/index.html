@@ -15,10 +15,6 @@
 
 <style>
 
-/* =====================================================
-   RESET
-===================================================== */
-
 *{
   box-sizing:border-box;
   -webkit-tap-highlight-color:transparent;
@@ -50,11 +46,6 @@ button{
   user-select:none;
 }
 
-
-/* =====================================================
-   APP
-===================================================== */
-
 .app{
   position:relative;
   width:100%;
@@ -63,11 +54,6 @@ button{
   background:#000;
 }
 
-
-/* =====================================================
-   FEED
-===================================================== */
-
 .feed{
   position:absolute;
   inset:0;
@@ -75,14 +61,10 @@ button{
   height:100%;
   overflow-y:auto;
   overflow-x:hidden;
-
   scroll-snap-type:y mandatory;
   scroll-behavior:smooth;
-
   scrollbar-width:none;
-
   overscroll-behavior-y:contain;
-
   -webkit-overflow-scrolling:touch;
 }
 
@@ -90,121 +72,73 @@ button{
   display:none;
 }
 
-
-/* =====================================================
-   VIDEO ITEM
-===================================================== */
-
 .video-item{
   position:relative;
-
   width:100%;
   height:100dvh;
   min-height:100dvh;
-
   background:#000;
-
   scroll-snap-align:start;
   scroll-snap-stop:always;
-
   overflow:hidden;
-
   contain:layout paint style;
 }
 
-
 .video{
   position:absolute;
-
   inset:0;
-
   width:100%;
   height:100%;
-
   object-fit:cover;
-
   background:#000;
-
   display:block;
 }
 
-
-/* =====================================================
-   VIDEO GRADIENT
-===================================================== */
-
 .video-item::after{
   content:"";
-
   position:absolute;
-
   left:0;
   right:0;
   bottom:0;
-
   height:48%;
-
-  background:
-    linear-gradient(
-      transparent,
-      rgba(0,0,0,.85)
-    );
-
+  background:linear-gradient(
+    transparent,
+    rgba(0,0,0,.85)
+  );
   pointer-events:none;
-
   z-index:2;
 }
 
-
-/* =====================================================
-   TOP BAR
-===================================================== */
-
 .top-bar{
   position:absolute;
-
   top:0;
   left:0;
   right:0;
-
   height:75px;
-
   z-index:20;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
   padding-top:env(safe-area-inset-top);
-
-  background:
-    linear-gradient(
-      rgba(0,0,0,.55),
-      transparent
-    );
+  background:linear-gradient(
+    rgba(0,0,0,.55),
+    transparent
+  );
 }
 
 .tabs{
   display:flex;
-
   align-items:center;
-
   gap:30px;
 }
 
 .tab{
   position:relative;
-
   border:0;
-
   background:transparent;
-
   color:rgba(255,255,255,.65);
-
   font-size:17px;
-
   font-weight:bold;
-
   padding:10px 3px;
 }
 
@@ -214,139 +148,84 @@ button{
 
 .tab.active::after{
   content:"";
-
   position:absolute;
-
   left:0;
   right:0;
-
   bottom:1px;
-
   height:3px;
-
   border-radius:10px;
-
   background:#fff;
 }
 
-
-/* =====================================================
-   SEARCH BUTTON
-===================================================== */
-
 .search-btn{
   position:absolute;
-
   right:12px;
   top:50%;
-
   transform:translateY(-50%);
-
   width:45px;
   height:45px;
-
   border:0;
-
   border-radius:50%;
-
   background:rgba(0,0,0,.38);
-
   color:#fff;
-
   display:flex;
   align-items:center;
   justify-content:center;
-
   backdrop-filter:blur(6px);
 }
 
 .search-btn svg{
   width:28px;
   height:28px;
-
   fill:none;
-
   stroke:#fff;
-
   stroke-width:2;
 }
 
-
-/* =====================================================
-   RIGHT ACTION BAR
-===================================================== */
-
 .action-bar{
   position:absolute;
-
   right:7px;
   bottom:108px;
-
   z-index:30;
-
   width:65px;
-
   display:flex;
-
   flex-direction:column;
-
   align-items:center;
-
   gap:15px;
 }
 
 .action{
   width:62px;
-
   display:flex;
-
   flex-direction:column;
-
   align-items:center;
-
   justify-content:center;
-
   border:0;
-
   background:transparent;
-
   color:#fff;
-
   padding:0;
 }
 
 .action-icon{
   width:51px;
   height:51px;
-
   display:flex;
-
   align-items:center;
   justify-content:center;
-
   border-radius:50%;
-
   color:#fff;
-
-  filter:
-    drop-shadow(
-      0 2px 4px rgba(0,0,0,.8)
-    );
-
-  transition:
-    transform .15s ease;
+  filter:drop-shadow(
+    0 2px 4px rgba(0,0,0,.8)
+  );
+  transition:transform .15s ease;
 }
 
 .action-icon svg{
   width:39px;
   height:39px;
-
   fill:none;
-
   stroke:currentColor;
-
   stroke-width:2;
-
   stroke-linecap:round;
   stroke-linejoin:round;
 }
@@ -357,248 +236,147 @@ button{
 
 .like-btn.liked .action-icon{
   color:#ff3040;
-
   transform:scale(1.08);
 }
 
 .like-btn.liked .action-icon svg{
   fill:#ff3040;
-
   stroke:#ff3040;
-}
-
-.save-btn.saved .action-icon{
-  color:#fff;
 }
 
 .save-btn.saved .action-icon svg{
   fill:#fff;
-
   stroke:#fff;
 }
 
 .action-count{
   margin-top:1px;
-
   color:#fff;
-
   font-size:13px;
-
   font-weight:bold;
-
-  text-shadow:
-    0 1px 4px #000;
+  text-shadow:0 1px 4px #000;
 }
-
-
-/* =====================================================
-   CREATOR
-===================================================== */
 
 .creator-avatar{
   position:relative;
-
   width:53px;
   height:53px;
-
   border-radius:50%;
-
   border:2px solid #fff;
-
   overflow:visible;
-
   margin-bottom:3px;
 }
 
 .creator-avatar img{
   width:100%;
   height:100%;
-
   object-fit:cover;
-
   border-radius:50%;
-
   display:block;
 }
 
 .follow-plus{
   position:absolute;
-
   bottom:-7px;
   left:50%;
-
   transform:translateX(-50%);
-
   width:24px;
   height:24px;
-
   border-radius:50%;
-
   border:0;
-
   background:#fff;
-
   color:#000;
-
   font-size:20px;
-
   line-height:20px;
-
   display:flex;
-
   align-items:center;
   justify-content:center;
-
   font-weight:bold;
 }
 
-.follow-plus.following{
-  font-size:14px;
-}
-
-
-/* =====================================================
-   VIDEO INFO
-===================================================== */
-
 .video-info{
   position:absolute;
-
   left:15px;
   right:85px;
   bottom:95px;
-
   z-index:25;
 }
 
 .username{
   font-size:18px;
-
   font-weight:bold;
-
   margin-bottom:8px;
-
-  text-shadow:
-    0 2px 4px rgba(0,0,0,.9);
+  text-shadow:0 2px 4px rgba(0,0,0,.9);
 }
 
 .caption{
   font-size:15px;
-
   line-height:1.45;
-
   margin-bottom:8px;
-
-  text-shadow:
-    0 2px 4px rgba(0,0,0,.9);
+  text-shadow:0 2px 4px rgba(0,0,0,.9);
 }
 
 .sound{
   display:flex;
-
   align-items:center;
-
   gap:6px;
-
   font-size:14px;
-
   font-weight:bold;
-
   white-space:nowrap;
-
   overflow:hidden;
-
   text-overflow:ellipsis;
-
-  text-shadow:
-    0 2px 4px rgba(0,0,0,.9);
+  text-shadow:0 2px 4px rgba(0,0,0,.9);
 }
-
-
-/* =====================================================
-   SOUND BUTTON
-===================================================== */
 
 .sound-btn{
   position:absolute;
-
   left:14px;
   bottom:150px;
-
   z-index:35;
-
   width:45px;
   height:45px;
-
   border:0;
-
   border-radius:50%;
-
   background:rgba(0,0,0,.45);
-
   color:#fff;
-
   display:flex;
-
   align-items:center;
   justify-content:center;
-
   backdrop-filter:blur(5px);
 }
 
 .sound-btn svg{
   width:25px;
   height:25px;
-
   fill:none;
-
   stroke:#fff;
-
   stroke-width:2;
-
   stroke-linecap:round;
   stroke-linejoin:round;
 }
 
-
-/* =====================================================
-   PAUSE
-===================================================== */
-
 .pause-indicator{
   position:absolute;
-
   left:50%;
   top:50%;
-
   transform:
     translate(-50%,-50%)
     scale(.8);
-
   width:70px;
   height:70px;
-
   border-radius:50%;
-
   background:rgba(0,0,0,.5);
-
   display:flex;
-
   align-items:center;
   justify-content:center;
-
   opacity:0;
-
   pointer-events:none;
-
   transition:.15s;
-
   z-index:40;
 }
 
 .pause-indicator.show{
   opacity:1;
-
   transform:
     translate(-50%,-50%)
     scale(1);
@@ -607,79 +385,46 @@ button{
 .pause-indicator svg{
   width:34px;
   height:34px;
-
   fill:#fff;
 }
 
-
-/* =====================================================
-   VIDEO LOADER
-===================================================== */
-
 .video-loader{
   position:absolute;
-
   inset:0;
-
   z-index:8;
-
   display:flex;
-
   align-items:center;
   justify-content:center;
-
   pointer-events:none;
 }
 
 .video-loader span{
   width:35px;
   height:35px;
-
   border:3px solid rgba(255,255,255,.25);
-
   border-top-color:#fff;
-
   border-radius:50%;
-
-  animation:
-    spin .8s linear infinite;
+  animation:spin .8s linear infinite;
 }
 
 @keyframes spin{
-
   to{
     transform:rotate(360deg);
   }
-
 }
-
-
-/* =====================================================
-   VIDEO ERROR
-===================================================== */
 
 .video-error{
   position:absolute;
-
   left:50%;
   top:50%;
-
   transform:translate(-50%,-50%);
-
   z-index:45;
-
   width:85%;
-
-  max-width:330px;
-
+  max-width:350px;
   padding:20px;
-
   border-radius:16px;
-
-  background:rgba(0,0,0,.75);
-
+  background:rgba(0,0,0,.82);
   text-align:center;
-
   display:none;
 }
 
@@ -689,115 +434,71 @@ button{
 
 .video-error-title{
   font-size:18px;
-
   font-weight:bold;
-
   margin-bottom:8px;
 }
 
 .video-error-text{
   color:#bbb;
-
   font-size:13px;
-
   line-height:1.5;
-
   word-break:break-word;
 }
 
-
-/* =====================================================
-   BOTTOM NAV
-===================================================== */
-
 .bottom-nav{
   position:fixed;
-
   left:0;
   right:0;
   bottom:0;
-
   height:72px;
-
   z-index:100;
-
   display:flex;
-
   align-items:center;
-
   justify-content:space-around;
-
-  padding-bottom:
-    env(safe-area-inset-bottom);
-
-  background:
-    linear-gradient(
-      transparent,
-      rgba(0,0,0,.97) 28%
-    );
+  padding-bottom:env(safe-area-inset-bottom);
+  background:linear-gradient(
+    transparent,
+    rgba(0,0,0,.97) 28%
+  );
 }
 
 .nav-btn{
   position:relative;
-
   width:20%;
-
   height:65px;
-
   border:0;
-
   background:transparent;
-
   color:#fff;
-
   display:flex;
-
   flex-direction:column;
-
   align-items:center;
-
   justify-content:center;
-
   gap:3px;
-
   font-size:11px;
-
   font-weight:bold;
 }
 
 .nav-btn svg{
   width:29px;
   height:29px;
-
   fill:none;
-
   stroke:currentColor;
-
   stroke-width:2;
-
   stroke-linecap:round;
   stroke-linejoin:round;
 }
 
 .upload-btn{
   position:relative;
-
   width:56px;
   height:42px;
-
   border:0;
-
   border-radius:12px;
-
   background:#fff;
-
   color:#000;
-
   display:flex;
-
   align-items:center;
   justify-content:center;
-
   box-shadow:
     -4px 0 0 #25f4ee,
     4px 0 0 #fe2c55;
@@ -806,69 +507,40 @@ button{
 .upload-btn svg{
   width:27px;
   height:27px;
-
   stroke:#000;
-
   stroke-width:2.5;
-
   fill:none;
 }
 
 .badge{
   position:absolute;
-
   top:2px;
   right:15px;
-
   min-width:20px;
   height:20px;
-
   padding:0 5px;
-
   border-radius:10px;
-
   background:#fe2c55;
-
   color:#fff;
-
   font-size:11px;
-
   display:flex;
-
   align-items:center;
   justify-content:center;
-
   font-weight:bold;
 }
 
-
-/* =====================================================
-   COMMENTS
-===================================================== */
-
 .comment-panel{
   position:fixed;
-
   left:0;
   right:0;
   bottom:0;
-
   z-index:150;
-
   height:55vh;
-
   background:#111;
-
-  border-radius:
-    18px 18px 0 0;
-
+  border-radius:18px 18px 0 0;
   transform:translateY(100%);
-
-  transition:
-    transform .28s ease;
-
+  transition:transform .28s ease;
   display:flex;
-
   flex-direction:column;
 }
 
@@ -878,116 +550,74 @@ button{
 
 .comment-header{
   height:55px;
-
   flex:none;
-
   display:flex;
-
   align-items:center;
-
   justify-content:center;
-
   border-bottom:1px solid #333;
-
   position:relative;
-
   font-weight:bold;
 }
 
 .close-comments{
   position:absolute;
-
   right:15px;
-
   border:0;
-
   background:transparent;
-
   color:#fff;
-
   font-size:26px;
 }
 
 .comments-list{
   flex:1;
-
   overflow-y:auto;
-
   padding:15px;
 }
 
 .comment{
   padding:10px 0;
-
   border-bottom:1px solid #222;
-
   line-height:1.4;
 }
 
 .comment strong{
   display:block;
-
   margin-bottom:4px;
 }
 
 .comment-input{
   display:flex;
-
   gap:8px;
-
   padding:10px;
-
   border-top:1px solid #333;
 }
 
 .comment-input input{
   flex:1;
-
   min-width:0;
-
   border:1px solid #444;
-
   background:#222;
-
   color:#fff;
-
   border-radius:22px;
-
   padding:12px 15px;
-
   outline:none;
 }
 
 .comment-input button{
   width:50px;
-
   border:0;
-
   border-radius:50%;
-
   background:#fff;
-
   color:#000;
-
   font-size:18px;
 }
 
-
-/* =====================================================
-   SEARCH
-===================================================== */
-
 .search-panel{
   position:fixed;
-
   inset:0;
-
   z-index:300;
-
   background:#000;
-
   display:none;
-
   padding:15px;
 }
 
@@ -997,159 +627,106 @@ button{
 
 .search-top{
   display:flex;
-
   align-items:center;
-
   gap:10px;
 }
 
 .search-top input{
   flex:1;
-
   height:45px;
-
   border:1px solid #444;
-
   border-radius:10px;
-
   background:#222;
-
   color:#fff;
-
   padding:0 14px;
-
   font-size:16px;
-
   outline:none;
 }
 
 .close-search{
   width:45px;
   height:45px;
-
   border:0;
-
   border-radius:50%;
-
   background:#222;
-
   color:#fff;
-
   font-size:24px;
 }
 
-
-/* =====================================================
-   TOAST
-===================================================== */
-
 .toast{
   position:fixed;
-
   left:50%;
-
   bottom:90px;
-
   transform:
     translateX(-50%)
     translateY(20px);
-
   z-index:500;
-
   background:rgba(30,30,30,.96);
-
   color:#fff;
-
   padding:11px 18px;
-
   border-radius:22px;
-
   font-size:14px;
-
   opacity:0;
-
   pointer-events:none;
-
   transition:.25s;
-
   white-space:nowrap;
 }
 
 .toast.show{
   opacity:1;
-
   transform:
     translateX(-50%)
     translateY(0);
 }
 
-
-/* =====================================================
-   EMPTY
-===================================================== */
-
 .feed-message{
   width:100%;
-
   height:100dvh;
-
   display:flex;
-
   align-items:center;
   justify-content:center;
-
   text-align:center;
-
   color:#aaa;
-
   padding:30px;
 }
 
 .feed-message-inner{
-  max-width:320px;
+  max-width:330px;
 }
 
 .feed-message-icon{
   font-size:45px;
-
   margin-bottom:15px;
 }
 
 .retry-btn{
   margin-top:18px;
-
   border:0;
-
   border-radius:22px;
-
   padding:11px 20px;
-
   background:#fff;
-
   color:#000;
-
   font-weight:bold;
 }
 
-
-/* =====================================================
-   DESKTOP
-===================================================== */
+.debug-url{
+  margin-top:12px;
+  font-size:11px;
+  color:#888;
+  word-break:break-all;
+}
 
 @media(min-width:700px){
 
   .video-item{
     max-width:500px;
-
     margin:auto;
   }
 
   .bottom-nav{
     max-width:500px;
-
     left:50%;
     right:auto;
-
     transform:translateX(-50%);
   }
 
@@ -1159,29 +736,16 @@ button{
 
 </head>
 
-
 <body>
 
-
 <div class="app">
-
-
-<!-- ===================================================
-     FEED
-=================================================== -->
 
 <main
   class="feed"
   id="feed"
 ></main>
 
-
-<!-- ===================================================
-     BOTTOM NAV
-=================================================== -->
-
 <nav class="bottom-nav">
-
 
 <button
   class="nav-btn active"
@@ -1200,7 +764,6 @@ button{
 <span>Home</span>
 
 </button>
-
 
 <button
   class="nav-btn"
@@ -1223,18 +786,11 @@ button{
 />
 
 <path
-  d="
-  M3 20
-  C3 16.5 5.5 14 9 14
-  C12.5 14 15 16.5 15 20
-  "
+  d="M3 20C3 16.5 5.5 14 9 14C12.5 14 15 16.5 15 20"
 />
 
 <path
-  d="
-  M15 15
-  C18 15 20 17 20 20
-  "
+  d="M15 15C18 15 20 17 20 20"
 />
 
 </svg>
@@ -1242,7 +798,6 @@ button{
 <span>Friends</span>
 
 </button>
-
 
 <button
   class="nav-btn"
@@ -1263,7 +818,6 @@ button{
 </span>
 
 </button>
-
 
 <button
   class="nav-btn"
@@ -1289,7 +843,6 @@ button{
 
 </button>
 
-
 <button
   class="nav-btn"
   type="button"
@@ -1305,11 +858,7 @@ button{
 />
 
 <path
-  d="
-  M4 21
-  C4 16.5 7.5 14 12 14
-  C16.5 14 20 16.5 20 21
-  "
+  d="M4 21C4 16.5 7.5 14 12 14C16.5 14 20 16.5 20 21"
 />
 
 </svg>
@@ -1318,13 +867,7 @@ button{
 
 </button>
 
-
 </nav>
-
-
-<!-- ===================================================
-     COMMENTS
-=================================================== -->
 
 <div
   class="comment-panel"
@@ -1345,12 +888,10 @@ Comments
 
 </div>
 
-
 <div
   class="comments-list"
   id="commentsList"
 ></div>
-
 
 <div class="comment-input">
 
@@ -1370,11 +911,6 @@ Comments
 </div>
 
 </div>
-
-
-<!-- ===================================================
-     SEARCH
-=================================================== -->
 
 <div
   class="search-panel"
@@ -1401,25 +937,17 @@ Comments
 
 </div>
 
-
-<!-- ===================================================
-     TOAST
-=================================================== -->
-
 <div
   class="toast"
   id="toast"
 ></div>
 
-
 </div>
-
 
 <script type="module">
 
-
 /* =====================================================
-   FIREBASE APP
+   FIREBASE IMPORTS
 ===================================================== */
 
 import {
@@ -1429,22 +957,12 @@ import {
 from
 "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 
-
-/* =====================================================
-   FIREBASE AUTH
-===================================================== */
-
 import {
   getAuth,
   onAuthStateChanged
 }
 from
 "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-
-
-/* =====================================================
-   FIRESTORE
-===================================================== */
 
 import {
   getFirestore,
@@ -1462,11 +980,6 @@ import {
 }
 from
 "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
-
-/* =====================================================
-   FIREBASE STORAGE
-===================================================== */
 
 import {
   getStorage,
@@ -1508,7 +1021,7 @@ const firebaseConfig = {
 
 
 /* =====================================================
-   INITIALIZE
+   INITIALIZE FIREBASE
 ===================================================== */
 
 const app =
@@ -1518,14 +1031,11 @@ const app =
         firebaseConfig
       );
 
-
 const auth =
   getAuth(app);
 
-
 const db =
   getFirestore(app);
-
 
 const storage =
   getStorage(app);
@@ -1563,7 +1073,7 @@ const defaultPhoto =
 
 
 /* =====================================================
-   ESCAPE HTML
+   HTML ESCAPE
 ===================================================== */
 
 function escapeHtml(value){
@@ -1571,26 +1081,11 @@ function escapeHtml(value){
   return String(
     value ?? ""
   )
-  .replace(
-    /&/g,
-    "&amp;"
-  )
-  .replace(
-    /</g,
-    "&lt;"
-  )
-  .replace(
-    />/g,
-    "&gt;"
-  )
-  .replace(
-    /"/g,
-    "&quot;"
-  )
-  .replace(
-    /'/g,
-    "&#039;"
-  );
+  .replace(/&/g,"&amp;")
+  .replace(/</g,"&lt;")
+  .replace(/>/g,"&gt;")
+  .replace(/"/g,"&quot;")
+  .replace(/'/g,"&#039;");
 
 }
 
@@ -1686,7 +1181,7 @@ function withTimeout(
 
 
 /* =====================================================
-   CURRENT PROFILE
+   LOAD CURRENT PROFILE
 ===================================================== */
 
 async function loadCurrentProfile(){
@@ -1695,7 +1190,6 @@ async function loadCurrentProfile(){
     return;
   }
 
-
   const userRef =
     doc(
       db,
@@ -1703,19 +1197,15 @@ async function loadCurrentProfile(){
       currentUser.uid
     );
 
-
   try{
 
     const snap =
       await withTimeout(
         getDoc(userRef),
-        7000
+        8000
       );
 
-
-    if(
-      snap.exists()
-    ){
+    if(snap.exists()){
 
       currentProfile =
         snap.data();
@@ -1723,7 +1213,6 @@ async function loadCurrentProfile(){
       return;
 
     }
-
 
     currentProfile = {
 
@@ -1763,23 +1252,20 @@ async function loadCurrentProfile(){
 
     };
 
-
     await withTimeout(
       setDoc(
         userRef,
         currentProfile
       ),
-      7000
+      8000
     );
-
 
   }catch(error){
 
-    console.warn(
-      "Profile error:",
+    console.error(
+      "PROFILE ERROR:",
       error
     );
-
 
     currentProfile = {
 
@@ -1828,7 +1314,7 @@ function getFollowingIds(){
 
 
 /* =====================================================
-   GET USERNAME
+   USERNAME
 ===================================================== */
 
 function getUsername(video){
@@ -1849,7 +1335,7 @@ function getUsername(video){
 
 
 /* =====================================================
-   GET VIDEO URL
+   RESOLVE VIDEO URL
 ===================================================== */
 
 async function resolveVideoURL(
@@ -1857,123 +1343,169 @@ async function resolveVideoURL(
   index
 ){
 
-  /*
-    1. সরাসরি URL
-  */
-
-  const directUrl =
-
-    video.videoURL ||
-    video.videoUrl ||
-    video.downloadURL ||
-    video.downloadUrl ||
-    video.fileURL ||
-    video.fileUrl ||
-    video.url ||
-    video.src;
+  console.log(
+    "Checking video:",
+    video
+  );
 
 
-  if(directUrl){
+  /* ---------------------------------------------------
+     DIRECT URL FIELDS
+  --------------------------------------------------- */
 
-    return directUrl;
+  const directFields = [
 
-  }
+    "videoURL",
+    "videoUrl",
+    "downloadURL",
+    "downloadUrl",
+    "fileURL",
+    "fileUrl",
+    "video",
+    "url",
+    "src"
 
-
-  /*
-    2. Firebase Storage path
-  */
-
-  const storagePath =
-
-    video.storagePath ||
-    video.filePath ||
-    video.storage ||
-    video.path;
-
-
-  if(storagePath){
-
-    try{
-
-      const storageRef =
-        ref(
-          storage,
-          storagePath
-        );
+  ];
 
 
-      const downloadURL =
-        await withTimeout(
-          getDownloadURL(
-            storageRef
-          ),
-          10000
-        );
+  for(
+    const field of directFields
+  ){
+
+    const value =
+      video[field];
 
 
-      return downloadURL;
+    if(
+      typeof value === "string" &&
+      value.trim()
+    ){
 
-    }catch(error){
-
-      console.error(
-        "Storage URL error:",
-        error
+      console.log(
+        "VIDEO URL FOUND:",
+        field,
+        value
       );
+
+      return value.trim();
 
     }
 
   }
 
 
-  /*
-    3. Local fallback
-  */
+  /* ---------------------------------------------------
+     FIREBASE STORAGE PATH
+  --------------------------------------------------- */
 
-  return (
-    index % 2 === 0
-      ? "./videos/video1.mp4"
-      : "./videos/video2.mp4"
-  );
+  const storageFields = [
+
+    "storagePath",
+    "filePath",
+    "storage",
+    "path",
+    "videoPath"
+
+  ];
+
+
+  for(
+    const field of storageFields
+  ){
+
+    const value =
+      video[field];
+
+
+    if(
+      typeof value === "string" &&
+      value.trim()
+    ){
+
+      try{
+
+        console.log(
+          "STORAGE PATH FOUND:",
+          value
+        );
+
+
+        const storageRef =
+          ref(
+            storage,
+            value.trim()
+          );
+
+
+        const url =
+          await withTimeout(
+            getDownloadURL(
+              storageRef
+            ),
+            12000
+          );
+
+
+        console.log(
+          "STORAGE URL:",
+          url
+        );
+
+
+        return url;
+
+      }catch(error){
+
+        console.error(
+          "Storage URL error:",
+          error
+        );
+
+      }
+
+    }
+
+  }
+
+
+  /* ---------------------------------------------------
+     LOCAL FALLBACK
+  --------------------------------------------------- */
+
+  if(index % 2 === 0){
+
+    return "./videos/video1.mp4";
+
+  }
+
+  return "./videos/video2.mp4";
 
 }
 
 
 /* =====================================================
-   VIDEO SCORE
+   SCORE
 ===================================================== */
 
 function scoreVideo(video){
 
   const likes =
-    number(
-      video.likes
-    );
+    number(video.likes);
 
   const comments =
-    number(
-      video.comments
-    );
+    number(video.comments);
 
   const saves =
-    number(
-      video.saves
-    );
+    number(video.saves);
 
   const views =
-    number(
-      video.views
-    );
-
+    number(video.views);
 
   let score =
 
     likes * 3 +
-
     comments * 5 +
-
     saves * 6 +
-
     views * .2;
 
 
@@ -1988,9 +1520,7 @@ function scoreVideo(video){
 
   if(
     getFollowingIds()
-      .includes(
-        creatorId
-      )
+      .includes(creatorId)
   ){
 
     score += 100;
@@ -2009,8 +1539,12 @@ function scoreVideo(video){
 
 async function loadVideos(){
 
-  if(loadingFeed){
+  if(
+    loadingFeed
+  ){
+
     return;
+
   }
 
 
@@ -2036,7 +1570,7 @@ async function loadVideos(){
           )
         ),
 
-        10000
+        12000
 
       );
 
@@ -2057,34 +1591,43 @@ async function loadVideos(){
     );
 
 
+    console.log(
+      "FIREBASE VIDEO COUNT:",
+      firebaseVideos.length
+    );
+
+
   }catch(error){
 
     console.error(
-      "Firestore videos error:",
+      "FIRESTORE VIDEO ERROR:",
       error
+    );
+
+
+    showToast(
+      "Firebase থেকে ভিডিও আনা যায়নি"
     );
 
   }
 
 
-  /*
-    Firebase videos পাওয়া গেছে
-  */
+  /* ---------------------------------------------------
+     FIREBASE VIDEO FOUND
+  --------------------------------------------------- */
 
   if(
-    firebaseVideos.length
+    firebaseVideos.length > 0
   ){
 
     videos =
       firebaseVideos;
 
-
   }else{
 
-    /*
-      Firebase empty হলে
-      local fallback
-    */
+    /* -------------------------------------------------
+       LOCAL TEST VIDEO
+    ------------------------------------------------- */
 
     videos = [
 
@@ -2171,9 +1714,9 @@ async function loadVideos(){
   }
 
 
-  /*
-    Storage URL resolve
-  */
+  /* ---------------------------------------------------
+     RESOLVE URL
+  --------------------------------------------------- */
 
   for(
     let i = 0;
@@ -2181,13 +1724,33 @@ async function loadVideos(){
     i++
   ){
 
-    videos[i].resolvedVideoURL =
-      await resolveVideoURL(
-        videos[i],
-        i
+    try{
+
+      videos[i].resolvedVideoURL =
+        await resolveVideoURL(
+          videos[i],
+          i
+        );
+
+    }catch(error){
+
+      console.error(
+        "VIDEO RESOLVE ERROR:",
+        error
       );
 
+      videos[i].resolvedVideoURL =
+        "";
+
+    }
+
   }
+
+
+  console.log(
+    "FINAL VIDEOS:",
+    videos
+  );
 
 
   sortVideos();
@@ -2331,16 +1894,11 @@ function renderFeed(){
         <div class="feed-message-inner">
 
           <div class="feed-message-icon">
-            👥
+            🎬
           </div>
 
           <div>
-            ${
-              currentFeedMode ===
-              "following"
-                ? "আপনি এখনো কাউকে Follow করেননি।"
-                : "কোনো ভিডিও পাওয়া যায়নি।"
-            }
+            কোনো ভিডিও পাওয়া যায়নি।
           </div>
 
         </div>
@@ -2462,40 +2020,34 @@ function createVideoItem(
 
 
   const likes =
-    number(
-      video.likes
-    );
+    number(video.likes);
 
 
   const comments =
-    number(
-      video.comments
-    );
+    number(video.comments);
 
 
   const saves =
-    number(
-      video.saves
-    );
+    number(video.saves);
 
 
   const url =
     video.resolvedVideoURL ||
-    video.videoURL ||
-    video.videoUrl ||
-    "./videos/video1.mp4";
+    "";
 
 
   item.innerHTML = `
 
     <video
       class="video"
-      src="${escapeHtml(url)}"
+      ${url ? `src="${escapeHtml(url)}"` : ""}
       loop
       muted
       playsinline
       webkit-playsinline
       preload="metadata"
+      disablepictureinpicture
+      controlslist="nodownload"
     ></video>
 
 
@@ -2513,8 +2065,23 @@ function createVideoItem(
       </div>
 
       <div class="video-error-text">
-        ভিডিও ফাইলের URL বা Firebase Storage path পরীক্ষা করুন।
+        এই ভিডিওর URL পাওয়া যায়নি অথবা
+        Firebase Storage থেকে ভিডিও পাওয়া যাচ্ছে না।
       </div>
+
+      ${
+        url
+          ? `
+            <div class="debug-url">
+              ${escapeHtml(url)}
+            </div>
+          `
+          : `
+            <div class="debug-url">
+              Video URL নেই
+            </div>
+          `
+      }
 
     </div>
 
@@ -2580,7 +2147,6 @@ function createVideoItem(
 
     <div class="action-bar">
 
-
       <div class="action">
 
         <div class="creator-avatar">
@@ -2627,8 +2193,6 @@ function createVideoItem(
       </div>
 
 
-      <!-- LIKE -->
-
       <button
         class="action like-btn ${
           liked
@@ -2666,8 +2230,6 @@ function createVideoItem(
       </button>
 
 
-      <!-- COMMENT -->
-
       <button
         class="action comment-btn"
         type="button"
@@ -2701,8 +2263,6 @@ function createVideoItem(
 
       </button>
 
-
-      <!-- SAVE -->
 
       <button
         class="action save-btn ${
@@ -2742,8 +2302,6 @@ function createVideoItem(
       </button>
 
 
-      <!-- SHARE -->
-
       <button
         class="action"
         type="button"
@@ -2776,11 +2334,8 @@ function createVideoItem(
 
       </button>
 
-
     </div>
 
-
-    <!-- SOUND -->
 
     <button
       class="sound-btn"
@@ -2807,8 +2362,6 @@ function createVideoItem(
     </button>
 
 
-    <!-- INFO -->
-
     <div class="video-info">
 
       <div class="username">
@@ -2825,8 +2378,6 @@ function createVideoItem(
 
     </div>
 
-
-    <!-- PAUSE -->
 
     <div class="pause-indicator">
 
@@ -2855,7 +2406,7 @@ function createVideoItem(
   `;
 
 
-  const video =
+  const videoElement =
     item.querySelector(
       ".video"
     );
@@ -2873,11 +2424,24 @@ function createVideoItem(
     );
 
 
-  /* ===================================================
+  /* ---------------------------------------------------
      VIDEO EVENTS
-  =================================================== */
+  --------------------------------------------------- */
 
-  video.addEventListener(
+  videoElement.addEventListener(
+    "loadedmetadata",
+    () => {
+
+      console.log(
+        "VIDEO METADATA OK:",
+        url
+      );
+
+    }
+  );
+
+
+  videoElement.addEventListener(
     "loadeddata",
     () => {
 
@@ -2892,7 +2456,7 @@ function createVideoItem(
   );
 
 
-  video.addEventListener(
+  videoElement.addEventListener(
     "canplay",
     () => {
 
@@ -2903,7 +2467,7 @@ function createVideoItem(
   );
 
 
-  video.addEventListener(
+  videoElement.addEventListener(
     "playing",
     () => {
 
@@ -2918,7 +2482,7 @@ function createVideoItem(
   );
 
 
-  video.addEventListener(
+  videoElement.addEventListener(
     "waiting",
     () => {
 
@@ -2929,7 +2493,7 @@ function createVideoItem(
   );
 
 
-  video.addEventListener(
+  videoElement.addEventListener(
     "error",
     () => {
 
@@ -2941,17 +2505,18 @@ function createVideoItem(
       );
 
       console.error(
-        "VIDEO ERROR:",
-        url
+        "VIDEO PLAY ERROR:",
+        url,
+        videoElement.error
       );
 
     }
   );
 
 
-  /* ===================================================
-     CLICK = PLAY / PAUSE
-  =================================================== */
+  /* ---------------------------------------------------
+     CLICK VIDEO
+  --------------------------------------------------- */
 
   item.addEventListener(
     "click",
@@ -3013,7 +2578,6 @@ function togglePlayPause(
       "show"
     );
 
-
   }else{
 
     video.pause();
@@ -3036,6 +2600,20 @@ async function playVideo(
 ){
 
   if(
+    !video ||
+    !video.src
+  ){
+
+    console.warn(
+      "NO VIDEO SRC"
+    );
+
+    return;
+
+  }
+
+
+  if(
     currentPlayingVideo &&
     currentPlayingVideo !==
       video
@@ -3054,11 +2632,6 @@ async function playVideo(
     video;
 
 
-  /*
-    Mobile browser autoplay
-    এর জন্য muted রাখা হয়।
-  */
-
   video.muted =
     true;
 
@@ -3070,7 +2643,7 @@ async function playVideo(
   }catch(error){
 
     console.warn(
-      "Play error:",
+      "AUTOPLAY ERROR:",
       error
     );
 
@@ -3080,7 +2653,7 @@ async function playVideo(
 
 
 /* =====================================================
-   VIDEO OBSERVER
+   OBSERVER
 ===================================================== */
 
 function setupVideoObserver(){
@@ -3100,9 +2673,7 @@ function setupVideoObserver(){
     ];
 
 
-  if(
-    !items.length
-  ){
+  if(!items.length){
 
     return;
 
@@ -3114,8 +2685,12 @@ function setupVideoObserver(){
 
       entries => {
 
-        items.forEach(
-          item => {
+        entries.forEach(
+          entry => {
+
+            const item =
+              entry.target;
+
 
             const video =
               item.querySelector(
@@ -3123,38 +2698,24 @@ function setupVideoObserver(){
               );
 
 
-            const rect =
-              item.getBoundingClientRect();
-
-
-            const visible =
-              Math.min(
-                window.innerHeight,
-                rect.bottom
-              )
-              -
-              Math.max(
-                0,
-                rect.top
-              );
-
-
-            const percentage =
-              visible /
-              window.innerHeight;
-
-
             if(
-              percentage > .65
+              entry.isIntersecting &&
+              entry.intersectionRatio >= .65
             ){
 
               playVideo(
                 video
               );
 
-            }else{
+            }else if(
+              entry.intersectionRatio < .4
+            ){
 
-              video.pause();
+              try{
+
+                video.pause();
+
+              }catch(error){}
 
             }
 
@@ -3190,30 +2751,30 @@ function setupVideoObserver(){
   );
 
 
-  const first =
-    items[0];
+  setTimeout(
+    () => {
+
+      const first =
+        items[0];
 
 
-  if(first){
+      if(first){
 
-    const video =
-      first.querySelector(
-        ".video"
-      );
+        const video =
+          first.querySelector(
+            ".video"
+          );
 
-
-    setTimeout(
-      () => {
 
         playVideo(
           video
         );
 
-      },
-      300
-    );
+      }
 
-  }
+    },
+    500
+  );
 
 }
 
@@ -3232,9 +2793,7 @@ function preloadNearbyVideos(){
     ];
 
 
-  if(
-    !items.length
-  ){
+  if(!items.length){
 
     return;
 
@@ -3255,8 +2814,7 @@ function preloadNearbyVideos(){
       if(
         Math.abs(
           rect.top
-        )
-        <
+        ) <
         window.innerHeight * .5
       ){
 
@@ -3302,17 +2860,14 @@ function preloadNearbyVideos(){
 
 
 /* =====================================================
-   FEED ACTIONS
+   FEED CLICK ACTIONS
 ===================================================== */
 
 document
-  .getElementById(
-    "feed"
-  )
+  .getElementById("feed")
   .addEventListener(
     "click",
     async event => {
-
 
       const tab =
         event.target.closest(
@@ -3340,9 +2895,7 @@ document
         );
 
 
-      if(
-        !button
-      ){
+      if(!button){
 
         return;
 
@@ -3355,9 +2908,7 @@ document
         );
 
 
-      if(
-        !item
-      ){
+      if(!item){
 
         return;
 
@@ -3372,10 +2923,7 @@ document
         button.dataset.action;
 
 
-      if(
-        action ===
-        "like"
-      ){
+      if(action === "like"){
 
         await toggleLike(
           item,
@@ -3385,11 +2933,7 @@ document
 
       }
 
-
-      else if(
-        action ===
-        "save"
-      ){
+      else if(action === "save"){
 
         await toggleSave(
           item,
@@ -3399,11 +2943,7 @@ document
 
       }
 
-
-      else if(
-        action ===
-        "comment"
-      ){
+      else if(action === "comment"){
 
         await openComments(
           videoId
@@ -3411,11 +2951,7 @@ document
 
       }
 
-
-      else if(
-        action ===
-        "share"
-      ){
+      else if(action === "share"){
 
         await shareVideo(
           videoId
@@ -3423,11 +2959,7 @@ document
 
       }
 
-
-      else if(
-        action ===
-        "follow"
-      ){
+      else if(action === "follow"){
 
         await toggleFollow(
           button.dataset.creator,
@@ -3436,11 +2968,7 @@ document
 
       }
 
-
-      else if(
-        action ===
-        "sound"
-      ){
+      else if(action === "sound"){
 
         toggleSound(
           item,
@@ -3449,11 +2977,7 @@ document
 
       }
 
-
-      else if(
-        action ===
-        "search"
-      ){
+      else if(action === "search"){
 
         openSearch();
 
@@ -3473,9 +2997,7 @@ async function toggleLike(
   button
 ){
 
-  if(
-    !currentUser
-  ){
+  if(!currentUser){
 
     showToast(
       "আগে Login করুন"
@@ -3486,9 +3008,7 @@ async function toggleLike(
   }
 
 
-  if(
-    button.disabled
-  ){
+  if(button.disabled){
 
     return;
 
@@ -3515,13 +3035,7 @@ async function toggleLike(
       );
 
 
-    /*
-      Local video
-    */
-
-    if(
-      !snap.exists()
-    ){
+    if(!snap.exists()){
 
       const liked =
         button.classList.contains(
@@ -3556,13 +3070,6 @@ async function toggleLike(
         );
 
 
-      showToast(
-        liked
-          ? "Like সরানো হয়েছে"
-          : "Like হয়েছে"
-      );
-
-
       return;
 
     }
@@ -3586,9 +3093,7 @@ async function toggleLike(
       );
 
 
-    if(
-      liked
-    ){
+    if(liked){
 
       await updateDoc(
         videoRef,
@@ -3609,7 +3114,6 @@ async function toggleLike(
       button.classList.remove(
         "liked"
       );
-
 
     }else{
 
@@ -3657,10 +3161,9 @@ async function toggleLike(
   }catch(error){
 
     console.error(
-      "Like error:",
+      "LIKE ERROR:",
       error
     );
-
 
     showToast(
       "Like সংরক্ষণ করা যায়নি"
@@ -3686,9 +3189,7 @@ async function toggleSave(
   button
 ){
 
-  if(
-    !currentUser
-  ){
+  if(!currentUser){
 
     showToast(
       "আগে Login করুন"
@@ -3699,9 +3200,7 @@ async function toggleSave(
   }
 
 
-  if(
-    button.disabled
-  ){
+  if(button.disabled){
 
     return;
 
@@ -3736,9 +3235,7 @@ async function toggleSave(
       );
 
 
-    if(
-      !videoSnap.exists()
-    ){
+    if(!videoSnap.exists()){
 
       const saved =
         button.classList.contains(
@@ -3782,9 +3279,7 @@ async function toggleSave(
       );
 
 
-    if(
-      saved
-    ){
+    if(saved){
 
       await updateDoc(
         videoRef,
@@ -3823,7 +3318,6 @@ async function toggleSave(
       showToast(
         "Saved থেকে সরানো হয়েছে"
       );
-
 
     }else{
 
@@ -3889,10 +3383,9 @@ async function toggleSave(
   }catch(error){
 
     console.error(
-      "Save error:",
+      "SAVE ERROR:",
       error
     );
-
 
     showToast(
       "Save সংরক্ষণ করা যায়নি"
@@ -3993,9 +3486,7 @@ async function toggleFollow(
       );
 
 
-    if(
-      exists
-    ){
+    if(exists){
 
       await updateDoc(
         myRef,
@@ -4041,7 +3532,6 @@ async function toggleFollow(
       showToast(
         "Unfollow করা হয়েছে"
       );
-
 
     }else{
 
@@ -4099,9 +3589,7 @@ async function toggleFollow(
       );
 
 
-    if(
-      updated.exists()
-    ){
+    if(updated.exists()){
 
       currentProfile =
         updated.data();
@@ -4112,10 +3600,9 @@ async function toggleFollow(
   }catch(error){
 
     console.error(
-      "Follow error:",
+      "FOLLOW ERROR:",
       error
     );
-
 
     showToast(
       "Follow পরিবর্তন করা যায়নি"
@@ -4146,9 +3633,7 @@ function toggleSound(
     );
 
 
-  if(
-    video.muted
-  ){
+  if(video.muted){
 
     video.muted =
       false;
@@ -4183,7 +3668,6 @@ function toggleSound(
     showToast(
       "Sound চালু হয়েছে"
     );
-
 
   }else{
 
@@ -4249,10 +3733,6 @@ async function openComments(
 }
 
 
-/* =====================================================
-   LOAD COMMENTS
-===================================================== */
-
 async function loadComments(
   videoId
 ){
@@ -4280,7 +3760,7 @@ async function loadComments(
 
   try{
 
-    const ref =
+    const commentsRef =
       collection(
         db,
         "videos",
@@ -4291,7 +3771,9 @@ async function loadComments(
 
     const snap =
       await withTimeout(
-        getDocs(ref),
+        getDocs(
+          commentsRef
+        ),
         8000
       );
 
@@ -4300,9 +3782,7 @@ async function loadComments(
       "";
 
 
-    if(
-      snap.empty
-    ){
+    if(snap.empty){
 
       list.innerHTML = `
 
@@ -4405,7 +3885,7 @@ async function loadComments(
   }catch(error){
 
     console.error(
-      "Comments error:",
+      "COMMENT LOAD ERROR:",
       error
     );
 
@@ -4429,10 +3909,6 @@ async function loadComments(
 }
 
 
-/* =====================================================
-   ADD COMMENT
-===================================================== */
-
 async function addComment(){
 
   const input =
@@ -4445,9 +3921,7 @@ async function addComment(){
     input.value.trim();
 
 
-  if(
-    !text
-  ){
+  if(!text){
 
     return;
 
@@ -4537,9 +4011,7 @@ async function addComment(){
       );
 
 
-    if(
-      videoSnap.exists()
-    ){
+    if(videoSnap.exists()){
 
       await updateDoc(
         videoRef,
@@ -4571,7 +4043,7 @@ async function addComment(){
   }catch(error){
 
     console.error(
-      "Comment error:",
+      "COMMENT ERROR:",
       error
     );
 
@@ -4589,10 +4061,6 @@ async function addComment(){
 
 }
 
-
-/* =====================================================
-   CLOSE COMMENTS
-===================================================== */
 
 function closeComments(){
 
@@ -4650,7 +4118,6 @@ async function shareVideo(
       await navigator.share(
         shareData
       );
-
 
     }else{
 
@@ -4743,7 +4210,7 @@ function closeSearch(){
 
 
 /* =====================================================
-   SEARCH INPUT
+   SEARCH
 ===================================================== */
 
 document
@@ -4760,9 +4227,7 @@ document
           .toLowerCase();
 
 
-      if(
-        !q
-      ){
+      if(!q){
 
         renderFeed();
 
@@ -4822,10 +4287,6 @@ document
   );
 
 
-/* =====================================================
-   SEARCH RESULTS
-===================================================== */
-
 function renderSearchResults(
   list
 ){
@@ -4840,9 +4301,7 @@ function renderSearchResults(
     "";
 
 
-  if(
-    !list.length
-  ){
+  if(!list.length){
 
     feed.innerHTML = `
 
@@ -5012,9 +4471,11 @@ onAuthStateChanged(
   auth,
   async user => {
 
-    if(
-      !user
-    ){
+    if(!user){
+
+      currentUser =
+        null;
+
 
       document
         .getElementById(
@@ -5059,33 +4520,31 @@ onAuthStateChanged(
 
 
     /*
-      Profile এবং Videos
-      একসাথে load হবে।
+
+      গুরুত্বপূর্ণ:
+
+      আগে Profile load হবে।
+      তারপর Videos load হবে।
+
     */
 
-    await Promise.allSettled([
+    await loadCurrentProfile();
 
-      loadCurrentProfile(),
-
-      loadVideos()
-
-    ]);
+    await loadVideos();
 
   }
 );
 
 
 /* =====================================================
-   PAGE VISIBILITY
+   VISIBILITY
 ===================================================== */
 
 document.addEventListener(
   "visibilitychange",
   () => {
 
-    if(
-      document.hidden
-    ){
+    if(document.hidden){
 
       document
         .querySelectorAll(
@@ -5099,85 +4558,81 @@ document.addEventListener(
           }
         );
 
+      return;
 
-    }else{
+    }
 
-      const items =
-        [
-          ...document.querySelectorAll(
-            ".video-item"
+
+    const items =
+      [
+        ...document.querySelectorAll(
+          ".video-item"
+        )
+      ];
+
+
+    let best =
+      null;
+
+
+    let bestRatio =
+      0;
+
+
+    items.forEach(
+      item => {
+
+        const rect =
+          item.getBoundingClientRect();
+
+
+        const visible =
+          Math.min(
+            window.innerHeight,
+            rect.bottom
           )
-        ];
-
-
-      let best =
-        null;
-
-
-      let bestRatio =
-        0;
-
-
-      items.forEach(
-        item => {
-
-          const rect =
-            item.getBoundingClientRect();
-
-
-          const visible =
-            Math.min(
-              window.innerHeight,
-              rect.bottom
-            )
-            -
-            Math.max(
-              0,
-              rect.top
-            );
-
-
-          const ratio =
-            visible /
-            window.innerHeight;
-
-
-          if(
-            ratio >
-            bestRatio
-          ){
-
-            bestRatio =
-              ratio;
-
-            best =
-              item;
-
-          }
-
-        }
-      );
-
-
-      if(
-        best
-      ){
-
-        const video =
-          best.querySelector(
-            ".video"
+          -
+          Math.max(
+            0,
+            rect.top
           );
+
+
+        const ratio =
+          visible /
+          window.innerHeight;
 
 
         if(
-          video
+          ratio >
+          bestRatio
         ){
 
-          playVideo(
-            video
-          );
+          bestRatio =
+            ratio;
+
+          best =
+            item;
 
         }
+
+      }
+    );
+
+
+    if(best){
+
+      const video =
+        best.querySelector(
+          ".video"
+        );
+
+
+      if(video){
+
+        playVideo(
+          video
+        );
 
       }
 
@@ -5188,10 +4643,16 @@ document.addEventListener(
 
 
 /* =====================================================
-   SCROLL
+   FEED SCROLL
 ===================================================== */
 
-window.addEventListener(
+const feed =
+  document.getElementById(
+    "feed"
+  );
+
+
+feed.addEventListener(
   "scroll",
   () => {
 
@@ -5231,7 +4692,6 @@ window.addEventListener(
 
   }
 );
-
 
 </script>
 
