@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
+
 <meta charset="UTF-8">
 
 <meta
@@ -14,12 +15,14 @@
 
 <style>
 
+/* =====================================================
+   RESET
+===================================================== */
+
 *{
   box-sizing:border-box;
   -webkit-tap-highlight-color:transparent;
 }
-  
-  
 
 html,
 body{
@@ -32,7 +35,6 @@ body{
   color:#fff;
   font-family:Arial,sans-serif;
 }
-  
 
 body{
   overscroll-behavior:none;
@@ -48,6 +50,11 @@ button{
   user-select:none;
 }
 
+
+/* =====================================================
+   APP
+===================================================== */
+
 .app{
   position:relative;
   width:100%;
@@ -55,6 +62,7 @@ button{
   overflow:hidden;
   background:#000;
 }
+
 
 /* =====================================================
    FEED
@@ -67,10 +75,14 @@ button{
   height:100%;
   overflow-y:auto;
   overflow-x:hidden;
+
   scroll-snap-type:y mandatory;
   scroll-behavior:smooth;
+
   scrollbar-width:none;
+
   overscroll-behavior-y:contain;
+
   -webkit-overflow-scrolling:touch;
 }
 
@@ -78,46 +90,71 @@ button{
   display:none;
 }
 
+
+/* =====================================================
+   VIDEO ITEM
+===================================================== */
+
 .video-item{
   position:relative;
+
   width:100%;
   height:100dvh;
   min-height:100dvh;
+
   background:#000;
+
   scroll-snap-align:start;
   scroll-snap-stop:always;
+
   overflow:hidden;
+
   contain:layout paint style;
 }
 
+
 .video{
   position:absolute;
+
   inset:0;
+
   width:100%;
   height:100%;
+
   object-fit:cover;
+
   background:#000;
+
   display:block;
 }
 
+
 /* =====================================================
-   GRADIENT
+   VIDEO GRADIENT
 ===================================================== */
 
 .video-item::after{
   content:"";
+
   position:absolute;
+
   left:0;
   right:0;
   bottom:0;
-  height:45%;
-  background:linear-gradient(
-    transparent,
-    rgba(0,0,0,.82)
-  );
+
+  height:48%;
+
+  background:
+    linear-gradient(
+      transparent,
+      rgba(0,0,0,.85)
+    );
+
   pointer-events:none;
+
   z-index:2;
 }
+
 
 /* =====================================================
    TOP BAR
@@ -125,34 +162,49 @@ button{
 
 .top-bar{
   position:absolute;
+
   top:0;
   left:0;
   right:0;
+
   height:75px;
+
   z-index:20;
+
   display:flex;
   align-items:center;
   justify-content:center;
+
   padding-top:env(safe-area-inset-top);
-  background:linear-gradient(
-    rgba(0,0,0,.52),
-    transparent
-  );
+
+  background:
+    linear-gradient(
+      rgba(0,0,0,.55),
+      transparent
+    );
 }
 
 .tabs{
   display:flex;
+
   align-items:center;
+
   gap:30px;
 }
 
 .tab{
   position:relative;
+
   border:0;
+
   background:transparent;
+
   color:rgba(255,255,255,.65);
+
   font-size:17px;
+
   font-weight:bold;
+
   padding:10px 3px;
 }
 
@@ -162,86 +214,139 @@ button{
 
 .tab.active::after{
   content:"";
+
   position:absolute;
+
   left:0;
   right:0;
+
   bottom:1px;
+
   height:3px;
+
   border-radius:10px;
+
   background:#fff;
 }
 
+
+/* =====================================================
+   SEARCH BUTTON
+===================================================== */
+
 .search-btn{
   position:absolute;
+
   right:12px;
   top:50%;
+
   transform:translateY(-50%);
+
   width:45px;
   height:45px;
+
   border:0;
+
   border-radius:50%;
+
   background:rgba(0,0,0,.38);
+
   color:#fff;
+
   display:flex;
   align-items:center;
   justify-content:center;
+
   backdrop-filter:blur(6px);
 }
 
 .search-btn svg{
   width:28px;
   height:28px;
+
   fill:none;
+
   stroke:#fff;
+
   stroke-width:2;
 }
 
+
 /* =====================================================
-   RIGHT ACTIONS
+   RIGHT ACTION BAR
 ===================================================== */
 
 .action-bar{
   position:absolute;
+
   right:7px;
   bottom:108px;
+
   z-index:30;
+
   width:65px;
+
   display:flex;
+
   flex-direction:column;
+
   align-items:center;
+
   gap:15px;
 }
 
 .action{
   width:62px;
+
   display:flex;
+
   flex-direction:column;
+
   align-items:center;
+
   justify-content:center;
+
   border:0;
+
   background:transparent;
+
   color:#fff;
+
   padding:0;
 }
 
 .action-icon{
   width:51px;
   height:51px;
+
   display:flex;
+
   align-items:center;
   justify-content:center;
+
   border-radius:50%;
+
   color:#fff;
-  filter:drop-shadow(0 2px 4px rgba(0,0,0,.8));
-  transition:transform .15s ease;
+
+  filter:
+    drop-shadow(
+      0 2px 4px rgba(0,0,0,.8)
+    );
+
+  transition:
+    transform .15s ease;
 }
 
 .action-icon svg{
   width:39px;
   height:39px;
+
   fill:none;
+
   stroke:currentColor;
+
   stroke-width:2;
+
   stroke-linecap:round;
   stroke-linejoin:round;
 }
@@ -252,11 +357,13 @@ button{
 
 .like-btn.liked .action-icon{
   color:#ff3040;
+
   transform:scale(1.08);
 }
 
 .like-btn.liked .action-icon svg{
   fill:#ff3040;
+
   stroke:#ff3040;
 }
 
@@ -266,16 +373,23 @@ button{
 
 .save-btn.saved .action-icon svg{
   fill:#fff;
+
   stroke:#fff;
 }
 
 .action-count{
   margin-top:1px;
+
   color:#fff;
+
   font-size:13px;
+
   font-weight:bold;
-  text-shadow:0 1px 4px #000;
+
+  text-shadow:
+    0 1px 4px #000;
 }
+
 
 /* =====================================================
    CREATOR
@@ -283,38 +397,58 @@ button{
 
 .creator-avatar{
   position:relative;
+
   width:53px;
   height:53px;
+
   border-radius:50%;
+
   border:2px solid #fff;
+
   overflow:visible;
+
   margin-bottom:3px;
 }
 
 .creator-avatar img{
   width:100%;
   height:100%;
+
   object-fit:cover;
+
   border-radius:50%;
+
   display:block;
 }
 
 .follow-plus{
   position:absolute;
+
   bottom:-7px;
   left:50%;
+
   transform:translateX(-50%);
+
   width:24px;
   height:24px;
+
   border-radius:50%;
+
   border:0;
+
   background:#fff;
+
   color:#000;
+
   font-size:20px;
+
   line-height:20px;
+
   display:flex;
+
   align-items:center;
   justify-content:center;
+
   font-weight:bold;
 }
 
@@ -322,74 +456,110 @@ button{
   font-size:14px;
 }
 
+
 /* =====================================================
    VIDEO INFO
 ===================================================== */
 
 .video-info{
   position:absolute;
+
   left:15px;
   right:85px;
   bottom:95px;
+
   z-index:25;
 }
 
 .username{
   font-size:18px;
+
   font-weight:bold;
+
   margin-bottom:8px;
-  text-shadow:0 2px 4px rgba(0,0,0,.9);
+
+  text-shadow:
+    0 2px 4px rgba(0,0,0,.9);
 }
 
 .caption{
   font-size:15px;
+
   line-height:1.45;
+
   margin-bottom:8px;
-  text-shadow:0 2px 4px rgba(0,0,0,.9);
+
+  text-shadow:
+    0 2px 4px rgba(0,0,0,.9);
 }
 
 .sound{
   display:flex;
+
   align-items:center;
+
   gap:6px;
+
   font-size:14px;
+
   font-weight:bold;
+
   white-space:nowrap;
+
   overflow:hidden;
+
   text-overflow:ellipsis;
-  text-shadow:0 2px 4px rgba(0,0,0,.9);
+
+  text-shadow:
+    0 2px 4px rgba(0,0,0,.9);
 }
 
+
 /* =====================================================
-   SOUND
+   SOUND BUTTON
 ===================================================== */
 
 .sound-btn{
   position:absolute;
+
   left:14px;
   bottom:150px;
+
   z-index:35;
+
   width:45px;
   height:45px;
+
   border:0;
+
   border-radius:50%;
+
   background:rgba(0,0,0,.45);
+
   color:#fff;
+
   display:flex;
+
   align-items:center;
   justify-content:center;
+
   backdrop-filter:blur(5px);
 }
 
 .sound-btn svg{
   width:25px;
   height:25px;
+
   fill:none;
+
   stroke:#fff;
+
   stroke-width:2;
+
   stroke-linecap:round;
   stroke-linejoin:round;
 }
+
 
 /* =====================================================
    PAUSE
@@ -397,61 +567,144 @@ button{
 
 .pause-indicator{
   position:absolute;
+
   left:50%;
   top:50%;
-  transform:translate(-50%,-50%) scale(.8);
+
+  transform:
+    translate(-50%,-50%)
+    scale(.8);
+
   width:70px;
   height:70px;
+
   border-radius:50%;
+
   background:rgba(0,0,0,.5);
+
   display:flex;
+
   align-items:center;
   justify-content:center;
+
   opacity:0;
+
   pointer-events:none;
+
   transition:.15s;
+
   z-index:40;
 }
 
 .pause-indicator.show{
   opacity:1;
-  transform:translate(-50%,-50%) scale(1);
+
+  transform:
+    translate(-50%,-50%)
+    scale(1);
 }
 
 .pause-indicator svg{
   width:34px;
   height:34px;
+
   fill:#fff;
 }
 
+
 /* =====================================================
-   VIDEO LOADING
+   VIDEO LOADER
 ===================================================== */
 
 .video-loader{
   position:absolute;
+
   inset:0;
+
   z-index:8;
+
   display:flex;
+
   align-items:center;
   justify-content:center;
+
   pointer-events:none;
 }
 
 .video-loader span{
   width:35px;
   height:35px;
+
   border:3px solid rgba(255,255,255,.25);
+
   border-top-color:#fff;
+
   border-radius:50%;
-  animation:spin .8s linear infinite;
+
+  animation:
+    spin .8s linear infinite;
 }
 
 @keyframes spin{
+
   to{
     transform:rotate(360deg);
   }
+
 }
+
+
+/* =====================================================
+   VIDEO ERROR
+===================================================== */
+
+.video-error{
+  position:absolute;
+
+  left:50%;
+  top:50%;
+
+  transform:translate(-50%,-50%);
+
+  z-index:45;
+
+  width:85%;
+
+  max-width:330px;
+
+  padding:20px;
+
+  border-radius:16px;
+
+  background:rgba(0,0,0,.75);
+
+  text-align:center;
+
+  display:none;
+}
+
+.video-error.show{
+  display:block;
+}
+
+.video-error-title{
+  font-size:18px;
+
+  font-weight:bold;
+
+  margin-bottom:8px;
+}
+
+.video-error-text{
+  color:#bbb;
+
+  font-size:13px;
+
+  line-height:1.5;
+
+  word-break:break-word;
+}
+
 
 /* =====================================================
    BOTTOM NAV
@@ -459,58 +712,92 @@ button{
 
 .bottom-nav{
   position:fixed;
+
   left:0;
   right:0;
   bottom:0;
+
   height:72px;
+
   z-index:100;
+
   display:flex;
+
   align-items:center;
+
   justify-content:space-around;
-  padding-bottom:env(safe-area-inset-bottom);
-  background:linear-gradient(
-    transparent,
-    rgba(0,0,0,.97) 28%
-  );
+
+  padding-bottom:
+    env(safe-area-inset-bottom);
+
+  background:
+    linear-gradient(
+      transparent,
+      rgba(0,0,0,.97) 28%
+    );
 }
 
 .nav-btn{
   position:relative;
+
   width:20%;
+
   height:65px;
+
   border:0;
+
   background:transparent;
+
   color:#fff;
+
   display:flex;
+
   flex-direction:column;
+
   align-items:center;
+
   justify-content:center;
+
   gap:3px;
+
   font-size:11px;
+
   font-weight:bold;
 }
 
 .nav-btn svg{
   width:29px;
   height:29px;
+
   fill:none;
+
   stroke:currentColor;
+
   stroke-width:2;
+
   stroke-linecap:round;
   stroke-linejoin:round;
 }
 
 .upload-btn{
   position:relative;
+
   width:56px;
   height:42px;
+
   border:0;
+
   border-radius:12px;
+
   background:#fff;
+
   color:#000;
+
   display:flex;
+
   align-items:center;
   justify-content:center;
+
   box-shadow:
     -4px 0 0 #25f4ee,
     4px 0 0 #fe2c55;
@@ -519,27 +806,41 @@ button{
 .upload-btn svg{
   width:27px;
   height:27px;
+
   stroke:#000;
+
   stroke-width:2.5;
+
   fill:none;
 }
 
 .badge{
   position:absolute;
+
   top:2px;
   right:15px;
+
   min-width:20px;
   height:20px;
+
   padding:0 5px;
+
   border-radius:10px;
+
   background:#fe2c55;
+
   color:#fff;
+
   font-size:11px;
+
   display:flex;
+
   align-items:center;
   justify-content:center;
+
   font-weight:bold;
 }
+
 
 /* =====================================================
    COMMENTS
@@ -547,16 +848,27 @@ button{
 
 .comment-panel{
   position:fixed;
+
   left:0;
   right:0;
   bottom:0;
+
   z-index:150;
+
   height:55vh;
+
   background:#111;
-  border-radius:18px 18px 0 0;
+
+  border-radius:
+    18px 18px 0 0;
+
   transform:translateY(100%);
-  transition:transform .28s ease;
+
+  transition:
+    transform .28s ease;
+
   display:flex;
+
   flex-direction:column;
 }
 
@@ -566,67 +878,100 @@ button{
 
 .comment-header{
   height:55px;
+
   flex:none;
+
   display:flex;
+
   align-items:center;
+
   justify-content:center;
+
   border-bottom:1px solid #333;
+
   position:relative;
+
   font-weight:bold;
 }
 
 .close-comments{
   position:absolute;
+
   right:15px;
+
   border:0;
+
   background:transparent;
+
   color:#fff;
+
   font-size:26px;
 }
 
 .comments-list{
   flex:1;
+
   overflow-y:auto;
+
   padding:15px;
 }
 
 .comment{
   padding:10px 0;
+
   border-bottom:1px solid #222;
+
   line-height:1.4;
 }
 
 .comment strong{
   display:block;
+
   margin-bottom:4px;
 }
 
 .comment-input{
   display:flex;
+
   gap:8px;
+
   padding:10px;
+
   border-top:1px solid #333;
 }
 
 .comment-input input{
   flex:1;
+
   min-width:0;
+
   border:1px solid #444;
+
   background:#222;
+
   color:#fff;
+
   border-radius:22px;
+
   padding:12px 15px;
+
   outline:none;
 }
 
 .comment-input button{
   width:50px;
+
   border:0;
+
   border-radius:50%;
+
   background:#fff;
+
   color:#000;
+
   font-size:18px;
 }
+
 
 /* =====================================================
    SEARCH
@@ -634,10 +979,15 @@ button{
 
 .search-panel{
   position:fixed;
+
   inset:0;
+
   z-index:300;
+
   background:#000;
+
   display:none;
+
   padding:15px;
 }
 
@@ -647,31 +997,47 @@ button{
 
 .search-top{
   display:flex;
+
   align-items:center;
+
   gap:10px;
 }
 
 .search-top input{
   flex:1;
+
   height:45px;
+
   border:1px solid #444;
+
   border-radius:10px;
+
   background:#222;
+
   color:#fff;
+
   padding:0 14px;
+
   font-size:16px;
+
   outline:none;
 }
 
 .close-search{
   width:45px;
   height:45px;
+
   border:0;
+
   border-radius:50%;
+
   background:#222;
+
   color:#fff;
+
   font-size:24px;
 }
+
 
 /* =====================================================
    TOAST
@@ -679,38 +1045,63 @@ button{
 
 .toast{
   position:fixed;
+
   left:50%;
+
   bottom:90px;
-  transform:translateX(-50%) translateY(20px);
+
+  transform:
+    translateX(-50%)
+    translateY(20px);
+
   z-index:500;
+
   background:rgba(30,30,30,.96);
+
   color:#fff;
+
   padding:11px 18px;
+
   border-radius:22px;
+
   font-size:14px;
+
   opacity:0;
+
   pointer-events:none;
+
   transition:.25s;
+
   white-space:nowrap;
 }
 
 .toast.show{
   opacity:1;
-  transform:translateX(-50%) translateY(0);
+
+  transform:
+    translateX(-50%)
+    translateY(0);
 }
 
+
 /* =====================================================
-   EMPTY / ERROR
+   EMPTY
 ===================================================== */
 
 .feed-message{
   width:100%;
+
   height:100dvh;
+
   display:flex;
+
   align-items:center;
   justify-content:center;
+
   text-align:center;
+
   color:#aaa;
+
   padding:30px;
 }
 
@@ -720,18 +1111,26 @@ button{
 
 .feed-message-icon{
   font-size:45px;
+
   margin-bottom:15px;
 }
 
 .retry-btn{
   margin-top:18px;
+
   border:0;
+
   border-radius:22px;
+
   padding:11px 20px;
+
   background:#fff;
+
   color:#000;
+
   font-weight:bold;
 }
+
 
 /* =====================================================
    DESKTOP
@@ -741,33 +1140,48 @@ button{
 
   .video-item{
     max-width:500px;
+
     margin:auto;
   }
 
   .bottom-nav{
     max-width:500px;
+
     left:50%;
     right:auto;
+
     transform:translateX(-50%);
   }
 
 }
 
 </style>
+
 </head>
+
 
 <body>
 
+
 <div class="app">
+
+
+<!-- ===================================================
+     FEED
+=================================================== -->
 
 <main
   class="feed"
   id="feed"
->
-</main>
+></main>
 
+
+<!-- ===================================================
+     BOTTOM NAV
+=================================================== -->
 
 <nav class="bottom-nav">
+
 
 <button
   class="nav-btn active"
@@ -776,7 +1190,11 @@ button{
 >
 
 <svg viewBox="0 0 24 24">
-<path d="M3 11L12 3L21 11V21H14V15H10V21H3Z"/>
+
+<path
+  d="M3 11L12 3L21 11V21H14V15H10V21H3Z"
+/>
+
 </svg>
 
 <span>Home</span>
@@ -791,10 +1209,34 @@ button{
 >
 
 <svg viewBox="0 0 24 24">
-<circle cx="9" cy="8" r="3"/>
-<circle cx="17" cy="9" r="2.5"/>
-<path d="M3 20C3 16.5 5.5 14 9 14C12.5 14 15 16.5 15 20"/>
-<path d="M15 15C18 15 20 17 20 20"/>
+
+<circle
+  cx="9"
+  cy="8"
+  r="3"
+/>
+
+<circle
+  cx="17"
+  cy="9"
+  r="2.5"
+/>
+
+<path
+  d="
+  M3 20
+  C3 16.5 5.5 14 9 14
+  C12.5 14 15 16.5 15 20
+  "
+/>
+
+<path
+  d="
+  M15 15
+  C18 15 20 17 20 20
+  "
+/>
+
 </svg>
 
 <span>Friends</span>
@@ -811,8 +1253,11 @@ button{
 <span class="upload-btn">
 
 <svg viewBox="0 0 24 24">
+
 <path d="M12 5V19"/>
+
 <path d="M5 12H19"/>
+
 </svg>
 
 </span>
@@ -827,9 +1272,15 @@ button{
 >
 
 <svg viewBox="0 0 24 24">
-<path d="M4 5H20V17H15L12 20L9 17H4Z"/>
+
+<path
+  d="M4 5H20V17H15L12 20L9 17H4Z"
+/>
+
 <path d="M8 10H16"/>
+
 <path d="M8 13H13"/>
+
 </svg>
 
 <span>Inbox</span>
@@ -846,18 +1297,34 @@ button{
 >
 
 <svg viewBox="0 0 24 24">
-<circle cx="12" cy="8" r="4"/>
-<path d="M4 21C4 16.5 7.5 14 12 14C16.5 14 20 16.5 20 21"/>
+
+<circle
+  cx="12"
+  cy="8"
+  r="4"
+/>
+
+<path
+  d="
+  M4 21
+  C4 16.5 7.5 14 12 14
+  C16.5 14 20 16.5 20 21
+  "
+/>
+
 </svg>
 
 <span>Profile</span>
 
 </button>
 
+
 </nav>
 
 
-<!-- COMMENTS -->
+<!-- ===================================================
+     COMMENTS
+=================================================== -->
 
 <div
   class="comment-panel"
@@ -878,10 +1345,12 @@ Comments
 
 </div>
 
+
 <div
   class="comments-list"
   id="commentsList"
 ></div>
+
 
 <div class="comment-input">
 
@@ -903,7 +1372,9 @@ Comments
 </div>
 
 
-<!-- SEARCH -->
+<!-- ===================================================
+     SEARCH
+=================================================== -->
 
 <div
   class="search-panel"
@@ -931,31 +1402,49 @@ Comments
 </div>
 
 
+<!-- ===================================================
+     TOAST
+=================================================== -->
+
 <div
   class="toast"
   id="toast"
 ></div>
+
 
 </div>
 
 
 <script type="module">
 
+
 /* =====================================================
-   FIREBASE
+   FIREBASE APP
 ===================================================== */
 
 import {
   getApps,
   initializeApp
-} from
+}
+from
 "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+
+
+/* =====================================================
+   FIREBASE AUTH
+===================================================== */
 
 import {
   getAuth,
   onAuthStateChanged
-} from
+}
+from
 "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+
+
+/* =====================================================
+   FIRESTORE
+===================================================== */
 
 import {
   getFirestore,
@@ -970,9 +1459,27 @@ import {
   increment,
   addDoc,
   serverTimestamp
-} from
+}
+from
 "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
+
+/* =====================================================
+   FIREBASE STORAGE
+===================================================== */
+
+import {
+  getStorage,
+  ref,
+  getDownloadURL
+}
+from
+"https://www.gstatic.com/firebasejs/12.16.0/firebase-storage.js";
+
+
+/* =====================================================
+   FIREBASE CONFIG
+===================================================== */
 
 const firebaseConfig = {
 
@@ -1000,10 +1507,16 @@ const firebaseConfig = {
 };
 
 
+/* =====================================================
+   INITIALIZE
+===================================================== */
+
 const app =
   getApps().length
     ? getApps()[0]
-    : initializeApp(firebaseConfig);
+    : initializeApp(
+        firebaseConfig
+      );
 
 
 const auth =
@@ -1012,6 +1525,10 @@ const auth =
 
 const db =
   getFirestore(app);
+
+
+const storage =
+  getStorage(app);
 
 
 /* =====================================================
@@ -1037,25 +1554,50 @@ let loadingFeed = false;
 let currentPlayingVideo = null;
 
 
+/* =====================================================
+   DEFAULT IMAGE
+===================================================== */
+
 const defaultPhoto =
   "./images/profile.png";
 
 
 /* =====================================================
-   HELPERS
+   ESCAPE HTML
 ===================================================== */
 
 function escapeHtml(value){
 
-  return String(value ?? "")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
+  return String(
+    value ?? ""
+  )
+  .replace(
+    /&/g,
+    "&amp;"
+  )
+  .replace(
+    /</g,
+    "&lt;"
+  )
+  .replace(
+    />/g,
+    "&gt;"
+  )
+  .replace(
+    /"/g,
+    "&quot;"
+  )
+  .replace(
+    /'/g,
+    "&#039;"
+  );
 
 }
 
+
+/* =====================================================
+   NUMBER
+===================================================== */
 
 function number(value){
 
@@ -1068,6 +1610,10 @@ function number(value){
 
 }
 
+
+/* =====================================================
+   TOAST
+===================================================== */
 
 function showToast(text){
 
@@ -1140,7 +1686,7 @@ function withTimeout(
 
 
 /* =====================================================
-   PROFILE
+   CURRENT PROFILE
 ===================================================== */
 
 async function loadCurrentProfile(){
@@ -1150,7 +1696,7 @@ async function loadCurrentProfile(){
   }
 
 
-  const ref =
+  const userRef =
     doc(
       db,
       "users",
@@ -1162,12 +1708,14 @@ async function loadCurrentProfile(){
 
     const snap =
       await withTimeout(
-        getDoc(ref),
+        getDoc(userRef),
         7000
       );
 
 
-    if(snap.exists()){
+    if(
+      snap.exists()
+    ){
 
       currentProfile =
         snap.data();
@@ -1188,11 +1736,14 @@ async function loadCurrentProfile(){
 
       username:
         "wwc_" +
-        currentUser.uid
-          .substring(0,6),
+        currentUser.uid.substring(
+          0,
+          6
+        ),
 
       email:
-        currentUser.email || "",
+        currentUser.email ||
+        "",
 
       photoURL:
         currentUser.photoURL ||
@@ -1215,7 +1766,7 @@ async function loadCurrentProfile(){
 
     await withTimeout(
       setDoc(
-        ref,
+        userRef,
         currentProfile
       ),
       7000
@@ -1225,16 +1776,10 @@ async function loadCurrentProfile(){
   }catch(error){
 
     console.warn(
-      "Profile load:",
+      "Profile error:",
       error
     );
 
-
-    /*
-      গুরুত্বপূর্ণ:
-      Profile load ব্যর্থ হলেও
-      Feed বন্ধ হবে না।
-    */
 
     currentProfile = {
 
@@ -1247,8 +1792,10 @@ async function loadCurrentProfile(){
 
       username:
         "wwc_" +
-        currentUser.uid
-          .substring(0,6),
+        currentUser.uid.substring(
+          0,
+          6
+        ),
 
       photoURL:
         currentUser.photoURL ||
@@ -1266,7 +1813,7 @@ async function loadCurrentProfile(){
 
 
 /* =====================================================
-   FOLLOWING
+   FOLLOWING IDS
 ===================================================== */
 
 function getFollowingIds(){
@@ -1281,44 +1828,18 @@ function getFollowingIds(){
 
 
 /* =====================================================
-   VIDEO URL
-===================================================== */
-
-function getVideoURL(
-  video,
-  index
-){
-
-  return (
-    video.videoURL ||
-    video.videoUrl ||
-    video.downloadURL ||
-    video.downloadUrl ||
-    video.fileURL ||
-    video.fileUrl ||
-    video.url ||
-    video.src ||
-    (
-      index % 2 === 0
-        ? "./videos/video1.mp4"
-        : "./videos/video2.mp4"
-    )
-  );
-
-}
-
-
-/* =====================================================
-   USERNAME
+   GET USERNAME
 ===================================================== */
 
 function getUsername(video){
 
   return String(
+
     video.username ||
     video.userName ||
     video.handle ||
     "wwc_user"
+
   ).replace(
     /^@/,
     ""
@@ -1328,36 +1849,136 @@ function getUsername(video){
 
 
 /* =====================================================
-   ALGORITHM
+   GET VIDEO URL
+===================================================== */
+
+async function resolveVideoURL(
+  video,
+  index
+){
+
+  /*
+    1. সরাসরি URL
+  */
+
+  const directUrl =
+
+    video.videoURL ||
+    video.videoUrl ||
+    video.downloadURL ||
+    video.downloadUrl ||
+    video.fileURL ||
+    video.fileUrl ||
+    video.url ||
+    video.src;
+
+
+  if(directUrl){
+
+    return directUrl;
+
+  }
+
+
+  /*
+    2. Firebase Storage path
+  */
+
+  const storagePath =
+
+    video.storagePath ||
+    video.filePath ||
+    video.storage ||
+    video.path;
+
+
+  if(storagePath){
+
+    try{
+
+      const storageRef =
+        ref(
+          storage,
+          storagePath
+        );
+
+
+      const downloadURL =
+        await withTimeout(
+          getDownloadURL(
+            storageRef
+          ),
+          10000
+        );
+
+
+      return downloadURL;
+
+    }catch(error){
+
+      console.error(
+        "Storage URL error:",
+        error
+      );
+
+    }
+
+  }
+
+
+  /*
+    3. Local fallback
+  */
+
+  return (
+    index % 2 === 0
+      ? "./videos/video1.mp4"
+      : "./videos/video2.mp4"
+  );
+
+}
+
+
+/* =====================================================
+   VIDEO SCORE
 ===================================================== */
 
 function scoreVideo(video){
 
   const likes =
-    number(video.likes);
+    number(
+      video.likes
+    );
 
   const comments =
-    number(video.comments);
+    number(
+      video.comments
+    );
 
   const saves =
-    number(video.saves);
+    number(
+      video.saves
+    );
 
   const views =
-    number(video.views);
+    number(
+      video.views
+    );
+
 
   let score =
+
     likes * 3 +
+
     comments * 5 +
+
     saves * 6 +
-    views * 0.2;
 
+    views * .2;
 
-  /*
-    Following creator gets
-    extra priority.
-  */
 
   const creatorId =
+
     video.creatorId ||
     video.userId ||
     video.uid ||
@@ -1367,7 +1988,9 @@ function scoreVideo(video){
 
   if(
     getFollowingIds()
-      .includes(creatorId)
+      .includes(
+        creatorId
+      )
   ){
 
     score += 100;
@@ -1390,6 +2013,7 @@ async function loadVideos(){
     return;
   }
 
+
   loadingFeed =
     true;
 
@@ -1404,29 +2028,28 @@ async function loadVideos(){
 
     const snap =
       await withTimeout(
+
         getDocs(
           collection(
             db,
             "videos"
           )
         ),
+
         10000
+
       );
 
 
     snap.forEach(
       videoDoc => {
 
-        const data =
-          videoDoc.data();
-
-
         firebaseVideos.push({
 
           id:
             videoDoc.id,
 
-          ...data
+          ...videoDoc.data()
 
         });
 
@@ -1437,7 +2060,7 @@ async function loadVideos(){
   }catch(error){
 
     console.error(
-      "Videos error:",
+      "Firestore videos error:",
       error
     );
 
@@ -1445,20 +2068,22 @@ async function loadVideos(){
 
 
   /*
-    Firebase ভিডিও থাকলে
-    সেগুলো ব্যবহার হবে।
+    Firebase videos পাওয়া গেছে
   */
 
-  if(firebaseVideos.length){
+  if(
+    firebaseVideos.length
+  ){
 
     videos =
       firebaseVideos;
 
+
   }else{
 
     /*
-      Firebase-এ ভিডিও না থাকলে
-      local fallback।
+      Firebase empty হলে
+      local fallback
     */
 
     videos = [
@@ -1546,8 +2171,26 @@ async function loadVideos(){
   }
 
 
-  sortVideos();
+  /*
+    Storage URL resolve
+  */
 
+  for(
+    let i = 0;
+    i < videos.length;
+    i++
+  ){
+
+    videos[i].resolvedVideoURL =
+      await resolveVideoURL(
+        videos[i],
+        i
+      );
+
+  }
+
+
+  sortVideos();
 
   renderFeed();
 
@@ -1599,10 +2242,12 @@ function getFilteredVideos(){
       video => {
 
         const creator =
+
           video.creatorId ||
           video.userId ||
           video.uid ||
-          video.ownerId;
+          video.ownerId ||
+          "";
 
 
         return following.includes(
@@ -1656,49 +2301,7 @@ function showLoading(){
 
 
 /* =====================================================
-   ERROR
-===================================================== */
-
-function showFeedError(){
-
-  const feed =
-    document.getElementById(
-      "feed"
-    );
-
-
-  feed.innerHTML = `
-
-    <div class="feed-message">
-
-      <div class="feed-message-inner">
-
-        <div class="feed-message-icon">
-          ⚠️
-        </div>
-
-        <div>
-          ভিডিও লোড করা যায়নি।
-        </div>
-
-        <button
-          class="retry-btn"
-          onclick="reloadFeed()"
-        >
-          আবার চেষ্টা করুন
-        </button>
-
-      </div>
-
-    </div>
-
-  `;
-
-}
-
-
-/* =====================================================
-   RENDER
+   RENDER FEED
 ===================================================== */
 
 function renderFeed(){
@@ -1717,7 +2320,9 @@ function renderFeed(){
     "";
 
 
-  if(!list.length){
+  if(
+    !list.length
+  ){
 
     feed.innerHTML = `
 
@@ -1764,12 +2369,6 @@ function renderFeed(){
 
 
   setupVideoObserver();
-
-
-  /*
-    প্রথম এবং পরের ভিডিও
-    preload করা হবে।
-  */
 
   preloadNearbyVideos();
 
@@ -1827,6 +2426,7 @@ function createVideoItem(
 
 
   const creatorId =
+
     video.creatorId ||
     video.userId ||
     video.uid ||
@@ -1842,6 +2442,7 @@ function createVideoItem(
 
 
   const liked =
+
     Array.isArray(
       video.likedBy
     ) &&
@@ -1851,6 +2452,7 @@ function createVideoItem(
 
 
   const saved =
+
     Array.isArray(
       video.savedBy
     ) &&
@@ -1860,22 +2462,28 @@ function createVideoItem(
 
 
   const likes =
-    number(video.likes);
+    number(
+      video.likes
+    );
 
 
   const comments =
-    number(video.comments);
+    number(
+      video.comments
+    );
 
 
   const saves =
-    number(video.saves);
+    number(
+      video.saves
+    );
 
 
   const url =
-    getVideoURL(
-      video,
-      index
-    );
+    video.resolvedVideoURL ||
+    video.videoURL ||
+    video.videoUrl ||
+    "./videos/video1.mp4";
 
 
   item.innerHTML = `
@@ -1887,18 +2495,26 @@ function createVideoItem(
       muted
       playsinline
       webkit-playsinline
-      preload="auto"
-      poster="${escapeHtml(
-        video.thumbnail ||
-        video.thumbnailURL ||
-        ""
-      )}"
+      preload="metadata"
     ></video>
 
 
     <div class="video-loader">
 
       <span></span>
+
+    </div>
+
+
+    <div class="video-error">
+
+      <div class="video-error-title">
+        ভিডিও চালানো যাচ্ছে না
+      </div>
+
+      <div class="video-error-text">
+        ভিডিও ফাইলের URL বা Firebase Storage path পরীক্ষা করুন।
+      </div>
 
     </div>
 
@@ -1964,13 +2580,14 @@ function createVideoItem(
 
     <div class="action-bar">
 
+
       <div class="action">
 
         <div class="creator-avatar">
 
           <img
             src="${escapeHtml(photo)}"
-            alt="${escapeHtml(name)}"
+            alt=""
             onerror="this.src='./images/profile.png'"
           >
 
@@ -1978,6 +2595,7 @@ function createVideoItem(
             creatorId &&
             creatorId !==
               currentUser.uid
+
               ? `
 
                 <button
@@ -2000,6 +2618,7 @@ function createVideoItem(
                 </button>
 
               `
+
               : ""
           }
 
@@ -2012,7 +2631,9 @@ function createVideoItem(
 
       <button
         class="action like-btn ${
-          liked ? "liked" : ""
+          liked
+            ? "liked"
+            : ""
         }"
         type="button"
         data-action="like"
@@ -2085,7 +2706,9 @@ function createVideoItem(
 
       <button
         class="action save-btn ${
-          saved ? "saved" : ""
+          saved
+            ? "saved"
+            : ""
         }"
         type="button"
         data-action="save"
@@ -2153,6 +2776,7 @@ function createVideoItem(
 
       </button>
 
+
     </div>
 
 
@@ -2171,11 +2795,11 @@ function createVideoItem(
         />
 
         <path
-          d="M15 9C17 10.5 17 13.5 15 15"
+          d="M17 9L21 15"
         />
 
         <path
-          d="M18 6C21 9 21 15 18 18"
+          d="M21 9L17 15"
         />
 
       </svg>
@@ -2243,12 +2867,26 @@ function createVideoItem(
     );
 
 
+  const errorBox =
+    item.querySelector(
+      ".video-error"
+    );
+
+
+  /* ===================================================
+     VIDEO EVENTS
+  =================================================== */
+
   video.addEventListener(
     "loadeddata",
     () => {
 
       loader.style.display =
         "none";
+
+      errorBox.classList.remove(
+        "show"
+      );
 
     }
   );
@@ -2266,22 +2904,26 @@ function createVideoItem(
 
 
   video.addEventListener(
-    "waiting",
+    "playing",
     () => {
 
       loader.style.display =
-        "flex";
+        "none";
+
+      errorBox.classList.remove(
+        "show"
+      );
 
     }
   );
 
 
   video.addEventListener(
-    "playing",
+    "waiting",
     () => {
 
       loader.style.display =
-        "none";
+        "flex";
 
     }
   );
@@ -2294,8 +2936,12 @@ function createVideoItem(
       loader.style.display =
         "none";
 
+      errorBox.classList.add(
+        "show"
+      );
+
       console.error(
-        "Video error:",
+        "VIDEO ERROR:",
         url
       );
 
@@ -2303,10 +2949,9 @@ function createVideoItem(
   );
 
 
-  /*
-    ভিডিওতে সাধারণ click করলে
-    pause/play হবে।
-  */
+  /* ===================================================
+     CLICK = PLAY / PAUSE
+  =================================================== */
 
   item.addEventListener(
     "click",
@@ -2317,7 +2962,9 @@ function createVideoItem(
           "button"
         )
       ){
+
         return;
+
       }
 
 
@@ -2354,7 +3001,9 @@ function togglePlayPause(
     );
 
 
-  if(video.paused){
+  if(
+    video.paused
+  ){
 
     playVideo(
       video
@@ -2363,6 +3012,7 @@ function togglePlayPause(
     indicator.classList.remove(
       "show"
     );
+
 
   }else{
 
@@ -2392,8 +3042,10 @@ async function playVideo(
   ){
 
     try{
+
       currentPlayingVideo.pause();
-    }catch(e){}
+
+    }catch(error){}
 
   }
 
@@ -2403,8 +3055,8 @@ async function playVideo(
 
 
   /*
-    TikTok style autoplay
-    প্রথমে muted।
+    Mobile browser autoplay
+    এর জন্য muted রাখা হয়।
   */
 
   video.muted =
@@ -2418,7 +3070,7 @@ async function playVideo(
   }catch(error){
 
     console.warn(
-      "Autoplay blocked:",
+      "Play error:",
       error
     );
 
@@ -2428,7 +3080,7 @@ async function playVideo(
 
 
 /* =====================================================
-   OBSERVER
+   VIDEO OBSERVER
 ===================================================== */
 
 function setupVideoObserver(){
@@ -2448,8 +3100,12 @@ function setupVideoObserver(){
     ];
 
 
-  if(!items.length){
+  if(
+    !items.length
+  ){
+
     return;
+
   }
 
 
@@ -2457,43 +3113,6 @@ function setupVideoObserver(){
     new IntersectionObserver(
 
       entries => {
-
-        /*
-          সবচেয়ে visible ভিডিও বের করি।
-        */
-
-        let bestEntry =
-          null;
-
-
-        for(
-          const entry of entries
-        ){
-
-          if(
-            entry.isIntersecting
-          ){
-
-            if(
-              !bestEntry ||
-              entry.intersectionRatio >
-              bestEntry.intersectionRatio
-            ){
-
-              bestEntry =
-                entry;
-
-            }
-
-          }
-
-        }
-
-
-        /*
-          visible ভিডিও play,
-          বাকিগুলো pause।
-        */
 
         items.forEach(
           item => {
@@ -2504,18 +3123,19 @@ function setupVideoObserver(){
               );
 
 
-            const ratio =
+            const rect =
               item.getBoundingClientRect();
 
 
             const visible =
               Math.min(
                 window.innerHeight,
-                ratio.bottom
-              ) -
+                rect.bottom
+              )
+              -
               Math.max(
                 0,
-                ratio.top
+                rect.top
               );
 
 
@@ -2525,8 +3145,7 @@ function setupVideoObserver(){
 
 
             if(
-              percentage >
-              .65
+              percentage > .65
             ){
 
               playVideo(
@@ -2561,17 +3180,15 @@ function setupVideoObserver(){
 
 
   items.forEach(
-    item =>
+    item => {
+
       observer.observe(
         item
-      )
+      );
+
+    }
   );
 
-
-  /*
-    প্রথম ভিডিও
-    সঙ্গে সঙ্গে চালু।
-  */
 
   const first =
     items[0];
@@ -2593,7 +3210,7 @@ function setupVideoObserver(){
         );
 
       },
-      150
+      300
     );
 
   }
@@ -2602,7 +3219,7 @@ function setupVideoObserver(){
 
 
 /* =====================================================
-   PRELOAD NEXT VIDEOS
+   PRELOAD
 ===================================================== */
 
 function preloadNearbyVideos(){
@@ -2615,8 +3232,12 @@ function preloadNearbyVideos(){
     ];
 
 
-  if(!items.length){
+  if(
+    !items.length
+  ){
+
     return;
+
   }
 
 
@@ -2634,7 +3255,8 @@ function preloadNearbyVideos(){
       if(
         Math.abs(
           rect.top
-        ) <
+        )
+        <
         window.innerHeight * .5
       ){
 
@@ -2647,42 +3269,30 @@ function preloadNearbyVideos(){
   );
 
 
-  /*
-    Current + next 2
-    preload হবে।
-  */
-
   for(
     let i =
       activeIndex;
+
     i <
       Math.min(
         items.length,
         activeIndex + 3
       );
+
     i++
+
   ){
 
     const video =
-      items[i]
-        .querySelector(
-          ".video"
-        );
+      items[i].querySelector(
+        ".video"
+      );
 
 
     if(video){
 
       video.preload =
         "auto";
-
-      /*
-        Browser-কে loading
-        শুরু করার সুযোগ দেওয়া।
-      */
-
-      try{
-        video.load();
-      }catch(e){}
 
     }
 
@@ -2692,7 +3302,7 @@ function preloadNearbyVideos(){
 
 
 /* =====================================================
-   FEED CLICK EVENTS
+   FEED ACTIONS
 ===================================================== */
 
 document
@@ -2702,6 +3312,7 @@ document
   .addEventListener(
     "click",
     async event => {
+
 
       const tab =
         event.target.closest(
@@ -2729,8 +3340,12 @@ document
         );
 
 
-      if(!button){
+      if(
+        !button
+      ){
+
         return;
+
       }
 
 
@@ -2740,8 +3355,12 @@ document
         );
 
 
-      if(!item){
+      if(
+        !item
+      ){
+
         return;
+
       }
 
 
@@ -2753,7 +3372,10 @@ document
         button.dataset.action;
 
 
-      if(action === "like"){
+      if(
+        action ===
+        "like"
+      ){
 
         await toggleLike(
           item,
@@ -2764,7 +3386,10 @@ document
       }
 
 
-      else if(action === "save"){
+      else if(
+        action ===
+        "save"
+      ){
 
         await toggleSave(
           item,
@@ -2775,7 +3400,10 @@ document
       }
 
 
-      else if(action === "comment"){
+      else if(
+        action ===
+        "comment"
+      ){
 
         await openComments(
           videoId
@@ -2784,7 +3412,10 @@ document
       }
 
 
-      else if(action === "share"){
+      else if(
+        action ===
+        "share"
+      ){
 
         await shareVideo(
           videoId
@@ -2793,7 +3424,10 @@ document
       }
 
 
-      else if(action === "follow"){
+      else if(
+        action ===
+        "follow"
+      ){
 
         await toggleFollow(
           button.dataset.creator,
@@ -2803,7 +3437,10 @@ document
       }
 
 
-      else if(action === "sound"){
+      else if(
+        action ===
+        "sound"
+      ){
 
         toggleSound(
           item,
@@ -2813,7 +3450,10 @@ document
       }
 
 
-      else if(action === "search"){
+      else if(
+        action ===
+        "search"
+      ){
 
         openSearch();
 
@@ -2833,16 +3473,25 @@ async function toggleLike(
   button
 ){
 
-  if(!currentUser){
+  if(
+    !currentUser
+  ){
+
     showToast(
       "আগে Login করুন"
     );
+
     return;
+
   }
 
 
-  if(button.disabled){
+  if(
+    button.disabled
+  ){
+
     return;
+
   }
 
 
@@ -2852,7 +3501,7 @@ async function toggleLike(
 
   try{
 
-    const ref =
+    const videoRef =
       doc(
         db,
         "videos",
@@ -2860,18 +3509,19 @@ async function toggleLike(
       );
 
 
-    /*
-      Local video হলে Firebase
-      update করার চেষ্টা করব না।
-    */
-
     const snap =
       await getDoc(
-        ref
+        videoRef
       );
 
 
-    if(!snap.exists()){
+    /*
+      Local video
+    */
+
+    if(
+      !snap.exists()
+    ){
 
       const liked =
         button.classList.contains(
@@ -2936,10 +3586,12 @@ async function toggleLike(
       );
 
 
-    if(liked){
+    if(
+      liked
+    ){
 
       await updateDoc(
-        ref,
+        videoRef,
         {
 
           likedBy:
@@ -2962,7 +3614,7 @@ async function toggleLike(
     }else{
 
       await updateDoc(
-        ref,
+        videoRef,
         {
 
           likedBy:
@@ -2981,52 +3633,13 @@ async function toggleLike(
         "liked"
       );
 
-
-      const icon =
-        button.querySelector(
-          ".action-icon"
-        );
-
-
-      if(icon){
-
-        icon.animate(
-          [
-            {
-              transform:
-                "scale(.7)"
-            },
-            {
-              transform:
-                "scale(1.3)"
-            },
-            {
-              transform:
-                "scale(1)"
-            }
-          ],
-          {
-            duration:250
-          }
-        );
-
-      }
-
     }
 
 
     const updated =
       await getDoc(
-        ref
+        videoRef
       );
-
-
-    const count =
-      updated.exists()
-        ? number(
-            updated.data().likes
-          )
-        : 0;
 
 
     button
@@ -3034,7 +3647,11 @@ async function toggleLike(
         ".action-count"
       )
       .textContent =
-        count;
+        updated.exists()
+          ? number(
+              updated.data().likes
+            )
+          : 0;
 
 
   }catch(error){
@@ -3069,7 +3686,9 @@ async function toggleSave(
   button
 ){
 
-  if(!currentUser){
+  if(
+    !currentUser
+  ){
 
     showToast(
       "আগে Login করুন"
@@ -3080,8 +3699,12 @@ async function toggleSave(
   }
 
 
-  if(button.disabled){
+  if(
+    button.disabled
+  ){
+
     return;
+
   }
 
 
@@ -3113,11 +3736,9 @@ async function toggleSave(
       );
 
 
-    /*
-      Local fallback.
-    */
-
-    if(!videoSnap.exists()){
+    if(
+      !videoSnap.exists()
+    ){
 
       const saved =
         button.classList.contains(
@@ -3161,7 +3782,9 @@ async function toggleSave(
       );
 
 
-    if(saved){
+    if(
+      saved
+    ){
 
       await updateDoc(
         videoRef,
@@ -3370,7 +3993,9 @@ async function toggleFollow(
       );
 
 
-    if(exists){
+    if(
+      exists
+    ){
 
       await updateDoc(
         myRef,
@@ -3474,7 +4099,9 @@ async function toggleFollow(
       );
 
 
-    if(updated.exists()){
+    if(
+      updated.exists()
+    ){
 
       currentProfile =
         updated.data();
@@ -3519,7 +4146,9 @@ function toggleSound(
     );
 
 
-  if(video.muted){
+  if(
+    video.muted
+  ){
 
     video.muted =
       false;
@@ -3636,11 +4265,13 @@ async function loadComments(
 
   list.innerHTML = `
 
-    <div style="
-      text-align:center;
-      color:#888;
-      padding:25px;
-    ">
+    <div
+      style="
+        text-align:center;
+        color:#888;
+        padding:25px;
+      "
+    >
       Comments লোড হচ্ছে...
     </div>
 
@@ -3669,15 +4300,19 @@ async function loadComments(
       "";
 
 
-    if(snap.empty){
+    if(
+      snap.empty
+    ){
 
       list.innerHTML = `
 
-        <div style="
-          text-align:center;
-          color:#777;
-          padding:30px;
-        ">
+        <div
+          style="
+            text-align:center;
+            color:#777;
+            padding:30px;
+          "
+        >
           এখনো কোনো Comment নেই।
         </div>
 
@@ -3688,17 +4323,19 @@ async function loadComments(
     }
 
 
-    const comments =
-      [];
+    const comments = [];
 
 
     snap.forEach(
       commentDoc => {
 
         comments.push({
+
           id:
             commentDoc.id,
+
           ...commentDoc.data()
+
         });
 
       }
@@ -3715,6 +4352,7 @@ async function loadComments(
         const bTime =
           b.createdAt?.seconds ||
           0;
+
 
         return (
           aTime -
@@ -3774,11 +4412,13 @@ async function loadComments(
 
     list.innerHTML = `
 
-      <div style="
-        text-align:center;
-        color:#ff667f;
-        padding:25px;
-      ">
+      <div
+        style="
+          text-align:center;
+          color:#ff667f;
+          padding:25px;
+        "
+      >
         Comments লোড করা যায়নি।
       </div>
 
@@ -3805,8 +4445,12 @@ async function addComment(){
     input.value.trim();
 
 
-  if(!text){
+  if(
+    !text
+  ){
+
     return;
+
   }
 
 
@@ -3893,7 +4537,9 @@ async function addComment(){
       );
 
 
-    if(videoSnap.exists()){
+    if(
+      videoSnap.exists()
+    ){
 
       await updateDoc(
         videoRef,
@@ -3904,37 +4550,6 @@ async function addComment(){
 
         }
       );
-
-    }
-
-
-    /*
-      Feed-এর comment number
-      সঙ্গে সঙ্গে update।
-    */
-
-    const item =
-      document.querySelector(
-        `.video-item[data-video-id="${CSS.escape(currentVideoId)}"]`
-      );
-
-
-    if(item){
-
-      const commentButton =
-        item.querySelector(
-          ".comment-btn .action-count"
-        );
-
-
-      if(commentButton){
-
-        commentButton.textContent =
-          number(
-            commentButton.textContent
-          ) + 1;
-
-      }
 
     }
 
@@ -4036,6 +4651,7 @@ async function shareVideo(
         shareData
       );
 
+
     }else{
 
       await navigator.clipboard.writeText(
@@ -4127,7 +4743,7 @@ function closeSearch(){
 
 
 /* =====================================================
-   SEARCH
+   SEARCH INPUT
 ===================================================== */
 
 document
@@ -4144,7 +4760,9 @@ document
           .toLowerCase();
 
 
-      if(!q){
+      if(
+        !q
+      ){
 
         renderFeed();
 
@@ -4161,7 +4779,7 @@ document
               getUsername(
                 video
               )
-                .toLowerCase();
+              .toLowerCase();
 
 
             const name =
@@ -4170,7 +4788,7 @@ document
                 video.displayName ||
                 ""
               )
-                .toLowerCase();
+              .toLowerCase();
 
 
             const caption =
@@ -4179,13 +4797,17 @@ document
                 video.description ||
                 ""
               )
-                .toLowerCase();
+              .toLowerCase();
 
 
             return (
+
               username.includes(q) ||
+
               name.includes(q) ||
+
               caption.includes(q)
+
             );
 
           }
@@ -4199,6 +4821,10 @@ document
     }
   );
 
+
+/* =====================================================
+   SEARCH RESULTS
+===================================================== */
 
 function renderSearchResults(
   list
@@ -4214,7 +4840,9 @@ function renderSearchResults(
     "";
 
 
-  if(!list.length){
+  if(
+    !list.length
+  ){
 
     feed.innerHTML = `
 
@@ -4267,7 +4895,6 @@ function switchFeed(
 
 
   sortVideos();
-
 
   renderFeed();
 
@@ -4385,7 +5012,9 @@ onAuthStateChanged(
   auth,
   async user => {
 
-    if(!user){
+    if(
+      !user
+    ){
 
       document
         .getElementById(
@@ -4430,12 +5059,8 @@ onAuthStateChanged(
 
 
     /*
-      গুরুত্বপূর্ণ:
       Profile এবং Videos
-      একই সময়ে শুরু হবে।
-
-      Profile আটকে গেলেও
-      Videos আটকে থাকবে না।
+      একসাথে load হবে।
     */
 
     await Promise.allSettled([
@@ -4474,23 +5099,79 @@ document.addEventListener(
           }
         );
 
+
     }else{
 
-      const visible =
-        document.querySelector(
-          ".video-item"
-        );
+      const items =
+        [
+          ...document.querySelectorAll(
+            ".video-item"
+          )
+        ];
 
 
-      if(visible){
+      let best =
+        null;
+
+
+      let bestRatio =
+        0;
+
+
+      items.forEach(
+        item => {
+
+          const rect =
+            item.getBoundingClientRect();
+
+
+          const visible =
+            Math.min(
+              window.innerHeight,
+              rect.bottom
+            )
+            -
+            Math.max(
+              0,
+              rect.top
+            );
+
+
+          const ratio =
+            visible /
+            window.innerHeight;
+
+
+          if(
+            ratio >
+            bestRatio
+          ){
+
+            bestRatio =
+              ratio;
+
+            best =
+              item;
+
+          }
+
+        }
+      );
+
+
+      if(
+        best
+      ){
 
         const video =
-          visible.querySelector(
+          best.querySelector(
             ".video"
           );
 
 
-        if(video){
+        if(
+          video
+        ){
 
           playVideo(
             video
@@ -4507,18 +5188,12 @@ document.addEventListener(
 
 
 /* =====================================================
-   PREVENT OLD VIDEO PLAY
+   SCROLL
 ===================================================== */
 
 window.addEventListener(
   "scroll",
   () => {
-
-    /*
-      Scroll শেষ হলে
-      browser-কে current video
-      ধরতে দিচ্ছি।
-    */
 
     clearTimeout(
       window.__feedScrollTimer
@@ -4556,6 +5231,7 @@ window.addEventListener(
 
   }
 );
+
 
 </script>
 
