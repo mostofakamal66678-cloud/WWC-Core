@@ -1,5 +1,5 @@
 /* =====================================================
-   TIKTOK STYLE CSS
+   WWC GLOBAL STYLES
 ===================================================== */
 
 * {
@@ -77,7 +77,6 @@ button {
   display: block;
 }
 
-/* ===== গ্রেডিয়েন্ট ওভারলে ===== */
 .video-item::after {
   content: "";
   position: absolute;
@@ -149,7 +148,7 @@ button {
   font-size: 18px;
 }
 
-/* ===== ডান পাশের অ্যাকশন বার ===== */
+/* ===== অ্যাকশন বার ===== */
 .action-bar {
   position: absolute;
   right: 8px;
@@ -191,7 +190,6 @@ button {
   color: #fff;
 }
 
-/* ===== লাইক ===== */
 .like-btn.liked .action-icon {
   color: #ff2d55;
   transform: scale(1.15);
@@ -204,7 +202,6 @@ button {
   100% { transform: scale(1.15); }
 }
 
-/* ===== সেভ ===== */
 .save-btn.saved .action-icon {
   color: #ffd84d;
   transform: scale(1.1);
@@ -281,7 +278,7 @@ button {
   text-shadow: 0 2px 8px rgba(0,0,0,0.9);
 }
 
-/* ===== সাউন্ড বাটন ===== */
+/* ===== সাউন্ড ===== */
 .sound-btn {
   position: absolute;
   left: 14px;
@@ -299,7 +296,6 @@ button {
   font-size: 18px;
 }
 
-/* ===== পজ ইন্ডিকেটর ===== */
 .pause-indicator {
   position: absolute;
   left: 50%;
@@ -323,7 +319,6 @@ button {
   transform: translate(-50%, -50%) scale(1);
 }
 
-/* ===== লোডার ===== */
 .video-loader {
   position: absolute;
   inset: 0;
@@ -343,7 +338,7 @@ button {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ===== টিকটক স্টাইল বটম নেভ ===== */
+/* ===== বটম নেভ ===== */
 .bottom-nav {
   position: fixed;
   left: 0;
@@ -408,7 +403,7 @@ button {
 }
 .upload-btn:active { transform: scale(0.9); }
 
-/* ===== কমেন্ট প্যানেল ===== */
+/* ===== কমেন্ট ===== */
 .comment-panel {
   position: fixed;
   left: 0;
@@ -526,7 +521,7 @@ button {
   border: 0;
 }
 
-/* ===== সার্চ ওভারলে ===== */
+/* ===== সার্চ ===== */
 .search-overlay {
   position: fixed;
   top: 0;
@@ -595,4 +590,4 @@ button {
 @media(min-width: 700px) {
   .video-item { max-width: 500px; margin: auto; }
   .bottom-nav { max-width: 500px; left: 50%; right: auto; transform: translateX(-50%); }
-}
+   }
