@@ -1,1 +1,551 @@
 
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#000000" />
+  <title>WWC · Home</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    /* =====================================================
+       TIKTOK STYLE CSS
+    ===================================================== */
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      overscroll-behavior: none;
+    }
+
+    button {
+      border: 0;
+      outline: 0;
+      cursor: pointer;
+      background: transparent;
+      font-family: inherit;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .app {
+      position: relative;
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .feed {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+    }
+    .feed::-webkit-scrollbar { display: none; }
+
+    .video-item {
+      position: relative;
+      width: 100%;
+      height: 100dvh;
+      min-height: 100dvh;
+      background: #000;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+      overflow: hidden;
+    }
+
+    .video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #000;
+      display: block;
+    }
+
+    .video-item::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 50%;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .top-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 82px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: env(safe-area-inset-top);
+      background: linear-gradient(rgba(0,0,0,0.6), transparent);
+      pointer-events: none;
+    }
+    .top-bar .tabs {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+      pointer-events: auto;
+    }
+    .top-bar .tab {
+      position: relative;
+      background: transparent;
+      color: rgba(255,255,255,0.6);
+      font-size: 17px;
+      font-weight: 700;
+      padding: 8px 4px;
+      transition: color 0.2s;
+    }
+    .top-bar .tab.active { color: #fff; }
+    .top-bar .tab.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 3px;
+      border-radius: 10px;
+      background: #fff;
+    }
+    .search-btn {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.4);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: auto;
+      backdrop-filter: blur(6px);
+      font-size: 18px;
+    }
+
+    .action-bar {
+      position: absolute;
+      right: 8px;
+      bottom: 110px;
+      z-index: 30;
+      width: 62px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+    .action {
+      width: 58px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      background: transparent;
+      padding: 0;
+    }
+    .action-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 30px;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.8));
+      transition: transform 0.15s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+      color: #fff;
+    }
+    .action:active .action-icon { transform: scale(0.82); }
+    .action-count {
+      font-size: 12px;
+      font-weight: 700;
+      text-shadow: 0 1px 4px #000;
+      margin-top: 1px;
+      color: #fff;
+    }
+
+    .like-btn.liked .action-icon {
+      color: #ff2d55;
+      transform: scale(1.15);
+      animation: likePop 0.35s ease;
+    }
+    @keyframes likePop {
+      0% { transform: scale(0.7); }
+      40% { transform: scale(1.4); }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1.15); }
+    }
+
+    .save-btn.saved .action-icon {
+      color: #ffd84d;
+      transform: scale(1.1);
+      animation: savePop 0.3s ease;
+    }
+    @keyframes savePop {
+      0% { transform: scale(0.7); }
+      60% { transform: scale(1.2); }
+      100% { transform: scale(1.1); }
+    }
+
+    .creator-avatar {
+      position: relative;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      overflow: visible;
+      cursor: pointer;
+    }
+    .creator-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
+    }
+    .follow-plus {
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #fff;
+      color: #000;
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .follow-plus.following {
+      background: #ff2d55;
+      color: #fff;
+      font-size: 12px;
+    }
+
+    .video-info {
+      position: absolute;
+      left: 15px;
+      right: 85px;
+      bottom: 95px;
+      z-index: 25;
+    }
+    .video-info .username {
+      font-size: 17px;
+      font-weight: 700;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+      margin-bottom: 6px;
+      cursor: pointer;
+    }
+    .video-info .caption {
+      font-size: 14px;
+      line-height: 1.5;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+    }
+    .video-info .sound {
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 8px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+    }
+
+    .sound-btn {
+      position: absolute;
+      left: 14px;
+      bottom: 155px;
+      z-index: 35;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.45);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(5px);
+      font-size: 18px;
+    }
+
+    .pause-indicator {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.7);
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s;
+      z-index: 40;
+      font-size: 28px;
+    }
+    .pause-indicator.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .video-loader {
+      position: absolute;
+      inset: 0;
+      z-index: 8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .video-loader span {
+      width: 32px;
+      height: 32px;
+      border: 3px solid rgba(255,255,255,0.2);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 75px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding-bottom: env(safe-area-inset-bottom);
+      background: linear-gradient(transparent, rgba(0,0,0,0.95) 25%);
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .nav-btn {
+      width: 20%;
+      height: 65px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      color: rgba(255,255,255,0.5);
+      font-size: 10px;
+      font-weight: 600;
+      transition: color 0.2s;
+      position: relative;
+      background: transparent;
+    }
+    .nav-btn.active { color: #fff; }
+    .nav-btn .nav-icon { font-size: 24px; }
+    .upload-btn {
+      width: 50px;
+      height: 38px;
+      border-radius: 10px;
+      background: #fff;
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 300;
+      box-shadow: -3px 0 0 #25f4ee, 3px 0 0 #fe2c55;
+      transition: transform 0.15s;
+    }
+    .upload-btn:active { transform: scale(0.9); }
+
+    .comment-panel {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 150;
+      height: 55vh;
+      background: #111;
+      border-radius: 18px 18px 0 0;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    .comment-panel.open { transform: translateY(0); }
+    .comment-header {
+      height: 50px;
+      flex: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #333;
+      font-weight: 700;
+      position: relative;
+      color: #fff;
+    }
+    .close-comments {
+      position: absolute;
+      right: 15px;
+      color: #fff;
+      font-size: 24px;
+      background: transparent;
+      border: 0;
+    }
+    .comments-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+      color: #fff;
+    }
+    .comment {
+      padding: 10px 0;
+      border-bottom: 1px solid #222;
+      line-height: 1.4;
+      color: #eee;
+    }
+    .comment strong { display: block; margin-bottom: 4px; color: #fff; }
+    .comment-input {
+      display: flex;
+      gap: 8px;
+      padding: 10px;
+      border-top: 1px solid #333;
+    }
+    .comment-input input {
+      flex: 1;
+      border: 1px solid #444;
+      background: #222;
+      color: #fff;
+      border-radius: 22px;
+      padding: 10px 15px;
+      outline: none;
+    }
+    .comment-input input::placeholder { color: #666; }
+    .comment-input button {
+      width: 44px;
+      border-radius: 50%;
+      background: #fff;
+      color: #000;
+      font-size: 16px;
+      border: 0;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 95px;
+      transform: translateX(-50%) translateY(20px);
+      z-index: 500;
+      background: rgba(30,30,30,0.95);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 22px;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s;
+      white-space: nowrap;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .feed-message {
+      width: 100%;
+      height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #aaa;
+      padding: 30px;
+    }
+    .feed-message-inner { max-width: 320px; }
+    .feed-message-icon { font-size: 45px; margin-bottom: 15px; }
+    .retry-btn {
+      margin-top: 18px;
+      border-radius: 22px;
+      padding: 10px 22px;
+      background: #fff;
+      color: #000;
+      font-weight: 700;
+      border: 0;
+    }
+
+    @media(min-width: 700px) {
+      .video-item { max-width: 500px; margin: auto; }
+      .bottom-nav { max-width: 500px; left: 50%; right: auto; transform: translateX(-50%); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app">
+  <main class="feed" id="feed"></main>
+  
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="goHome()">
+      <span class="nav-icon"><i class="fas fa-home"></i></span>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn" onclick="goFriends()">
+      <span class="nav-icon"><i class="fas fa-user-friends"></i></span>
+      <span>Friends</span>
+    </button>
+    <button class="nav-btn" onclick="goUpload()">
+      <span class="upload-btn"><i class="fas fa-plus"></i></span>
+    </button>
+    <button class="nav-btn" onclick="goInbox()">
+      <span class="nav-icon"><i class="fas fa-inbox"></i></span>
+      <span>Inbox</span>
+    </button>
+    <button class="nav-btn" onclick="goProfile()">
+      <span class="nav-icon"><i class="fas fa-user"></i></span>
+      <span>Profile</span>
+    </button>
+  </nav>
+  
+  <div class="comment-panel" id="commentPanel">
+    <div class="comment-header">
+      <span>Comments</span>
+      <button class="close-comments" onclick="closeComments()">✕</button>
+    </div>
+    <div class="comments-list" id="commentsList"></div>
+    <div class="comment-input">
+      <input id="commentInput" type="text" maxlength="500" placeholder="Add comment...">
+      <button onclick="addComment()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+  
+  <div class="toast" id="toast"></div>
+</div>
