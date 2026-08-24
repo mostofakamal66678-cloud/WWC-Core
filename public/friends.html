@@ -16,37 +16,30 @@
     .header p{color:#888;font-size:13px;margin-top:4px}
     .friend-list{max-width:500px;margin:0 auto}
     .friend-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
-    .friend-item img{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#222}
-    .friend-item .info{flex:1}
+    .friend-item img{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#222;cursor:pointer}
+    .friend-item .info{flex:1;cursor:pointer}
     .friend-item .info .name{font-weight:600;font-size:15px}
     .friend-item .info .username{font-size:12px;color:#888}
     .friend-item .unfollow-btn{padding:6px 14px;border-radius:6px;background:rgba(255,45,85,0.15);color:#ff2d55;font-size:12px;font-weight:600;border:1px solid rgba(255,45,85,0.2);cursor:pointer}
     .friend-item .unfollow-btn:active{transform:scale(0.95)}
+    .friend-item .unfollow-btn:disabled{opacity:0.5;cursor:not-allowed}
     .empty-state{text-align:center;color:#666;padding:40px 0}
     .empty-state i{font-size:40px;color:#333;display:block;margin-bottom:15px}
     .loading{text-align:center;color:#666;padding:40px 0}
     .loading i{margin-right:8px}
+    .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,0.95);color:#fff;padding:10px 22px;border-radius:22px;font-size:14px;opacity:0;pointer-events:none;transition:all .3s;z-index:1000;white-space:nowrap}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   </style>
 </head>
 <body>
-
-<button class="back-btn" onclick="window.location.href='./index.html'">
-  <i class="fas fa-arrow-left"></i>
-</button>
-
-<div class="header">
-  <h1><i class="fas fa-user-friends" style="color:#25f4ee;margin-right:8px;"></i>Friends</h1>
-  <p>আপনি যাদের Follow করেন তাদের তালিকা</p>
-</div>
-
-<div class="friend-list" id="friendList">
-  <div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
-</div>
-
+<button class="back-btn" onclick="window.location.href='./index.html'"><i class="fas fa-arrow-left"></i></button>
+<div class="header"><h1><i class="fas fa-user-friends" style="color:#25f4ee;margin-right:8px;"></i>Friends</h1><p>আপনি যাদের Follow করেন তাদের তালিকা</p></div>
+<div class="friend-list" id="friendList"><div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div></div>
+<div class="toast" id="toast"></div>
 <script type="module">
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc, arrayRemove, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc, arrayRemove, getDocs, collection, query, where } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
@@ -56,82 +49,48 @@ const firebaseConfig = {
   messagingSenderId: "93178453668",
   appId: "1:93178453668:web:2184630caa8e61f7445031"
 };
-
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
 const defaultPhoto = "./images/profile.png";
 
 function showToast(text) {
-  const toast = document.getElementById('toast') || (() => {
-    const t = document.createElement('div');
-    t.id = 'toast';
-    t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,30,0.95);color:#fff;padding:10px 22px;border-radius:22px;font-size:14px;opacity:0;pointer-events:none;transition:all 0.3s;z-index:1000;white-space:nowrap;';
-    document.body.appendChild(t);
-    return t;
-  })();
+  const toast = document.getElementById('toast');
   toast.textContent = text;
-  toast.style.opacity = '1';
-  toast.style.transform = 'translateX(-50%) translateY(0)';
+  toast.classList.add('show');
   clearTimeout(window._toastTimer);
-  window._toastTimer = setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateX(-50%) translateY(20px)';
-  }, 2000);
+  window._toastTimer = setTimeout(() => toast.classList.remove('show'), 2000);
 }
 
 async function loadFriends(user) {
   const list = document.getElementById('friendList');
-  
   try {
     const userSnap = await getDoc(doc(db, 'users', user.uid));
-    if (!userSnap.exists()) {
-      list.innerHTML = `<div class="empty-state"><i class="fas fa-user-plus"></i>No friends yet</div>`;
-      return;
-    }
-    
+    if (!userSnap.exists()) { list.innerHTML = `<div class="empty-state"><i class="fas fa-user-plus"></i>No friends yet</div>`; return; }
     const data = userSnap.data();
     const followingIds = Array.isArray(data.followingIds) ? data.followingIds : [];
-    
     if (!followingIds.length) {
-      list.innerHTML = `
-        <div class="empty-state">
-          <i class="fas fa-user-plus"></i>
-          <div style="font-size:16px;color:#888;margin-bottom:6px;">You're not following anyone yet</div>
-          <div style="font-size:13px;color:#555;">Follow users to see them here</div>
-        </div>
-      `;
+      list.innerHTML = `<div class="empty-state"><i class="fas fa-user-plus"></i><div style="font-size:16px;color:#888;margin-bottom:6px;">You're not following anyone yet</div><div style="font-size:13px;color:#555;">Follow users to see them here</div></div>`;
       return;
     }
-    
-    // ফলোয়িং ইউজারদের ডেটা আনুন
     const users = [];
     for (const uid of followingIds) {
       try {
         const snap = await getDoc(doc(db, 'users', uid));
-        if (snap.exists()) {
-          users.push({ uid, ...snap.data() });
-        }
-      } catch (e) { console.warn('User not found:', uid); }
+        if (snap.exists()) users.push({ uid, ...snap.data() });
+      } catch (e) {}
     }
-    
-    if (!users.length) {
-      list.innerHTML = `<div class="empty-state"><i class="fas fa-user-slash"></i>No friends found</div>`;
-      return;
-    }
-    
+    if (!users.length) { list.innerHTML = `<div class="empty-state"><i class="fas fa-user-slash"></i>No friends found</div>`; return; }
     list.innerHTML = users.map(u => `
-      <div class="friend-item">
-        <img src="${u.photoURL || defaultPhoto}" onerror="this.src='${defaultPhoto}'" alt="${u.name || 'User'}">
-        <div class="info">
+      <div class="friend-item" data-uid="${u.uid}">
+        <img src="${u.photoURL || defaultPhoto}" onerror="this.src='${defaultPhoto}'" alt="${u.name || 'User'}" onclick="window.location.href='./profile.html?uid=${u.uid}'">
+        <div class="info" onclick="window.location.href='./profile.html?uid=${u.uid}'">
           <div class="name">${u.name || 'WWC User'}</div>
-          <div class="username">@${u.username || u.uid?.substring(0,8) || 'user'}</div>
+          <div class="username">${u.username ? '@'+u.username : '@'+u.uid?.substring(0,8)}</div>
         </div>
-        <button class="unfollow-btn" data-uid="${u.uid}" onclick="unfollowUser('${u.uid}', this)">Unfollow</button>
+        <button class="unfollow-btn" onclick="unfollowUser('${u.uid}', this)">Unfollow</button>
       </div>
     `).join('');
-    
   } catch (e) {
     console.error('Load friends error:', e);
     list.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-circle"></i>Could not load friends</div>`;
@@ -141,57 +100,26 @@ async function loadFriends(user) {
 window.unfollowUser = async function(uid, btn) {
   btn.disabled = true;
   btn.textContent = '...';
-  
   try {
     const user = auth.currentUser;
     if (!user) return;
-    
     const myRef = doc(db, 'users', user.uid);
     const targetRef = doc(db, 'users', uid);
-    
-    // Get current data
     const mySnap = await getDoc(myRef);
     const targetSnap = await getDoc(targetRef);
-    
-    if (!mySnap.exists() || !targetSnap.exists()) {
-      showToast('User not found');
-      btn.disabled = false;
-      btn.textContent = 'Unfollow';
-      return;
-    }
-    
+    if (!mySnap.exists() || !targetSnap.exists()) { showToast('User not found'); btn.disabled = false; btn.textContent = 'Unfollow'; return; }
     const myData = mySnap.data();
     const targetData = targetSnap.data();
-    
     const following = Array.isArray(myData.followingIds) ? myData.followingIds : [];
     const followers = Array.isArray(targetData.followerIds) ? targetData.followerIds : [];
-    
-    // Remove from following
-    await updateDoc(myRef, {
-      followingIds: following.filter(id => id !== uid),
-      following: Math.max(0, (myData.following || 0) - 1)
-    });
-    
-    // Remove from followers
-    await updateDoc(targetRef, {
-      followerIds: followers.filter(id => id !== user.uid),
-      followers: Math.max(0, (targetData.followers || 0) - 1)
-    });
-    
+    await updateDoc(myRef, { followingIds: following.filter(id => id !== uid), following: Math.max(0, (myData.following || 0) - 1) });
+    await updateDoc(targetRef, { followerIds: followers.filter(id => id !== user.uid), followers: Math.max(0, (targetData.followers || 0) - 1) });
     showToast('Unfollowed successfully');
     btn.closest('.friend-item').remove();
-    
-    // Check if list is empty
     const items = document.querySelectorAll('.friend-item');
     if (!items.length) {
-      document.getElementById('friendList').innerHTML = `
-        <div class="empty-state">
-          <i class="fas fa-user-plus"></i>
-          <div style="font-size:16px;color:#888;margin-bottom:6px;">You're not following anyone yet</div>
-        </div>
-      `;
+      document.getElementById('friendList').innerHTML = `<div class="empty-state"><i class="fas fa-user-plus"></i><div style="font-size:16px;color:#888;margin-bottom:6px;">You're not following anyone yet</div></div>`;
     }
-    
   } catch (e) {
     console.error('Unfollow error:', e);
     showToast('Could not unfollow');
@@ -202,18 +130,11 @@ window.unfollowUser = async function(uid, btn) {
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    document.getElementById('friendList').innerHTML = `
-      <div class="empty-state">
-        <i class="fas fa-lock"></i>
-        <div style="font-size:16px;color:#888;">Please login to see your friends</div>
-        <a href="./auth.html" style="color:#4f46e5;text-decoration:none;margin-top:10px;display:inline-block;">Login</a>
-      </div>
-    `;
+    document.getElementById('friendList').innerHTML = `<div class="empty-state"><i class="fas fa-lock"></i><div style="font-size:16px;color:#888;">Please login to see your friends</div><a href="./auth.html" style="color:#4f46e5;text-decoration:none;margin-top:10px;display:inline-block;">Login</a></div>`;
     return;
   }
   await loadFriends(user);
 });
 </script>
-
 </body>
 </html>
