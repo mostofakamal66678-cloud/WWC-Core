@@ -7,339 +7,90 @@
   <title>WWC - Sign In</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    /* =====================================================
-       TIKTOK STYLE AUTH
-    ===================================================== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-    
-    body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #000;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      padding: 20px;
-    }
-    
-    .auth-container {
-      width: 100%;
-      max-width: 420px;
-      background: rgba(20, 20, 25, 0.95);
-      border-radius: 28px;
-      padding: 40px 28px 32px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-      animation: slideUp 0.4s cubic-bezier(0.2, 0.9, 0.3, 1);
-    }
-    
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(30px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    
-    /* ===== লোগো ===== */
-    .logo {
-      width: 72px;
-      height: 72px;
-      margin: 0 auto 12px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #25f4ee, #fe2c55);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      color: #fff;
-      box-shadow: 0 8px 30px rgba(37, 244, 238, 0.2);
-    }
-    
-    h1 {
-      text-align: center;
-      font-size: 24px;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -0.5px;
-    }
-    
-    .subtitle {
-      text-align: center;
-      color: #888;
-      font-size: 14px;
-      margin-top: 4px;
-      margin-bottom: 28px;
-    }
-    
-    /* ===== গুগল বাটন ===== */
-    .google-btn {
-      width: 100%;
-      padding: 14px;
-      border-radius: 14px;
-      background: #fff;
-      color: #222;
-      font-size: 15px;
-      font-weight: 700;
-      border: 0;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      transition: all 0.15s;
-      margin-bottom: 18px;
-    }
-    .google-btn:active { transform: scale(0.97); }
-    .google-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .google-btn img { width: 20px; height: 20px; }
-    
-    /* ===== ডিভাইডার ===== */
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 14px 0 20px;
-      color: #555;
-      font-size: 12px;
-    }
-    .divider::before,
-    .divider::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: #2a2a2a;
-    }
-    
-    /* ===== ফর্ম ===== */
-    .form-group {
-      margin-bottom: 14px;
-    }
-    .form-group label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: #888;
-      margin-bottom: 5px;
-    }
-    .form-group input {
-      width: 100%;
-      padding: 14px 16px;
-      border-radius: 12px;
-      border: 1px solid #2a2a2a;
-      background: #111;
-      color: #fff;
-      font-size: 15px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .form-group input:focus {
-      border-color: #25f4ee;
-    }
-    .form-group input::placeholder {
-      color: #555;
-    }
-    .form-group input.error {
-      border-color: #fe2c55;
-    }
-    
-    /* ===== অথ বাটন ===== */
-    .auth-btn {
-      width: 100%;
-      padding: 16px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #25f4ee, #fe2c55);
-      color: #fff;
-      font-size: 16px;
-      font-weight: 700;
-      border: 0;
-      cursor: pointer;
-      transition: all 0.15s;
-      margin-top: 6px;
-      position: relative;
-      overflow: hidden;
-    }
-    .auth-btn:active { transform: scale(0.97); }
-    .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    .auth-btn .spinner {
-      display: none;
-      width: 22px;
-      height: 22px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      margin: 0 auto;
-    }
-    .auth-btn.loading .spinner { display: block; }
-    .auth-btn.loading .btn-text { display: none; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    
-    /* ===== মোড টগল ===== */
-    .mode-toggle {
-      text-align: center;
-      margin-top: 18px;
-      color: #888;
-      font-size: 14px;
-    }
-    .mode-toggle button {
-      background: none;
-      border: 0;
-      color: #25f4ee;
-      font-weight: 700;
-      font-size: 14px;
-      cursor: pointer;
-      padding: 4px 8px;
-      transition: color 0.2s;
-    }
-    .mode-toggle button:active { color: #fe2c55; }
-    
-    /* ===== মেসেজ ===== */
-    .message {
-      min-height: 24px;
-      text-align: center;
-      font-size: 13px;
-      margin-top: 14px;
-      padding: 8px 12px;
-      border-radius: 10px;
-      display: none;
-    }
-    .message.show { display: block; }
-    .message.success { color: #25f4ee; background: rgba(37, 244, 238, 0.08); }
-    .message.error { color: #fe2c55; background: rgba(254, 44, 85, 0.08); }
-    .message.info { color: #ffd84d; background: rgba(255, 216, 77, 0.08); }
-    
-    /* ===== ব্যাক হোম ===== */
-    .back-home {
-      display: block;
-      text-align: center;
-      color: #555;
-      font-size: 13px;
-      margin-top: 16px;
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .back-home:hover { color: #fff; }
-    .back-home i { margin-right: 6px; }
-    
-    /* ===== ফুটার ===== */
-    .footer-text {
-      text-align: center;
-      color: #444;
-      font-size: 11px;
-      margin-top: 20px;
-      line-height: 1.6;
-    }
-    .footer-text a {
-      color: #555;
-      text-decoration: none;
-    }
-    
-    /* ===== নাম গ্রুপ (রেজিস্টারে দেখাবে) ===== */
-    .name-group {
-      display: none;
-      animation: slideDown 0.25s ease;
-    }
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .name-group.show { display: block; }
-    
-    /* ===== রেস্পন্সিভ ===== */
-    @media (max-width: 480px) {
-      .auth-container { padding: 28px 18px 24px; border-radius: 20px; }
-      .logo { width: 60px; height: 60px; font-size: 26px; }
-      h1 { font-size: 20px; }
-    }
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#000;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;padding:20px}
+    .auth-container{width:100%;max-width:420px;background:rgba(20,20,25,0.95);border-radius:28px;padding:40px 28px 32px;border:1px solid rgba(255,255,255,0.06);box-shadow:0 20px 60px rgba(0,0,0,0.6);animation:slideUp .4s cubic-bezier(0.2,0.9,0.3,1)}
+    @keyframes slideUp{from{opacity:0;transform:translateY(30px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+    .logo{width:72px;height:72px;margin:0 auto 12px;border-radius:50%;background:linear-gradient(135deg,#25f4ee,#fe2c55);display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff;box-shadow:0 8px 30px rgba(37,244,238,0.2)}
+    h1{text-align:center;font-size:24px;font-weight:800;color:#fff;letter-spacing:-0.5px}
+    .subtitle{text-align:center;color:#888;font-size:14px;margin-top:4px;margin-bottom:28px}
+    .google-btn{width:100%;padding:14px;border-radius:14px;background:#fff;color:#222;font-size:15px;font-weight:700;border:0;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;transition:all .15s;margin-bottom:18px}
+    .google-btn:active{transform:scale(0.97)}
+    .google-btn:disabled{opacity:0.5;cursor:not-allowed}
+    .divider{display:flex;align-items:center;gap:12px;margin:14px 0 20px;color:#555;font-size:12px}
+    .divider::before,.divider::after{content:"";flex:1;height:1px;background:#2a2a2a}
+    .form-group{margin-bottom:14px}
+    .form-group label{display:block;font-size:12px;font-weight:600;color:#888;margin-bottom:5px}
+    .form-group input{width:100%;padding:14px 16px;border-radius:12px;border:1px solid #2a2a2a;background:#111;color:#fff;font-size:15px;outline:none;transition:border-color .2s}
+    .form-group input:focus{border-color:#25f4ee}
+    .form-group input::placeholder{color:#555}
+    .auth-btn{width:100%;padding:16px;border-radius:14px;background:linear-gradient(135deg,#25f4ee,#fe2c55);color:#fff;font-size:16px;font-weight:700;border:0;cursor:pointer;transition:all .15s;margin-top:6px}
+    .auth-btn:active{transform:scale(0.97)}
+    .auth-btn:disabled{opacity:0.5;cursor:not-allowed}
+    .auth-btn .spinner{display:none;width:22px;height:22px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
+    .auth-btn.loading .spinner{display:block}
+    .auth-btn.loading .btn-text{display:none}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .mode-toggle{text-align:center;margin-top:18px;color:#888;font-size:14px}
+    .mode-toggle button{background:none;border:0;color:#25f4ee;font-weight:700;font-size:14px;cursor:pointer;padding:4px 8px}
+    .mode-toggle button:active{color:#fe2c55}
+    .message{min-height:24px;text-align:center;font-size:13px;margin-top:14px;padding:8px 12px;border-radius:10px;display:none}
+    .message.show{display:block}
+    .message.success{color:#25f4ee;background:rgba(37,244,238,0.08)}
+    .message.error{color:#fe2c55;background:rgba(254,44,85,0.08)}
+    .message.info{color:#ffd84d;background:rgba(255,216,77,0.08)}
+    .back-home{display:block;text-align:center;color:#555;font-size:13px;margin-top:16px;text-decoration:none;transition:color .2s}
+    .back-home:hover{color:#fff}
+    .back-home i{margin-right:6px}
+    .name-group{display:none;animation:slideDown .25s ease}
+    @keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+    .name-group.show{display:block}
+    @media(max-width:480px){.auth-container{padding:28px 18px 24px;border-radius:20px}.logo{width:60px;height:60px;font-size:26px}h1{font-size:20px}}
   </style>
 </head>
 <body>
-
 <div class="auth-container">
-  
-  <!-- লোগো -->
   <div class="logo">🌍</div>
   <h1>World Wide Connect</h1>
   <p class="subtitle" id="subtitle">Sign in to continue</p>
   
-  <!-- গুগল বাটন -->
-  <button class="google-btn" id="googleBtn">
-    <i class="fab fa-google" style="font-size:20px;"></i>
-    Continue with Google
-  </button>
+  <button class="google-btn" id="googleBtn"><i class="fab fa-google" style="font-size:20px;"></i>Continue with Google</button>
   
-  <!-- ডিভাইডার -->
   <div class="divider">or</div>
   
-  <!-- ফর্ম -->
   <form id="authForm">
     <div class="form-group">
       <label>Email</label>
       <input type="email" id="emailInput" placeholder="Enter your email" autocomplete="email" required>
     </div>
-    
     <div class="form-group">
       <label>Password</label>
       <input type="password" id="passwordInput" placeholder="Min 6 characters" autocomplete="current-password" minlength="6" required>
     </div>
-    
     <div class="form-group name-group" id="nameGroup">
       <label>Name</label>
       <input type="text" id="nameInput" placeholder="Your name" autocomplete="name" maxlength="50">
     </div>
-    
     <button class="auth-btn" id="authBtn" type="submit">
       <span class="spinner"></span>
       <span class="btn-text" id="authBtnText">Sign In</span>
     </button>
   </form>
   
-  <!-- মোড টগল -->
   <div class="mode-toggle">
     <span id="modeText">Don't have an account?</span>
     <button id="modeBtn" type="button">Sign Up</button>
   </div>
   
-  <!-- মেসেজ -->
   <div class="message" id="message"></div>
-  
-  <!-- ব্যাক হোম -->
   <a class="back-home" href="./index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
-  
-  <!-- ফুটার -->
-  <div class="footer-text">
-    By continuing you agree to our <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a>
-  </div>
 </div>
 
 <script type="module">
-import { 
-  getApps, 
-  initializeApp 
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, setPersistence, browserLocalPersistence, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
-import { 
-  getAuth, 
-  GoogleAuthProvider, 
-  signInWithPopup, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword, 
-  updateProfile,
-  setPersistence,
-  browserLocalPersistence
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-
-import { 
-  getFirestore, 
-  doc, 
-  getDoc, 
-  setDoc 
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
-
-// ===== FIREBASE CONFIG =====
 const firebaseConfig = {
   apiKey: "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
   authDomain: "world-wide-connect-62c87.firebaseapp.com",
@@ -349,13 +100,11 @@ const firebaseConfig = {
   appId: "1:93178453668:web:2184630caa8e61f7445031"
 };
 
-// ===== INIT FIREBASE =====
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
-// ===== DOM ELEMENTS =====
 const googleBtn = document.getElementById('googleBtn');
 const authForm = document.getElementById('authForm');
 const authBtn = document.getElementById('authBtn');
@@ -369,35 +118,27 @@ const nameInput = document.getElementById('nameInput');
 const emailInput = document.getElementById('emailInput');
 const passwordInput = document.getElementById('passwordInput');
 
-// ===== STATE =====
 let isRegisterMode = false;
 
-// ===== PERSISTENCE =====
 try { await setPersistence(auth, browserLocalPersistence); } catch(e) {}
 
-// ===== MESSAGE =====
 function showMessage(text, type = '') {
   message.textContent = text;
   message.className = 'message show';
   if (type) message.classList.add(type);
 }
 
-function hideMessage() {
-  message.className = 'message';
-}
+function hideMessage() { message.className = 'message'; }
 
-// ===== CREATE USER PROFILE =====
 async function createUserProfile(user, extraData = {}) {
   try {
     const userRef = doc(db, 'users', user.uid);
     const existing = await getDoc(userRef);
     if (existing.exists()) return;
-    
     let username = extraData.username || user.displayName || 'wwc_user';
     username = String(username).toLowerCase().trim().replace(/[^a-z0-9_]/g, '_').replace(/^_+|_+$/g, '');
     if (!username) username = 'wwc_user';
     username = username + '_' + user.uid.substring(0, 6);
-    
     await setDoc(userRef, {
       uid: user.uid,
       name: extraData.name || user.displayName || 'WWC User',
@@ -405,62 +146,44 @@ async function createUserProfile(user, extraData = {}) {
       email: user.email || '',
       photoURL: user.photoURL || './images/profile.png',
       bio: '🌍 Welcome to World Wide Connect',
-      followers: 0,
-      following: 0,
-      likes: 0,
-      followerIds: [],
-      followingIds: [],
-      savedVideoIds: [],
+      followers: 0, following: 0, likes: 0,
+      followerIds: [], followingIds: [], savedVideoIds: [],
       createdAt: new Date().toISOString()
     });
-  } catch(e) {
-    console.error('Profile creation error:', e);
-  }
+  } catch(e) { console.error('Profile creation error:', e); }
 }
 
-// ===== GO HOME =====
-function goHome() {
-  window.location.replace('./index.html');
-}
+function goHome() { window.location.replace('./index.html'); }
 
-// =====================================================
-// ✅ GOOGLE LOGIN
-// =====================================================
+// ===== Check if already logged in =====
+onAuthStateChanged(auth, (user) => {
+  if (user) window.location.href = './index.html';
+});
+
+// ===== Google Login =====
 googleBtn.addEventListener('click', async () => {
-  googleBtn.disabled = true;
-  authBtn.disabled = true;
-  modeBtn.disabled = true;
+  googleBtn.disabled = true; authBtn.disabled = true; modeBtn.disabled = true;
   showMessage('⏳ Connecting to Google...', 'info');
-  
   try {
     const result = await signInWithPopup(auth, googleProvider);
     await createUserProfile(result.user);
-    showMessage('✅ Welcome back! Redirecting...', 'success');
+    showMessage('✅ Welcome! Redirecting...', 'success');
     setTimeout(goHome, 500);
   } catch(error) {
     console.error('Google error:', error);
     let msg = 'Google login failed. Please try again.';
-    if (error.code === 'auth/popup-closed-by-user') {
-      msg = '⚠️ Login cancelled. Please try again.';
-    } else if (error.code === 'auth/popup-blocked') {
-      msg = '❌ Popup blocked. Please allow popups.';
-    }
+    if (error.code === 'auth/popup-closed-by-user') msg = '⚠️ Login cancelled.';
+    else if (error.code === 'auth/popup-blocked') msg = '❌ Popup blocked. Please allow popups.';
     showMessage(msg, 'error');
-    googleBtn.disabled = false;
-    authBtn.disabled = false;
-    modeBtn.disabled = false;
+    googleBtn.disabled = false; authBtn.disabled = false; modeBtn.disabled = false;
   }
 });
 
-// =====================================================
-// ✅ MODE TOGGLE (Login / Register)
-// =====================================================
+// ===== Mode Toggle =====
 modeBtn.addEventListener('click', () => {
   isRegisterMode = !isRegisterMode;
   hideMessage();
-  
   if (isRegisterMode) {
-    // Register Mode
     nameGroup.classList.add('show');
     nameInput.required = true;
     passwordInput.autocomplete = 'new-password';
@@ -469,7 +192,6 @@ modeBtn.addEventListener('click', () => {
     modeText.textContent = 'Already have an account?';
     subtitle.textContent = 'Create your WWC account';
   } else {
-    // Login Mode
     nameGroup.classList.remove('show');
     nameInput.required = false;
     passwordInput.autocomplete = 'current-password';
@@ -480,38 +202,29 @@ modeBtn.addEventListener('click', () => {
   }
 });
 
-// =====================================================
-// ✅ EMAIL AUTH
-// =====================================================
+// ===== Email Auth =====
 authForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   hideMessage();
-  
   const email = emailInput.value.trim();
   const password = passwordInput.value;
   const name = nameInput.value.trim();
   
-  // ===== Validate =====
   if (!email) { showMessage('⚠️ Please enter your email.', 'error'); return; }
   if (password.length < 6) { showMessage('⚠️ Password must be at least 6 characters.', 'error'); return; }
   if (isRegisterMode && !name) { showMessage('⚠️ Please enter your name.', 'error'); return; }
   
-  // ===== Loading =====
-  authBtn.disabled = true;
-  googleBtn.disabled = true;
-  modeBtn.disabled = true;
+  authBtn.disabled = true; googleBtn.disabled = true; modeBtn.disabled = true;
   authBtn.classList.add('loading');
   
   try {
     if (isRegisterMode) {
-      // ===== REGISTER =====
       showMessage('⏳ Creating your account...', 'info');
       const result = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(result.user, { displayName: name });
       await createUserProfile(result.user, { name });
-      showMessage('✅ Account created! Welcome to WWC 🎉', 'success');
+      showMessage('✅ Account created! Welcome 🎉', 'success');
     } else {
-      // ===== LOGIN =====
       showMessage('⏳ Signing in...', 'info');
       const result = await signInWithEmailAndPassword(auth, email, password);
       await createUserProfile(result.user);
@@ -520,66 +233,29 @@ authForm.addEventListener('submit', async (e) => {
     setTimeout(goHome, 600);
   } catch(error) {
     console.error('Auth error:', error);
-    let msg = 'Something went wrong. Please try again.';
-    
-    // Firebase Error Codes
+    let msg = 'Something went wrong.';
     switch(error.code) {
-      case 'auth/email-already-in-use':
-        msg = '❌ This email is already registered. Please sign in.';
-        break;
-      case 'auth/invalid-email':
-        msg = '❌ Invalid email address.';
-        break;
-      case 'auth/user-not-found':
-        msg = '❌ No account found with this email. Please sign up.';
-        break;
-      case 'auth/wrong-password':
-        msg = '❌ Incorrect password. Please try again.';
-        break;
-      case 'auth/weak-password':
-        msg = '❌ Password too weak. Use at least 6 characters.';
-        break;
-      case 'auth/too-many-requests':
-        msg = '⚠️ Too many attempts. Please try again later.';
-        break;
-      case 'auth/network-request-failed':
-        msg = '❌ Network error. Check your internet connection.';
-        break;
-      default:
-        msg = '❌ ' + (error.message || 'Authentication failed.');
+      case 'auth/email-already-in-use': msg = '❌ Email already registered. Please sign in.'; break;
+      case 'auth/invalid-email': msg = '❌ Invalid email address.'; break;
+      case 'auth/user-not-found': msg = '❌ No account found. Please sign up.'; break;
+      case 'auth/wrong-password': msg = '❌ Incorrect password.'; break;
+      case 'auth/weak-password': msg = '❌ Password too weak.'; break;
+      case 'auth/too-many-requests': msg = '⚠️ Too many attempts. Try again later.'; break;
+      case 'auth/network-request-failed': msg = '❌ Network error. Check your connection.'; break;
+      default: msg = '❌ ' + (error.message || 'Authentication failed.');
     }
     showMessage(msg, 'error');
   }
-  
-  authBtn.disabled = false;
-  googleBtn.disabled = false;
-  modeBtn.disabled = false;
+  authBtn.disabled = false; googleBtn.disabled = false; modeBtn.disabled = false;
   authBtn.classList.remove('loading');
 });
 
-// =====================================================
-// ✅ ENTER KEY = LOGIN
-// =====================================================
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    authForm.dispatchEvent(new Event('submit'));
-  }
-  if (e.key === 'Escape') {
-    window.location.href = './index.html';
-  }
+  if (e.key === 'Enter') authForm.dispatchEvent(new Event('submit'));
+  if (e.key === 'Escape') window.location.href = './index.html';
 });
 
-// =====================================================
-// ✅ CHECK IF ALREADY LOGGED IN
-// =====================================================
-onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    // Already logged in - go home
-    window.location.href = './index.html';
-  }
-});
-
-console.log('🌍 WWC TikTok Style Auth Loaded!');
+console.log('🌍 TikTok Style Auth Loaded!');
 </script>
 </body>
 </html>
