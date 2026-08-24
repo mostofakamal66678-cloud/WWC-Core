@@ -1,5 +1,5 @@
 /* =====================================================
-   WWC GLOBAL STYLES
+   TIKTOK STYLE CSS
 ===================================================== */
 
 * {
@@ -29,7 +29,6 @@ button {
   user-select: none;
 }
 
-/* ===== অ্যাপ ===== */
 .app {
   position: relative;
   width: 100%;
@@ -38,7 +37,6 @@ button {
   background: #000;
 }
 
-/* ===== ফিড ===== */
 .feed {
   position: absolute;
   inset: 0;
@@ -54,7 +52,6 @@ button {
 }
 .feed::-webkit-scrollbar { display: none; }
 
-/* ===== ভিডিও আইটেম ===== */
 .video-item {
   position: relative;
   width: 100%;
@@ -66,7 +63,6 @@ button {
   overflow: hidden;
 }
 
-/* ===== ভিডিও ===== */
 .video {
   position: absolute;
   inset: 0;
@@ -89,7 +85,6 @@ button {
   z-index: 2;
 }
 
-/* ===== টপ বার ===== */
 .top-bar {
   position: absolute;
   top: 0;
@@ -148,7 +143,6 @@ button {
   font-size: 18px;
 }
 
-/* ===== অ্যাকশন বার ===== */
 .action-bar {
   position: absolute;
   right: 8px;
@@ -213,7 +207,6 @@ button {
   100% { transform: scale(1.1); }
 }
 
-/* ===== ক্রিয়েটর ===== */
 .creator-avatar {
   position: relative;
   width: 50px;
@@ -221,6 +214,7 @@ button {
   border-radius: 50%;
   border: 2px solid #fff;
   overflow: visible;
+  cursor: pointer;
 }
 .creator-avatar img {
   width: 100%;
@@ -252,7 +246,6 @@ button {
   font-size: 12px;
 }
 
-/* ===== ভিডিও ইনফো ===== */
 .video-info {
   position: absolute;
   left: 15px;
@@ -278,7 +271,6 @@ button {
   text-shadow: 0 2px 8px rgba(0,0,0,0.9);
 }
 
-/* ===== সাউন্ড ===== */
 .sound-btn {
   position: absolute;
   left: 14px;
@@ -338,7 +330,6 @@ button {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ===== বটম নেভ ===== */
 .bottom-nav {
   position: fixed;
   left: 0;
@@ -370,23 +361,6 @@ button {
 }
 .nav-btn.active { color: #fff; }
 .nav-btn .nav-icon { font-size: 24px; }
-.nav-btn .badge {
-  position: absolute;
-  top: 4px;
-  right: 50%;
-  transform: translateX(calc(50% + 18px));
-  min-width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #fe2c55;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 5px;
-}
 .upload-btn {
   width: 50px;
   height: 38px;
@@ -403,7 +377,6 @@ button {
 }
 .upload-btn:active { transform: scale(0.9); }
 
-/* ===== কমেন্ট ===== */
 .comment-panel {
   position: fixed;
   left: 0;
@@ -476,7 +449,6 @@ button {
   border: 0;
 }
 
-/* ===== টোস্ট ===== */
 .toast {
   position: fixed;
   left: 50%;
@@ -498,7 +470,6 @@ button {
   transform: translateX(-50%) translateY(0);
 }
 
-/* ===== মেসেজ ===== */
 .feed-message {
   width: 100%;
   height: 100dvh;
@@ -521,72 +492,6 @@ button {
   border: 0;
 }
 
-/* ===== সার্চ ===== */
-.search-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1000;
-  background: rgba(0,0,0,0.95);
-  padding: 60px 20px 20px;
-  animation: fadeIn 0.25s ease;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.98); }
-  to { opacity: 1; transform: scale(1); }
-}
-.search-container { max-width: 600px; margin: 0 auto; }
-.search-header {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-.search-header input {
-  flex: 1;
-  padding: 14px 18px;
-  border-radius: 12px;
-  border: 1px solid #444;
-  background: #222;
-  color: #fff;
-  font-size: 16px;
-  outline: none;
-}
-.search-header input:focus { border-color: #777; }
-.search-header input::placeholder { color: #666; }
-.search-close-btn {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: #333;
-  color: #fff;
-  font-size: 22px;
-  border: 0;
-  cursor: pointer;
-}
-.search-close-btn:active { transform: scale(0.9); }
-.search-result-item {
-  padding: 12px 16px;
-  border-bottom: 1px solid #222;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: #fff;
-  cursor: pointer;
-}
-.search-result-item:active { background: #222; }
-.search-result-item img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-.search-result-item .info { flex: 1; }
-.search-result-item .info .name { font-weight: 600; }
-.search-result-item .info .desc { font-size: 12px; color: #888; }
-
-/* ===== ডেস্কটপ ===== */
 @media(min-width: 700px) {
   .video-item { max-width: 500px; margin: auto; }
   .bottom-nav { max-width: 500px; left: 50%; right: auto; transform: translateX(-50%); }
