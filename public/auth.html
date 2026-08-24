@@ -87,9 +87,10 @@
 </div>
 
 <script type="module">
-import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, setPersistence, browserLocalPersistence, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, setPersistence, browserLocalPersistence, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
@@ -97,10 +98,12 @@ const firebaseConfig = {
   projectId: "world-wide-connect-62c87",
   storageBucket: "world-wide-connect-62c87.firebasestorage.app",
   messagingSenderId: "93178453668",
-  appId: "1:93178453668:web:2184630caa8e61f7445031"
+  appId: "1:93178453668:web:2184630caa8e61f7445031",
+  measurementId: "G-PKFJ5NEMGQ"
 };
 
-const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
@@ -127,7 +130,6 @@ function showMessage(text, type = '') {
   message.className = 'message show';
   if (type) message.classList.add(type);
 }
-
 function hideMessage() { message.className = 'message'; }
 
 async function createUserProfile(user, extraData = {}) {
@@ -155,12 +157,10 @@ async function createUserProfile(user, extraData = {}) {
 
 function goHome() { window.location.replace('./index.html'); }
 
-// ===== Check if already logged in =====
 onAuthStateChanged(auth, (user) => {
   if (user) window.location.href = './index.html';
 });
 
-// ===== Google Login =====
 googleBtn.addEventListener('click', async () => {
   googleBtn.disabled = true; authBtn.disabled = true; modeBtn.disabled = true;
   showMessage('⏳ Connecting to Google...', 'info');
@@ -179,7 +179,6 @@ googleBtn.addEventListener('click', async () => {
   }
 });
 
-// ===== Mode Toggle =====
 modeBtn.addEventListener('click', () => {
   isRegisterMode = !isRegisterMode;
   hideMessage();
@@ -202,21 +201,17 @@ modeBtn.addEventListener('click', () => {
   }
 });
 
-// ===== Email Auth =====
 authForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   hideMessage();
   const email = emailInput.value.trim();
   const password = passwordInput.value;
   const name = nameInput.value.trim();
-  
   if (!email) { showMessage('⚠️ Please enter your email.', 'error'); return; }
   if (password.length < 6) { showMessage('⚠️ Password must be at least 6 characters.', 'error'); return; }
   if (isRegisterMode && !name) { showMessage('⚠️ Please enter your name.', 'error'); return; }
-  
   authBtn.disabled = true; googleBtn.disabled = true; modeBtn.disabled = true;
   authBtn.classList.add('loading');
-  
   try {
     if (isRegisterMode) {
       showMessage('⏳ Creating your account...', 'info');
@@ -254,8 +249,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') authForm.dispatchEvent(new Event('submit'));
   if (e.key === 'Escape') window.location.href = './index.html';
 });
-
-console.log('🌍 TikTok Style Auth Loaded!');
+console.log('✅ Auth Page Loaded');
 </script>
 </body>
 </html>
