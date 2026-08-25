@@ -6,7 +6,6 @@
     <title>WWC - World Wide Connect</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-        /* ===== রিসেট ===== */
         * {
             margin: 0;
             padding: 0;
@@ -18,6 +17,7 @@
             display: flex;
             justify-content: center;
             overflow: hidden;
+            height: 100vh;
         }
         .app {
             max-width: 430px;
@@ -28,14 +28,14 @@
             overflow: hidden;
         }
 
-        /* ===== হেডার ===== */
+        /* ===== হেডার (উপরে) ===== */
         .header {
             position: fixed;
             top: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
+            right: 0;
             max-width: 430px;
-            width: 100%;
+            margin: 0 auto;
             z-index: 30;
             display: flex;
             justify-content: space-between;
@@ -49,6 +49,7 @@
             font-size: 22px;
             font-weight: 800;
             letter-spacing: 0.5px;
+            white-space: nowrap;
         }
         .header h1 i {
             color: #ff3b6f;
@@ -57,9 +58,9 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
-        /* ===== ট্যাব (For You / Following) – ডান পাশে ===== */
+        /* ===== ট্যাব (For You / Following) – হেডারের ডানে ===== */
         .tabs {
             display: flex;
             align-items: center;
@@ -75,7 +76,7 @@
             padding: 4px 10px;
             border-radius: 20px;
             transition: 0.3s;
-            letter-spacing: 0.3px;
+            white-space: nowrap;
         }
         .tabs button.active {
             color: white;
@@ -287,10 +288,10 @@
         .bottom-nav {
             position: fixed;
             bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
+            right: 0;
             max-width: 430px;
-            width: 100%;
+            margin: 0 auto;
             z-index: 30;
             background: rgba(0, 0, 0, 0.75);
             backdrop-filter: blur(8px);
@@ -335,10 +336,10 @@
             display: none;
             position: fixed;
             top: 0;
-            left: 50%;
-            transform: translateX(-50%);
+            left: 0;
+            right: 0;
             max-width: 430px;
-            width: 100%;
+            margin: 0 auto;
             height: 100vh;
             z-index: 50;
             background: rgba(0, 0, 0, 0.92);
@@ -414,7 +415,6 @@
             font-size: 13px;
         }
 
-        /* ===== রেসপন্সিভ ===== */
         @media (max-width: 430px) {
             .video-actions {
                 right: 10px;
@@ -465,11 +465,11 @@
 
     <div class="app">
 
-        <!-- ===== হেডার ===== -->
+        <!-- ===== হেডার (উপরে) ===== -->
         <div class="header">
             <h1><i class="fas fa-globe-americas"></i> WWC</h1>
             <div class="header-right">
-                <!-- ট্যাব (For You / Following) – ডান পাশে -->
+                <!-- ট্যাব (For You / Following) – হেডারের ডান পাশে, উপরে -->
                 <div class="tabs">
                     <button class="active" onclick="switchTab('forYou')">For You</button>
                     <button onclick="switchTab('following')">Following</button>
