@@ -1,1 +1,51 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WWC-Core Video Feed</title>
+    <!-- এখানে আপনার CSS ফাইল লিংক করুন -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+    <!-- ভিডিও ফিড কনটেইনার -->
+    <div id="video-feed">
+        
+        <!-- ভিডিও ১ -->
+        <div class="video-container">
+            <video src="video1.mp4" muted loop playsinline></video> <!-- আপনার ভিডিওর লিংক দিন -->
+            
+            <div class="video-actions">
+                <button class="action-btn">👍</button>
+                <button class="action-btn">💬</button>
+                <button class="action-btn">↪️</button>
+            </div>
+        </div>
+
+        <!-- ভিডিও ২ -->
+        <div class="video-container">
+            <video src="video2.mp4" muted loop playsinline></video>
+            
+            <div class="video-actions">
+                <button class="action-btn">👍</button>
+                <button class="action-btn">💬</button>
+                <button class="action-btn">↪️</button>
+            </div>
+        </div>
+
+        <!-- ভিডিও ৩ (প্রয়োজন মতো আরো যোগ করুন) -->
+        <div class="video-container">
+            <video src="video3.mp4" muted loop playsinline></video>
+            
+            <div class="video-actions">
+                <button class="action-btn">👍</button>
+                <button class="action-btn">💬</button>
+                <button class="action-btn">↪️</button>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
