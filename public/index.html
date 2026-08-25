@@ -2,10 +2,10 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>WWC - World Wide Connect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
-        /* ===== গ্লোবাল স্টাইল ===== */
         * {
             margin: 0;
             padding: 0;
@@ -13,416 +13,813 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         body {
-            background: #f0f2f5;
+            background: #000;
             display: flex;
             justify-content: center;
-            padding: 20px;
         }
-        .container {
-            max-width: 700px;
+        .app {
+            max-width: 430px;
             width: 100%;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            padding: 20px;
+            height: 100vh;
+            background: #000;
+            overflow: hidden;
+            position: relative;
         }
+
+        /* ===== হেডার ===== */
         .header {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 430px;
+            width: 100%;
+            z-index: 20;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid #e4e6eb;
-            padding-bottom: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(6px);
         }
         .header h1 {
-            font-size: 24px;
-            color: #1877f2;
-        }
-        .header input {
-            padding: 8px 14px;
-            border-radius: 20px;
-            border: 1px solid #ddd;
-            background: #f0f2f5;
-            width: 60%;
-            min-width: 150px;
-        }
-        .nav-buttons {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        .nav-buttons button {
-            flex: 1;
-            padding: 10px 0;
-            border: none;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 16px;
-            background: #e4e6eb;
-            color: #050505;
-            cursor: pointer;
-            transition: 0.3s;
-            min-width: 80px;
-        }
-        .nav-buttons button:hover {
-            background: #d1d5db;
-        }
-        .nav-buttons button.active {
-            background: #1877f2;
             color: white;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
         }
-        #friendsPanel {
-            display: none;
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 10px;
-            border: 1px solid #e4e6eb;
-            animation: fadeIn 0.3s ease;
+        .header h1 i {
+            color: #ff3b6f;
+            margin-right: 6px;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-8px); }
-            to { opacity: 1; transform: translateY(0); }
+        .header-actions button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            margin-left: 14px;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: 0.2s;
         }
-        #friendsPanel h3 {
-            font-size: 18px;
-            margin: 16px 0 10px 0;
-            color: #1b1f23;
+        .header-actions button:hover {
+            opacity: 1;
         }
-        #friendsPanel h3:first-of-type {
-            margin-top: 0;
-        }
-        .friend-card {
+
+        /* ===== ট্যাব ===== */
+        .tabs {
+            position: fixed;
+            top: 62px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 430px;
+            width: 100%;
+            z-index: 20;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #f0f2f5;
+            justify-content: center;
+            gap: 30px;
+            padding: 8px 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(4px);
         }
-        .friend-card:last-child {
-            border-bottom: none;
+        .tabs button {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 4px 0;
+            border-bottom: 2px solid transparent;
+            transition: 0.3s;
         }
-        .friend-info {
+        .tabs button.active {
+            color: white;
+            border-bottom-color: white;
+        }
+        .tabs button:hover {
+            color: #ddd;
+        }
+
+        /* ===== ফিড ===== */
+        .feed {
+            height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            padding-top: 110px;
+            padding-bottom: 70px;
+        }
+        .feed::-webkit-scrollbar {
+            display: none;
+        }
+        .video-card {
+            height: calc(100vh - 180px);
+            scroll-snap-align: start;
             display: flex;
             flex-direction: column;
+            justify-content: flex-end;
+            position: relative;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 8px;
         }
-        .friend-name {
-            font-weight: 600;
-            color: #050505;
+        .video-card video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
-        .friend-username {
-            font-size: 13px;
-            color: #65676b;
-        }
-        .friend-bio {
-            font-size: 13px;
-            color: #65676b;
-            margin-top: 2px;
-        }
-        .friend-card button {
-            background: #1877f2;
+
+        /* ===== ওভারলে ===== */
+        .video-overlay {
+            position: relative;
+            z-index: 2;
+            padding: 16px 14px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
             color: white;
-            border: none;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-weight: 600;
+        }
+        .video-user {
+            font-weight: 700;
+            font-size: 17px;
+            margin-bottom: 2px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .video-user span {
+            font-weight: 400;
             font-size: 13px;
+            color: #ccc;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 2px 10px;
+            border-radius: 20px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .video-user span:hover {
+            background: #ff3b6f;
+            color: white;
+        }
+        .video-desc {
+            font-size: 14px;
+            margin-bottom: 4px;
+            line-height: 1.4;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+        }
+        .video-hashtags {
+            font-size: 13px;
+            color: #4fc3f7;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+        }
+
+        /* ===== মিউজিক ব্যাজ ===== */
+        .music-badge {
+            position: absolute;
+            bottom: 70px;
+            left: 14px;
+            z-index: 3;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-size: 13px;
+            cursor: pointer;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 12px 4px 8px;
+            border-radius: 20px;
+            backdrop-filter: blur(4px);
+            transition: 0.3s;
+        }
+        .music-badge:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .music-badge i {
+            font-size: 14px;
+            color: #ff3b6f;
+            animation: spin 4s linear infinite;
+        }
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ===== অ্যাকশন বাটন (টিকটক স্টাইল) ===== */
+        .video-actions {
+            position: absolute;
+            right: 12px;
+            bottom: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            z-index: 3;
+        }
+        .video-actions button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 28px;
             cursor: pointer;
             transition: 0.2s;
-            white-space: nowrap;
-        }
-        .friend-card button:hover {
-            background: #166fe5;
-        }
-        .friend-card button.following {
-            background: #e4e6eb;
-            color: #050505;
-        }
-        .request-item {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #f0f2f5;
+            gap: 2px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+            opacity: 0.9;
+            position: relative;
         }
-        .request-item:last-child {
-            border-bottom: none;
+        .video-actions button i {
+            transition: 0.2s;
         }
-        .request-actions button {
-            padding: 5px 14px;
-            border-radius: 20px;
-            border: none;
+        .video-actions button span {
+            font-size: 11px;
             font-weight: 600;
-            cursor: pointer;
-            margin-left: 6px;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
         }
-        .btn-accept {
-            background: #1877f2;
+        .video-actions button:hover {
+            transform: scale(1.08);
+            opacity: 1;
+        }
+
+        /* লাইক বাটন (লাল) */
+        .video-actions .liked {
+            color: #ff3b6f;
+        }
+        .video-actions .liked i {
+            animation: likePop 0.3s ease;
+        }
+        @keyframes likePop {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.4);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* বুকমার্ক (নীল) */
+        .video-actions .bookmarked {
+            color: #4fc3f7;
+        }
+
+        /* মোর বাটন */
+        .more-btn {
+            position: absolute;
+            right: 12px;
+            top: 20px;
+            z-index: 3;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+            opacity: 0.8;
+            transition: 0.2s;
+        }
+        .more-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        /* ===== নিচের নেভিগেশন ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 430px;
+            width: 100%;
+            z-index: 20;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 14px 0;
+            border-top: 1px solid #222;
+        }
+        .bottom-nav button {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 22px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            transition: 0.2s;
+            padding: 4px 12px;
+            border-radius: 8px;
+        }
+        .bottom-nav button i {
+            transition: 0.2s;
+        }
+        .bottom-nav button.active {
             color: white;
         }
-        .btn-decline {
-            background: #e4e6eb;
-            color: #050505;
+        .bottom-nav button.active i {
+            transform: scale(1.05);
         }
-        .video-section {
-            margin-top: 25px;
-            border-top: 2px solid #e4e6eb;
-            padding-top: 20px;
+        .bottom-nav button span {
+            font-size: 10px;
+            font-weight: 500;
         }
-        .video-section h3 {
-            margin-bottom: 12px;
-            color: #1b1f23;
+        .bottom-nav button:hover {
+            color: #ddd;
         }
-        /* ===== ভিডিও গ্রিড - কালো অংশ দূর করা হয়েছে ===== */
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-        }
-        .video-grid video {
+
+        /* ===== মডাল ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 430px;
             width: 100%;
-            aspect-ratio: 16 / 9;      /* ভিডিওর আকৃতি ঠিক করে */
-            object-fit: cover;         /* ভিডিও ক্রপ করে কালো অংশ দূর করে */
-            border-radius: 12px;
-            background: #000;
-            border: 1px solid #ddd;
+            height: 100vh;
+            z-index: 50;
+            background: rgba(0, 0, 0, 0.92);
+            padding: 60px 20px 20px;
+            color: white;
+            overflow-y: auto;
+            backdrop-filter: blur(6px);
         }
-        .footer {
-            margin-top: 25px;
+        .modal .close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: 0.2s;
+        }
+        .modal .close:hover {
+            opacity: 1;
+            transform: rotate(90deg);
+        }
+        .modal h2 {
             text-align: center;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+        .modal input,
+        .modal textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            background: #1a1a1a;
+            color: white;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+        .modal input:focus,
+        .modal textarea:focus {
+            border-color: #ff3b6f;
+        }
+        .modal .btn-primary {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 30px;
+            background: #ff3b6f;
+            color: white;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .modal .btn-primary:hover {
+            background: #e62e5c;
+            transform: scale(1.01);
+        }
+        .modal .comment-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #222;
+            margin-bottom: 6px;
+        }
+        .modal .comment-item strong {
+            color: #ff3b6f;
+        }
+        .modal .comment-item span {
+            color: #aaa;
             font-size: 13px;
-            color: #65676b;
-            border-top: 1px solid #e4e6eb;
-            padding-top: 15px;
         }
-        .footer a {
-            color: #1877f2;
-            text-decoration: none;
-            margin: 0 6px;
-        }
-        @media (max-width: 500px) {
-            .header {
-                flex-direction: column;
-                align-items: stretch;
+
+        /* ===== রেসপন্সিভ ===== */
+        @media (max-width: 430px) {
+            .video-actions {
+                right: 8px;
+                bottom: 80px;
+                gap: 16px;
             }
-            .header input {
-                width: 100%;
+            .video-actions button {
+                font-size: 24px;
             }
-            .nav-buttons button {
-                font-size: 14px;
-                padding: 8px 0;
+            .video-actions button span {
+                font-size: 10px;
             }
-            .video-grid {
-                grid-template-columns: 1fr;
+            .header h1 {
+                font-size: 18px;
+            }
+            .music-badge {
+                font-size: 12px;
+                bottom: 65px;
+                left: 10px;
+                padding: 3px 10px 3px 6px;
+            }
+            .more-btn {
+                right: 8px;
+                top: 14px;
+                font-size: 18px;
             }
         }
     </style>
 </head>
 <body>
 
-<div class="container">
+    <div class="app">
 
-    <div class="header">
-        <h1>🌐 WWC</h1>
-        <input type="text" placeholder="Search friends..." id="searchInput" onkeyup="searchFriends()">
-    </div>
-
-    <div class="nav-buttons">
-        <button class="active" onclick="showTab('home', this)">🏠 Home</button>
-        <button onclick="toggleFriends(this)">👥 Friends</button>
-        <button onclick="showTab('notifications', this)">🔔 Notifications</button>
-    </div>
-
-    <div id="friendsPanel">
-        <h3>👥 Suggestions</h3>
-        <div class="friend-card">
-            <div class="friend-info">
-                <span class="friend-name">Golam Mostofa</span>
-                <span class="friend-username">@golam_mostofa_12Jeds</span>
-                <span class="friend-bio">Welcome to World Wide Connect 🎉</span>
-            </div>
-            <button onclick="follow(this)">Follow</button>
-        </div>
-        <div class="friend-card">
-            <div class="friend-info">
-                <span class="friend-name">WWC User</span>
-                <span class="friend-username">@wwc_user_8a1ovw</span>
-                <span class="friend-bio">Welcome to World Wide Connect 🎉</span>
-            </div>
-            <button onclick="follow(this)">Follow</button>
-        </div>
-        <div class="friend-card">
-            <div class="friend-info">
-                <span class="friend-name">Aleya Khatun</span>
-                <span class="friend-username">@wwc_user</span>
-                <span class="friend-bio">Welcome to World Wide Connect 🎉</span>
-            </div>
-            <button onclick="follow(this)">Follow</button>
-        </div>
-        <div class="friend-card">
-            <div class="friend-info">
-                <span class="friend-name">Golam Mostofa</span>
-                <span class="friend-username">@golam_mostofa_12Jeds</span>
-                <span class="friend-bio">Welcome to World Wide Connect 🎉</span>
-            </div>
-            <button class="following" onclick="follow(this)">Following</button>
-        </div>
-
-        <hr style="margin: 18px 0; border: 1px solid #e4e6eb;">
-
-        <h3>📩 Requests</h3>
-        <div class="request-item">
-            <div>
-                <strong>Rafi Ahmed</strong>
-                <span style="color:#65676b; font-size:13px; display:block;">@rafi_ahmed</span>
-            </div>
-            <div class="request-actions">
-                <button class="btn-accept" onclick="acceptRequest(this)">Accept</button>
-                <button class="btn-decline" onclick="declineRequest(this)">Decline</button>
+        <!-- ===== হেডার ===== -->
+        <div class="header">
+            <h1><i class="fas fa-globe-americas"></i> WWC</h1>
+            <div class="header-actions">
+                <button onclick="openModal('upload')"><i class="fas fa-plus-circle"></i></button>
+                <button onclick="openModal('profile')"><i class="fas fa-user-circle"></i></button>
             </div>
         </div>
-        <div class="request-item">
-            <div>
-                <strong>Nusrat Jahan</strong>
-                <span style="color:#65676b; font-size:13px; display:block;">@nusrat_j</span>
-            </div>
-            <div class="request-actions">
-                <button class="btn-accept" onclick="acceptRequest(this)">Accept</button>
-                <button class="btn-decline" onclick="declineRequest(this)">Decline</button>
-            </div>
+
+        <!-- ===== ট্যাব ===== -->
+        <div class="tabs">
+            <button class="active" onclick="switchTab('forYou')">For You</button>
+            <button onclick="switchTab('following')">Following</button>
         </div>
-        <div class="request-item">
-            <div>
-                <strong>Shakib Al Hasan</strong>
-                <span style="color:#65676b; font-size:13px; display:block;">@shakib_75</span>
-            </div>
-            <div class="request-actions">
-                <button class="btn-accept" onclick="acceptRequest(this)">Accept</button>
-                <button class="btn-decline" onclick="declineRequest(this)">Decline</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- ===== হোম কন্টেন্ট ===== -->
-    <div id="homeContent" style="margin-top:15px;">
-        <p style="color:#65676b; text-align:center; padding:10px 0;">
-            📰 আপনার ফিড এখানে দেখাবে<br>
-            <span style="font-size:13px;">"Friends" বাটনে ক্লিক করুন ফ্রেন্ড লিস্ট দেখতে</span>
-        </p>
+        <!-- ===== ভিডিও ফিড ===== -->
+        <div class="feed" id="feed">
 
-        <div class="video-section">
-            <h3>🎬 জনপ্রিয় ভিডিও</h3>
-            <div class="video-grid">
-                <video controls>
-                    <source src="videos/video1.mp4" type="video/mp4">
-                    আপনার ব্রাউজার ভিডিও সাপোর্ট করে না।
-                </video>
-                <video controls>
-                    <source src="videos/video2.mp4" type="video/mp4">
-                    আপনার ব্রাউজার ভিডিও সাপোর্ট করে না।
-                </video>
-                <video controls>
-                    <source src="videos/video3.mp4" type="video/mp4">
-                    আপনার ব্রাউজার ভিডিও সাপোর্ট করে না।
-                </video>
-            </div>
-        </div>
-    </div>
-
-    <div class="footer">
-        <a href="#">Terms</a> · <a href="#">Privacy</a> · <a href="#">Security</a> · 
-        <a href="#">Status</a> · <a href="#">Docs</a> · <a href="#">Contact</a>
-        <br>
-        © 2026 WWC, Inc.
-    </div>
-</div>
-
-<script>
-    function toggleFriends(btn) {
-        const panel = document.getElementById('friendsPanel');
-        if (panel.style.display === 'none' || panel.style.display === '') {
-            panel.style.display = 'block';
-        } else {
-            panel.style.display = 'none';
-        }
-        document.querySelectorAll('.nav-buttons button').forEach(b => b.classList.remove('active'));
-        if (btn) btn.classList.add('active');
-    }
-
-    function showTab(tab, btn) {
-        document.querySelectorAll('.nav-buttons button').forEach(b => b.classList.remove('active'));
-        if (btn) btn.classList.add('active');
-
-        document.getElementById('friendsPanel').style.display = 'none';
-
-        const home = document.getElementById('homeContent');
-        if (tab === 'home') {
-            home.innerHTML = `
-                <p style="color:#65676b; text-align:center; padding:10px 0;">
-                    📰 আপনার ফিড এখানে দেখাবে<br>
-                    <span style="font-size:13px;">"Friends" বাটনে ক্লিক করুন ফ্রেন্ড লিস্ট দেখতে</span>
-                </p>
-                <div class="video-section">
-                    <h3>🎬 জনপ্রিয় ভিডিও</h3>
-                    <div class="video-grid">
-                        <video controls><source src="videos/video1.mp4" type="video/mp4">ভিডিও সাপোর্ট করে না</video>
-                        <video controls><source src="videos/video2.mp4" type="video/mp4">ভিডিও সাপোর্ট করে না</video>
-                        <video controls><source src="videos/video3.mp4" type="video/mp4">ভিডিও সাপোর্ট করে না</video>
+            <!-- ===== ভিডিও ১ ===== -->
+            <div class="video-card">
+                <video src="videos/video1.mp4" muted playsinline></video>
+                <div class="video-overlay">
+                    <div class="video-user" onclick="openModal('profile')">
+                        @wwc_user
+                        <span onclick="event.stopPropagation(); followUser(this)">Follow</span>
                     </div>
+                    <div class="video-desc">🌍 বিশ্বকে সংযুক্ত করি</div>
+                    <div class="video-hashtags">#wwc #connect #bengali</div>
                 </div>
-            `;
-        } else if (tab === 'notifications') {
-            home.innerHTML = `<p style="color:#65676b; text-align:center; padding:30px 0;">🔔 কোনো নতুন নোটিফিকেশন নেই</p>`;
-        }
-    }
+                <button class="more-btn" onclick="moreOptions()">⋯</button>
+                <div class="music-badge" onclick="viewMusic()">
+                    <i class="fas fa-music"></i> Original Sound
+                </div>
+                <div class="video-actions">
+                    <button onclick="likeVideo(this)">
+                        <i class="fas fa-heart"></i>
+                        <span>1.2K</span>
+                    </button>
+                    <button onclick="openModal('comments')">
+                        <i class="fas fa-comment"></i>
+                        <span>45</span>
+                    </button>
+                    <button onclick="shareVideo()">
+                        <i class="fas fa-share"></i>
+                        <span>Share</span>
+                    </button>
+                    <button onclick="bookmarkVideo(this)">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                </div>
+            </div>
 
-    function follow(btn) {
-        if (btn.innerText === 'Follow') {
-            btn.innerText = 'Following';
-            btn.classList.add('following');
-            alert('✅ আপনি এখন এই ইউজারকে ফলো করছেন!');
-        } else {
-            btn.innerText = 'Follow';
-            btn.classList.remove('following');
-            alert('❌ আপনি ফলো করা বাতিল করেছেন।');
-        }
-    }
+            <!-- ===== ভিডিও ২ ===== -->
+            <div class="video-card">
+                <video src="videos/video2.mp4" muted playsinline></video>
+                <div class="video-overlay">
+                    <div class="video-user" onclick="openModal('profile')">
+                        @gk.shopona
+                        <span onclick="event.stopPropagation(); followUser(this)">Follow</span>
+                    </div>
+                    <div class="video-desc">#কিভিটিএবানায় #foryoupage</div>
+                    <div class="video-hashtags">#bdtiktokofficial #trending</div>
+                </div>
+                <button class="more-btn" onclick="moreOptions()">⋯</button>
+                <div class="music-badge" onclick="viewMusic()">
+                    <i class="fas fa-music"></i> Viral Beats
+                </div>
+                <div class="video-actions">
+                    <button onclick="likeVideo(this)">
+                        <i class="fas fa-heart"></i>
+                        <span>8.5K</span>
+                    </button>
+                    <button onclick="openModal('comments')">
+                        <i class="fas fa-comment"></i>
+                        <span>230</span>
+                    </button>
+                    <button onclick="shareVideo()">
+                        <i class="fas fa-share"></i>
+                        <span>Share</span>
+                    </button>
+                    <button onclick="bookmarkVideo(this)">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                </div>
+            </div>
 
-    function acceptRequest(btn) {
-        const item = btn.closest('.request-item');
-        const name = item.querySelector('strong').innerText;
-        item.style.display = 'none';
-        alert(`✅ ${name} এর রিকুয়েস্ট এক্সেপ্ট করা হয়েছে!`);
-    }
+            <!-- ===== ভিডিও ৩ ===== -->
+            <div class="video-card">
+                <video src="videos/video3.mp4" muted playsinline></video>
+                <div class="video-overlay">
+                    <div class="video-user" onclick="openModal('profile')">
+                        @funny_clips
+                        <span onclick="event.stopPropagation(); followUser(this)">Follow</span>
+                    </div>
+                    <div class="video-desc">হাসতে ভোলেন না 😂</div>
+                    <div class="video-hashtags">#comedy #funny #reels</div>
+                </div>
+                <button class="more-btn" onclick="moreOptions()">⋯</button>
+                <div class="music-badge" onclick="viewMusic()">
+                    <i class="fas fa-music"></i> Comedy Mix
+                </div>
+                <div class="video-actions">
+                    <button onclick="likeVideo(this)">
+                        <i class="fas fa-heart"></i>
+                        <span>20.1K</span>
+                    </button>
+                    <button onclick="openModal('comments')">
+                        <i class="fas fa-comment"></i>
+                        <span>3.4K</span>
+                    </button>
+                    <button onclick="shareVideo()">
+                        <i class="fas fa-share"></i>
+                        <span>Share</span>
+                    </button>
+                    <button onclick="bookmarkVideo(this)">
+                        <i class="fas fa-bookmark"></i>
+                        <span>Save</span>
+                    </button>
+                </div>
+            </div>
 
-    function declineRequest(btn) {
-        const item = btn.closest('.request-item');
-        const name = item.querySelector('strong').innerText;
-        item.style.display = 'none';
-        alert(`❌ ${name} এর রিকুয়েস্ট ডিক্লাইন করা হয়েছে।`);
-    }
+        </div>
 
-    function searchFriends() {
-        const input = document.getElementById('searchInput').value.toLowerCase();
-        const cards = document.querySelectorAll('.friend-card');
-        cards.forEach(card => {
-            const name = card.querySelector('.friend-name').innerText.toLowerCase();
-            const username = card.querySelector('.friend-username').innerText.toLowerCase();
-            if (name.includes(input) || username.includes(input)) {
-                card.style.display = 'flex';
-            } else {
-                card.style.display = 'none';
+        <!-- ===== নিচের নেভিগেশন ===== -->
+        <div class="bottom-nav">
+            <button class="active" onclick="navigateTo('home', this)">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </button>
+            <button onclick="navigateTo('explore', this)">
+                <i class="fas fa-compass"></i>
+                <span>Explore</span>
+            </button>
+            <button onclick="navigateTo('upload', this)">
+                <i class="fas fa-plus-circle"></i>
+                <span>Upload</span>
+            </button>
+            <button onclick="navigateTo('inbox', this)">
+                <i class="fas fa-inbox"></i>
+                <span>Inbox</span>
+            </button>
+            <button onclick="navigateTo('profile', this)">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </button>
+        </div>
+
+        <!-- ===== মডাল ===== -->
+        <div id="modal" class="modal">
+            <button class="close" onclick="closeModal()">✕</button>
+            <div id="modalContent"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // ============================================================
+        // জাভাস্ক্রিপ্ট
+        // ============================================================
+
+        // ===== অটোপ্লে =====
+        const videos = document.querySelectorAll('.video-card video');
+        const feed = document.getElementById('feed');
+
+        function playVisibleVideo() {
+            videos.forEach(v => v.pause());
+            const scrollY = feed.scrollTop;
+            const height = feed.clientHeight;
+            const index = Math.round(scrollY / (height - 180));
+            if (index >= 0 && index < videos.length) {
+                const video = videos[index];
+                video.play().catch(() => {});
             }
-        });
-    }
+        }
+        feed.addEventListener('scroll', playVisibleVideo);
+        window.addEventListener('load', () => setTimeout(playVisibleVideo, 300));
 
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('friendsPanel').style.display = 'none';
-    });
-</script>
+        // ===== লাইক =====
+        function likeVideo(btn) {
+            const icon = btn.querySelector('i');
+            const span = btn.querySelector('span');
+            let count = parseInt(span.innerText.replace(/,/g, ''));
+
+            btn.classList.toggle('liked');
+            if (btn.classList.contains('liked')) {
+                span.innerText = (count + 1).toLocaleString();
+                icon.style.animation = 'likePop 0.3s ease';
+                setTimeout(() => icon.style.animation = '', 300);
+            } else {
+                span.innerText = (count - 1).toLocaleString();
+            }
+        }
+
+        // ===== বুকমার্ক =====
+        function bookmarkVideo(btn) {
+            btn.classList.toggle('bookmarked');
+            const span = btn.querySelector('span');
+            if (btn.classList.contains('bookmarked')) {
+                span.innerText = 'Saved';
+                btn.querySelector('i').style.animation = 'likePop 0.2s ease';
+                setTimeout(() => btn.querySelector('i').style.animation = '', 200);
+            } else {
+                span.innerText = 'Save';
+            }
+        }
+
+        // ===== ফলো =====
+        function followUser(el) {
+            if (el.innerText === 'Follow') {
+                el.innerText = 'Following';
+                el.style.background = '#ff3b6f';
+                el.style.color = 'white';
+            } else {
+                el.innerText = 'Follow';
+                el.style.background = 'rgba(255,255,255,0.15)';
+                el.style.color = '#ccc';
+            }
+        }
+
+        // ===== ডাবল ক্লিক =====
+        document.querySelectorAll('.video-card video').forEach(video => {
+            video.addEventListener('dblclick', () => {
+                video.muted = !video.muted;
+                // লাইকও দেয়
+                const likeBtn = video.closest('.video-card').querySelector('.video-actions button:first-child');
+                if (likeBtn && !likeBtn.classList.contains('liked')) {
+                    likeVideo(likeBtn);
+                }
+            });
+        });
+
+        // ===== ট্যাব =====
+        function switchTab(tab) {
+            document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+            if (tab === 'forYou') {
+                document.querySelector('.tabs button:first-child').classList.add('active');
+            } else {
+                document.querySelector('.tabs button:last-child').classList.add('active');
+            }
+            alert(`"${tab}" ট্যাব শীঘ্রই লাইভ হবে!`);
+        }
+
+        // ===== মডাল =====
+        function openModal(type) {
+            const modal = document.getElementById('modal');
+            const content = document.getElementById('modalContent');
+            modal.style.display = 'block';
+
+            if (type === 'comments') {
+                content.innerHTML = `
+                    <h2><i class="fas fa-comment"></i> কমেন্ট</h2>
+                    <div style="margin-bottom:12px;">
+                        <div class="comment-item"><strong>@user1</strong> <span>দারুণ ভিডিও! 👏</span></div>
+                        <div class="comment-item"><strong>@user2</strong> <span>খুব সুন্দর ❤️</span></div>
+                        <div class="comment-item"><strong>@friend3</strong> <span>এটা আমার fav</span></div>
+                    </div>
+                    <input type="text" placeholder="কমেন্ট লিখুন..." id="commentInput" />
+                    <button class="btn-primary" onclick="postComment()"><i class="fas fa-paper-plane"></i> পোস্ট করুন</button>
+                `;
+            } else if (type === 'upload') {
+                content.innerHTML = `
+                    <h2><i class="fas fa-upload"></i> ভিডিও আপলোড</h2>
+                    <input type="text" placeholder="শিরোনাম" id="uploadTitle" />
+                    <textarea rows="3" placeholder="বিবরণ" id="uploadDesc"></textarea>
+                    <input type="file" accept="video/*" id="uploadFile" />
+                    <input type="text" placeholder="হ্যাশট্যাগ (যেমন: #fun)" id="uploadTags" />
+                    <button class="btn-primary" onclick="uploadVideo()"><i class="fas fa-cloud-upload-alt"></i> আপলোড</button>
+                `;
+            } else if (type === 'profile') {
+                content.innerHTML = `
+                    <h2><i class="fas fa-user-circle"></i> প্রোফাইল</h2>
+                    <div style="text-align:center; font-size:64px; margin:10px 0;">👤</div>
+                    <h3 style="text-align:center;">@wwc_user</h3>
+                    <p style="text-align:center; color:#aaa;">🌍 বিশ্বকে সংযুক্ত করি</p>
+                    <div style="display:flex; justify-content:space-around; margin:16px 0;">
+                        <div><strong>120</strong><br><span style="color:#aaa;">Posts</span></div>
+                        <div><strong>1.5K</strong><br><span style="color:#aaa;">Followers</span></div>
+                        <div><strong>850</strong><br><span style="color:#aaa;">Following</span></div>
+                    </div>
+                    <button class="btn-primary" onclick="alert('প্রোফাইল এডিট ডেমো!')">✏️ প্রোফাইল এডিট</button>
+                    <button class="btn-primary" style="margin-top:10px; background:#444;" onclick="alert('লগআউট ডেমো!')">🚪 লগআউট</button>
+                `;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function postComment() {
+            const input = document.getElementById('commentInput');
+            if (input && input.value.trim()) {
+                alert(`✅ "${input.value}" কমেন্ট পোস্ট করা হয়েছে!`);
+                input.value = '';
+            } else {
+                alert('⚠️ দয়া করে কিছু লিখুন!');
+            }
+        }
+
+        function uploadVideo() {
+            const title = document.getElementById('uploadTitle').value;
+            const desc = document.getElementById('uploadDesc').value;
+            const file = document.getElementById('uploadFile').files[0];
+            if (!file) {
+                alert('⚠️ দয়া করে একটি ভিডিও ফাইল নির্বাচন করুন!');
+                return;
+            }
+            alert(`✅ "${title || 'শিরোনামহীন'}" আপলোডের জন্য প্রস্তুত!\n📁 ${file.name}\n(বর্তমানে ডেমো)`);
+        }
+
+        // ===== শেয়ার =====
+        function shareVideo() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'WWC ভিডিও',
+                    text: 'দেখুন এই দারুণ ভিডিও! 🌍',
+                    url: window.location.href,
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    alert('✅ শেয়ার লিংক কপি করা হয়েছে!');
+                }).catch(() => {
+                    alert('🔗 শেয়ার লিংক: ' + window.location.href);
+                });
+            }
+        }
+
+        // ===== মিউজিক =====
+        function viewMusic() {
+            alert('🎵 এই ভিডিওর সাউন্ড: Original Sound\n(শীঘ্রই আরও তথ্য আসছে!)');
+        }
+
+        // ===== মোর অপশন =====
+        function moreOptions() {
+            const choice = confirm('📌 রিপোর্ট করুন\n📌 কপি লিংক\n📌 ইউজার ব্লক করুন\n\n"OK" → রিপোর্ট, "Cancel" → বাতিল');
+            if (choice) {
+                alert('✅ ভিডিও রিপোর্ট করা হয়েছে!');
+            }
+        }
+
+        // ===== নেভিগেশন =====
+        function navigateTo(page, btn) {
+            document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            if (page === 'upload') openModal('upload');
+            else if (page === 'profile') openModal('profile');
+            else if (page === 'inbox') alert('📩 ইনবক্স শীঘ্রই আসছে!');
+            else if (page === 'explore') alert('🔍 এক্সপ্লোর শীঘ্রই আসছে!');
+            else if (page === 'home') closeModal();
+        }
+
+        // মডালের বাইরে ক্লিক করলে বন্ধ
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+    </script>
 
 </body>
 </html>
