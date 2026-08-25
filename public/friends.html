@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
     /* =====================================================
-       TIKTOK STYLE FRIENDS - COMPLETE
+       TIKTOK STYLE FRIENDS - PERFECT
     ===================================================== */
     * {
       margin: 0;
@@ -183,8 +183,8 @@
       cursor: pointer;
     }
     .friend-item .avatar-wrap img {
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       border-radius: 50%;
       object-fit: cover;
       background: #222;
@@ -224,7 +224,7 @@
     }
     .friend-item .info .name .verified {
       color: #25f4ee;
-      font-size: 12px;
+      font-size: 13px;
     }
     .friend-item .info .username {
       font-size: 12px;
@@ -276,6 +276,7 @@
       max-width: 500px;
       margin: 20px auto 12px;
       padding: 0 16px;
+      display: none;
     }
     .suggestion-section .title {
       font-size: 16px;
@@ -300,14 +301,16 @@
       animation: fadeIn 0.3s ease;
     }
     .suggestion-item img {
-      width: 40px;
-      height: 40px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       object-fit: cover;
       background: #222;
+      cursor: pointer;
     }
     .suggestion-item .info {
       flex: 1;
+      cursor: pointer;
     }
     .suggestion-item .info .name {
       font-weight: 600;
@@ -319,7 +322,7 @@
       color: #888;
     }
     .suggestion-item .follow-btn {
-      padding: 4px 12px;
+      padding: 4px 14px;
       border-radius: 6px;
       font-size: 12px;
       font-weight: 600;
@@ -331,6 +334,10 @@
     }
     .suggestion-item .follow-btn:active {
       transform: scale(0.95);
+    }
+    .suggestion-item .follow-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     /* ===== খালি অবস্থা ===== */
@@ -447,6 +454,7 @@
     @media (max-width: 480px) {
       .tabs { margin: 8px 12px 12px; }
       .friend-item { padding: 10px 4px; }
+      .friend-item .avatar-wrap img { width: 44px; height: 44px; }
     }
   </style>
 </head>
@@ -484,7 +492,7 @@
 </div>
 
 <!-- ===== সাজেশন সেকশন ===== -->
-<div class="suggestion-section" id="suggestionSection" style="display:none;">
+<div class="suggestion-section" id="suggestionSection">
   <div class="title"><i class="fas fa-lightbulb"></i> Suggested for you</div>
   <div id="suggestionList"></div>
 </div>
@@ -526,8 +534,6 @@ import {
   getDocs, 
   updateDoc, 
   collection, 
-  query, 
-  where,
   runTransaction 
 } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
@@ -574,7 +580,7 @@ function showToast(text) {
 }
 window.showToast = showToast;
 
-// ===== Load All Users (for suggestions) =====
+// ===== Load All Users =====
 async function loadAllUsers() {
   try {
     const snap = await getDocs(collection(db, 'users'));
@@ -674,8 +680,9 @@ function renderSuggestions() {
     <div class="suggestion-item">
       <img src="${u.photoURL || './images/profile.png'}" 
            onerror="this.src='./images/profile.png'" 
-           alt="${u.name || 'User'}">
-      <div class="info">
+           alt="${u.name || 'User'}"
+           onclick="window.location.href='./profile.html?uid=${u.uid}'">
+      <div class="info" onclick="window.location.href='./profile.html?uid=${u.uid}'">
         <div class="name">${u.name || 'WWC User'}</div>
         <div class="username">${u.username ? '@' + u.username : '@' + u.uid?.substring(0, 8)}</div>
       </div>
