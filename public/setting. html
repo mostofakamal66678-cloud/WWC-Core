@@ -1,1 +1,623 @@
 
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#000000" />
+  <title>Settings · WWC</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    /* =====================================================
+       TIKTOK STYLE SETTINGS
+    ===================================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: #000;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      min-height: 100vh;
+      padding-top: 50px;
+      padding-bottom: 80px;
+      overflow-x: hidden;
+    }
+
+    /* ===== টপ বার ===== */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .top-bar .back-btn {
+      color: #fff;
+      font-size: 22px;
+      background: none;
+      border: 0;
+      cursor: pointer;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: background 0.15s;
+    }
+    .top-bar .back-btn:active {
+      background: rgba(255, 255, 255, 0.1);
+      transform: scale(0.9);
+    }
+    .top-bar .title {
+      font-size: 17px;
+      font-weight: 700;
+      flex: 1;
+      text-align: center;
+      margin-right: 40px;
+    }
+
+    /* ===== সেটিংস কন্টেইনার ===== */
+    .settings-container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 0 16px;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== প্রোফাইল সেকশন ===== */
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      cursor: pointer;
+      transition: background 0.15s;
+      border-radius: 10px;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+    .profile-section:active {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .profile-section img {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #222;
+    }
+    .profile-section .info {
+      flex: 1;
+    }
+    .profile-section .info .name {
+      font-weight: 600;
+      font-size: 16px;
+    }
+    .profile-section .info .username {
+      font-size: 13px;
+      color: #888;
+    }
+    .profile-section .arrow {
+      color: #555;
+      font-size: 14px;
+    }
+
+    /* ===== সেটিংস গ্রুপ ===== */
+    .settings-group {
+      margin-top: 20px;
+    }
+    .settings-group .group-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 0 8px 8px;
+    }
+
+    .settings-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.15s;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+    .settings-item:active {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .settings-item .icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+    .settings-item .icon.purple {
+      background: rgba(139, 92, 246, 0.2);
+      color: #8b5cf6;
+    }
+    .settings-item .icon.blue {
+      background: rgba(59, 130, 246, 0.2);
+      color: #3b82f6;
+    }
+    .settings-item .icon.green {
+      background: rgba(34, 197, 94, 0.2);
+      color: #22c55e;
+    }
+    .settings-item .icon.yellow {
+      background: rgba(234, 179, 8, 0.2);
+      color: #eab308;
+    }
+    .settings-item .icon.red {
+      background: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+    .settings-item .icon.pink {
+      background: rgba(236, 72, 153, 0.2);
+      color: #ec4899;
+    }
+    .settings-item .icon.orange {
+      background: rgba(249, 115, 22, 0.2);
+      color: #f97316;
+    }
+    .settings-item .icon.teal {
+      background: rgba(20, 184, 166, 0.2);
+      color: #14b8a6;
+    }
+    .settings-item .info {
+      flex: 1;
+    }
+    .settings-item .info .title {
+      font-size: 15px;
+      font-weight: 500;
+    }
+    .settings-item .info .desc {
+      font-size: 12px;
+      color: #666;
+      margin-top: 1px;
+    }
+    .settings-item .arrow {
+      color: #555;
+      font-size: 14px;
+    }
+    .settings-item .toggle {
+      width: 44px;
+      height: 26px;
+      border-radius: 13px;
+      background: #333;
+      position: relative;
+      transition: background 0.3s;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .settings-item .toggle.active {
+      background: #25f4ee;
+    }
+    .settings-item .toggle .circle {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #fff;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      transition: left 0.3s;
+    }
+    .settings-item .toggle.active .circle {
+      left: 21px;
+    }
+
+    /* ===== টোস্ট ===== */
+    .toast {
+      position: fixed;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(30, 30, 30, 0.95);
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 22px;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s;
+      z-index: 1000;
+      white-space: nowrap;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ===== বটম নেভ ===== */
+    .bottom-nav {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 75px;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding-bottom: env(safe-area-inset-bottom);
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.95) 25%);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .bottom-nav .nav-btn {
+      width: 20%;
+      height: 65px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 10px;
+      font-weight: 600;
+      transition: color 0.2s;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+    }
+    .bottom-nav .nav-btn .nav-icon {
+      font-size: 24px;
+    }
+    .bottom-nav .upload-btn {
+      width: 50px;
+      height: 38px;
+      border-radius: 10px;
+      background: #fff;
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 300;
+      box-shadow: -3px 0 0 #25f4ee, 3px 0 0 #fe2c55;
+      transition: transform 0.15s;
+    }
+    .bottom-nav .upload-btn:active {
+      transform: scale(0.9);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== টপ বার ===== -->
+<div class="top-bar">
+  <button class="back-btn" onclick="window.location.href='./profile.html'">
+    <i class="fas fa-arrow-left"></i>
+  </button>
+  <span class="title"><i class="fas fa-cog" style="color:#25f4ee;margin-right:8px;"></i>Settings</span>
+  <div style="width:40px;"></div>
+</div>
+
+<!-- ===== সেটিংস ===== -->
+<div class="settings-container">
+
+  <!-- প্রোফাইল সেকশন -->
+  <div class="profile-section" onclick="window.location.href='./profile.html'">
+    <img id="profileImg" src="./images/profile.png" onerror="this.src='./images/profile.png'" />
+    <div class="info">
+      <div class="name" id="profileName">Loading...</div>
+      <div class="username" id="profileUsername">@loading</div>
+    </div>
+    <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+  </div>
+
+  <!-- গ্রুপ ১: অ্যাকাউন্ট -->
+  <div class="settings-group">
+    <div class="group-title">Account</div>
+
+    <div class="settings-item" onclick="showToast('✏️ Edit profile coming soon')">
+      <div class="icon purple"><i class="fas fa-user-edit"></i></div>
+      <div class="info">
+        <div class="title">Edit Profile</div>
+        <div class="desc">Change your name, bio, photo</div>
+      </div>
+      <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+    </div>
+
+    <div class="settings-item" onclick="showToast('🔐 Change password coming soon')">
+      <div class="icon blue"><i class="fas fa-lock"></i></div>
+      <div class="info">
+        <div class="title">Change Password</div>
+        <div class="desc">Update your password</div>
+      </div>
+      <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+    </div>
+
+    <div class="settings-item" onclick="showToast('📧 Email settings coming soon')">
+      <div class="icon teal"><i class="fas fa-envelope"></i></div>
+      <div class="info">
+        <div class="title">Email Settings</div>
+        <div class="desc">Manage your email preferences</div>
+      </div>
+      <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+    </div>
+  </div>
+
+  <!-- গ্রুপ ২: প্রাইভেসি -->
+  <div class="settings-group">
+    <div class="group-title">Privacy</div>
+
+    <div class="settings-item" onclick="showToast('👀 Private account coming soon')">
+      <div class="icon green"><i class="fas fa-eye-slash"></i></div>
+      <div class="info">
+        <div class="title">Private Account</div>
+        <div class="desc">Only followers can see your videos</div>
+      </div>
+      <div class="toggle" id="privateToggle" onclick="toggleSwitch('privateToggle')">
+        <div class="circle"></div>
+      </div>
+    </div>
+
+    <div class="settings-item" onclick="showToast('🕵️ Activity status coming soon')">
+      <div class="icon yellow"><i class="fas fa-clock"></i></div>
+      <div class="info">
+        <div class="title">Activity Status</div>
+        <div class="desc">Show when you're online</div>
+      </div>
+      <div class="toggle active" id="activityToggle" onclick="toggleSwitch('activityToggle')">
+        <div class="circle"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- গ্রুপ ৩: নোটিফিকেশন -->
+  <div class="settings-group">
+    <div class="group-title">Notifications</div>
+
+    <div class="settings-item" onclick="showToast('🔔 Push notifications coming soon')">
+      <div class="icon pink"><i class="fas fa-bell"></i></div>
+      <div class="info">
+        <div class="title">Push Notifications</div>
+        <div class="desc">Get notified about likes and comments</div>
+      </div>
+      <div class="toggle active" id="notifToggle" onclick="toggleSwitch('notifToggle')">
+        <div class="circle"></div>
+      </div>
+    </div>
+
+    <div class="settings-item" onclick="showToast('📱 In-app notifications coming soon')">
+      <div class="icon orange"><i class="fas fa-comment-dots"></i></div>
+      <div class="info">
+        <div class="title">In-App Notifications</div>
+        <div class="desc">Show notifications inside the app</div>
+      </div>
+      <div class="toggle active" id="inappToggle" onclick="toggleSwitch('inappToggle')">
+        <div class="circle"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- গ্রুপ ৪: অ্যাপ -->
+  <div class="settings-group">
+    <div class="group-title">App</div>
+
+    <div class="settings-item" onclick="showToast('🎨 Theme settings coming soon')">
+      <div class="icon purple"><i class="fas fa-palette"></i></div>
+      <div class="info">
+        <div class="title">Theme</div>
+        <div class="desc">Dark, Light, System</div>
+      </div>
+      <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+    </div>
+
+    <div class="settings-item" onclick="showToast('🌐 Language settings coming soon')">
+      <div class="icon blue"><i class="fas fa-globe"></i></div>
+      <div class="info">
+        <div class="title">Language</div>
+        <div class="desc">Change your app language</div>
+      </div>
+      <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+    </div>
+
+    <div class="settings-item" onclick="showToast('🗑️ Clear cache coming soon')">
+      <div class="icon yellow"><i class="fas fa-trash-alt"></i></div>
+      <div class="info">
+        <div class="title">Clear Cache</div>
+        <div class="desc">Free up storage space</div>
+      </div>
+      <div class="arrow"><i class="fas fa-chevron-right"></i></div>
+    </div>
+  </div>
+
+  <!-- গ্রুপ ৫: অ্যাকাউন্ট অ্যাকশন -->
+  <div class="settings-group">
+    <div class="group-title">Account Actions</div>
+
+    <div class="settings-item" onclick="logout()">
+      <div class="icon red"><i class="fas fa-sign-out-alt"></i></div>
+      <div class="info">
+        <div class="title" style="color:#ef4444;">Logout</div>
+        <div class="desc">Sign out of your account</div>
+      </div>
+      <div class="arrow" style="color:#555;"><i class="fas fa-chevron-right"></i></div>
+    </div>
+
+    <div class="settings-item" onclick="deleteAccount()">
+      <div class="icon red"><i class="fas fa-user-times"></i></div>
+      <div class="info">
+        <div class="title" style="color:#ef4444;">Delete Account</div>
+        <div class="desc">Permanently delete your account</div>
+      </div>
+      <div class="arrow" style="color:#555;"><i class="fas fa-chevron-right"></i></div>
+    </div>
+  </div>
+
+  <!-- ভার্সন -->
+  <div style="text-align:center;color:#444;font-size:12px;padding:24px 0 12px;">
+    WWC v2.0.0
+  </div>
+
+</div>
+
+<!-- ===== টোস্ট ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== বটম নেভ ===== -->
+<nav class="bottom-nav">
+  <button class="nav-btn" onclick="window.location.href='./index.html'">
+    <span class="nav-icon"><i class="fas fa-home"></i></span>
+    <span>Home</span>
+  </button>
+  <button class="nav-btn" onclick="window.location.href='./friends.html'">
+    <span class="nav-icon"><i class="fas fa-user-friends"></i></span>
+    <span>Friends</span>
+  </button>
+  <button class="nav-btn" onclick="window.location.href='./upload.html'">
+    <span class="upload-btn"><i class="fas fa-plus"></i></span>
+  </button>
+  <button class="nav-btn" onclick="window.location.href='./inbox.html'">
+    <span class="nav-icon"><i class="fas fa-inbox"></i></span>
+    <span>Inbox</span>
+  </button>
+  <button class="nav-btn" onclick="window.location.href='./profile.html'">
+    <span class="nav-icon"><i class="fas fa-user"></i></span>
+    <span>Profile</span>
+  </button>
+</nav>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-analytics.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+
+// ===== Firebase Config =====
+const firebaseConfig = {
+  apiKey: "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
+  authDomain: "world-wide-connect-62c87.firebaseapp.com",
+  projectId: "world-wide-connect-62c87",
+  storageBucket: "world-wide-connect-62c87.firebasestorage.app",
+  messagingSenderId: "93178453668",
+  appId: "1:93178453668:web:2184630caa8e61f7445031",
+  measurementId: "G-PKFJ5NEMGQ"
+};
+
+// ===== Init Firebase =====
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// ===== DOM =====
+const profileImg = document.getElementById('profileImg');
+const profileName = document.getElementById('profileName');
+const profileUsername = document.getElementById('profileUsername');
+const toast = document.getElementById('toast');
+
+let currentUser = null;
+let toastTimer = null;
+
+// ===== Toast =====
+function showToast(text) {
+  toast.textContent = text;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+}
+window.showToast = showToast;
+
+// ===== Toggle Switch =====
+window.toggleSwitch = function(id) {
+  const toggle = document.getElementById(id);
+  if (!toggle) return;
+  toggle.classList.toggle('active');
+  const isActive = toggle.classList.contains('active');
+  showToast(isActive ? '✅ Enabled' : '❌ Disabled');
+};
+
+// ===== Logout =====
+window.logout = function() {
+  if (confirm('Are you sure you want to logout?')) {
+    signOut(auth).then(() => {
+      showToast('✅ Logged out successfully');
+      setTimeout(() => {
+        window.location.href = './auth.html';
+      }, 500);
+    }).catch((error) => {
+      showToast('❌ Logout failed: ' + error.message);
+    });
+  }
+};
+
+// ===== Delete Account =====
+window.deleteAccount = function() {
+  if (confirm('⚠️ Are you sure? This action is permanent and cannot be undone!')) {
+    if (confirm('Type "DELETE" to confirm')) {
+      showToast('🗑️ Account deletion coming soon');
+      // You can add actual deletion logic here
+    }
+  }
+};
+
+// =====================================================
+// ✅ LOAD PROFILE
+// =====================================================
+async function loadProfile(user) {
+  try {
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      profileName.textContent = data.name || 'WWC User';
+      profileUsername.textContent = data.username ? '@' + data.username : '@' + user.uid.substring(0, 8);
+      if (data.photoURL) {
+        profileImg.src = data.photoURL;
+      }
+    } else {
+      profileName.textContent = user.displayName || 'WWC User';
+      profileUsername.textContent = '@' + user.uid.substring(0, 8);
+    }
+  } catch (e) {
+    console.error('Load profile error:', e);
+  }
+}
+
+// =====================================================
+// ✅ AUTH
+// =====================================================
+onAuthStateChanged(auth, async (user) => {
+  currentUser = user;
+  if (!user) {
+    profileName.textContent = 'Not Logged In';
+    profileUsername.textContent = '@guest';
+    profileImg.src = './images/profile.png';
+    return;
+  }
+  await loadProfile(user);
+});
+
+console.log('✅ TikTok Style Settings Page Loaded!');
+</script>
+</body>
+</html>
