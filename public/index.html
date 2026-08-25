@@ -6,6 +6,7 @@
     <title>WWC - World Wide Connect</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
+        /* ===== রিসেট ===== */
         * {
             margin: 0;
             padding: 0;
@@ -106,7 +107,7 @@
             background: rgba(255, 255, 255, 0.08);
         }
 
-        /* ===== ফিড (স্ক্রল ঠিক করা) ===== */
+        /* ===== ফিড ===== */
         .feed {
             height: 100vh;
             width: 100%;
@@ -119,8 +120,6 @@
         .feed::-webkit-scrollbar {
             display: none;
         }
-
-        /* ===== ভিডিও কার্ড (প্রতিটি পুরো স্ক্রিন) ===== */
         .video-card {
             height: 100vh;
             width: 100%;
@@ -336,6 +335,32 @@
             color: #ddd;
         }
 
+        /* ===== পেজ কন্টেন্ট ===== */
+        .page-content {
+            display: none;
+            padding: 80px 20px 80px 20px;
+            color: white;
+            text-align: center;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        .page-content.active {
+            display: block;
+        }
+        .page-content h2 {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+        .page-content p {
+            color: #aaa;
+            font-size: 16px;
+        }
+        .page-content .icon-big {
+            font-size: 60px;
+            margin-bottom: 16px;
+            color: #ff3b6f;
+        }
+
         /* ===== মডাল ===== */
         .modal {
             display: none;
@@ -420,6 +445,37 @@
             font-size: 13px;
         }
 
+        /* ===== টোস্ট ===== */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 380px;
+            width: 90%;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            z-index: 100;
+            text-align: center;
+            backdrop-filter: blur(8px);
+            border: 1px solid #333;
+            animation: fadeInUp 0.3s ease;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* ===== রেসপন্সিভ ===== */
         @media (max-width: 430px) {
             .video-actions {
                 right: 10px;
@@ -485,7 +541,7 @@
             </div>
         </div>
 
-        <!-- ===== ভিডিও ফিড (স্ক্রল ঠিক করা) ===== -->
+        <!-- ===== ভিডিও ফিড ===== -->
         <div class="feed" id="feed">
 
             <!-- ভিডিও ১ -->
@@ -559,6 +615,37 @@
 
         </div>
 
+        <!-- ===== Explore পেজ ===== -->
+        <div id="explorePage" class="page-content">
+            <div class="icon-big"><i class="fas fa-compass"></i></div>
+            <h2>🔍 Explore</h2>
+            <p>ট্রেন্ডিং ভিডিও ও হ্যাশট্যাগ</p>
+            <div style="margin-top:16px; display:flex; flex-wrap:wrap; gap:8px; justify-content:center;">
+                <span style="background:#222; padding:6px 14px; border-radius:20px; color:#4fc3f7;">#wwc</span>
+                <span style="background:#222; padding:6px 14px; border-radius:20px; color:#4fc3f7;">#trending</span>
+                <span style="background:#222; padding:6px 14px; border-radius:20px; color:#4fc3f7;">#bengali</span>
+                <span style="background:#222; padding:6px 14px; border-radius:20px; color:#4fc3f7;">#reels</span>
+            </div>
+        </div>
+
+        <!-- ===== Inbox পেজ ===== -->
+        <div id="inboxPage" class="page-content">
+            <div class="icon-big"><i class="fas fa-inbox"></i></div>
+            <h2>📩 Inbox</h2>
+            <p>আপনার মেসেজ</p>
+            <div style="margin-top:16px; text-align:left; max-width:300px; margin-left:auto; margin-right:auto;">
+                <div style="padding:10px; border-bottom:1px solid #222;">
+                    <strong>@user1</strong> <span style="color:#aaa; font-size:13px;">হ্যালো!</span>
+                </div>
+                <div style="padding:10px; border-bottom:1px solid #222;">
+                    <strong>@friend2</strong> <span style="color:#aaa; font-size:13px;">ভিডিওটা দারুণ!</span>
+                </div>
+                <div style="padding:10px;">
+                    <strong>@admin</strong> <span style="color:#aaa; font-size:13px;">স্বাগতম WWC-তে</span>
+                </div>
+            </div>
+        </div>
+
         <!-- ===== নিচের নেভিগেশন ===== -->
         <div class="bottom-nav">
             <button class="active" onclick="navigateTo('home', this)">
@@ -588,23 +675,20 @@
 
     <script>
         // ============================================================
-        // সবকিছু একসাথে কাজ করবে
+        // পারফেক্ট ফাংশন
         // ============================================================
 
         const videos = document.querySelectorAll('.video-card video');
         const feed = document.getElementById('feed');
         let isScrolling = false;
 
-        // ===== 1. অটোপ্লে (স্ক্রল করলে) =====
+        // ===== 1. অটোপ্লে (স্মুথ) =====
         function playVisibleVideo() {
             if (isScrolling) return;
-            
             videos.forEach(v => v.pause());
-            
             const scrollY = feed.scrollTop;
             const height = window.innerHeight;
             const index = Math.round(scrollY / height);
-            
             if (index >= 0 && index < videos.length) {
                 const video = videos[index];
                 video.currentTime = 0;
@@ -612,27 +696,21 @@
             }
         }
 
-        // স্ক্রল ইভেন্ট (ডিবাউন্স সহ)
         let scrollTimeout;
         feed.addEventListener('scroll', function() {
             isScrolling = true;
             clearTimeout(scrollTimeout);
-            
             scrollTimeout = setTimeout(() => {
                 isScrolling = false;
                 playVisibleVideo();
             }, 100);
         });
 
-        // পেজ লোড হলে
         window.addEventListener('load', function() {
             setTimeout(playVisibleVideo, 500);
+            feed.scrollTop = 0;
         });
-
-        // উইন্ডো রিসাইজ করলেও
-        window.addEventListener('resize', function() {
-            playVisibleVideo();
-        });
+        window.addEventListener('resize', playVisibleVideo);
 
         // ===== 2. লাইক =====
         function likeVideo(btn) {
@@ -649,7 +727,7 @@
             }
         }
 
-        // ===== 3. বুকমার্ক (সেভ) =====
+        // ===== 3. বুকমার্ক =====
         function bookmarkVideo(btn) {
             btn.classList.toggle('bookmarked');
             const span = btn.querySelector('span');
@@ -673,6 +751,7 @@
                 el.style.background = 'rgba(255,255,255,0.12)';
                 el.style.color = '#ccc';
             }
+            showToast(el.innerText === 'Following' ? '✅ ফলো করা হয়েছে!' : '❌ ফলো বাতিল করা হয়েছে!');
         }
 
         // ===== 5. ডাবল ক্লিক =====
@@ -691,10 +770,11 @@
             document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
             if (tab === 'forYou') {
                 document.querySelector('.tabs button:first-child').classList.add('active');
+                showToast('🔹 For You - ট্রেন্ডিং ভিডিও');
             } else {
                 document.querySelector('.tabs button:last-child').classList.add('active');
+                showToast('🔸 Following - আপনি যাদের ফলো করেন');
             }
-            alert(`"${tab}" ট্যাব শীঘ্রই লাইভ হবে!`);
         }
 
         // ===== 7. মডাল =====
@@ -706,7 +786,7 @@
             if (type === 'comments') {
                 content.innerHTML = `
                     <h2><i class="fas fa-comment"></i> কমেন্ট</h2>
-                    <div style="margin-bottom:12px;">
+                    <div id="commentList" style="margin-bottom:12px;">
                         <div class="comment-item"><strong>@user1</strong> <span>দারুণ ভিডিও! 👏</span></div>
                         <div class="comment-item"><strong>@user2</strong> <span>খুব সুন্দর ❤️</span></div>
                         <div class="comment-item"><strong>@friend3</strong> <span>এটা আমার fav</span></div>
@@ -734,8 +814,8 @@
                         <div><strong>1.5K</strong><br><span style="color:#aaa;">Followers</span></div>
                         <div><strong>850</strong><br><span style="color:#aaa;">Following</span></div>
                     </div>
-                    <button class="btn-primary" onclick="alert('প্রোফাইল এডিট ডেমো!')">✏️ প্রোফাইল এডিট</button>
-                    <button class="btn-primary" style="margin-top:10px; background:#444;" onclick="alert('লগআউট ডেমো!')">🚪 লগআউট</button>
+                    <button class="btn-primary" onclick="showToast('✏️ প্রোফাইল এডিট মোড খোলা হয়েছে!')">✏️ প্রোফাইল এডিট</button>
+                    <button class="btn-primary" style="margin-top:10px; background:#444;" onclick="showToast('🚪 লগআউট করা হয়েছে!')">🚪 লগআউট</button>
                 `;
             }
         }
@@ -748,23 +828,28 @@
         function postComment() {
             const input = document.getElementById('commentInput');
             if (input && input.value.trim()) {
-                alert(`✅ "${input.value}" কমেন্ট পোস্ট করা হয়েছে!`);
+                const list = document.getElementById('commentList');
+                const newComment = document.createElement('div');
+                newComment.className = 'comment-item';
+                newComment.innerHTML = `<strong>@you</strong> <span>${input.value}</span>`;
+                list.prepend(newComment);
                 input.value = '';
+                showToast('✅ কমেন্ট পোস্ট করা হয়েছে!');
             } else {
-                alert('⚠️ দয়া করে কিছু লিখুন!');
+                showToast('⚠️ দয়া করে কিছু লিখুন!');
             }
         }
 
         // ===== 9. আপলোড =====
         function uploadVideo() {
             const title = document.getElementById('uploadTitle').value;
-            const desc = document.getElementById('uploadDesc').value;
             const file = document.getElementById('uploadFile').files[0];
             if (!file) {
-                alert('⚠️ দয়া করে একটি ভিডিও ফাইল নির্বাচন করুন!');
+                showToast('⚠️ দয়া করে একটি ভিডিও ফাইল নির্বাচন করুন!');
                 return;
             }
-            alert(`✅ "${title || 'শিরোনামহীন'}" আপলোডের জন্য প্রস্তুত!\n📁 ${file.name}\n(বর্তমানে ডেমো)`);
+            showToast(`✅ "${title || 'শিরোনামহীন'}" আপলোডের জন্য প্রস্তুত!`);
+            closeModal();
         }
 
         // ===== 10. শেয়ার =====
@@ -777,23 +862,23 @@
                 }).catch(() => {});
             } else {
                 navigator.clipboard.writeText(window.location.href).then(() => {
-                    alert('✅ শেয়ার লিংক কপি করা হয়েছে!');
+                    showToast('✅ শেয়ার লিংক কপি করা হয়েছে!');
                 }).catch(() => {
-                    alert('🔗 শেয়ার লিংক: ' + window.location.href);
+                    showToast('🔗 শেয়ার লিংক: ' + window.location.href);
                 });
             }
         }
 
         // ===== 11. মিউজিক =====
         function viewMusic() {
-            alert('🎵 এই ভিডিওর সাউন্ড: Original Sound\n(শীঘ্রই আরও তথ্য আসছে!)');
+            showToast('🎵 এই ভিডিওর সাউন্ড: Original Sound');
         }
 
         // ===== 12. মোর অপশন =====
         function moreOptions() {
             const choice = confirm('📌 রিপোর্ট করুন\n📌 কপি লিংক\n📌 ইউজার ব্লক করুন\n\n"OK" → রিপোর্ট, "Cancel" → বাতিল');
             if (choice) {
-                alert('✅ ভিডিও রিপোর্ট করা হয়েছে!');
+                showToast('✅ ভিডিও রিপোর্ট করা হয়েছে!');
             }
         }
 
@@ -802,21 +887,49 @@
             document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
 
-            if (page === 'upload') openModal('upload');
-            else if (page === 'profile') openModal('profile');
-            else if (page === 'inbox') alert('📩 ইনবক্স শীঘ্রই আসছে!');
-            else if (page === 'explore') alert('🔍 এক্সপ্লোর শীঘ্রই আসছে!');
-            else if (page === 'home') closeModal();
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+            document.getElementById('feed').style.display = 'none';
+
+            if (page === 'home') {
+                document.getElementById('feed').style.display = 'block';
+                closeModal();
+                setTimeout(playVisibleVideo, 300);
+            } else if (page === 'explore') {
+                document.getElementById('explorePage').classList.add('active');
+                closeModal();
+            } else if (page === 'upload') {
+                openModal('upload');
+            } else if (page === 'inbox') {
+                document.getElementById('inboxPage').classList.add('active');
+                closeModal();
+            } else if (page === 'profile') {
+                openModal('profile');
+            }
         }
 
-        // ===== 14. মডালের বাইরে ক্লিক করলে বন্ধ =====
+        // ===== 14. টোস্ট =====
+        function showToast(msg) {
+            const old = document.querySelector('.toast');
+            if (old) old.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = '0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        // ===== 15. মডালের বাইরে ক্লিক =====
         document.getElementById('modal').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
         });
 
-        // পেজ লোড হলে ফিডের স্ক্রল পজিশন ঠিক করা
+        // পেজ লোড হলে ফিড দেখাবে
         window.addEventListener('load', function() {
-            feed.scrollTop = 0;
+            document.getElementById('feed').style.display = 'block';
         });
     </script>
 
