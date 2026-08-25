@@ -60,7 +60,6 @@
             align-items: center;
             gap: 12px;
         }
-        /* ===== ট্যাব (For You / Following) – হেডারের ডানে ===== */
         .tabs {
             display: flex;
             align-items: center;
@@ -212,15 +211,15 @@
             to { transform: rotate(360deg); }
         }
 
-        /* ===== অ্যাকশন বাটন ===== */
+        /* ===== অ্যাকশন বাটন (সেভ ঠিক করা) ===== */
         .video-actions {
             position: absolute;
             right: 14px;
-            bottom: 110px;
+            bottom: 120px;   /* উপরে সরানো */
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 22px;
+            gap: 18px;       /* ফাঁকা জায়গা কমানো */
             z-index: 3;
         }
         .video-actions button {
@@ -418,8 +417,8 @@
         @media (max-width: 430px) {
             .video-actions {
                 right: 10px;
-                bottom: 100px;
-                gap: 18px;
+                bottom: 110px;
+                gap: 16px;
             }
             .video-actions button {
                 font-size: 24px;
@@ -465,11 +464,10 @@
 
     <div class="app">
 
-        <!-- ===== হেডার (উপরে) ===== -->
+        <!-- ===== হেডার ===== -->
         <div class="header">
             <h1><i class="fas fa-globe-americas"></i> WWC</h1>
             <div class="header-right">
-                <!-- ট্যাব (For You / Following) – হেডারের ডান পাশে, উপরে -->
                 <div class="tabs">
                     <button class="active" onclick="switchTab('forYou')">For You</button>
                     <button onclick="switchTab('following')">Following</button>
