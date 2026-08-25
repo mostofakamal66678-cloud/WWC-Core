@@ -34,7 +34,7 @@
             transform: translateX(-50%);
             max-width: 430px;
             width: 100%;
-            z-index: 20;
+            z-index: 25;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -66,10 +66,10 @@
             opacity: 1;
         }
 
-        /* ===== ট্যাব ===== */
+        /* ===== ট্যাব (Following / For You) ===== */
         .tabs {
             position: fixed;
-            top: 62px;
+            top: 60px;
             left: 50%;
             transform: translateX(-50%);
             max-width: 430px;
@@ -77,25 +77,41 @@
             z-index: 20;
             display: flex;
             justify-content: center;
-            gap: 30px;
-            padding: 8px 0;
-            background: rgba(0, 0, 0, 0.3);
+            gap: 40px;
+            padding: 10px 0 6px 0;
+            background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(4px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
         .tabs button {
             background: none;
             border: none;
             color: #888;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             cursor: pointer;
             padding: 4px 0;
-            border-bottom: 2px solid transparent;
+            position: relative;
             transition: 0.3s;
+            letter-spacing: 0.3px;
+        }
+        .tabs button::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: 0.3s;
+            border-radius: 2px;
         }
         .tabs button.active {
             color: white;
-            border-bottom-color: white;
+        }
+        .tabs button.active::after {
+            width: 20px;
         }
         .tabs button:hover {
             color: #ddd;
@@ -107,14 +123,14 @@
             overflow-y: scroll;
             scroll-snap-type: y mandatory;
             scroll-behavior: smooth;
-            padding-top: 110px;
+            padding-top: 115px;
             padding-bottom: 70px;
         }
         .feed::-webkit-scrollbar {
             display: none;
         }
         .video-card {
-            height: calc(100vh - 180px);
+            height: calc(100vh - 190px);
             scroll-snap-align: start;
             display: flex;
             flex-direction: column;
@@ -213,7 +229,7 @@
             }
         }
 
-        /* ===== অ্যাকশন বাটন (টিকটক স্টাইল) ===== */
+        /* ===== অ্যাকশন বাটন ===== */
         .video-actions {
             position: absolute;
             right: 12px;
@@ -251,8 +267,6 @@
             transform: scale(1.08);
             opacity: 1;
         }
-
-        /* লাইক বাটন (লাল) */
         .video-actions .liked {
             color: #ff3b6f;
         }
@@ -270,13 +284,11 @@
                 transform: scale(1);
             }
         }
-
-        /* বুকমার্ক (নীল) */
         .video-actions .bookmarked {
             color: #4fc3f7;
         }
 
-        /* মোর বাটন */
+        /* ===== মোর বাটন ===== */
         .more-btn {
             position: absolute;
             right: 12px;
@@ -427,7 +439,6 @@
             font-size: 13px;
         }
 
-        /* ===== রেসপন্সিভ ===== */
         @media (max-width: 430px) {
             .video-actions {
                 right: 8px;
@@ -453,6 +464,20 @@
                 right: 8px;
                 top: 14px;
                 font-size: 18px;
+            }
+            .tabs {
+                gap: 25px;
+                top: 56px;
+                padding: 8px 0 4px 0;
+            }
+            .tabs button {
+                font-size: 14px;
+            }
+            .feed {
+                padding-top: 105px;
+            }
+            .video-card {
+                height: calc(100vh - 180px);
             }
         }
     </style>
@@ -623,7 +648,6 @@
         // জাভাস্ক্রিপ্ট
         // ============================================================
 
-        // ===== অটোপ্লে =====
         const videos = document.querySelectorAll('.video-card video');
         const feed = document.getElementById('feed');
 
@@ -631,7 +655,7 @@
             videos.forEach(v => v.pause());
             const scrollY = feed.scrollTop;
             const height = feed.clientHeight;
-            const index = Math.round(scrollY / (height - 180));
+            const index = Math.round(scrollY / (height - 190));
             if (index >= 0 && index < videos.length) {
                 const video = videos[index];
                 video.play().catch(() => {});
@@ -640,12 +664,10 @@
         feed.addEventListener('scroll', playVisibleVideo);
         window.addEventListener('load', () => setTimeout(playVisibleVideo, 300));
 
-        // ===== লাইক =====
         function likeVideo(btn) {
             const icon = btn.querySelector('i');
             const span = btn.querySelector('span');
             let count = parseInt(span.innerText.replace(/,/g, ''));
-
             btn.classList.toggle('liked');
             if (btn.classList.contains('liked')) {
                 span.innerText = (count + 1).toLocaleString();
@@ -656,7 +678,6 @@
             }
         }
 
-        // ===== বুকমার্ক =====
         function bookmarkVideo(btn) {
             btn.classList.toggle('bookmarked');
             const span = btn.querySelector('span');
@@ -669,7 +690,6 @@
             }
         }
 
-        // ===== ফলো =====
         function followUser(el) {
             if (el.innerText === 'Follow') {
                 el.innerText = 'Following';
@@ -682,11 +702,9 @@
             }
         }
 
-        // ===== ডাবল ক্লিক =====
         document.querySelectorAll('.video-card video').forEach(video => {
             video.addEventListener('dblclick', () => {
                 video.muted = !video.muted;
-                // লাইকও দেয়
                 const likeBtn = video.closest('.video-card').querySelector('.video-actions button:first-child');
                 if (likeBtn && !likeBtn.classList.contains('liked')) {
                     likeVideo(likeBtn);
@@ -694,7 +712,6 @@
             });
         });
 
-        // ===== ট্যাব =====
         function switchTab(tab) {
             document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
             if (tab === 'forYou') {
@@ -705,7 +722,6 @@
             alert(`"${tab}" ট্যাব শীঘ্রই লাইভ হবে!`);
         }
 
-        // ===== মডাল =====
         function openModal(type) {
             const modal = document.getElementById('modal');
             const content = document.getElementById('modalContent');
@@ -773,7 +789,6 @@
             alert(`✅ "${title || 'শিরোনামহীন'}" আপলোডের জন্য প্রস্তুত!\n📁 ${file.name}\n(বর্তমানে ডেমো)`);
         }
 
-        // ===== শেয়ার =====
         function shareVideo() {
             if (navigator.share) {
                 navigator.share({
@@ -790,12 +805,10 @@
             }
         }
 
-        // ===== মিউজিক =====
         function viewMusic() {
             alert('🎵 এই ভিডিওর সাউন্ড: Original Sound\n(শীঘ্রই আরও তথ্য আসছে!)');
         }
 
-        // ===== মোর অপশন =====
         function moreOptions() {
             const choice = confirm('📌 রিপোর্ট করুন\n📌 কপি লিংক\n📌 ইউজার ব্লক করুন\n\n"OK" → রিপোর্ট, "Cancel" → বাতিল');
             if (choice) {
@@ -803,7 +816,6 @@
             }
         }
 
-        // ===== নেভিগেশন =====
         function navigateTo(page, btn) {
             document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
@@ -815,7 +827,6 @@
             else if (page === 'home') closeModal();
         }
 
-        // মডালের বাইরে ক্লিক করলে বন্ধ
         document.getElementById('modal').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
         });
