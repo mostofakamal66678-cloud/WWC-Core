@@ -1,46 +1,410 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WWC Video Feed</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WWC - World Wide Connect</title>
+    <style>
+        /* ===== গ্লোবাল স্টাইল ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-<link rel="stylesheet" href="css/style.css">
+        body {
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+
+        /* ===== হেডার ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e4e6eb;
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #1877f2;
+        }
+
+        .header input {
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            background: #f0f2f5;
+            width: 60%;
+        }
+
+        /* ===== নেভিগেশন বাটন ===== */
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons button {
+            flex: 1;
+            padding: 10px 0;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 16px;
+            background: #e4e6eb;
+            color: #050505;
+            cursor: pointer;
+            transition: 0.3s;
+            min-width: 80px;
+        }
+
+        .nav-buttons button:hover {
+            background: #d1d5db;
+        }
+
+        .nav-buttons button.active {
+            background: #1877f2;
+            color: white;
+        }
+
+        /* ===== ফ্রেন্ডস প্যানেল ===== */
+        #friendsPanel {
+            display: none;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 10px;
+            border: 1px solid #e4e6eb;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #friendsPanel h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #1b1f23;
+        }
+
+        .friend-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .friend-card:last-child {
+            border-bottom: none;
+        }
+
+        .friend-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .friend-name {
+            font-weight: 600;
+            color: #050505;
+        }
+
+        .friend-username {
+            font-size: 13px;
+            color: #65676b;
+        }
+
+        .friend-bio {
+            font-size: 13px;
+            color: #65676b;
+            margin-top: 2px;
+        }
+
+        .friend-card button {
+            background: #1877f2;
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .friend-card button:hover {
+            background: #166fe5;
+        }
+
+        .friend-card button.following {
+            background: #e4e6eb;
+            color: #050505;
+        }
+
+        /* ===== রিকুয়েস্ট সেকশন ===== */
+        .request-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f2f5;
+        }
+
+        .request-item:last-child {
+            border-bottom: none;
+        }
+
+        .request-actions button {
+            padding: 5px 14px;
+            border-radius: 20px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 6px;
+        }
+
+        .btn-accept {
+            background: #1877f2;
+            color: white;
+        }
+
+        .btn-decline {
+            background: #e4e6eb;
+            color: #050505;
+        }
+
+        /* ===== ফুটার ===== */
+        .footer {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 13px;
+            color: #65676b;
+            border-top: 1px solid #e4e6eb;
+            padding-top: 15px;
+        }
+
+        .footer a {
+            color: #1877f2;
+            text-decoration: none;
+            margin: 0 6px;
+        }
+
+        /* ===== রেসপন্সিভ ===== */
+        @media (max-width: 500px) {
+            .header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .header input {
+                width: 100%;
+            }
+            .nav-buttons button {
+                font-size: 14px;
+                padding: 8px 0;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-<div id="video-feed">
+<div class="container">
 
-  <div class="video-item">
-    <video controls autoplay muted  playsinline>
-      <source src="videos/video1.mp4" type="video/mp4">
-    </video>
-
-    <div class="actions">
-      <button>❤️</button>
-      <button>💬</button>
-      <button id="shareBtn1">↗️</button>
+    <!-- ===== হেডার ===== -->
+    <div class="header">
+        <h1>🌐 WWC</h1>
+        <input type="text" placeholder="Search friends..." id="searchInput" onkeyup="searchFriends()">
     </div>
-  </div>
 
-  <div class="video-item">
-    <video controls muted  playsinline>
-      <source src="videos/video2.mp4" type="video/mp4">
-    </video>
-
-    <div class="actions">
-      <button>❤️</button>
-      <button>💬</button>
-      <button id="shareBtn2">↗️</button>
+    <!-- ===== নেভিগেশন বাটন ===== -->
+    <div class="nav-buttons">
+        <button class="active" onclick="showTab('home')">🏠 Home</button>
+        <button onclick="toggleFriends()">👥 Friends</button>
+        <button onclick="showTab('notifications')">🔔 Notifications</button>
     </div>
-  </div>
 
+    <!-- ===== ফ্রেন্ডস প্যানেল (এটাই আপনার কাঙ্খিত অংশ) ===== -->
+    <div id="friendsPanel">
+        <h3>👥 Suggestions</h3>
+        <div class="friend-card">
+            <div class="friend-info">
+                <span class="friend-name">Golam Mostofa</span>
+                <span class="friend-username">@golam_mostofa_12Jeds</span>
+                <span class="friend-bio">Welcome to World Wide Connect 🎉</span>
+            </div>
+            <button onclick="follow(this)">Follow</button>
+        </div>
+
+        <div class="friend-card">
+            <div class="friend-info">
+                <span class="friend-name">WWC User</span>
+                <span class="friend-username">@wwc_user_8a1ovw</span>
+                <span class="friend-bio">Welcome to World Wide Connect 🎉</span>
+            </div>
+            <button onclick="follow(this)">Follow</button>
+        </div>
+
+        <div class="friend-card">
+            <div class="friend-info">
+                <span class="friend-name">Aleya Khatun</span>
+                <span class="friend-username">@wwc_user</span>
+                <span class="friend-bio">Welcome to World Wide Connect 🎉</span>
+            </div>
+            <button onclick="follow(this)">Follow</button>
+        </div>
+
+        <div class="friend-card">
+            <div class="friend-info">
+                <span class="friend-name">Golam Mostofa</span>
+                <span class="friend-username">@golam_mostofa_12Jeds</span>
+                <span class="friend-bio">Welcome to World Wide Connect 🎉</span>
+            </div>
+            <button class="following" onclick="follow(this)">Following</button>
+        </div>
+
+        <hr style="margin: 18px 0; border: 1px solid #e4e6eb;">
+
+        <h3>📩 Requests</h3>
+        <div class="request-item">
+            <div>
+                <strong>Rafi Ahmed</strong>
+                <span style="color:#65676b; font-size:13px; display:block;">@rafi_ahmed</span>
+            </div>
+            <div class="request-actions">
+                <button class="btn-accept" onclick="acceptRequest(this)">Accept</button>
+                <button class="btn-decline" onclick="declineRequest(this)">Decline</button>
+            </div>
+        </div>
+
+        <div class="request-item">
+            <div>
+                <strong>Nusrat Jahan</strong>
+                <span style="color:#65676b; font-size:13px; display:block;">@nusrat_j</span>
+            </div>
+            <div class="request-actions">
+                <button class="btn-accept" onclick="acceptRequest(this)">Accept</button>
+                <button class="btn-decline" onclick="declineRequest(this)">Decline</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== হোম কন্টেন্ট (ডেমো) ===== -->
+    <div id="homeContent" style="margin-top:15px;">
+        <p style="color:#65676b; text-align:center; padding:30px 0;">
+            📰 আপনার ফিড এখানে দেখাবে<br>
+            <span style="font-size:13px;">"Friends" বাটনে ক্লিক করুন ফ্রেন্ড লিস্ট দেখতে</span>
+        </p>
+    </div>
+
+    <!-- ===== ফুটার ===== -->
+    <div class="footer">
+        <a href="#">Terms</a> · <a href="#">Privacy</a> · <a href="#">Security</a> · 
+        <a href="#">Status</a> · <a href="#">Docs</a> · <a href="#">Contact</a>
+        <br>
+        © 2026 WWC, Inc.
+    </div>
 </div>
-    
 
-  
-<script type="module" src="js/app.js"></script>
+<!-- ========================================================== -->
+<!-- ===== সমস্ত JavaScript ফাংশন একসাথে ===== -->
+<script>
+    // ===== 1. ফ্রেন্ডস প্যানেল টগল =====
+    function toggleFriends() {
+        const panel = document.getElementById('friendsPanel');
+        if (panel.style.display === 'none' || panel.style.display === '') {
+            panel.style.display = 'block';
+        } else {
+            panel.style.display = 'none';
+        }
+    }
+
+    // ===== 2. ট্যাব পরিবর্তন (শুধু UI ডেমো) =====
+    function showTab(tab) {
+        // সব বাটন থেকে active ক্লাস রিমুভ
+        document.querySelectorAll('.nav-buttons button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        // যে বাটনে ক্লিক করা হয়েছে তাতে active যোগ
+        event.target.classList.add('active');
+
+        // ফ্রেন্ডস প্যানেল বন্ধ করে দাও (অন্য ট্যাব খুললে)
+        document.getElementById('friendsPanel').style.display = 'none';
+
+        // হোম কন্টেন্ট আপডেট (ডেমো)
+        const home = document.getElementById('homeContent');
+        if (tab === 'home') {
+            home.innerHTML = `<p style="color:#65676b; text-align:center; padding:30px 0;">📰 আপনার ফিড এখানে দেখাবে<br><span style="font-size:13px;">"Friends" বাটনে ক্লিক করুন ফ্রেন্ড লিস্ট দেখতে</span></p>`;
+        } else if (tab === 'notifications') {
+            home.innerHTML = `<p style="color:#65676b; text-align:center; padding:30px 0;">🔔 কোনো নতুন নোটিফিকেশন নেই</p>`;
+        }
+    }
+
+    // ===== 3. ফলো বাটন টগল =====
+    function follow(btn) {
+        if (btn.innerText === 'Follow') {
+            btn.innerText = 'Following';
+            btn.classList.add('following');
+            alert('✅ আপনি এখন এই ইউজারকে ফলো করছেন!');
+        } else {
+            btn.innerText = 'Follow';
+            btn.classList.remove('following');
+            alert('❌ আপনি ফলো করা বাতিল করেছেন।');
+        }
+    }
+
+    // ===== 4. রিকুয়েস্ট এক্সেপ্ট =====
+    function acceptRequest(btn) {
+        const requestItem = btn.closest('.request-item');
+        const name = requestItem.querySelector('strong').innerText;
+        requestItem.style.display = 'none';
+        alert(`✅ ${name} এর রিকুয়েস্ট এক্সেপ্ট করা হয়েছে!`);
+    }
+
+    // ===== 5. রিকুয়েস্ট ডিক্লাইন =====
+    function declineRequest(btn) {
+        const requestItem = btn.closest('.request-item');
+        const name = requestItem.querySelector('strong').innerText;
+        requestItem.style.display = 'none';
+        alert(`❌ ${name} এর রিকুয়েস্ট ডিক্লাইন করা হয়েছে।`);
+    }
+
+    // ===== 6. সার্চ ফাংশন (ডেমো) =====
+    function searchFriends() {
+        const input = document.getElementById('searchInput').value.toLowerCase();
+        const cards = document.querySelectorAll('.friend-card');
+        cards.forEach(card => {
+            const name = card.querySelector('.friend-name').innerText.toLowerCase();
+            const username = card.querySelector('.friend-username').innerText.toLowerCase();
+            if (name.includes(input) || username.includes(input)) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    // ===== পেজ লোড হলে প্যানেল বন্ধ থাকবে =====
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('friendsPanel').style.display = 'none';
+    });
+</script>
 
 </body>
 </html>
