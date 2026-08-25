@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
     /* =====================================================
-       TIKTOK STYLE PROFILE - PERFECT
+       TIKTOK STYLE PROFILE - EXACT MATCH
     ===================================================== */
     * {
       margin: 0;
@@ -27,7 +27,7 @@
       overflow-x: hidden;
     }
 
-    /* ===== টপ বার ===== */
+    /* ===== টপ বার (টিকটক স্টাইল) ===== */
     .top-bar {
       position: fixed;
       top: 0;
@@ -55,7 +55,6 @@
       align-items: center;
       justify-content: center;
       border-radius: 50%;
-      transition: background 0.15s;
     }
     .top-bar .back-btn:active {
       background: rgba(255, 255, 255, 0.1);
@@ -172,61 +171,9 @@
       color: #fff;
       border: 1px solid rgba(255, 255, 255, 0.3);
     }
-    .follow-btn.following:hover {
-      background: rgba(255, 45, 85, 0.2);
-      border-color: #ff2d55;
-      color: #ff2d55;
-    }
     .follow-btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
-    }
-
-    /* ===== বায়ো হাইলাইট (টিকটক স্টাইল) ===== */
-    .bio-highlights {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin: 6px 0 10px;
-    }
-    .bio-highlights .highlight {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 12px;
-      color: #aaa;
-      background: rgba(255, 255, 255, 0.05);
-      padding: 4px 10px;
-      border-radius: 14px;
-    }
-    .bio-highlights .highlight i {
-      font-size: 12px;
-    }
-
-    /* ===== সোশ্যাল লিংক ===== */
-    .social-links {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin: 6px 0 12px;
-    }
-    .social-links a {
-      color: #888;
-      font-size: 13px;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 10px;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.05);
-      transition: all 0.2s;
-    }
-    .social-links a:active {
-      background: rgba(255, 255, 255, 0.1);
-    }
-    .social-links a i {
-      font-size: 14px;
     }
 
     /* ===== স্ট্যাটস (টিকটক স্টাইল) ===== */
@@ -250,6 +197,50 @@
       font-size: 12px;
       color: #888;
       margin-top: 2px;
+    }
+
+    /* ===== বায়ো হাইলাইট + লিংক (টিকটক স্টাইল) ===== */
+    .bio-section {
+      margin: 6px 0 12px;
+    }
+    .bio-section .highlights {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .bio-section .highlights .highlight {
+      font-size: 12px;
+      color: #aaa;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4px 10px;
+      border-radius: 14px;
+    }
+    .bio-section .highlights .highlight i {
+      margin-right: 4px;
+      color: #25f4ee;
+    }
+    .bio-section .links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .bio-section .links a {
+      color: #888;
+      font-size: 13px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .bio-section .links a:active {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .bio-section .links a i {
+      font-size: 14px;
     }
 
     /* ===== ট্যাব (টিকটক স্টাইল) ===== */
@@ -363,7 +354,6 @@
     .empty-state .text {
       font-size: 14px;
     }
-
     .loading {
       grid-column: 1 / -1;
       text-align: center;
@@ -469,7 +459,7 @@
     <i class="fas fa-arrow-left"></i>
   </button>
   <span class="title" id="pageTitle">Profile</span>
-  <button class="action-btn" onclick="showToast('⚙️ Settings coming soon')">
+  <button class="action-btn" onclick="showToast('⚙️ Settings')">
     <i class="fas fa-ellipsis-h"></i>
   </button>
 </div>
@@ -490,29 +480,29 @@
     <button class="follow-btn follow" id="followBtn" style="display:none;">Follow</button>
   </div>
 
-  <!-- বায়ো হাইলাইট (টিকটক স্টাইল) -->
-  <div class="bio-highlights" id="bioHighlights"></div>
-
-  <!-- সোশ্যাল লিংক -->
-  <div class="social-links" id="socialLinks">
-    <a href="#" onclick="showToast('🔗 Coming soon')"><i class="fab fa-youtube"></i> YouTube</a>
-    <a href="#" onclick="showToast('🔗 Coming soon')"><i class="fab fa-instagram"></i> Instagram</a>
-    <a href="#" onclick="showToast('🔗 Coming soon')"><i class="fab fa-twitter"></i> Twitter</a>
-  </div>
-
   <!-- স্ট্যাটস -->
   <div class="stats">
-    <div class="stat" onclick="showToast('👥 Followers list coming soon')">
+    <div class="stat">
       <div class="num" id="followers">0</div>
       <div class="label">Followers</div>
     </div>
-    <div class="stat" onclick="showToast('👥 Following list coming soon')">
+    <div class="stat">
       <div class="num" id="following">0</div>
       <div class="label">Following</div>
     </div>
-    <div class="stat" onclick="showToast('❤️ Likes list coming soon')">
+    <div class="stat">
       <div class="num" id="likes">0</div>
       <div class="label">Likes</div>
+    </div>
+  </div>
+
+  <!-- বায়ো + লিংক -->
+  <div class="bio-section">
+    <div class="highlights" id="highlights"></div>
+    <div class="links" id="socialLinks">
+      <a href="#"><i class="fab fa-youtube"></i> YouTube</a>
+      <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
+      <a href="#"><i class="fab fa-twitter"></i> Twitter</a>
     </div>
   </div>
 
@@ -589,14 +579,12 @@ const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-console.log("✅ Firebase Initialized!");
-
 // ===== DOM =====
 const profilePic = document.getElementById('profilePic');
 const profileName = document.getElementById('profileName');
 const profileUsername = document.getElementById('profileUsername');
 const profileBio = document.getElementById('profileBio');
-const bioHighlights = document.getElementById('bioHighlights');
+const highlights = document.getElementById('highlights');
 const followersEl = document.getElementById('followers');
 const followingEl = document.getElementById('following');
 const likesEl = document.getElementById('likes');
@@ -611,8 +599,6 @@ let profileData = null;
 let userVideos = [];
 let isFollowing = false;
 let toastTimer = null;
-let currentTab = 'videos';
-let targetUid = null;
 
 const defaultPhoto = './images/profile.png';
 
@@ -664,15 +650,16 @@ async function loadProfile(userId) {
     profileBio.textContent = bio;
     pageTitle.textContent = name;
     
-    // Bio Highlights (like TikTok)
-    if (profileData.highlights && profileData.highlights.length) {
-      bioHighlights.innerHTML = profileData.highlights.map(h => 
-        `<span class="highlight"><i class="fas fa-hashtag"></i> ${h}</span>`
-      ).join('');
-    } else if (bio) {
-      bioHighlights.innerHTML = bio.split(' ').filter(w => w.startsWith('#')).map(h => 
-        `<span class="highlight"><i class="fas fa-hashtag"></i> ${h.replace('#', '')}</span>`
-      ).join('');
+    // Highlights (like TikTok)
+    if (bio) {
+      const hashTags = bio.split(' ').filter(w => w.startsWith('#'));
+      if (hashTags.length) {
+        highlights.innerHTML = hashTags.map(h => 
+          `<span class="highlight"><i class="fas fa-hashtag"></i> ${h.replace('#', '')}</span>`
+        ).join('');
+      } else {
+        highlights.innerHTML = '';
+      }
     }
     
     // Profile pic
@@ -899,11 +886,10 @@ tabs.forEach(tab => {
   tab.addEventListener('click', () => {
     tabs.forEach(t => t.classList.remove('active'));
     tab.classList.add('active');
-    currentTab = tab.dataset.tab;
     
-    if (currentTab === 'videos') {
+    if (tab.dataset.tab === 'videos') {
       renderVideos(userVideos);
-    } else if (currentTab === 'saved') {
+    } else if (tab.dataset.tab === 'saved') {
       loadSavedVideos();
     }
   });
@@ -938,10 +924,7 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  // Get target UID from URL or use current user
   const uid = getUserIdFromURL() || user.uid;
-  targetUid = uid;
-  
   await loadProfile(uid);
 });
 
