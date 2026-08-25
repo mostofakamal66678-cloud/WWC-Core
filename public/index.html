@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>WWC - World Wide Connect</title>
     <style>
-        /* ===== গ্লোবাল স্টাইল ===== */
         * {
             margin: 0;
             padding: 0;
@@ -26,7 +25,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             padding: 20px;
         }
-        /* ===== হেডার ===== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -49,7 +47,6 @@
             width: 60%;
             min-width: 150px;
         }
-        /* ===== নেভ বাটন ===== */
         .nav-buttons {
             display: flex;
             gap: 12px;
@@ -76,7 +73,6 @@
             background: #1877f2;
             color: white;
         }
-        /* ===== ফ্রেন্ডস প্যানেল ===== */
         #friendsPanel {
             display: none;
             background: #ffffff;
@@ -170,7 +166,6 @@
             background: #e4e6eb;
             color: #050505;
         }
-        /* ===== ভিডিও সেকশন ===== */
         .video-section {
             margin-top: 25px;
             border-top: 2px solid #e4e6eb;
@@ -190,8 +185,8 @@
             border-radius: 12px;
             background: #000;
             border: 1px solid #ddd;
+            max-height: 200px;
         }
-        /* ===== ফুটার ===== */
         .footer {
             margin-top: 25px;
             text-align: center;
@@ -205,7 +200,6 @@
             text-decoration: none;
             margin: 0 6px;
         }
-        /* ===== রেসপন্সিভ ===== */
         @media (max-width: 500px) {
             .header {
                 flex-direction: column;
@@ -228,23 +222,19 @@
 
 <div class="container">
 
-    <!-- ===== হেডার ===== -->
     <div class="header">
         <h1>🌐 WWC</h1>
         <input type="text" placeholder="Search friends..." id="searchInput" onkeyup="searchFriends()">
     </div>
 
-    <!-- ===== নেভিগেশন বাটন ===== -->
     <div class="nav-buttons">
         <button class="active" onclick="showTab('home', this)">🏠 Home</button>
         <button onclick="toggleFriends(this)">👥 Friends</button>
         <button onclick="showTab('notifications', this)">🔔 Notifications</button>
     </div>
 
-    <!-- ===== ফ্রেন্ডস প্যানেল ===== -->
     <div id="friendsPanel">
         <h3>👥 Suggestions</h3>
-
         <div class="friend-card">
             <div class="friend-info">
                 <span class="friend-name">Golam Mostofa</span>
@@ -253,7 +243,6 @@
             </div>
             <button onclick="follow(this)">Follow</button>
         </div>
-
         <div class="friend-card">
             <div class="friend-info">
                 <span class="friend-name">WWC User</span>
@@ -262,7 +251,6 @@
             </div>
             <button onclick="follow(this)">Follow</button>
         </div>
-
         <div class="friend-card">
             <div class="friend-info">
                 <span class="friend-name">Aleya Khatun</span>
@@ -271,7 +259,6 @@
             </div>
             <button onclick="follow(this)">Follow</button>
         </div>
-
         <div class="friend-card">
             <div class="friend-info">
                 <span class="friend-name">Golam Mostofa</span>
@@ -284,7 +271,6 @@
         <hr style="margin: 18px 0; border: 1px solid #e4e6eb;">
 
         <h3>📩 Requests</h3>
-
         <div class="request-item">
             <div>
                 <strong>Rafi Ahmed</strong>
@@ -295,7 +281,6 @@
                 <button class="btn-decline" onclick="declineRequest(this)">Decline</button>
             </div>
         </div>
-
         <div class="request-item">
             <div>
                 <strong>Nusrat Jahan</strong>
@@ -306,7 +291,6 @@
                 <button class="btn-decline" onclick="declineRequest(this)">Decline</button>
             </div>
         </div>
-
         <div class="request-item">
             <div>
                 <strong>Shakib Al Hasan</strong>
@@ -319,16 +303,13 @@
         </div>
     </div>
 
-    <!-- ===== হোম কন্টেন্ট (ভিডিও + ফিড) ===== -->
+    <!-- ===== হোম কন্টেন্ট (ভিডিও সহ) ===== -->
     <div id="homeContent" style="margin-top:15px;">
-
-        <!-- ফিড টেক্সট -->
         <p style="color:#65676b; text-align:center; padding:10px 0;">
             📰 আপনার ফিড এখানে দেখাবে<br>
             <span style="font-size:13px;">"Friends" বাটনে ক্লিক করুন ফ্রেন্ড লিস্ট দেখতে</span>
         </p>
 
-        <!-- ===== ভিডিও সেকশন ===== -->
         <div class="video-section">
             <h3>🎬 জনপ্রিয় ভিডিও</h3>
             <div class="video-grid">
@@ -348,7 +329,6 @@
         </div>
     </div>
 
-    <!-- ===== ফুটার ===== -->
     <div class="footer">
         <a href="#">Terms</a> · <a href="#">Privacy</a> · <a href="#">Security</a> · 
         <a href="#">Status</a> · <a href="#">Docs</a> · <a href="#">Contact</a>
@@ -357,10 +337,7 @@
     </div>
 </div>
 
-<!-- ========================================================== -->
-<!-- ===== জাভাস্ক্রিপ্ট ===== -->
 <script>
-    // 1. ফ্রেন্ডস প্যানেল টগল
     function toggleFriends(btn) {
         const panel = document.getElementById('friendsPanel');
         if (panel.style.display === 'none' || panel.style.display === '') {
@@ -372,7 +349,6 @@
         if (btn) btn.classList.add('active');
     }
 
-    // 2. ট্যাব সুইচ
     function showTab(tab, btn) {
         document.querySelectorAll('.nav-buttons button').forEach(b => b.classList.remove('active'));
         if (btn) btn.classList.add('active');
@@ -400,7 +376,6 @@
         }
     }
 
-    // 3. ফলো/আনফলো
     function follow(btn) {
         if (btn.innerText === 'Follow') {
             btn.innerText = 'Following';
@@ -413,7 +388,6 @@
         }
     }
 
-    // 4. রিকুয়েস্ট এক্সেপ্ট
     function acceptRequest(btn) {
         const item = btn.closest('.request-item');
         const name = item.querySelector('strong').innerText;
@@ -421,7 +395,6 @@
         alert(`✅ ${name} এর রিকুয়েস্ট এক্সেপ্ট করা হয়েছে!`);
     }
 
-    // 5. রিকুয়েস্ট ডিক্লাইন
     function declineRequest(btn) {
         const item = btn.closest('.request-item');
         const name = item.querySelector('strong').innerText;
@@ -429,7 +402,6 @@
         alert(`❌ ${name} এর রিকুয়েস্ট ডিক্লাইন করা হয়েছে।`);
     }
 
-    // 6. সার্চ ফাংশন
     function searchFriends() {
         const input = document.getElementById('searchInput').value.toLowerCase();
         const cards = document.querySelectorAll('.friend-card');
@@ -444,7 +416,6 @@
         });
     }
 
-    // পেজ লোড হলে প্যানেল বন্ধ থাকবে
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('friendsPanel').style.display = 'none';
     });
