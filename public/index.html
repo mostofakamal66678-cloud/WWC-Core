@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>WWC - World Wide Connect</title>
     <style>
+        /* ===== গ্লোবাল স্টাইল ===== */
         * {
             margin: 0;
             padding: 0;
@@ -175,6 +176,7 @@
             margin-bottom: 12px;
             color: #1b1f23;
         }
+        /* ===== ভিডিও গ্রিড - কালো অংশ দূর করা হয়েছে ===== */
         .video-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -182,10 +184,11 @@
         }
         .video-grid video {
             width: 100%;
+            aspect-ratio: 16 / 9;      /* ভিডিওর আকৃতি ঠিক করে */
+            object-fit: cover;         /* ভিডিও ক্রপ করে কালো অংশ দূর করে */
             border-radius: 12px;
             background: #000;
             border: 1px solid #ddd;
-            max-height: 200px;
         }
         .footer {
             margin-top: 25px;
@@ -310,7 +313,6 @@
             <span style="font-size:13px;">"Friends" বাটনে ক্লিক করুন ফ্রেন্ড লিস্ট দেখতে</span>
         </p>
 
-        <!-- ===== ভিডিও সেকশন (সঠিক পাথ দিয়ে) ===== -->
         <div class="video-section">
             <h3>🎬 জনপ্রিয় ভিডিও</h3>
             <div class="video-grid">
