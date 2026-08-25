@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>WWC - World Wide Connect</title>
     <style>
+        /* ===== গ্লোবাল স্টাইল ===== */
         * {
             margin: 0;
             padding: 0;
@@ -18,13 +19,14 @@
             padding: 20px;
         }
         .container {
-            max-width: 600px;
+            max-width: 700px;
             width: 100%;
             background: white;
             border-radius: 16px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             padding: 20px;
         }
+        /* ===== হেডার ===== */
         .header {
             display: flex;
             justify-content: space-between;
@@ -47,6 +49,7 @@
             width: 60%;
             min-width: 150px;
         }
+        /* ===== নেভ বাটন ===== */
         .nav-buttons {
             display: flex;
             gap: 12px;
@@ -73,6 +76,7 @@
             background: #1877f2;
             color: white;
         }
+        /* ===== ফ্রেন্ডস প্যানেল ===== */
         #friendsPanel {
             display: none;
             background: #ffffff;
@@ -166,6 +170,28 @@
             background: #e4e6eb;
             color: #050505;
         }
+        /* ===== ভিডিও সেকশন ===== */
+        .video-section {
+            margin-top: 25px;
+            border-top: 2px solid #e4e6eb;
+            padding-top: 20px;
+        }
+        .video-section h3 {
+            margin-bottom: 12px;
+            color: #1b1f23;
+        }
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .video-grid video {
+            width: 100%;
+            border-radius: 12px;
+            background: #000;
+            border: 1px solid #ddd;
+        }
+        /* ===== ফুটার ===== */
         .footer {
             margin-top: 25px;
             text-align: center;
@@ -179,6 +205,7 @@
             text-decoration: none;
             margin: 0 6px;
         }
+        /* ===== রেসপন্সিভ ===== */
         @media (max-width: 500px) {
             .header {
                 flex-direction: column;
@@ -191,6 +218,9 @@
                 font-size: 14px;
                 padding: 8px 0;
             }
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -198,20 +228,20 @@
 
 <div class="container">
 
-    <!-- HEADER -->
+    <!-- ===== হেডার ===== -->
     <div class="header">
         <h1>🌐 WWC</h1>
         <input type="text" placeholder="Search friends..." id="searchInput" onkeyup="searchFriends()">
     </div>
 
-    <!-- NAV BUTTONS -->
+    <!-- ===== নেভিগেশন বাটন ===== -->
     <div class="nav-buttons">
         <button class="active" onclick="showTab('home', this)">🏠 Home</button>
         <button onclick="toggleFriends(this)">👥 Friends</button>
         <button onclick="showTab('notifications', this)">🔔 Notifications</button>
     </div>
 
-    <!-- FRIENDS PANEL (এখানেই সব লিস্ট ও রিকুয়েস্ট দেখাবে) -->
+    <!-- ===== ফ্রেন্ডস প্যানেল ===== -->
     <div id="friendsPanel">
         <h3>👥 Suggestions</h3>
 
@@ -289,15 +319,36 @@
         </div>
     </div>
 
-    <!-- HOME CONTENT (ডেমো) -->
+    <!-- ===== হোম কন্টেন্ট (ভিডিও + ফিড) ===== -->
     <div id="homeContent" style="margin-top:15px;">
-        <p style="color:#65676b; text-align:center; padding:30px 0;">
+
+        <!-- ফিড টেক্সট -->
+        <p style="color:#65676b; text-align:center; padding:10px 0;">
             📰 আপনার ফিড এখানে দেখাবে<br>
             <span style="font-size:13px;">"Friends" বাটনে ক্লিক করুন ফ্রেন্ড লিস্ট দেখতে</span>
         </p>
+
+        <!-- ===== ভিডিও সেকশন ===== -->
+        <div class="video-section">
+            <h3>🎬 জনপ্রিয় ভিডিও</h3>
+            <div class="video-grid">
+                <video controls>
+                    <source src="video1.mp4" type="video/mp4">
+                    আপনার ব্রাউজার ভিডিও সাপোর্ট করে না।
+                </video>
+                <video controls>
+                    <source src="video2.mp4" type="video/mp4">
+                    আপনার ব্রাউজার ভিডিও সাপোর্ট করে না।
+                </video>
+                <video controls>
+                    <source src="video3.mp4" type="video/mp4">
+                    আপনার ব্রাউজার ভিডিও সাপোর্ট করে না।
+                </video>
+            </div>
+        </div>
     </div>
 
-    <!-- FOOTER -->
+    <!-- ===== ফুটার ===== -->
     <div class="footer">
         <a href="#">Terms</a> · <a href="#">Privacy</a> · <a href="#">Security</a> · 
         <a href="#">Status</a> · <a href="#">Docs</a> · <a href="#">Contact</a>
@@ -306,9 +357,10 @@
     </div>
 </div>
 
-<!-- ===== সব JavaScript ===== -->
+<!-- ========================================================== -->
+<!-- ===== জাভাস্ক্রিপ্ট ===== -->
 <script>
-    // 1. ফ্রেন্ডস প্যানেল টগল + বাটন active
+    // 1. ফ্রেন্ডস প্যানেল টগল
     function toggleFriends(btn) {
         const panel = document.getElementById('friendsPanel');
         if (panel.style.display === 'none' || panel.style.display === '') {
@@ -316,7 +368,6 @@
         } else {
             panel.style.display = 'none';
         }
-        // active ক্লাস আপডেট
         document.querySelectorAll('.nav-buttons button').forEach(b => b.classList.remove('active'));
         if (btn) btn.classList.add('active');
     }
@@ -330,7 +381,20 @@
 
         const home = document.getElementById('homeContent');
         if (tab === 'home') {
-            home.innerHTML = `<p style="color:#65676b; text-align:center; padding:30px 0;">📰 আপনার ফিড এখানে দেখাবে<br><span style="font-size:13px;">"Friends" বাটনে ক্লিক করুন ফ্রেন্ড লিস্ট দেখতে</span></p>`;
+            home.innerHTML = `
+                <p style="color:#65676b; text-align:center; padding:10px 0;">
+                    📰 আপনার ফিড এখানে দেখাবে<br>
+                    <span style="font-size:13px;">"Friends" বাটনে ক্লিক করুন ফ্রেন্ড লিস্ট দেখতে</span>
+                </p>
+                <div class="video-section">
+                    <h3>🎬 জনপ্রিয় ভিডিও</h3>
+                    <div class="video-grid">
+                        <video controls><source src="video1.mp4" type="video/mp4">ভিডিও সাপোর্ট করে না</video>
+                        <video controls><source src="video2.mp4" type="video/mp4">ভিডিও সাপোর্ট করে না</video>
+                        <video controls><source src="video3.mp4" type="video/mp4">ভিডিও সাপোর্ট করে না</video>
+                    </div>
+                </div>
+            `;
         } else if (tab === 'notifications') {
             home.innerHTML = `<p style="color:#65676b; text-align:center; padding:30px 0;">🔔 কোনো নতুন নোটিফিকেশন নেই</p>`;
         }
