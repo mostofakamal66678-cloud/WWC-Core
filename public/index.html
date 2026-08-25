@@ -18,6 +18,7 @@
             justify-content: center;
             overflow: hidden;
             height: 100vh;
+            margin: 0;
         }
         .app {
             max-width: 430px;
@@ -105,17 +106,21 @@
             background: rgba(255, 255, 255, 0.08);
         }
 
-        /* ===== ফিড ===== */
+        /* ===== ফিড (স্ক্রল ঠিক করা) ===== */
         .feed {
             height: 100vh;
             width: 100%;
             overflow-y: scroll;
             scroll-snap-type: y mandatory;
             scroll-behavior: smooth;
+            padding: 0;
+            margin: 0;
         }
         .feed::-webkit-scrollbar {
             display: none;
         }
+
+        /* ===== ভিডিও কার্ড (প্রতিটি পুরো স্ক্রিন) ===== */
         .video-card {
             height: 100vh;
             width: 100%;
@@ -126,6 +131,7 @@
             position: relative;
             background: #000;
             overflow: hidden;
+            flex-shrink: 0;
         }
         .video-card video {
             position: absolute;
@@ -211,7 +217,7 @@
             to { transform: rotate(360deg); }
         }
 
-        /* ===== অ্যাকশন বাটন (সঠিক পজিশন) ===== */
+        /* ===== অ্যাকশন বাটন ===== */
         .video-actions {
             position: absolute;
             right: 14px;
@@ -414,7 +420,6 @@
             font-size: 13px;
         }
 
-        /* ===== মোবাইল রেসপন্সিভ ===== */
         @media (max-width: 430px) {
             .video-actions {
                 right: 10px;
@@ -480,10 +485,10 @@
             </div>
         </div>
 
-        <!-- ===== ভিডিও ফিড ===== -->
+        <!-- ===== ভিডিও ফিড (স্ক্রল ঠিক করা) ===== -->
         <div class="feed" id="feed">
 
-            <!-- ===== ভিডিও ১ ===== -->
+            <!-- ভিডিও ১ -->
             <div class="video-card">
                 <video src="videos/video1.mp4" muted playsinline></video>
                 <button class="more-btn" onclick="moreOptions()">⋯</button>
@@ -499,26 +504,14 @@
                     <div class="video-hashtags">#wwc #connect #bengali</div>
                 </div>
                 <div class="video-actions">
-                    <button onclick="likeVideo(this)">
-                        <i class="fas fa-heart"></i>
-                        <span>1.2K</span>
-                    </button>
-                    <button onclick="openModal('comments')">
-                        <i class="fas fa-comment"></i>
-                        <span>45</span>
-                    </button>
-                    <button onclick="shareVideo()">
-                        <i class="fas fa-share"></i>
-                        <span>Share</span>
-                    </button>
-                    <button onclick="bookmarkVideo(this)">
-                        <i class="fas fa-bookmark"></i>
-                        <span>Save</span>
-                    </button>
+                    <button onclick="likeVideo(this)"><i class="fas fa-heart"></i><span>1.2K</span></button>
+                    <button onclick="openModal('comments')"><i class="fas fa-comment"></i><span>45</span></button>
+                    <button onclick="shareVideo()"><i class="fas fa-share"></i><span>Share</span></button>
+                    <button onclick="bookmarkVideo(this)"><i class="fas fa-bookmark"></i><span>Save</span></button>
                 </div>
             </div>
 
-            <!-- ===== ভিডিও ২ ===== -->
+            <!-- ভিডিও ২ -->
             <div class="video-card">
                 <video src="videos/video2.mp4" muted playsinline></video>
                 <button class="more-btn" onclick="moreOptions()">⋯</button>
@@ -534,26 +527,14 @@
                     <div class="video-hashtags">#bdtiktokofficial #trending</div>
                 </div>
                 <div class="video-actions">
-                    <button onclick="likeVideo(this)">
-                        <i class="fas fa-heart"></i>
-                        <span>8.5K</span>
-                    </button>
-                    <button onclick="openModal('comments')">
-                        <i class="fas fa-comment"></i>
-                        <span>230</span>
-                    </button>
-                    <button onclick="shareVideo()">
-                        <i class="fas fa-share"></i>
-                        <span>Share</span>
-                    </button>
-                    <button onclick="bookmarkVideo(this)">
-                        <i class="fas fa-bookmark"></i>
-                        <span>Save</span>
-                    </button>
+                    <button onclick="likeVideo(this)"><i class="fas fa-heart"></i><span>8.5K</span></button>
+                    <button onclick="openModal('comments')"><i class="fas fa-comment"></i><span>230</span></button>
+                    <button onclick="shareVideo()"><i class="fas fa-share"></i><span>Share</span></button>
+                    <button onclick="bookmarkVideo(this)"><i class="fas fa-bookmark"></i><span>Save</span></button>
                 </div>
             </div>
 
-            <!-- ===== ভিডিও ৩ ===== -->
+            <!-- ভিডিও ৩ -->
             <div class="video-card">
                 <video src="videos/video3.mp4" muted playsinline></video>
                 <button class="more-btn" onclick="moreOptions()">⋯</button>
@@ -569,22 +550,10 @@
                     <div class="video-hashtags">#comedy #funny #reels</div>
                 </div>
                 <div class="video-actions">
-                    <button onclick="likeVideo(this)">
-                        <i class="fas fa-heart"></i>
-                        <span>20.1K</span>
-                    </button>
-                    <button onclick="openModal('comments')">
-                        <i class="fas fa-comment"></i>
-                        <span>3.4K</span>
-                    </button>
-                    <button onclick="shareVideo()">
-                        <i class="fas fa-share"></i>
-                        <span>Share</span>
-                    </button>
-                    <button onclick="bookmarkVideo(this)">
-                        <i class="fas fa-bookmark"></i>
-                        <span>Save</span>
-                    </button>
+                    <button onclick="likeVideo(this)"><i class="fas fa-heart"></i><span>20.1K</span></button>
+                    <button onclick="openModal('comments')"><i class="fas fa-comment"></i><span>3.4K</span></button>
+                    <button onclick="shareVideo()"><i class="fas fa-share"></i><span>Share</span></button>
+                    <button onclick="bookmarkVideo(this)"><i class="fas fa-bookmark"></i><span>Save</span></button>
                 </div>
             </div>
 
@@ -593,24 +562,19 @@
         <!-- ===== নিচের নেভিগেশন ===== -->
         <div class="bottom-nav">
             <button class="active" onclick="navigateTo('home', this)">
-                <i class="fas fa-home"></i>
-                <span>Home</span>
+                <i class="fas fa-home"></i><span>Home</span>
             </button>
             <button onclick="navigateTo('explore', this)">
-                <i class="fas fa-compass"></i>
-                <span>Explore</span>
+                <i class="fas fa-compass"></i><span>Explore</span>
             </button>
             <button onclick="navigateTo('upload', this)">
-                <i class="fas fa-plus-circle"></i>
-                <span>Upload</span>
+                <i class="fas fa-plus-circle"></i><span>Upload</span>
             </button>
             <button onclick="navigateTo('inbox', this)">
-                <i class="fas fa-inbox"></i>
-                <span>Inbox</span>
+                <i class="fas fa-inbox"></i><span>Inbox</span>
             </button>
             <button onclick="navigateTo('profile', this)">
-                <i class="fas fa-user"></i>
-                <span>Profile</span>
+                <i class="fas fa-user"></i><span>Profile</span>
             </button>
         </div>
 
@@ -623,23 +587,54 @@
     </div>
 
     <script>
-        // ===== জাভাস্ক্রিপ্ট =====
+        // ============================================================
+        // সবকিছু একসাথে কাজ করবে
+        // ============================================================
+
         const videos = document.querySelectorAll('.video-card video');
         const feed = document.getElementById('feed');
+        let isScrolling = false;
 
+        // ===== 1. অটোপ্লে (স্ক্রল করলে) =====
         function playVisibleVideo() {
+            if (isScrolling) return;
+            
             videos.forEach(v => v.pause());
+            
             const scrollY = feed.scrollTop;
-            const height = feed.clientHeight;
+            const height = window.innerHeight;
             const index = Math.round(scrollY / height);
+            
             if (index >= 0 && index < videos.length) {
                 const video = videos[index];
+                video.currentTime = 0;
                 video.play().catch(() => {});
             }
         }
-        feed.addEventListener('scroll', playVisibleVideo);
-        window.addEventListener('load', () => setTimeout(playVisibleVideo, 300));
 
+        // স্ক্রল ইভেন্ট (ডিবাউন্স সহ)
+        let scrollTimeout;
+        feed.addEventListener('scroll', function() {
+            isScrolling = true;
+            clearTimeout(scrollTimeout);
+            
+            scrollTimeout = setTimeout(() => {
+                isScrolling = false;
+                playVisibleVideo();
+            }, 100);
+        });
+
+        // পেজ লোড হলে
+        window.addEventListener('load', function() {
+            setTimeout(playVisibleVideo, 500);
+        });
+
+        // উইন্ডো রিসাইজ করলেও
+        window.addEventListener('resize', function() {
+            playVisibleVideo();
+        });
+
+        // ===== 2. লাইক =====
         function likeVideo(btn) {
             const icon = btn.querySelector('i');
             const span = btn.querySelector('span');
@@ -654,6 +649,7 @@
             }
         }
 
+        // ===== 3. বুকমার্ক (সেভ) =====
         function bookmarkVideo(btn) {
             btn.classList.toggle('bookmarked');
             const span = btn.querySelector('span');
@@ -666,6 +662,7 @@
             }
         }
 
+        // ===== 4. ফলো =====
         function followUser(el) {
             if (el.innerText === 'Follow') {
                 el.innerText = 'Following';
@@ -678,16 +675,18 @@
             }
         }
 
+        // ===== 5. ডাবল ক্লিক =====
         document.querySelectorAll('.video-card video').forEach(video => {
-            video.addEventListener('dblclick', () => {
-                video.muted = !video.muted;
-                const likeBtn = video.closest('.video-card').querySelector('.video-actions button:first-child');
+            video.addEventListener('dblclick', function() {
+                this.muted = !this.muted;
+                const likeBtn = this.closest('.video-card').querySelector('.video-actions button:first-child');
                 if (likeBtn && !likeBtn.classList.contains('liked')) {
                     likeVideo(likeBtn);
                 }
             });
         });
 
+        // ===== 6. ট্যাব সুইচ =====
         function switchTab(tab) {
             document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
             if (tab === 'forYou') {
@@ -698,6 +697,7 @@
             alert(`"${tab}" ট্যাব শীঘ্রই লাইভ হবে!`);
         }
 
+        // ===== 7. মডাল =====
         function openModal(type) {
             const modal = document.getElementById('modal');
             const content = document.getElementById('modalContent');
@@ -744,6 +744,7 @@
             document.getElementById('modal').style.display = 'none';
         }
 
+        // ===== 8. কমেন্ট পোস্ট =====
         function postComment() {
             const input = document.getElementById('commentInput');
             if (input && input.value.trim()) {
@@ -754,6 +755,7 @@
             }
         }
 
+        // ===== 9. আপলোড =====
         function uploadVideo() {
             const title = document.getElementById('uploadTitle').value;
             const desc = document.getElementById('uploadDesc').value;
@@ -765,6 +767,7 @@
             alert(`✅ "${title || 'শিরোনামহীন'}" আপলোডের জন্য প্রস্তুত!\n📁 ${file.name}\n(বর্তমানে ডেমো)`);
         }
 
+        // ===== 10. শেয়ার =====
         function shareVideo() {
             if (navigator.share) {
                 navigator.share({
@@ -781,10 +784,12 @@
             }
         }
 
+        // ===== 11. মিউজিক =====
         function viewMusic() {
             alert('🎵 এই ভিডিওর সাউন্ড: Original Sound\n(শীঘ্রই আরও তথ্য আসছে!)');
         }
 
+        // ===== 12. মোর অপশন =====
         function moreOptions() {
             const choice = confirm('📌 রিপোর্ট করুন\n📌 কপি লিংক\n📌 ইউজার ব্লক করুন\n\n"OK" → রিপোর্ট, "Cancel" → বাতিল');
             if (choice) {
@@ -792,6 +797,7 @@
             }
         }
 
+        // ===== 13. নেভিগেশন =====
         function navigateTo(page, btn) {
             document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
             if (btn) btn.classList.add('active');
@@ -803,8 +809,14 @@
             else if (page === 'home') closeModal();
         }
 
+        // ===== 14. মডালের বাইরে ক্লিক করলে বন্ধ =====
         document.getElementById('modal').addEventListener('click', function(e) {
             if (e.target === this) closeModal();
+        });
+
+        // পেজ লোড হলে ফিডের স্ক্রল পজিশন ঠিক করা
+        window.addEventListener('load', function() {
+            feed.scrollTop = 0;
         });
     </script>
 
