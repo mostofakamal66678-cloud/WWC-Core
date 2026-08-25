@@ -28,7 +28,7 @@
             overflow: hidden;
         }
 
-        /* ===== হেডার (উপরে) ===== */
+        /* ===== হেডার ===== */
         .header {
             position: fixed;
             top: 0;
@@ -105,7 +105,7 @@
             background: rgba(255, 255, 255, 0.08);
         }
 
-        /* ===== ফিড – ফুলস্ক্রিন ===== */
+        /* ===== ফিড ===== */
         .feed {
             height: 100vh;
             width: 100%;
@@ -211,22 +211,22 @@
             to { transform: rotate(360deg); }
         }
 
-        /* ===== অ্যাকশন বাটন (সেভ ঠিক করা) ===== */
+        /* ===== অ্যাকশন বাটন (সঠিক পজিশন) ===== */
         .video-actions {
             position: absolute;
             right: 14px;
-            bottom: 120px;   /* উপরে সরানো */
+            bottom: 130px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 18px;       /* ফাঁকা জায়গা কমানো */
+            gap: 16px;
             z-index: 3;
         }
         .video-actions button {
             background: none;
             border: none;
             color: white;
-            font-size: 28px;
+            font-size: 26px;
             cursor: pointer;
             transition: 0.2s;
             display: flex;
@@ -414,14 +414,15 @@
             font-size: 13px;
         }
 
+        /* ===== মোবাইল রেসপন্সিভ ===== */
         @media (max-width: 430px) {
             .video-actions {
                 right: 10px;
-                bottom: 110px;
-                gap: 16px;
+                bottom: 120px;
+                gap: 14px;
             }
             .video-actions button {
-                font-size: 24px;
+                font-size: 22px;
             }
             .video-actions button span {
                 font-size: 10px;
@@ -622,10 +623,7 @@
     </div>
 
     <script>
-        // ============================================================
-        // জাভাস্ক্রিপ্ট
-        // ============================================================
-
+        // ===== জাভাস্ক্রিপ্ট =====
         const videos = document.querySelectorAll('.video-card video');
         const feed = document.getElementById('feed');
 
