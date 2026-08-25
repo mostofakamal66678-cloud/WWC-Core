@@ -16,14 +16,15 @@
             background: #000;
             display: flex;
             justify-content: center;
+            overflow: hidden;
         }
         .app {
             max-width: 430px;
             width: 100%;
             height: 100vh;
             background: #000;
-            overflow: hidden;
             position: relative;
+            overflow: hidden;
         }
 
         /* ===== হেডার ===== */
@@ -34,13 +35,13 @@
             transform: translateX(-50%);
             max-width: 430px;
             width: 100%;
-            z-index: 25;
+            z-index: 30;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 12px 16px;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(6px);
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
         }
         .header h1 {
             color: white;
@@ -52,94 +53,76 @@
             color: #ff3b6f;
             margin-right: 6px;
         }
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
         .header-actions button {
             background: none;
             border: none;
             color: white;
-            font-size: 20px;
-            margin-left: 14px;
+            font-size: 18px;
             cursor: pointer;
             opacity: 0.8;
             transition: 0.2s;
+            padding: 4px 8px;
+            border-radius: 6px;
         }
         .header-actions button:hover {
             opacity: 1;
+            background: rgba(255,255,255,0.1);
         }
 
-        /* ===== ট্যাব (Following / For You) ===== */
+        /* ===== ট্যাব (For You / Following) – ডান পাশে ===== */
         .tabs {
-            position: fixed;
-            top: 60px;
-            left: 50%;
-            transform: translateX(-50%);
-            max-width: 430px;
-            width: 100%;
-            z-index: 20;
             display: flex;
-            justify-content: center;
-            gap: 40px;
-            padding: 10px 0 6px 0;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(4px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            align-items: center;
+            gap: 6px;
         }
         .tabs button {
             background: none;
             border: none;
-            color: #888;
-            font-size: 15px;
+            color: #aaa;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            padding: 4px 0;
-            position: relative;
+            padding: 4px 10px;
+            border-radius: 20px;
             transition: 0.3s;
             letter-spacing: 0.3px;
         }
-        .tabs button::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 2px;
-            background: white;
-            transition: 0.3s;
-            border-radius: 2px;
-        }
         .tabs button.active {
             color: white;
-        }
-        .tabs button.active::after {
-            width: 20px;
+            background: rgba(255, 255, 255, 0.12);
         }
         .tabs button:hover {
-            color: #ddd;
+            color: white;
         }
 
-        /* ===== ফিড ===== */
+        /* ===== ফিড – ফুলস্ক্রিন ===== */
         .feed {
             height: 100vh;
+            width: 100%;
             overflow-y: scroll;
             scroll-snap-type: y mandatory;
             scroll-behavior: smooth;
-            padding-top: 115px;
-            padding-bottom: 70px;
+            padding: 0;
+            margin: 0;
         }
         .feed::-webkit-scrollbar {
             display: none;
         }
         .video-card {
-            height: calc(100vh - 190px);
+            height: 100vh;
+            width: 100%;
             scroll-snap-align: start;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
             position: relative;
             background: #000;
-            border-radius: 12px;
             overflow: hidden;
-            margin-bottom: 8px;
         }
         .video-card video {
             position: absolute;
@@ -154,8 +137,8 @@
         .video-overlay {
             position: relative;
             z-index: 2;
-            padding: 16px 14px;
-            background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+            padding: 20px 16px 30px 16px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
             color: white;
         }
         .video-user {
@@ -165,14 +148,14 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
         }
         .video-user span {
             font-weight: 400;
             font-size: 13px;
             color: #ccc;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 2px 10px;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 2px 12px;
             border-radius: 20px;
             transition: 0.3s;
             cursor: pointer;
@@ -185,19 +168,19 @@
             font-size: 14px;
             margin-bottom: 4px;
             line-height: 1.4;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
         }
         .video-hashtags {
             font-size: 13px;
             color: #4fc3f7;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
         }
 
         /* ===== মিউজিক ব্যাজ ===== */
         .music-badge {
             position: absolute;
-            bottom: 70px;
-            left: 14px;
+            bottom: 80px;
+            left: 16px;
             z-index: 3;
             display: flex;
             align-items: center;
@@ -205,9 +188,9 @@
             color: white;
             font-size: 13px;
             cursor: pointer;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
             background: rgba(0, 0, 0, 0.3);
-            padding: 4px 12px 4px 8px;
+            padding: 4px 14px 4px 8px;
             border-radius: 20px;
             backdrop-filter: blur(4px);
             transition: 0.3s;
@@ -221,23 +204,19 @@
             animation: spin 4s linear infinite;
         }
         @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         /* ===== অ্যাকশন বাটন ===== */
         .video-actions {
             position: absolute;
-            right: 12px;
-            bottom: 100px;
+            right: 14px;
+            bottom: 110px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 20px;
+            gap: 22px;
             z-index: 3;
         }
         .video-actions button {
@@ -251,9 +230,8 @@
             flex-direction: column;
             align-items: center;
             gap: 2px;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
             opacity: 0.9;
-            position: relative;
         }
         .video-actions button i {
             transition: 0.2s;
@@ -261,7 +239,7 @@
         .video-actions button span {
             font-size: 11px;
             font-weight: 600;
-            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
         }
         .video-actions button:hover {
             transform: scale(1.08);
@@ -274,15 +252,9 @@
             animation: likePop 0.3s ease;
         }
         @keyframes likePop {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.4);
-            }
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); }
+            100% { transform: scale(1); }
         }
         .video-actions .bookmarked {
             color: #4fc3f7;
@@ -291,15 +263,15 @@
         /* ===== মোর বাটন ===== */
         .more-btn {
             position: absolute;
-            right: 12px;
-            top: 20px;
+            right: 14px;
+            top: 70px;
             z-index: 3;
             background: none;
             border: none;
             color: white;
             font-size: 22px;
             cursor: pointer;
-            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
             opacity: 0.8;
             transition: 0.2s;
         }
@@ -316,13 +288,13 @@
             transform: translateX(-50%);
             max-width: 430px;
             width: 100%;
-            z-index: 20;
-            background: rgba(0, 0, 0, 0.85);
+            z-index: 30;
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(8px);
             display: flex;
             justify-content: space-around;
             padding: 8px 0 14px 0;
-            border-top: 1px solid #222;
+            border-top: 1px solid rgba(255,255,255,0.05);
         }
         .bottom-nav button {
             background: none;
@@ -439,11 +411,12 @@
             font-size: 13px;
         }
 
+        /* ===== রেসপন্সিভ ===== */
         @media (max-width: 430px) {
             .video-actions {
-                right: 8px;
-                bottom: 80px;
-                gap: 16px;
+                right: 10px;
+                bottom: 100px;
+                gap: 18px;
             }
             .video-actions button {
                 font-size: 24px;
@@ -456,28 +429,31 @@
             }
             .music-badge {
                 font-size: 12px;
-                bottom: 65px;
-                left: 10px;
+                bottom: 70px;
+                left: 12px;
                 padding: 3px 10px 3px 6px;
             }
             .more-btn {
-                right: 8px;
-                top: 14px;
+                right: 10px;
+                top: 60px;
                 font-size: 18px;
             }
-            .tabs {
-                gap: 25px;
-                top: 56px;
-                padding: 8px 0 4px 0;
-            }
             .tabs button {
-                font-size: 14px;
+                font-size: 12px;
+                padding: 3px 8px;
             }
-            .feed {
-                padding-top: 105px;
+            .header-actions {
+                gap: 6px;
             }
-            .video-card {
-                height: calc(100vh - 180px);
+            .header-actions button {
+                font-size: 16px;
+                padding: 2px 6px;
+            }
+            .video-overlay {
+                padding: 16px 12px 24px 12px;
+            }
+            .video-user {
+                font-size: 15px;
             }
         }
     </style>
@@ -490,23 +466,26 @@
         <div class="header">
             <h1><i class="fas fa-globe-americas"></i> WWC</h1>
             <div class="header-actions">
+                <!-- ট্যাব (For You / Following) – ডান পাশে -->
+                <div class="tabs">
+                    <button class="active" onclick="switchTab('forYou')">For You</button>
+                    <button onclick="switchTab('following')">Following</button>
+                </div>
                 <button onclick="openModal('upload')"><i class="fas fa-plus-circle"></i></button>
                 <button onclick="openModal('profile')"><i class="fas fa-user-circle"></i></button>
             </div>
         </div>
 
-        <!-- ===== ট্যাব ===== -->
-        <div class="tabs">
-            <button class="active" onclick="switchTab('forYou')">For You</button>
-            <button onclick="switchTab('following')">Following</button>
-        </div>
-
-        <!-- ===== ভিডিও ফিড ===== -->
+        <!-- ===== ভিডিও ফিড (ফুলস্ক্রিন) ===== -->
         <div class="feed" id="feed">
 
             <!-- ===== ভিডিও ১ ===== -->
             <div class="video-card">
                 <video src="videos/video1.mp4" muted playsinline></video>
+                <button class="more-btn" onclick="moreOptions()">⋯</button>
+                <div class="music-badge" onclick="viewMusic()">
+                    <i class="fas fa-music"></i> Original Sound
+                </div>
                 <div class="video-overlay">
                     <div class="video-user" onclick="openModal('profile')">
                         @wwc_user
@@ -514,10 +493,6 @@
                     </div>
                     <div class="video-desc">🌍 বিশ্বকে সংযুক্ত করি</div>
                     <div class="video-hashtags">#wwc #connect #bengali</div>
-                </div>
-                <button class="more-btn" onclick="moreOptions()">⋯</button>
-                <div class="music-badge" onclick="viewMusic()">
-                    <i class="fas fa-music"></i> Original Sound
                 </div>
                 <div class="video-actions">
                     <button onclick="likeVideo(this)">
@@ -542,6 +517,10 @@
             <!-- ===== ভিডিও ২ ===== -->
             <div class="video-card">
                 <video src="videos/video2.mp4" muted playsinline></video>
+                <button class="more-btn" onclick="moreOptions()">⋯</button>
+                <div class="music-badge" onclick="viewMusic()">
+                    <i class="fas fa-music"></i> Viral Beats
+                </div>
                 <div class="video-overlay">
                     <div class="video-user" onclick="openModal('profile')">
                         @gk.shopona
@@ -549,10 +528,6 @@
                     </div>
                     <div class="video-desc">#কিভিটিএবানায় #foryoupage</div>
                     <div class="video-hashtags">#bdtiktokofficial #trending</div>
-                </div>
-                <button class="more-btn" onclick="moreOptions()">⋯</button>
-                <div class="music-badge" onclick="viewMusic()">
-                    <i class="fas fa-music"></i> Viral Beats
                 </div>
                 <div class="video-actions">
                     <button onclick="likeVideo(this)">
@@ -577,6 +552,10 @@
             <!-- ===== ভিডিও ৩ ===== -->
             <div class="video-card">
                 <video src="videos/video3.mp4" muted playsinline></video>
+                <button class="more-btn" onclick="moreOptions()">⋯</button>
+                <div class="music-badge" onclick="viewMusic()">
+                    <i class="fas fa-music"></i> Comedy Mix
+                </div>
                 <div class="video-overlay">
                     <div class="video-user" onclick="openModal('profile')">
                         @funny_clips
@@ -584,10 +563,6 @@
                     </div>
                     <div class="video-desc">হাসতে ভোলেন না 😂</div>
                     <div class="video-hashtags">#comedy #funny #reels</div>
-                </div>
-                <button class="more-btn" onclick="moreOptions()">⋯</button>
-                <div class="music-badge" onclick="viewMusic()">
-                    <i class="fas fa-music"></i> Comedy Mix
                 </div>
                 <div class="video-actions">
                     <button onclick="likeVideo(this)">
@@ -655,7 +630,7 @@
             videos.forEach(v => v.pause());
             const scrollY = feed.scrollTop;
             const height = feed.clientHeight;
-            const index = Math.round(scrollY / (height - 190));
+            const index = Math.round(scrollY / height);
             if (index >= 0 && index < videos.length) {
                 const video = videos[index];
                 video.play().catch(() => {});
@@ -697,7 +672,7 @@
                 el.style.color = 'white';
             } else {
                 el.innerText = 'Follow';
-                el.style.background = 'rgba(255,255,255,0.15)';
+                el.style.background = 'rgba(255,255,255,0.12)';
                 el.style.color = '#ccc';
             }
         }
