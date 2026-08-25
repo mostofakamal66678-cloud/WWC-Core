@@ -1,10 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0,
+        viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+
   <meta name="theme-color" content="#000000">
+
   <title>WWC - Sign In</title>
 
   <link rel="stylesheet"
@@ -15,12 +18,13 @@
       margin:0;
       padding:0;
       box-sizing:border-box;
-      -webkit-tap-highlight-color:transparent
+      -webkit-tap-highlight-color:transparent;
     }
 
     html,body{
       width:100%;
       min-height:100%;
+      background:#000;
     }
 
     body{
@@ -28,95 +32,114 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      background:#000;
-      color:#fff;
-      font-family:-apple-system,BlinkMacSystemFont,
-        "Segoe UI",Roboto,Arial,sans-serif;
       padding:20px;
-      overflow-x:hidden;
+      color:#fff;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
     }
 
-    button,input{
+    button,
+    input{
       font-family:inherit;
     }
 
     button{
-      -webkit-user-select:none;
-      user-select:none;
+      cursor:pointer;
     }
 
     .auth-container{
       width:100%;
       max-width:420px;
-      background:rgba(20,20,25,.96);
-      border:1px solid rgba(255,255,255,.07);
+      padding:40px 28px 30px;
+      background:
+        linear-gradient(
+          145deg,
+          rgba(25,25,30,.98),
+          rgba(10,10,12,.98)
+        );
+      border:1px solid rgba(255,255,255,.08);
       border-radius:28px;
-      padding:40px 28px 32px;
-      box-shadow:0 20px 60px rgba(0,0,0,.65);
-      animation:slideUp .4s cubic-bezier(.2,.9,.3,1);
+      box-shadow:
+        0 25px 80px rgba(0,0,0,.7),
+        0 0 40px rgba(37,244,238,.04);
+      animation:slideUp .4s ease;
     }
 
     @keyframes slideUp{
       from{
         opacity:0;
-        transform:translateY(30px) scale(.98)
+        transform:translateY(30px) scale(.97);
       }
       to{
         opacity:1;
-        transform:translateY(0) scale(1)
+        transform:translateY(0) scale(1);
       }
     }
 
     .logo{
-      width:72px;
-      height:72px;
-      margin:0 auto 12px;
+      width:74px;
+      height:74px;
+      margin:0 auto 14px;
       border-radius:50%;
-      background:linear-gradient(135deg,#25f4ee,#fe2c55);
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size:32px;
-      box-shadow:0 8px 30px rgba(37,244,238,.2);
+      font-size:34px;
+      background:
+        linear-gradient(
+          135deg,
+          #25f4ee,
+          #fe2c55
+        );
+      box-shadow:
+        0 10px 35px rgba(37,244,238,.15),
+        0 10px 35px rgba(254,44,85,.12);
     }
 
     h1{
       text-align:center;
+      color:#fff;
       font-size:24px;
       font-weight:800;
-      color:#fff;
       letter-spacing:-.5px;
     }
 
     .subtitle{
+      margin-top:5px;
+      margin-bottom:28px;
       text-align:center;
       color:#888;
       font-size:14px;
-      margin-top:4px;
-      margin-bottom:28px;
     }
 
     .google-btn{
       width:100%;
       min-height:52px;
       padding:14px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:12px;
+      border:0;
       border-radius:14px;
       background:#fff;
       color:#222;
       font-size:15px;
       font-weight:700;
-      border:0;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:12px;
-      transition:transform .15s,opacity .15s;
-      margin-bottom:18px;
+      transition:.15s;
+    }
+
+    .google-btn:hover{
+      background:#f2f2f2;
     }
 
     .google-btn:active{
-      transform:scale(.97)
+      transform:scale(.97);
     }
 
     .google-btn:disabled{
@@ -128,7 +151,7 @@
       display:flex;
       align-items:center;
       gap:12px;
-      margin:14px 0 20px;
+      margin:20px 0;
       color:#555;
       font-size:12px;
     }
@@ -138,7 +161,7 @@
       content:"";
       flex:1;
       height:1px;
-      background:#2a2a2a;
+      background:#292929;
     }
 
     .form-group{
@@ -147,51 +170,74 @@
 
     .form-group label{
       display:block;
+      margin-bottom:6px;
+      color:#999;
       font-size:12px;
       font-weight:600;
-      color:#888;
-      margin-bottom:6px;
     }
 
     .form-group input{
       width:100%;
-      min-height:50px;
-      padding:14px 16px;
+      height:50px;
+      padding:0 15px;
+      border:1px solid #2b2b2b;
       border-radius:12px;
-      border:1px solid #2a2a2a;
+      outline:none;
       background:#111;
       color:#fff;
       font-size:15px;
-      outline:none;
-      transition:border-color .2s,box-shadow .2s;
+      transition:.2s;
     }
 
     .form-group input:focus{
       border-color:#25f4ee;
-      box-shadow:0 0 0 3px rgba(37,244,238,.08);
+      box-shadow:0 0 0 2px rgba(37,244,238,.08);
     }
 
     .form-group input::placeholder{
       color:#555;
     }
 
+    .name-group{
+      display:none;
+    }
+
+    .name-group.show{
+      display:block;
+      animation:slideDown .25s ease;
+    }
+
+    @keyframes slideDown{
+      from{
+        opacity:0;
+        transform:translateY(-8px);
+      }
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
+    }
+
     .auth-btn{
       width:100%;
-      min-height:54px;
-      padding:16px;
+      min-height:52px;
+      margin-top:6px;
+      border:0;
       border-radius:14px;
-      background:linear-gradient(135deg,#25f4ee,#fe2c55);
+      background:
+        linear-gradient(
+          135deg,
+          #25f4ee,
+          #fe2c55
+        );
       color:#fff;
       font-size:16px;
       font-weight:700;
-      border:0;
-      cursor:pointer;
-      transition:transform .15s,opacity .15s;
-      margin-top:6px;
+      transition:.15s;
     }
 
     .auth-btn:active{
-      transform:scale(.97)
+      transform:scale(.97);
     }
 
     .auth-btn:disabled{
@@ -199,54 +245,60 @@
       cursor:not-allowed;
     }
 
-    .auth-btn .spinner{
+    .auth-btn.loading .btn-text{
+      display:none;
+    }
+
+    .spinner{
       display:none;
       width:22px;
       height:22px;
+      margin:auto;
       border:2px solid rgba(255,255,255,.3);
       border-top-color:#fff;
       border-radius:50%;
       animation:spin .7s linear infinite;
-      margin:0 auto;
     }
 
     .auth-btn.loading .spinner{
       display:block;
     }
 
-    .auth-btn.loading .btn-text{
-      display:none;
-    }
-
     @keyframes spin{
-      to{transform:rotate(360deg)}
+      to{
+        transform:rotate(360deg);
+      }
     }
 
     .mode-toggle{
+      margin-top:20px;
       text-align:center;
-      margin-top:18px;
       color:#888;
       font-size:14px;
     }
 
     .mode-toggle button{
-      background:none;
-      border:0;
-      color:#25f4ee;
-      font-weight:700;
-      font-size:14px;
-      cursor:pointer;
       padding:4px 8px;
+      border:0;
+      background:transparent;
+      color:#25f4ee;
+      font-size:14px;
+      font-weight:700;
+    }
+
+    .mode-toggle button:active{
+      color:#fe2c55;
     }
 
     .message{
+      display:none;
       min-height:24px;
+      margin-top:14px;
+      padding:9px 12px;
+      border-radius:10px;
       text-align:center;
       font-size:13px;
-      margin-top:14px;
-      padding:8px 12px;
-      border-radius:10px;
-      display:none;
+      line-height:1.4;
     }
 
     .message.show{
@@ -259,7 +311,7 @@
     }
 
     .message.error{
-      color:#fe2c55;
+      color:#ff5575;
       background:rgba(254,44,85,.08);
     }
 
@@ -270,12 +322,12 @@
 
     .back-home{
       display:block;
+      margin-top:18px;
       text-align:center;
       color:#555;
       font-size:13px;
-      margin-top:16px;
       text-decoration:none;
-      transition:color .2s;
+      transition:.2s;
     }
 
     .back-home:hover{
@@ -286,44 +338,25 @@
       margin-right:6px;
     }
 
-    .name-group{
-      display:none;
-      animation:slideDown .25s ease;
-    }
-
-    .name-group.show{
-      display:block;
-    }
-
-    @keyframes slideDown{
-      from{
-        opacity:0;
-        transform:translateY(-10px)
-      }
-      to{
-        opacity:1;
-        transform:translateY(0)
-      }
-    }
-
     @media(max-width:480px){
+
       body{
-        padding:12px;
+        padding:14px;
       }
 
       .auth-container{
         padding:28px 18px 24px;
-        border-radius:20px;
+        border-radius:22px;
       }
 
       .logo{
-        width:60px;
-        height:60px;
-        font-size:26px;
+        width:62px;
+        height:62px;
+        font-size:28px;
       }
 
       h1{
-        font-size:20px;
+        font-size:21px;
       }
     }
   </style>
@@ -341,56 +374,81 @@
     Sign in to continue
   </p>
 
+  <!-- GOOGLE -->
   <button
+    type="button"
     class="google-btn"
-    id="googleBtn"
-    type="button">
-    <i class="fab fa-google" style="font-size:20px"></i>
+    id="googleBtn">
+
+    <i
+      class="fab fa-google"
+      style="font-size:20px;">
+    </i>
+
     <span>Continue with Google</span>
+
   </button>
 
   <div class="divider">
     <span>or</span>
   </div>
 
+  <!-- AUTH FORM -->
   <form id="authForm">
 
     <div class="form-group">
-      <label for="emailInput">Email</label>
+
+      <label for="emailInput">
+        Email
+      </label>
+
       <input
         type="email"
         id="emailInput"
         placeholder="Enter your email"
         autocomplete="email"
-        inputmode="email"
         required>
+
     </div>
 
     <div class="form-group">
-      <label for="passwordInput">Password</label>
+
+      <label for="passwordInput">
+        Password
+      </label>
+
       <input
         type="password"
         id="passwordInput"
-        placeholder="Min 6 characters"
+        placeholder="Minimum 6 characters"
         autocomplete="current-password"
         minlength="6"
         required>
+
     </div>
 
-    <div class="form-group name-group" id="nameGroup">
-      <label for="nameInput">Name</label>
+    <!-- NAME -->
+    <div
+      class="form-group name-group"
+      id="nameGroup">
+
+      <label for="nameInput">
+        Name
+      </label>
+
       <input
         type="text"
         id="nameInput"
         placeholder="Your name"
         autocomplete="name"
         maxlength="50">
+
     </div>
 
     <button
+      type="submit"
       class="auth-btn"
-      id="authBtn"
-      type="submit">
+      id="authBtn">
 
       <span class="spinner"></span>
 
@@ -405,15 +463,17 @@
   </form>
 
   <div class="mode-toggle">
+
     <span id="modeText">
       Don't have an account?
     </span>
 
     <button
-      id="modeBtn"
-      type="button">
+      type="button"
+      id="modeBtn">
       Sign Up
     </button>
+
   </div>
 
   <div
@@ -422,58 +482,77 @@
   </div>
 
   <a
-    class="back-home"
-    href="./index.html">
+    href="./index.html"
+    class="back-home">
 
     <i class="fas fa-arrow-left"></i>
+
     Back to Home
 
   </a>
 
 </div>
 
+
 <script type="module">
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 
 import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   updateProfile,
   setPersistence,
   browserLocalPersistence,
   onAuthStateChanged
-}
-from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
 import {
   getFirestore,
   doc,
   getDoc,
-  setDoc
-}
-from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+  setDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
 
 
-/* =========================
-   FIREBASE
-========================= */
+/* =========================================
+   FIREBASE CONFIG
+========================================= */
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
-  authDomain: "world-wide-connect-62c87.firebaseapp.com",
-  projectId: "world-wide-connect-62c87",
-  storageBucket: "world-wide-connect-62c87.firebasestorage.app",
-  messagingSenderId: "93178453668",
-  appId: "1:93178453668:web:2184630caa8e61f7445031",
-  measurementId: "G-PKFJ5NEMGQ"
+
+  apiKey:
+    "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
+
+  authDomain:
+    "world-wide-connect-62c87.firebaseapp.com",
+
+  projectId:
+    "world-wide-connect-62c87",
+
+  storageBucket:
+    "world-wide-connect-62c87.firebasestorage.app",
+
+  messagingSenderId:
+    "93178453668",
+
+  appId:
+    "1:93178453668:web:2184630caa8e61f7445031",
+
+  measurementId:
+    "G-PKFJ5NEMGQ"
 };
+
+
+/* =========================================
+   FIREBASE INITIALIZE
+========================================= */
 
 const app = initializeApp(firebaseConfig);
 
@@ -481,12 +560,13 @@ const auth = getAuth(app);
 
 const db = getFirestore(app);
 
-const googleProvider = new GoogleAuthProvider();
+const googleProvider =
+  new GoogleAuthProvider();
 
 
-/* =========================
+/* =========================================
    DOM
-========================= */
+========================================= */
 
 const googleBtn =
   document.getElementById("googleBtn");
@@ -525,12 +605,18 @@ const passwordInput =
   document.getElementById("passwordInput");
 
 
+/* =========================================
+   STATE
+========================================= */
+
 let isRegisterMode = false;
 
+let redirecting = false;
 
-/* =========================
-   AUTH PERSISTENCE
-========================= */
+
+/* =========================================
+   PERSISTENCE
+========================================= */
 
 try {
 
@@ -542,37 +628,32 @@ try {
 } catch(error) {
 
   console.warn(
-    "Persistence error:",
+    "Persistence warning:",
     error
   );
 
 }
 
 
-/* =========================
+/* =========================================
    MESSAGE
-========================= */
+========================================= */
 
 function showMessage(
   text,
-  type = ""
-){
+  type = "info"
+) {
 
   message.textContent = text;
 
   message.className =
-    "message show";
-
-  if(type){
-
-    message.classList.add(type);
-
-  }
-
+    "message show " + type;
 }
 
 
-function hideMessage(){
+function hideMessage() {
+
+  message.textContent = "";
 
   message.className =
     "message";
@@ -580,179 +661,185 @@ function hideMessage(){
 }
 
 
-/* =========================
-   LOADING
-========================= */
+/* =========================================
+   USERNAME
+========================================= */
 
-function setLoading(
-  loading
-){
+function makeUsername(user) {
 
-  authBtn.disabled = loading;
+  let base =
+    user.displayName ||
+    "wwc_user";
 
-  googleBtn.disabled = loading;
+  base =
+    String(base)
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9_]/g, "_")
+      .replace(/^_+|_+$/g, "");
 
-  modeBtn.disabled = loading;
-
-  if(loading){
-
-    authBtn.classList.add(
-      "loading"
-    );
-
-  }else{
-
-    authBtn.classList.remove(
-      "loading"
-    );
-
+  if (!base) {
+    base = "wwc_user";
   }
 
+  return (
+    base +
+    "_" +
+    user.uid.substring(0, 6)
+  );
 }
 
 
-/* =========================
-   PROFILE
-========================= */
+/* =========================================
+   CREATE USER PROFILE
+========================================= */
 
 async function createUserProfile(
   user,
   extraData = {}
-){
+) {
 
-  if(!user) return;
+  if (!user) return;
 
-  try{
+  const userRef =
+    doc(
+      db,
+      "users",
+      user.uid
+    );
 
-    const userRef =
-      doc(
-        db,
-        "users",
-        user.uid
-      );
+  try {
 
     const existing =
       await getDoc(userRef);
 
-    if(existing.exists()){
+    /*
+      IMPORTANT:
+      Existing profile should NOT be overwritten.
+    */
 
-      return;
+    if (existing.exists()) {
 
-    }
-
-
-    let username =
-      extraData.username ||
-      user.displayName ||
-      "wwc_user";
-
-
-    username =
-      String(username)
-      .toLowerCase()
-      .trim()
-      .replace(
-        /[^a-z0-9_]/g,
-        "_"
-      )
-      .replace(
-        /^_+|_+$/g,
-        ""
-      );
-
-
-    if(!username){
-
-      username =
-        "wwc_user";
+      return existing.data();
 
     }
 
 
-    username =
-      username +
-      "_" +
-      user.uid.substring(
-        0,
-        6
-      );
+    const profile = {
+
+      uid:
+        user.uid,
+
+      name:
+        extraData.name ||
+        user.displayName ||
+        "WWC User",
+
+      username:
+        makeUsername(user),
+
+      email:
+        user.email || "",
+
+      photoURL:
+        user.photoURL ||
+        "./images/profile.png",
+
+      bio:
+        "🌍 Welcome to World Wide Connect",
+
+      followers: 0,
+
+      following: 0,
+
+      likes: 0,
+
+      followerIds: [],
+
+      followingIds: [],
+
+      savedVideoIds: [],
+
+      createdAt:
+        serverTimestamp()
+
+    };
 
 
     await setDoc(
       userRef,
-      {
-
-        uid:user.uid,
-
-        name:
-          extraData.name ||
-          user.displayName ||
-          "WWC User",
-
-        username,
-
-        email:
-          user.email || "",
-
-        photoURL:
-          user.photoURL ||
-          "./images/profile.png",
-
-        bio:
-          "🌍 Welcome to World Wide Connect",
-
-        followers:0,
-
-        following:0,
-
-        likes:0,
-
-        followerIds:[],
-
-        followingIds:[],
-
-        savedVideoIds:[],
-
-        createdAt:
-          new Date().toISOString()
-
-      }
+      profile
     );
 
-  }catch(error){
+
+    console.log(
+      "✅ User profile created"
+    );
+
+    return profile;
+
+  } catch(error) {
 
     console.error(
       "Profile creation error:",
       error
     );
 
-  }
+    /*
+      Authentication should still succeed
+      even if Firestore profile creation
+      temporarily fails.
+    */
 
+    return null;
+  }
 }
 
 
-/* =========================
-   HOME
-========================= */
+/* =========================================
+   REDIRECT
+========================================= */
 
-function goHome(){
+function goHome() {
+
+  if (redirecting) return;
+
+  redirecting = true;
 
   window.location.replace(
     "./index.html"
   );
-
 }
 
 
-/* =========================
+/* =========================================
    AUTH STATE
-========================= */
+========================================= */
 
 onAuthStateChanged(
   auth,
-  user => {
+  async (user) => {
 
-    if(user){
+    if (!user) return;
+
+    console.log(
+      "✅ Already logged in:",
+      user.uid
+    );
+
+    /*
+      Make sure profile exists.
+    */
+
+    await createUserProfile(user);
+
+    /*
+      Don't instantly redirect while
+      the page is being submitted.
+    */
+
+    if (!authBtn.classList.contains("loading") &&
+        !googleBtn.disabled) {
 
       goHome();
 
@@ -762,18 +849,21 @@ onAuthStateChanged(
 );
 
 
-/* =========================
+/* =========================================
    GOOGLE LOGIN
-========================= */
+========================================= */
 
 googleBtn.addEventListener(
   "click",
-  async() => {
+  async () => {
 
-    if(googleBtn.disabled)
-      return;
+    if (redirecting) return;
 
-    setLoading(true);
+    googleBtn.disabled = true;
+
+    authBtn.disabled = true;
+
+    modeBtn.disabled = true;
 
     showMessage(
       "⏳ Connecting to Google...",
@@ -781,13 +871,38 @@ googleBtn.addEventListener(
     );
 
 
-    try{
+    try {
+
+      /*
+        Optional:
+        Always show account chooser.
+      */
+
+      googleProvider.setCustomParameters({
+        prompt: "select_account"
+      });
+
 
       const result =
         await signInWithPopup(
           auth,
           googleProvider
         );
+
+
+      if (!result.user) {
+
+        throw new Error(
+          "Google user not found."
+        );
+
+      }
+
+
+      console.log(
+        "✅ Google login:",
+        result.user.uid
+      );
 
 
       await createUserProfile(
@@ -807,7 +922,7 @@ googleBtn.addEventListener(
       );
 
 
-    }catch(error){
+    } catch(error) {
 
       console.error(
         "Google login error:",
@@ -815,46 +930,24 @@ googleBtn.addEventListener(
       );
 
 
-      if(
-        error.code ===
-        "auth/popup-blocked"
-      ){
-
-        showMessage(
-          "⏳ Opening Google login...",
-          "info"
-        );
-
-        try{
-
-          await signInWithRedirect(
-            auth,
-            googleProvider
-          );
-
-          return;
-
-        }catch(redirectError){
-
-          console.error(
-            redirectError
-          );
-
-        }
-
-      }
-
-
       let msg =
         "Google login failed. Please try again.";
 
 
-      switch(error.code){
+      switch(error.code) {
 
         case "auth/popup-closed-by-user":
 
           msg =
-            "⚠️ Login cancelled.";
+            "⚠️ Google login cancelled.";
+
+          break;
+
+
+        case "auth/popup-blocked":
+
+          msg =
+            "❌ Popup blocked. Please allow popups.";
 
           break;
 
@@ -862,15 +955,15 @@ googleBtn.addEventListener(
         case "auth/cancelled-popup-request":
 
           msg =
-            "⚠️ Login cancelled.";
+            "⚠️ Another login window is already open.";
 
           break;
 
 
-        case "auth/unauthorized-domain":
+        case "auth/account-exists-with-different-credential":
 
           msg =
-            "❌ This website is not authorized in Firebase.";
+            "❌ This email already uses another sign-in method.";
 
           break;
 
@@ -878,17 +971,27 @@ googleBtn.addEventListener(
         case "auth/network-request-failed":
 
           msg =
-            "❌ Network error. Check your connection.";
+            "❌ Network error. Check your internet.";
 
           break;
 
 
-        case "auth/operation-not-allowed":
+        case "auth/unauthorized-domain":
 
           msg =
-            "❌ Google Sign-In is not enabled in Firebase.";
+            "❌ This website domain is not authorized in Firebase.";
 
           break;
+
+
+        default:
+
+          msg =
+            "❌ " +
+            (
+              error.message ||
+              "Google authentication failed."
+            );
 
       }
 
@@ -898,7 +1001,12 @@ googleBtn.addEventListener(
         "error"
       );
 
-      setLoading(false);
+
+      googleBtn.disabled = false;
+
+      authBtn.disabled = false;
+
+      modeBtn.disabled = false;
 
     }
 
@@ -906,41 +1014,9 @@ googleBtn.addEventListener(
 );
 
 
-/* =========================
-   REDIRECT RESULT
-========================= */
-
-try{
-
-  const redirectResult =
-    await getRedirectResult(auth);
-
-  if(
-    redirectResult &&
-    redirectResult.user
-  ){
-
-    await createUserProfile(
-      redirectResult.user
-    );
-
-    goHome();
-
-  }
-
-}catch(error){
-
-  console.error(
-    "Google redirect error:",
-    error
-  );
-
-}
-
-
-/* =========================
-   SIGN IN / SIGN UP MODE
-========================= */
+/* =========================================
+   SIGN IN / SIGN UP TOGGLE
+========================================= */
 
 modeBtn.addEventListener(
   "click",
@@ -952,14 +1028,13 @@ modeBtn.addEventListener(
     hideMessage();
 
 
-    if(isRegisterMode){
+    if (isRegisterMode) {
 
       nameGroup.classList.add(
         "show"
       );
 
-      nameInput.required =
-        true;
+      nameInput.required = true;
 
       passwordInput.autocomplete =
         "new-password";
@@ -977,14 +1052,13 @@ modeBtn.addEventListener(
         "Create your WWC account";
 
 
-    }else{
+    } else {
 
       nameGroup.classList.remove(
         "show"
       );
 
-      nameInput.required =
-        false;
+      nameInput.required = false;
 
       passwordInput.autocomplete =
         "current-password";
@@ -1007,23 +1081,27 @@ modeBtn.addEventListener(
 );
 
 
-/* =========================
+/* =========================================
    EMAIL AUTH
-========================= */
+========================================= */
 
 authForm.addEventListener(
   "submit",
-  async event => {
+  async (event) => {
 
     event.preventDefault();
+
+
+    if (redirecting) return;
+
 
     hideMessage();
 
 
     const email =
       emailInput.value
-      .trim()
-      .toLowerCase();
+        .trim()
+        .toLowerCase();
 
     const password =
       passwordInput.value;
@@ -1032,51 +1110,89 @@ authForm.addEventListener(
       nameInput.value.trim();
 
 
-    if(!email){
+    /* VALIDATION */
+
+    if (!email) {
 
       showMessage(
         "⚠️ Please enter your email.",
         "error"
       );
 
-      return;
+      emailInput.focus();
 
+      return;
     }
 
 
-    if(password.length < 6){
+    if (
+      !email.includes("@") ||
+      !email.includes(".")
+    ) {
+
+      showMessage(
+        "❌ Please enter a valid email.",
+        "error"
+      );
+
+      emailInput.focus();
+
+      return;
+    }
+
+
+    if (password.length < 6) {
 
       showMessage(
         "⚠️ Password must be at least 6 characters.",
         "error"
       );
 
-      return;
+      passwordInput.focus();
 
+      return;
     }
 
 
-    if(
+    if (
       isRegisterMode &&
       !name
-    ){
+    ) {
 
       showMessage(
         "⚠️ Please enter your name.",
         "error"
       );
 
-      return;
+      nameInput.focus();
 
+      return;
     }
 
 
-    setLoading(true);
+    /* LOADING */
+
+    authBtn.disabled = true;
+
+    googleBtn.disabled = true;
+
+    modeBtn.disabled = true;
+
+    authBtn.classList.add(
+      "loading"
+    );
 
 
-    try{
+    try {
 
-      if(isRegisterMode){
+      let result;
+
+
+      /* ===============================
+         SIGN UP
+      =============================== */
+
+      if (isRegisterMode) {
 
         showMessage(
           "⏳ Creating your account...",
@@ -1084,7 +1200,7 @@ authForm.addEventListener(
         );
 
 
-        const result =
+        result =
           await createUserWithEmailAndPassword(
             auth,
             email,
@@ -1092,18 +1208,26 @@ authForm.addEventListener(
           );
 
 
+        /*
+          Update Firebase Auth profile
+        */
+
         await updateProfile(
           result.user,
           {
-            displayName:name
+            displayName: name
           }
         );
 
 
+        /*
+          Create Firestore profile
+        */
+
         await createUserProfile(
           result.user,
           {
-            name:name
+            name: name
           }
         );
 
@@ -1114,7 +1238,13 @@ authForm.addEventListener(
         );
 
 
-      }else{
+      }
+
+      /* ===============================
+         SIGN IN
+      =============================== */
+
+      else {
 
         showMessage(
           "⏳ Signing in...",
@@ -1122,13 +1252,17 @@ authForm.addEventListener(
         );
 
 
-        const result =
+        result =
           await signInWithEmailAndPassword(
             auth,
             email,
             password
           );
 
+
+        /*
+          Create profile only if missing.
+        */
 
         await createUserProfile(
           result.user
@@ -1149,24 +1283,24 @@ authForm.addEventListener(
       );
 
 
-    }catch(error){
+    } catch(error) {
 
       console.error(
-        "Authentication error:",
+        "Email authentication error:",
         error
       );
 
 
       let msg =
-        "Something went wrong.";
+        "❌ Authentication failed.";
 
 
-      switch(error.code){
+      switch(error.code) {
 
         case "auth/email-already-in-use":
 
           msg =
-            "❌ Email already registered. Please sign in.";
+            "❌ This email is already registered. Please sign in.";
 
           break;
 
@@ -1182,17 +1316,23 @@ authForm.addEventListener(
         case "auth/user-not-found":
 
           msg =
-            "❌ No account found. Please sign up.";
+            "❌ No account found with this email.";
 
           break;
 
 
         case "auth/wrong-password":
 
+          msg =
+            "❌ Incorrect password.";
+
+          break;
+
+
         case "auth/invalid-credential":
 
           msg =
-            "❌ Incorrect email or password.";
+            "❌ Email or password is incorrect.";
 
           break;
 
@@ -1208,7 +1348,7 @@ authForm.addEventListener(
         case "auth/too-many-requests":
 
           msg =
-            "⚠️ Too many attempts. Try again later.";
+            "⚠️ Too many attempts. Please try again later.";
 
           break;
 
@@ -1216,15 +1356,15 @@ authForm.addEventListener(
         case "auth/network-request-failed":
 
           msg =
-            "❌ Network error. Check your connection.";
+            "❌ Network error. Check your internet connection.";
 
           break;
 
 
-        case "auth/operation-not-allowed":
+        case "auth/user-disabled":
 
           msg =
-            "❌ Email/Password login is not enabled in Firebase.";
+            "❌ This account has been disabled.";
 
           break;
 
@@ -1246,25 +1386,34 @@ authForm.addEventListener(
         "error"
       );
 
-      setLoading(false);
-
     }
+
+
+    authBtn.disabled = false;
+
+    googleBtn.disabled = false;
+
+    modeBtn.disabled = false;
+
+    authBtn.classList.remove(
+      "loading"
+    );
 
   }
 );
 
 
-/* =========================
+/* =========================================
    KEYBOARD
-========================= */
+========================================= */
 
 document.addEventListener(
   "keydown",
-  event => {
+  (event) => {
 
-    if(
+    if (
       event.key === "Escape"
-    ){
+    ) {
 
       window.location.href =
         "./index.html";
