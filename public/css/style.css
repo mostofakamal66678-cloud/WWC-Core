@@ -496,3 +496,70 @@ button {
   .video-item { max-width: 500px; margin: auto; }
   .bottom-nav { max-width: 500px; left: 50%; right: auto; transform: translateX(-50%); }
    }
+
+/* ===== অ্যাকশন বাটন - সঠিক পজিশন ===== */
+.video-actions {
+    position: absolute;
+    right: 14px;
+    bottom: 130px;   /* উপরে সরানো */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;       /* ফাঁকা জায়গা কমানো */
+    z-index: 3;
+}
+.video-actions button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 26px;
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+    opacity: 0.9;
+}
+.video-actions button i {
+    transition: 0.2s;
+}
+.video-actions button span {
+    font-size: 11px;
+    font-weight: 600;
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+}
+.video-actions button:hover {
+    transform: scale(1.08);
+    opacity: 1;
+}
+.video-actions .liked {
+    color: #ff3b6f;
+}
+.video-actions .liked i {
+    animation: likePop 0.3s ease;
+}
+@keyframes likePop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.4); }
+    100% { transform: scale(1); }
+}
+.video-actions .bookmarked {
+    color: #4fc3f7;
+}
+
+/* ===== মোবাইলের জন্য ===== */
+@media (max-width: 430px) {
+    .video-actions {
+        right: 10px;
+        bottom: 120px;   /* মোবাইলে উপরে */
+        gap: 14px;
+    }
+    .video-actions button {
+        font-size: 22px;
+    }
+    .video-actions button span {
+        font-size: 10px;
+    }
+}
