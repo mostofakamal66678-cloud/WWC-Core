@@ -1,0 +1,126 @@
+// models/User.js
+const { db } = require('../config/firebase');
+
+class User {
+  static async findById(uid) {
+    const doc = await db.collection('users').doc(uid).get();
+    if (!doc.exists) return null;
+    return { uid: doc.id, ...doc.data() };
+  }
+
+  static async findByUsername(username) {
+    const snapshot = await db.collection('users')
+      .where('username', '==', username)
+      .get();
+    if (snapshot.empty) return null;
+    const doc = snapshot.docs[0];
+    return { uid: doc.id, ...doc.data() };
+  }
+
+  static async create(uid, data) {
+    await db.collection('users').doc(uid).set({
+      name: data.name || 'WWC User',
+      username: data.username || `user_${uid.substring(0, 6)}`,
+      email: data.email || '',
+      photoURL: data.photoURL || './images/profile.png',
+      bio: '🌍 Welcome to WWC',
+      followers: 0,
+      following: 0,
+      likes: 0,
+      followerIds: [],
+      followingIds: [],
+      savedVideoIds: [],
+      createdAt: new Date().toISOString()
+    });
+    return await this.findById(uid);
+  }
+
+  static async update(uid, data) {
+    await db.collection('users').doc(uid).update(data);
+    return await this.findById(uid);
+  }
+
+  static async follow(currentUid, targetUid) {
+    const currentRef = db.collection('users').doc(currentUid);
+    const targetRef = db.collection('users').doc(targetUid);
+
+    await db.runTransaction(async (t) => {
+      const currentDoc = await t.get(currentRef);
+      const targetDoc = await t.get(targetRef);
+      
+      if (!currentDoc.exists || !targetDoc.exists) return;
+
+      const currentData = currentDoc.data();
+      const targetData = targetDoc.data();
+
+      const followingIds = currentData.followingIds || [];
+      const followerIds = targetData.followerIds || [];
+
+      if (!followingIds.includes(targetUid)) {
+        t.update(currentRef, {
+          followingIds: [...followingIds, targetUid],
+          following: (currentData.following || 0) + 1
+        });
+        t.update(targetRef, {
+          followerIds: [...followerIds, currentUid],
+          followers: (targetData.followers || 0) + 1
+        });
+      }
+    });
+  }
+
+  static async unfollow(currentUid, targetUid) {
+    const currentRef = db.collection('users').doc(currentUid);
+    const targetRef = db.collection('users').doc(targetUid);
+
+    await db.runTransaction(async (t) => {
+      const currentDoc = await t.get(currentRef);
+      const targetDoc = await t.get(targetRef);
+      
+      if (!currentDoc.exists || !targetDoc.exists) return;
+
+      const currentData = currentDoc.data();
+      const targetData = targetDoc.data();
+
+      const followingIds = currentData.followingIds || [];
+      const followerIds = targetData.followerIds || [];
+
+      t.update(currentRef, {
+        followingIds: followingIds.filter(id => id !== targetUid),
+        following: Math.max(0, (currentData.following || 0) - 1)
+      });
+      t.update(targetRef, {
+        followerIds: followerIds.filter(id => id !== currentUid),
+        followers: Math.max(0, (targetData.followers || 0) - 1)
+      });
+    });
+  }
+
+  static async getFollowers(uid) {
+    const doc = await db.collection('users').doc(uid).get();
+    if (!doc.exists) return [];
+    const data = doc.data();
+    const followerIds = data.followerIds || [];
+    const followers = [];
+    for (const id of followerIds) {
+      const user = await this.findById(id);
+      if (user) followers.push(user);
+    }
+    return followers;
+  }
+
+  static async getFollowing(uid) {
+    const doc = await db.collection('users').doc(uid).get();
+    if (!doc.exists) return [];
+    const data = doc.data();
+    const followingIds = data.followingIds || [];
+    const following = [];
+    for (const id of followingIds) {
+      const user = await this.findById(id);
+      if (user) following.push(user);
+    }
+    return following;
+  }
+}
+
+module.exports = User;
