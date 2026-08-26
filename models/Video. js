@@ -1,0 +1,171 @@
+// models/Video.js
+const { db } = require('../config/firebase');
+
+class Video {
+  static async create(data) {
+    const videoData = {
+      uid: data.uid,
+      videoURL: data.videoURL,
+      caption: data.caption || 'No caption',
+      sound: data.sound || 'Original sound - WWC',
+      username: data.username || 'wwc_user',
+      name: data.name || 'WWC User',
+      photoURL: data.photoURL || './images/profile.png',
+      likes: 0,
+      comments: 0,
+      saves: 0,
+      shares: 0,
+      likedBy: [],
+      savedBy: [],
+      createdAt: new Date()
+    };
+    
+    const docRef = await db.collection('videos').add(videoData);
+    const doc = await docRef.get();
+    return { id: doc.id, ...doc.data() };
+  }
+
+  static async findById(videoId) {
+    const doc = await db.collection('videos').doc(videoId).get();
+    if (!doc.exists) return null;
+    return { id: doc.id, ...doc.data() };
+  }
+
+  static async findAll(limit = 30) {
+    const snapshot = await db.collection('videos')
+      .orderBy('createdAt', 'desc')
+      .limit(limit)
+      .get();
+    const videos = [];
+    snapshot.forEach(doc => {
+      videos.push({ id: doc.id, ...doc.data() });
+    });
+    return videos;
+  }
+
+  static async findByUser(uid, limit = 30) {
+    const snapshot = await db.collection('videos')
+      .where('uid', '==', uid)
+      .orderBy('createdAt', 'desc')
+      .limit(limit)
+      .get();
+    const videos = [];
+    snapshot.forEach(doc => {
+      videos.push({ id: doc.id, ...doc.data() });
+    });
+    return videos;
+  }
+
+  static async findByUsername(username, limit = 30) {
+    const snapshot = await db.collection('videos')
+      .where('username', '==', username)
+      .orderBy('createdAt', 'desc')
+      .limit(limit)
+      .get();
+    const videos = [];
+    snapshot.forEach(doc => {
+      videos.push({ id: doc.id, ...doc.data() });
+    });
+    return videos;
+  }
+
+  static async like(videoId, uid) {
+    const videoRef = db.collection('videos').doc(videoId);
+    await db.runTransaction(async (t) => {
+      const doc = await t.get(videoRef);
+      if (!doc.exists) return;
+      const data = doc.data();
+      const likedBy = data.likedBy || [];
+      if (!likedBy.includes(uid)) {
+        t.update(videoRef, {
+          likedBy: [...likedBy, uid],
+          likes: (data.likes || 0) + 1
+        });
+      } else {
+        t.update(videoRef, {
+          likedBy: likedBy.filter(id => id !== uid),
+          likes: Math.max(0, (data.likes || 0) - 1)
+        });
+      }
+    });
+    const updated = await this.findById(videoId);
+    return updated;
+  }
+
+  static async save(videoId, uid) {
+    const videoRef = db.collection('videos').doc(videoId);
+    const userRef = db.collection('users').doc(uid);
+    
+    let isSaved = false;
+    await db.runTransaction(async (t) => {
+      const videoDoc = await t.get(videoRef);
+      const userDoc = await t.get(userRef);
+      if (!videoDoc.exists || !userDoc.exists) return;
+      
+      const videoData = videoDoc.data();
+      const userData = userDoc.data();
+      const savedBy = videoData.savedBy || [];
+      const savedVideoIds = userData.savedVideoIds || [];
+
+      if (!savedBy.includes(uid)) {
+        t.update(videoRef, {
+          savedBy: [...savedBy, uid],
+          saves: (videoData.saves || 0) + 1
+        });
+        t.update(userRef, {
+          savedVideoIds: [...savedVideoIds, videoId]
+        });
+        isSaved = true;
+      } else {
+        t.update(videoRef, {
+          savedBy: savedBy.filter(id => id !== uid),
+          saves: Math.max(0, (videoData.saves || 0) - 1)
+        });
+        t.update(userRef, {
+          savedVideoIds: savedVideoIds.filter(id => id !== videoId)
+        });
+        isSaved = false;
+      }
+    });
+    return isSaved;
+  }
+
+  static async addComment(videoId, data) {
+    const commentData = {
+      uid: data.uid,
+      username: data.username || 'WWC User',
+      text: data.text,
+      createdAt: new Date()
+    };
+    
+    const commentRef = await db.collection('videos')
+      .doc(videoId)
+      .collection('comments')
+      .add(commentData);
+    
+    // Update comment count
+    const videoRef = db.collection('videos').doc(videoId);
+    await videoRef.update({
+      comments: (await videoRef.get()).data().comments + 1
+    });
+    
+    const comment = await commentRef.get();
+    return { id: comment.id, ...comment.data() };
+  }
+
+  static async getComments(videoId, limit = 30) {
+    const snapshot = await db.collection('videos')
+      .doc(videoId)
+      .collection('comments')
+      .orderBy('createdAt', 'desc')
+      .limit(limit)
+      .get();
+    const comments = [];
+    snapshot.forEach(doc => {
+      comments.push({ id: doc.id, ...doc.data() });
+    });
+    return comments;
+  }
+}
+
+module.exports = Video;
