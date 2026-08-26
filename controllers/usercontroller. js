@@ -1,0 +1,116 @@
+// controllers/userController.js
+const User = require('../models/User');
+const Video = require('../models/Video');
+
+const getProfile = async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const user = await User.findById(uid);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(user);
+  } catch (error) {
+    console.error('Get profile error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+const getCurrentUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.uid);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(user);
+  } catch (error) {
+    console.error('Get current user error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+const updateProfile = async (req, res) => {
+  try {
+    const { name, bio, photoURL, username } = req.body;
+    const uid = req.user.uid;
+
+    const updates = {};
+    if (name) updates.name = name;
+    if (bio) updates.bio = bio;
+    if (photoURL) updates.photoURL = photoURL;
+    if (username) updates.username = username;
+
+    const user = await User.update(uid, updates);
+    res.json(user);
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+const followUser = async (req, res) => {
+  try {
+    const { uid } = req.params;
+    await User.follow(req.user.uid, uid);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Follow error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+const unfollowUser = async (req, res) => {
+  try {
+    const { uid } = req.params;
+    await User.unfollow(req.user.uid, uid);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Unfollow error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+const getFollowers = async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const followers = await User.getFollowers(uid);
+    res.json(followers);
+  } catch (error) {
+    console.error('Get followers error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+const getFollowing = async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const following = await User.getFollowing(uid);
+    res.json(following);
+  } catch (error) {
+    console.error('Get following error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+const getUserVideos = async (req, res) => {
+  try {
+    const { uid } = req.params;
+    const limit = parseInt(req.query.limit) || 30;
+    const videos = await Video.findByUser(uid, limit);
+    res.json(videos);
+  } catch (error) {
+    console.error('Get user videos error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+module.exports = {
+  getProfile,
+  getCurrentUser,
+  updateProfile,
+  followUser,
+  unfollowUser,
+  getFollowers,
+  getFollowing,
+  getUserVideos
+};
