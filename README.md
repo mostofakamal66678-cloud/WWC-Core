@@ -1,17 +1,35 @@
-# WWC-Core# WWC-Core (WorldWide Connect Core)
+# WWC-Core Project Roadmap
 
-A TikTok-like video sharing platform with:
-- User registration/login
-- Video upload & streaming
-- Google AdSense integration
-- Premium subscription
-- Boost system for creators
+## ✅ ফিচার স্ট্যাটাস
 
-## 🚀 Tech Stack
-- Node.js + Express
-- MySQL
-- EJS
-- FFmpeg
+### 🟢 বর্তমানে আছে
+- [x] ইউজার রেজিস্ট্রেশন/লগইন
+- [x] ভিডিও আপলোড
+- [x] ভিডিও ফিড
+- [x] বেসিক HTML5 প্লেয়ার
 
-## 📝 License
-MIT
+### 🟡 পরবর্তী ধাপে যোগ হবে
+- [ ] ভিডিও কম্প্রেস (FFmpeg)
+- [ ] থাম্বনেইল জেনারেট
+- [ ] লাইক/আনলাইক
+- [ ] কমেন্ট সিস্টেম
+- [ ] ফলো/আনফলো
+- [ ] প্রোফাইল পেজ
+- [ ] ভিউ কাউন্ট
+
+### 🔴 ভবিষ্যতে যোগ হবে
+- [ ] Google AdSense
+- [ ] প্রিমিয়াম সাবস্ক্রিপশন
+- [ ] বুস্টিং সিস্টেম
+- [ ] HLS স্ট্রিমিং
+- [ ] রেকমেন্ডেশন অ্যালগরিদম
+- [ ] লাইভ স্ট্রিমিং
+- [ ] মাল্টি-ল্যাঙ্গুয়েজ
+- [ ] মোবাইল অ্যাপ
+
+## 📅 টাইমলাইন
+- ধাপ ১: ভিডিও কম্প্রেস + থাম্বনেইল (১ সপ্তাহ)
+- ধাপ ২: লাইক + কমেন্ট (১ সপ্তাহ)
+- ধাপ ৩: ফলো + প্রোফাইল (১ সপ্তাহ)
+- ধাপ ৪: ইনকাম ফিচার (২ সপ্তাহ)
+- ধাপ ৫: গ্লোবাল ফিচার (২ সপ্তাহ)
