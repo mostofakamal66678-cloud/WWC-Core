@@ -1,0 +1,65 @@
+const mongoose = require('mongoose');
+
+const VideoSchema = new mongoose.Schema({
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    username: {
+        type: String,
+        required: true
+    },
+    avatar: {
+        type: String,
+        default: '🐱'
+    },
+    title: {
+        type: String,
+        required: true,
+        maxlength: 150
+    },
+    description: {
+        type: String,
+        maxlength: 500
+    },
+    videoUrl: {
+        type: String,
+        required: true
+    },
+    thumbnailUrl: {
+        type: String
+    },
+    likes: {
+        type: Number,
+        default: 0
+    },
+    comments: {
+        type: Number,
+        default: 0
+    },
+    shares: {
+        type: Number,
+        default: 0
+    },
+    saved: {
+        type: Number,
+        default: 0
+    },
+    hashtags: [String],
+    views: {
+        type: Number,
+        default: 0
+    },
+    likedBy: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }]
+}, {
+    timestamps: true
+});
+
+VideoSchema.index({ hashtags: 1 });
+VideoSchema.index({ createdAt: -1 });
+
+module.exports = mongoose.model('Video', VideoSchema);
