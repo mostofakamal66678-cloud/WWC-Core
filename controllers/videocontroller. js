@@ -1,105 +1,281 @@
-// controllers/videoController.js
 const Video = require('../models/Video');
 
+// ===== ফিড (সব ভিডিও) =====
 const getFeed = async (req, res) => {
-  try {
-    const limit = parseInt(req.query.limit) || 30;
-    const videos = await Video.findAll(limit);
-    res.json(videos);
-  } catch (error) {
-    console.error('Get feed error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
+    try {
+        const limit = parseInt(req.query.limit) || 30;
+        const videos = await Video.find()
+            .sort({ createdAt: -1 })
+            .limit(limit)
+            .populate('userId', 'username fullName avatar');
 
-const getVideo = async (req, res) => {
-  try {
-    const { videoId } = req.params;
-    const video = await Video.findById(videoId);
-    if (!video) {
-      return res.status(404).json({ error: 'Video not found' });
+        res.json({
+            success: true,
+            count: videos.length,
+            videos
+        });
+    } catch (error) {
+        console.error('Get feed error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'সার্ভার সমস্যা'
+        });
     }
-    res.json(video);
-  } catch (error) {
-    console.error('Get video error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
 };
 
+// ===== একক ভিডিও =====
+const getVideo = async (req, res) => {
+    try {
+        const { videoId } = req.params;
+        const video = await Video.findById(videoId)
+            .populate('userId', 'username fullName avatar bio');
+
+        if (!video) {
+            return res.status(404).json({
+                success: false,
+                message: 'ভিডিও পাওয়া যায়নি'
+            });
+        }
+
+        // ভিউ বাড়ান
+        video.views += 1;
+        await video.save();
+
+        res.json({
+            success: true,
+            video
+        });
+    } catch (error) {
+        console.error('Get video error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'সার্ভার সমস্যা'
+        });
+    }
+};
+
+// ===== ভিডিও তৈরি (আপলোড) =====
 const createVideo = async (req, res) => {
-  try {
-    const videoData = {
-      uid: req.user.uid,
-      videoURL: req.body.videoURL,
-      caption: req.body.caption,
-      sound: req.body.sound,
-      username: req.body.username,
-      name: req.body.name,
-      photoURL: req.body.photoURL
-    };
-    const video = await Video.create(videoData);
-    res.status(201).json(video);
-  } catch (error) {
-    console.error('Create video error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+    try {
+        const { title, description, hashtags } = req.body;
+        const userId = req.user.id;
+        const username = req.user.username;
+        const avatar = req.user.avatar || '🐱';
+
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: 'ভিডিও ফাইল নির্বাচন করুন'
+            });
+        }
+
+        const hashtagArray = hashtags ? 
+            hashtags.split(',').map(tag => tag.trim()) : [];
+
+        const video = new Video({
+            userId,
+            username,
+            avatar,
+            title,
+            description,
+            videoUrl: req.file.path,
+            hashtags: hashtagArray
+        });
+
+        await video.save();
+
+        res.status(201).json({
+            success: true,
+            message: '🎉 ভিডিও আপলোড সফল!',
+            video
+        });
+
+    } catch (error) {
+        console.error('Create video error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'আপলোড ব্যর্থ!',
+            error: error.message
+        });
+    }
 };
 
+// ===== লাইক দেওয়া/তোলা =====
 const likeVideo = async (req, res) => {
-  try {
-    const { videoId } = req.params;
-    const video = await Video.like(videoId, req.user.uid);
-    res.json(video);
-  } catch (error) {
-    console.error('Like video error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+    try {
+        const { videoId } = req.params;
+        const userId = req.user.id;
+
+        const video = await Video.findById(videoId);
+        if (!video) {
+            return res.status(404).json({
+                success: false,
+                message: 'ভিডিও পাওয়া যায়নি'
+            });
+        }
+
+        const alreadyLiked = video.likedBy.includes(userId);
+
+        if (alreadyLiked) {
+            video.likes -= 1;
+            video.likedBy = video.likedBy.filter(id => id.toString() !== userId.toString());
+            await video.save();
+            return res.json({
+                success: true,
+                liked: false,
+                likes: video.likes,
+                message: 'লাইক রিমুভ করা হলো'
+            });
+        } else {
+            video.likes += 1;
+            video.likedBy.push(userId);
+            await video.save();
+            return res.json({
+                success: true,
+                liked: true,
+                likes: video.likes,
+                message: '❤️ লাইক দেওয়া হলো!'
+            });
+        }
+
+    } catch (error) {
+        console.error('Like video error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'সার্ভার সমস্যা'
+        });
+    }
 };
 
+// ===== ভিডিও সেভ করা =====
 const saveVideo = async (req, res) => {
-  try {
-    const { videoId } = req.params;
-    const isSaved = await Video.save(videoId, req.user.uid);
-    res.json({ saved: isSaved });
-  } catch (error) {
-    console.error('Save video error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+    try {
+        const { videoId } = req.params;
+        const userId = req.user.id;
+
+        const video = await Video.findById(videoId);
+        if (!video) {
+            return res.status(404).json({
+                success: false,
+                message: 'ভিডিও পাওয়া যায়নি'
+            });
+        }
+
+        // সেভ টগল (সিম্পল)
+        const isSaved = video.savedBy && video.savedBy.includes(userId);
+
+        if (isSaved) {
+            video.saved -= 1;
+            video.savedBy = video.savedBy.filter(id => id.toString() !== userId.toString());
+        } else {
+            video.saved += 1;
+            video.savedBy.push(userId);
+        }
+
+        await video.save();
+
+        res.json({
+            success: true,
+            saved: !isSaved,
+            saves: video.saved
+        });
+
+    } catch (error) {
+        console.error('Save video error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'সার্ভার সমস্যা'
+        });
+    }
 };
 
+// ===== কমেন্ট দেখা =====
 const getComments = async (req, res) => {
-  try {
-    const { videoId } = req.params;
-    const limit = parseInt(req.query.limit) || 30;
-    const comments = await Video.getComments(videoId, limit);
-    res.json(comments);
-  } catch (error) {
-    console.error('Get comments error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+    try {
+        const { videoId } = req.params;
+        const limit = parseInt(req.query.limit) || 30;
+
+        const video = await Video.findById(videoId)
+            .select('comments')
+            .populate('comments.userId', 'username fullName avatar');
+
+        if (!video) {
+            return res.status(404).json({
+                success: false,
+                message: 'ভিডিও পাওয়া যায়নি'
+            });
+        }
+
+        res.json({
+            success: true,
+            count: video.comments.length,
+            comments: video.comments.slice(-limit)
+        });
+
+    } catch (error) {
+        console.error('Get comments error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'সার্ভার সমস্যা'
+        });
+    }
 };
 
+// ===== কমেন্ট যোগ =====
 const addComment = async (req, res) => {
-  try {
-    const { videoId } = req.params;
-    const comment = await Video.addComment(videoId, {
-      uid: req.user.uid,
-      username: req.body.username,
-      text: req.body.text
-    });
-    res.status(201).json(comment);
-  } catch (error) {
-    console.error('Add comment error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+    try {
+        const { videoId } = req.params;
+        const { text } = req.body;
+        const userId = req.user.id;
+        const username = req.user.username;
+
+        if (!text || text.trim().length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'কমেন্ট লিখুন'
+            });
+        }
+
+        const video = await Video.findById(videoId);
+        if (!video) {
+            return res.status(404).json({
+                success: false,
+                message: 'ভিডিও পাওয়া যায়নি'
+            });
+        }
+
+        const comment = {
+            userId,
+            username,
+            text: text.trim(),
+            createdAt: new Date()
+        };
+
+        video.comments.push(comment);
+        video.comments += 1;
+        await video.save();
+
+        res.status(201).json({
+            success: true,
+            message: '✅ কমেন্ট যোগ করা হলো!',
+            comment
+        });
+
+    } catch (error) {
+        console.error('Add comment error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'সার্ভার সমস্যা'
+        });
+    }
 };
 
 module.exports = {
-  getFeed,
-  getVideo,
-  createVideo,
-  likeVideo,
-  saveVideo,
-  getComments,
-  addComment
-};
+    getFeed,
+    getVideo,
+    createVideo,
+    likeVideo,
+    saveVideo,
+    getComments,
+    addComment
+}; কি
