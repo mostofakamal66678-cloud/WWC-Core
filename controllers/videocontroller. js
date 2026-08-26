@@ -1,0 +1,105 @@
+// controllers/videoController.js
+const Video = require('../models/Video');
+
+const getFeed = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 30;
+    const videos = await Video.findAll(limit);
+    res.json(videos);
+  } catch (error) {
+    console.error('Get feed error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+const getVideo = async (req, res) => {
+  try {
+    const { videoId } = req.params;
+    const video = await Video.findById(videoId);
+    if (!video) {
+      return res.status(404).json({ error: 'Video not found' });
+    }
+    res.json(video);
+  } catch (error) {
+    console.error('Get video error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+const createVideo = async (req, res) => {
+  try {
+    const videoData = {
+      uid: req.user.uid,
+      videoURL: req.body.videoURL,
+      caption: req.body.caption,
+      sound: req.body.sound,
+      username: req.body.username,
+      name: req.body.name,
+      photoURL: req.body.photoURL
+    };
+    const video = await Video.create(videoData);
+    res.status(201).json(video);
+  } catch (error) {
+    console.error('Create video error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+const likeVideo = async (req, res) => {
+  try {
+    const { videoId } = req.params;
+    const video = await Video.like(videoId, req.user.uid);
+    res.json(video);
+  } catch (error) {
+    console.error('Like video error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+const saveVideo = async (req, res) => {
+  try {
+    const { videoId } = req.params;
+    const isSaved = await Video.save(videoId, req.user.uid);
+    res.json({ saved: isSaved });
+  } catch (error) {
+    console.error('Save video error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+const getComments = async (req, res) => {
+  try {
+    const { videoId } = req.params;
+    const limit = parseInt(req.query.limit) || 30;
+    const comments = await Video.getComments(videoId, limit);
+    res.json(comments);
+  } catch (error) {
+    console.error('Get comments error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+const addComment = async (req, res) => {
+  try {
+    const { videoId } = req.params;
+    const comment = await Video.addComment(videoId, {
+      uid: req.user.uid,
+      username: req.body.username,
+      text: req.body.text
+    });
+    res.status(201).json(comment);
+  } catch (error) {
+    console.error('Add comment error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+module.exports = {
+  getFeed,
+  getVideo,
+  createVideo,
+  likeVideo,
+  saveVideo,
+  getComments,
+  addComment
+};
