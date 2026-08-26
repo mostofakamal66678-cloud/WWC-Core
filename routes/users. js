@@ -1,0 +1,28 @@
+// routes/users.js
+const express = require('express');
+const router = express.Router();
+const { verifyToken } = require('../middleware/auth');
+const {
+  getProfile,
+  getCurrentUser,
+  updateProfile,
+  followUser,
+  unfollowUser,
+  getFollowers,
+  getFollowing,
+  getUserVideos
+} = require('../controllers/userController');
+
+// পাবলিক রাউট
+router.get('/:uid', getProfile);
+router.get('/:uid/followers', getFollowers);
+router.get('/:uid/following', getFollowing);
+router.get('/:uid/videos', getUserVideos);
+
+// প্রাইভেট রাউট (লগইন প্রয়োজন)
+router.get('/me', verifyToken, getCurrentUser);
+router.put('/me', verifyToken, updateProfile);
+router.post('/:uid/follow', verifyToken, followUser);
+router.delete('/:uid/follow', verifyToken, unfollowUser);
+
+module.exports = router;
