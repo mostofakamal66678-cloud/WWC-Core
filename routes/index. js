@@ -1,0 +1,14 @@
+// routes/index.js
+const express = require('express');
+const router = express.Router();
+const userRoutes = require('./users');
+const videoRoutes = require('./videos');
+
+router.get('/', (req, res) => {
+  res.json({ message: 'WWC API v1.0' });
+});
+
+router.use('/users', userRoutes);
+router.use('/videos', videoRoutes);
+
+module.exports = router;
