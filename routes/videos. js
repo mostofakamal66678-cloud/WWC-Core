@@ -1,0 +1,26 @@
+// routes/videos.js
+const express = require('express');
+const router = express.Router();
+const { verifyToken } = require('../middleware/auth');
+const {
+  getFeed,
+  getVideo,
+  createVideo,
+  likeVideo,
+  saveVideo,
+  getComments,
+  addComment
+} = require('../controllers/videoController');
+
+// পাবলিক রাউট
+router.get('/', getFeed);
+router.get('/:videoId', getVideo);
+router.get('/:videoId/comments', getComments);
+
+// প্রাইভেট রাউট (লগইন প্রয়োজন)
+router.post('/', verifyToken, createVideo);
+router.post('/:videoId/like', verifyToken, likeVideo);
+router.post('/:videoId/save', verifyToken, saveVideo);
+router.post('/:videoId/comments', verifyToken, addComment);
+
+module.exports = router;
