@@ -1,26 +1,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Github.com/mostofa</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 50px;
-            background: #f0f0f0;
-        }
-        h1 {
-            color: #2c3e50;
-        }
-        p {
-            font-size: 18px;
-            color: #f44336;
-            
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WWC - World Wide Connect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>হ্যালো, আমি মোস্তফা</h1>
-    <p>এটি আমার GitHub Pages সাইট</p>
+    <div id="video-feed"></div>
+
+    <!-- কমেন্ট মডেল -->
+    <div id="comment-modal">
+        <button class="close" id="close-comment"><i class="fas fa-times"></i></button>
+        <h3>মন্তব্য</h3>
+        <div class="comment-list" id="comment-list"></div>
+        <div class="comment-input-area">
+            <input type="text" id="comment-input" placeholder="মন্তব্য লিখুন..." />
+            <button id="comment-submit"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- নেভবার -->
+    <div class="navbar">
+        <a href="index.html" class="active"><i class="fas fa-home"></i><span>হোম</span></a>
+        <a href="upload.html"><i class="fas fa-plus-circle"></i><span>আপলোড</span></a>
+        <a href="profile.html"><i class="fas fa-user"></i><span>প্রোফাইল</span></a>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
