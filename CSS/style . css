@@ -1,10 +1,1284 @@
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;overscroll-behavior:none}
-button{border:0;outline:0;cursor:pointer;background:transparent;font-family:inherit}
-h1{font-size:24px;margin-bottom:10px}
-p{color:#888}
-.profile-container{padding-top:60px;max-width:500px;margin:0 auto;padding:16px}
-.retry-btn{padding:10px 20px;background:#fff;color:#000;border-radius:10px;font-weight:700}
-.feed-message{display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;padding:20px}
-.feed-message-inner{max-width:320px}
-.feed-message-icon{font-size:45px;margin-bottom:15px}
+/* =========================================================
+   WWC CORE - MOBILE VIDEO FEED
+   ========================================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
+
+  overscroll-behavior: none;
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  border: 0;
+  outline: 0;
+  cursor: pointer;
+  background: transparent;
+  font-family: inherit;
+  color: inherit;
+}
+
+button:disabled {
+  opacity: .65;
+  cursor: default;
+}
+
+
+/* =========================================================
+   APP
+   ========================================================= */
+
+.app {
+  position: relative;
+
+  width: 100%;
+  height: 100dvh;
+
+  overflow: hidden;
+
+  background: #000;
+}
+
+
+/* =========================================================
+   VIDEO FEED
+   ========================================================= */
+
+.feed {
+  position: relative;
+
+  width: 100%;
+  height: 100dvh;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: none;
+
+  background: #000;
+}
+
+.feed::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* =========================================================
+   VIDEO ITEM
+   ========================================================= */
+
+.video-item {
+  position: relative;
+
+  width: 100%;
+  height: 100dvh;
+  min-height: 100dvh;
+
+  overflow: hidden;
+
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+
+  background: #000;
+}
+
+
+/* =========================================================
+   VIDEO
+   ========================================================= */
+
+.video {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  display: block;
+
+  background: #000;
+}
+
+
+/* =========================================================
+   VIDEO LOADER
+   ========================================================= */
+
+.video-loader {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 42px;
+  height: 42px;
+
+  margin-left: -21px;
+  margin-top: -21px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  z-index: 8;
+}
+
+.video-loader span {
+  width: 34px;
+  height: 34px;
+
+  border: 3px solid rgba(255,255,255,.25);
+  border-top-color: #fff;
+
+  border-radius: 50%;
+
+  animation: wwcSpin .8s linear infinite;
+}
+
+@keyframes wwcSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================================================
+   TOP BAR
+   ========================================================= */
+
+.top-bar {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 100px;
+
+  padding:
+    calc(12px + env(safe-area-inset-top))
+    14px
+    10px;
+
+  display: flex;
+
+  align-items: flex-end;
+  justify-content: center;
+
+  z-index: 20;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0,0,0,.60),
+      rgba(0,0,0,.18),
+      transparent
+    );
+}
+
+
+/* =========================================================
+   TABS
+   ========================================================= */
+
+.tabs {
+  display: flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  padding: 4px;
+
+  border-radius: 30px;
+
+  background: rgba(0,0,0,.20);
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.tab {
+  min-width: 82px;
+
+  padding: 8px 13px;
+
+  border-radius: 22px;
+
+  color: rgba(255,255,255,.58);
+
+  font-size: 15px;
+  font-weight: 700;
+
+  transition: .2s ease;
+}
+
+.tab.active {
+  color: #fff;
+
+  background: rgba(255,255,255,.16);
+
+  box-shadow:
+    0 2px 10px rgba(0,0,0,.18);
+}
+
+
+/* =========================================================
+   SEARCH BUTTON
+   ========================================================= */
+
+.search-btn {
+  position: absolute;
+
+  right: 14px;
+  bottom: 10px;
+
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  color: #fff;
+
+  font-size: 21px;
+
+  background: rgba(0,0,0,.38);
+
+  border: 1px solid rgba(255,255,255,.35);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  transition: transform .2s ease;
+}
+
+.search-btn:active {
+  transform: scale(.90);
+}
+
+
+/* =========================================================
+   RIGHT ACTION BAR
+   ========================================================= */
+
+.action-bar {
+  position: absolute;
+
+  right: 10px;
+
+  bottom: 125px;
+
+  width: 58px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  gap: 17px;
+
+  z-index: 15;
+}
+
+
+/* =========================================================
+   ACTION
+   ========================================================= */
+
+.action {
+  width: 52px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  color: #fff;
+}
+
+
+/* =========================================================
+   ACTION BUTTON
+   ========================================================= */
+
+.action-bar > button.action {
+  min-height: 56px;
+
+  color: #fff;
+
+  transition:
+    transform .18s ease,
+    opacity .18s ease;
+}
+
+.action-bar > button.action:active {
+  transform: scale(.86);
+}
+
+
+/* =========================================================
+   ACTION ICON
+   ========================================================= */
+
+.action-icon {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  color: #fff;
+
+  font-size: 29px;
+
+  line-height: 1;
+
+  filter:
+    drop-shadow(0 2px 4px rgba(0,0,0,.55));
+}
+
+.action-count {
+  margin-top: 3px;
+
+  color: #fff;
+
+  font-size: 13px;
+
+  font-weight: 700;
+
+  line-height: 16px;
+
+  text-shadow:
+    0 1px 3px rgba(0,0,0,.8);
+}
+
+
+/* =========================================================
+   LIKE
+   ========================================================= */
+
+.like-btn .action-icon {
+  color: #fff;
+
+  transition:
+    transform .18s ease,
+    color .18s ease;
+}
+
+.like-btn.liked .action-icon {
+  color: #ff2d55;
+
+  transform: scale(1.16);
+
+  filter:
+    drop-shadow(0 2px 7px rgba(255,45,85,.55));
+}
+
+
+/* =========================================================
+   COMMENT
+   ========================================================= */
+
+.comment-btn .action-icon {
+  color: #fff;
+}
+
+
+/* =========================================================
+   SAVE
+   ========================================================= */
+
+.save-btn .action-icon {
+  color: #fff;
+
+  transition:
+    transform .18s ease,
+    color .18s ease;
+}
+
+.save-btn.saved .action-icon {
+  color: #42baff;
+
+  transform: scale(1.10);
+
+  filter:
+    drop-shadow(0 2px 6px rgba(66,186,255,.45));
+}
+
+
+/* =========================================================
+   SHARE
+   ========================================================= */
+
+.share-btn .action-icon {
+  color: #fff;
+}
+
+
+/* =========================================================
+   CREATOR AVATAR
+   ========================================================= */
+
+.creator-avatar {
+  position: relative;
+
+  width: 52px;
+  height: 52px;
+
+  margin-bottom: 2px;
+}
+
+.creator-avatar img {
+  width: 52px;
+  height: 52px;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+
+  border: 2px solid #fff;
+
+  background: #222;
+
+  display: block;
+
+  box-shadow:
+    0 2px 8px rgba(0,0,0,.55);
+}
+
+
+/* =========================================================
+   FOLLOW PLUS
+   ========================================================= */
+
+.follow-plus {
+  position: absolute;
+
+  left: 50%;
+  bottom: -11px;
+
+  width: 24px;
+  height: 24px;
+
+  transform: translateX(-50%);
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #fe2c55;
+
+  color: #fff;
+
+  border: 2px solid #fff;
+
+  font-size: 17px;
+
+  font-weight: 800;
+
+  line-height: 1;
+
+  box-shadow:
+    0 2px 7px rgba(0,0,0,.45);
+
+  transition: .2s ease;
+}
+
+.follow-plus:active {
+  transform: translateX(-50%) scale(.85);
+}
+
+.follow-plus.following {
+  background: #fff;
+
+  color: #111;
+}
+
+
+/* =========================================================
+   SOUND BUTTON
+   ========================================================= */
+
+.sound-btn {
+  position: absolute;
+
+  left: 14px;
+  bottom: 130px;
+
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  color: #fff;
+
+  font-size: 18px;
+
+  background: rgba(0,0,0,.40);
+
+  border: 1px solid rgba(255,255,255,.28);
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  z-index: 16;
+}
+
+
+/* =========================================================
+   VIDEO INFO
+   ========================================================= */
+
+.video-info {
+  position: absolute;
+
+  left: 15px;
+  right: 78px;
+
+  bottom: 76px;
+
+  z-index: 12;
+
+  color: #fff;
+
+  text-shadow:
+    0 1px 4px rgba(0,0,0,.85);
+}
+
+
+/* =========================================================
+   USERNAME
+   ========================================================= */
+
+.username {
+  display: inline-block;
+
+  margin-bottom: 7px;
+
+  color: #fff;
+
+  font-size: 17px;
+
+  font-weight: 800;
+
+  line-height: 22px;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   CAPTION
+   ========================================================= */
+
+.caption {
+  max-width: 100%;
+
+  color: #fff;
+
+  font-size: 15px;
+
+  line-height: 1.35;
+
+  word-break: break-word;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+
+  overflow: hidden;
+}
+
+
+/* =========================================================
+   SOUND TEXT
+   ========================================================= */
+
+.sound {
+  margin-top: 7px;
+
+  color: rgba(255,255,255,.90);
+
+  font-size: 13px;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   PAUSE INDICATOR
+   ========================================================= */
+
+.pause-indicator {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 72px;
+  height: 72px;
+
+  margin-left: -36px;
+  margin-top: -36px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: rgba(0,0,0,.45);
+
+  color: #fff;
+
+  font-size: 28px;
+
+  opacity: 0;
+
+  transform: scale(.75);
+
+  pointer-events: none;
+
+  transition:
+    opacity .18s ease,
+    transform .18s ease;
+
+  z-index: 18;
+}
+
+.pause-indicator.show {
+  opacity: 1;
+
+  transform: scale(1);
+}
+
+
+/* =========================================================
+   BOTTOM NAVIGATION
+   ========================================================= */
+
+.bottom-nav {
+  position: fixed;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: calc(66px + env(safe-area-inset-bottom));
+
+  padding-bottom: env(safe-area-inset-bottom);
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-around;
+
+  background: rgba(0,0,0,.94);
+
+  border-top: 1px solid rgba(255,255,255,.08);
+
+  z-index: 50;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+
+/* =========================================================
+   NAV BUTTON
+   ========================================================= */
+
+.nav-btn {
+  position: relative;
+
+  flex: 1;
+
+  height: 66px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 3px;
+
+  color: #999;
+
+  font-size: 11px;
+
+  font-weight: 600;
+
+  transition:
+    color .18s ease,
+    transform .18s ease;
+}
+
+.nav-btn:active {
+  transform: scale(.88);
+}
+
+.nav-btn.active {
+  color: #fff;
+}
+
+
+/* =========================================================
+   NAV ICON
+   ========================================================= */
+
+.nav-icon {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-size: 23px;
+}
+
+.nav-btn.active .nav-icon {
+  filter:
+    drop-shadow(0 2px 5px rgba(255,255,255,.20));
+}
+
+
+/* =========================================================
+   UPLOAD BUTTON
+   ========================================================= */
+
+.upload-btn {
+  width: 50px;
+  height: 38px;
+
+  margin-bottom: 3px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 11px;
+
+  background: #fff;
+
+  color: #000;
+
+  font-size: 25px;
+
+  box-shadow:
+    0 3px 12px rgba(255,255,255,.16);
+
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease;
+}
+
+.nav-btn:active .upload-btn {
+  transform: scale(.90);
+}
+
+
+/* =========================================================
+   COMMENT PANEL
+   ========================================================= */
+
+.comment-panel {
+  position: fixed;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: min(72dvh, 620px);
+
+  display: flex;
+
+  flex-direction: column;
+
+  background: #151515;
+
+  border-radius: 22px 22px 0 0;
+
+  box-shadow:
+    0 -8px 35px rgba(0,0,0,.55);
+
+  transform: translateY(105%);
+
+  transition:
+    transform .25s cubic-bezier(.22,.61,.36,1);
+
+  z-index: 100;
+}
+
+.comment-panel.open {
+  transform: translateY(0);
+}
+
+
+/* =========================================================
+   COMMENT HEADER
+   ========================================================= */
+
+.comment-header {
+  min-height: 58px;
+
+  padding: 0 17px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid #2d2d2d;
+
+  color: #fff;
+
+  font-size: 17px;
+
+  font-weight: 800;
+}
+
+.close-comments {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  color: #fff;
+
+  font-size: 18px;
+
+  background: #292929;
+}
+
+
+/* =========================================================
+   COMMENTS LIST
+   ========================================================= */
+
+.comments-list {
+  flex: 1;
+
+  overflow-y: auto;
+
+  padding: 12px 15px 20px;
+
+  scrollbar-width: none;
+}
+
+.comments-list::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* =========================================================
+   COMMENT
+   ========================================================= */
+
+.comment {
+  padding: 11px 0;
+
+  color: #ddd;
+
+  font-size: 14px;
+
+  line-height: 1.45;
+
+  border-bottom: 1px solid #252525;
+}
+
+.comment strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: #fff;
+
+  font-size: 14px;
+}
+
+
+/* =========================================================
+   COMMENT INPUT
+   ========================================================= */
+
+.comment-input {
+  display: flex;
+
+  gap: 9px;
+
+  padding:
+    10px
+    12px
+    calc(10px + env(safe-area-inset-bottom));
+
+  background: #181818;
+
+  border-top: 1px solid #292929;
+}
+
+.comment-input input {
+  flex: 1;
+
+  min-width: 0;
+
+  height: 44px;
+
+  padding: 0 14px;
+
+  border: 1px solid #3a3a3a;
+
+  border-radius: 22px;
+
+  outline: none;
+
+  background: #252525;
+
+  color: #fff;
+
+  font-size: 14px;
+}
+
+.comment-input input::placeholder {
+  color: #888;
+}
+
+.comment-input button {
+  width: 44px;
+  height: 44px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #fe2c55;
+
+  color: #fff;
+
+  font-size: 17px;
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.toast {
+  position: fixed;
+
+  left: 50%;
+  bottom: 90px;
+
+  min-width: 120px;
+  max-width: 80%;
+
+  padding: 11px 17px;
+
+  transform:
+    translate(-50%, 20px);
+
+  border-radius: 24px;
+
+  background: rgba(30,30,30,.94);
+
+  border: 1px solid rgba(255,255,255,.12);
+
+  color: #fff;
+
+  text-align: center;
+
+  font-size: 14px;
+
+  font-weight: 600;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition:
+    opacity .2s ease,
+    transform .2s ease;
+
+  z-index: 200;
+}
+
+.toast.show {
+  opacity: 1;
+
+  transform:
+    translate(-50%, 0);
+}
+
+
+/* =========================================================
+   FEED MESSAGE
+   ========================================================= */
+
+.feed-message {
+  width: 100%;
+  height: 100dvh;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  padding: 25px;
+
+  background: #000;
+
+  color: #fff;
+}
+
+.feed-message-inner {
+  width: 100%;
+  max-width: 320px;
+}
+
+.feed-message-icon {
+  margin-bottom: 15px;
+
+  font-size: 48px;
+}
+
+.feed-message-inner > div:not(.feed-message-icon) {
+  color: #fff;
+
+  font-size: 17px;
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   RETRY / LOGIN BUTTON
+   ========================================================= */
+
+.retry-btn {
+  margin-top: 18px;
+
+  padding: 11px 25px;
+
+  border-radius: 10px;
+
+  background: #fff;
+
+  color: #000;
+
+  font-size: 14px;
+
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   GENERAL PROFILE
+   ========================================================= */
+
+.profile-container {
+  width: 100%;
+  max-width: 500px;
+
+  min-height: 100dvh;
+
+  margin: 0 auto;
+
+  padding:
+    70px
+    16px
+    90px;
+}
+
+h1 {
+  margin-bottom: 10px;
+
+  font-size: 24px;
+}
+
+p {
+  color: #888;
+}
+
+
+/* =========================================================
+   SMALL PHONES
+   ========================================================= */
+
+@media (max-width: 380px) {
+
+  .action-bar {
+    right: 5px;
+    bottom: 112px;
+
+    gap: 12px;
+  }
+
+  .action-icon {
+    width: 43px;
+    height: 43px;
+
+    font-size: 25px;
+  }
+
+  .action-count {
+    font-size: 12px;
+  }
+
+  .creator-avatar,
+  .creator-avatar img {
+    width: 47px;
+    height: 47px;
+  }
+
+  .follow-plus {
+    width: 22px;
+    height: 22px;
+
+    font-size: 15px;
+  }
+
+  .video-info {
+    left: 11px;
+    right: 67px;
+
+    bottom: 72px;
+  }
+
+  .username {
+    font-size: 15px;
+  }
+
+  .caption {
+    font-size: 14px;
+  }
+
+  .sound {
+    font-size: 12px;
+  }
+
+  .sound-btn {
+    left: 10px;
+    bottom: 120px;
+
+    width: 38px;
+    height: 38px;
+  }
+
+  .upload-btn {
+    width: 46px;
+    height: 36px;
+  }
+
+  .nav-btn {
+    font-size: 10px;
+  }
+
+  .nav-icon {
+    font-size: 21px;
+  }
+}
+
+
+/* =========================================================
+   TALL PHONES
+   ========================================================= */
+
+@media (min-height: 750px) {
+
+  .action-bar {
+    bottom: 135px;
+  }
+
+  .video-info {
+    bottom: 82px;
+  }
+
+  .sound-btn {
+    bottom: 140px;
+  }
+}
+
+
+/* =========================================================
+   TOUCH
+   ========================================================= */
+
+@media (hover: none) {
+
+  .action-bar > button.action:hover {
+    transform: none;
+  }
+
+  .nav-btn:hover {
+    color: inherit;
+  }
+}
