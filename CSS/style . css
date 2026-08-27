@@ -1,0 +1,10 @@
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;overscroll-behavior:none}
+button{border:0;outline:0;cursor:pointer;background:transparent;font-family:inherit}
+h1{font-size:24px;margin-bottom:10px}
+p{color:#888}
+.profile-container{padding-top:60px;max-width:500px;margin:0 auto;padding:16px}
+.retry-btn{padding:10px 20px;background:#fff;color:#000;border-radius:10px;font-weight:700}
+.feed-message{display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;padding:20px}
+.feed-message-inner{max-width:320px}
+.feed-message-icon{font-size:45px;margin-bottom:15px}
