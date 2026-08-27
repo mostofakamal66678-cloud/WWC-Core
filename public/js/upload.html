@@ -1,17 +1,71 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Upload · WWC</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <link rel="stylesheet" href="./css/style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>আপলোড - WWC</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div style="max-width:500px;margin:0 auto;padding:16px;padding-top:60px;">
-  <h1>📤 Upload Video</h1>
-  <p>Upload your video here</p>
-  <button onclick="window.location.href='./index.html'">Back to Home</button>
-</div>
+    <div class="upload-container">
+        <h2 style="text-align:center;">ভিডিও আপলোড</h2>
+        <input type="file" id="videoFile" accept="video/*" />
+        <input type="text" id="caption" placeholder="ক্যাপশন লিখুন..." />
+        <button id="upload-btn"><i class="fas fa-cloud-upload-alt"></i> আপলোড</button>
+        <div id="progress" style="margin-top:10px;color:#1da1f2;"></div>
+    </div>
+
+    <div class="navbar">
+        <a href="index.html"><i class="fas fa-home"></i><span>হোম</span></a>
+        <a href="upload.html" class="active"><i class="fas fa-plus-circle"></i><span>আপলোড</span></a>
+        <a href="profile.html"><i class="fas fa-user"></i><span>প্রোফাইল</span></a>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script>
+        auth.onAuthStateChanged(user => {
+            if (!user) window.location.href = 'login.html';
+        });
+
+        document.getElementById('upload-btn').addEventListener('click', () => {
+            const file = document.getElementById('videoFile').files[0];
+            const caption = document.getElementById('caption').value;
+            const user = auth.currentUser;
+            if (!file) return alert('ভিডিও সিলেক্ট করুন!');
+
+            const storageRef = storage.ref(`videos/${user.uid}/${Date.now()}_${file.name}`);
+            const uploadTask = storageRef.put(file);
+            const progress = document.getElementById('progress');
+
+            uploadTask.on('state_changed',
+                snapshot => {
+                    const pct = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    progress.textContent = `আপলোড: ${Math.round(pct)}%`;
+                },
+                err => alert(err.message),
+                () => {
+                    uploadTask.snapshot.ref.getDownloadURL().then(url => {
+                        db.collection('videos').add({
+                            videoUrl: url,
+                            caption: caption,
+                            username: user.displayName || 'ইউজার',
+                            uid: user.uid,
+                            likes: 0,
+                            comments: 0,
+                            createdAt: Date.now()
+                        }).then(() => {
+                            progress.textContent = '✅ আপলোড সম্পন্ন!';
+                            setTimeout(() => window.location.href = 'index.html', 1500);
+                        });
+                    });
+                }
+            );
+        });
+    </script>
 </body>
 </html>
