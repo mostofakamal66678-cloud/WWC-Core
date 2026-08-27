@@ -12,6 +12,7 @@
 
 <div class="app">
   <main class="feed" id="feed"></main>
+
   
   <nav class="bottom-nav">
     <button class="nav-btn active" onclick="goHome()">
