@@ -1,5 +1,6 @@
 /* =========================================================
-   WWC CORE - MOBILE VIDEO FEED
+   WWC - MOBILE VIDEO FEED
+   TikTok Style UI
    ========================================================= */
 
 * {
@@ -22,41 +23,31 @@ body {
     Roboto,
     Arial,
     sans-serif;
-
-  overscroll-behavior: none;
 }
 
 body {
-  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+button,
+input {
+  font-family: inherit;
 }
 
 button {
   border: 0;
-  outline: 0;
+  outline: none;
   cursor: pointer;
   background: transparent;
-  font-family: inherit;
   color: inherit;
+  -webkit-tap-highlight-color: transparent;
 }
-
-button:disabled {
-  opacity: .65;
-  cursor: default;
-}
-
-
-/* =========================================================
-   APP
-   ========================================================= */
 
 .app {
   position: relative;
-
   width: 100%;
   height: 100dvh;
-
   overflow: hidden;
-
   background: #000;
 }
 
@@ -80,8 +71,6 @@ button:disabled {
   -webkit-overflow-scrolling: touch;
 
   scrollbar-width: none;
-
-  background: #000;
 }
 
 .feed::-webkit-scrollbar {
@@ -100,18 +89,16 @@ button:disabled {
   height: 100dvh;
   min-height: 100dvh;
 
-  overflow: hidden;
+  background: #000;
 
   scroll-snap-align: start;
   scroll-snap-stop: always;
 
-  background: #000;
+  overflow: hidden;
 }
 
 
-/* =========================================================
-   VIDEO
-   ========================================================= */
+/* VIDEO */
 
 .video {
   position: absolute;
@@ -123,52 +110,36 @@ button:disabled {
 
   object-fit: cover;
 
-  display: block;
-
   background: #000;
+
+  display: block;
 }
 
 
 /* =========================================================
-   VIDEO LOADER
+   DARK VIDEO GRADIENT
    ========================================================= */
 
-.video-loader {
+.video-item::after {
+  content: "";
+
   position: absolute;
 
-  top: 50%;
-  left: 50%;
+  inset: 0;
 
-  width: 42px;
-  height: 42px;
+  pointer-events: none;
 
-  margin-left: -21px;
-  margin-top: -21px;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, .40) 0%,
+      rgba(0, 0, 0, .05) 20%,
+      transparent 48%,
+      rgba(0, 0, 0, .08) 65%,
+      rgba(0, 0, 0, .72) 100%
+    );
 
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  z-index: 8;
-}
-
-.video-loader span {
-  width: 34px;
-  height: 34px;
-
-  border: 3px solid rgba(255,255,255,.25);
-  border-top-color: #fff;
-
-  border-radius: 50%;
-
-  animation: wwcSpin .8s linear infinite;
-}
-
-@keyframes wwcSpin {
-  to {
-    transform: rotate(360deg);
-  }
+  z-index: 1;
 }
 
 
@@ -183,27 +154,51 @@ button:disabled {
   left: 0;
   right: 0;
 
-  height: 100px;
+  height: 108px;
 
   padding:
-    calc(12px + env(safe-area-inset-top))
-    14px
-    10px;
+    calc(18px + env(safe-area-inset-top))
+    18px
+    14px;
 
   display: flex;
 
   align-items: flex-end;
   justify-content: center;
 
-  z-index: 20;
+  z-index: 10;
 
   background:
     linear-gradient(
       to bottom,
-      rgba(0,0,0,.60),
-      rgba(0,0,0,.18),
+      rgba(0, 0, 0, .55),
+      rgba(0, 0, 0, .12),
       transparent
     );
+}
+
+
+/* =========================================================
+   WWC LOGO / TOP AREA
+   ========================================================= */
+
+.top-bar::before {
+  content: "🌐  WWC";
+
+  position: absolute;
+
+  left: 20px;
+  bottom: 19px;
+
+  color: #fff;
+
+  font-size: 22px;
+  font-weight: 800;
+
+  letter-spacing: .2px;
+
+  text-shadow:
+    0 1px 5px rgba(0, 0, 0, .5);
 }
 
 
@@ -216,16 +211,16 @@ button:disabled {
 
   align-items: center;
 
-  gap: 4px;
+  gap: 6px;
 
-  padding: 4px;
+  padding: 3px;
 
-  border-radius: 30px;
+  border-radius: 22px;
 
-  background: rgba(0,0,0,.20);
+  background: rgba(255, 255, 255, .08);
 
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .tab {
@@ -233,12 +228,12 @@ button:disabled {
 
   padding: 8px 13px;
 
-  border-radius: 22px;
+  border-radius: 18px;
 
-  color: rgba(255,255,255,.58);
+  color: rgba(255, 255, 255, .55);
 
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
 
   transition: .2s ease;
 }
@@ -246,10 +241,10 @@ button:disabled {
 .tab.active {
   color: #fff;
 
-  background: rgba(255,255,255,.16);
+  background: rgba(255, 255, 255, .22);
 
   box-shadow:
-    0 2px 10px rgba(0,0,0,.18);
+    0 3px 12px rgba(0, 0, 0, .15);
 }
 
 
@@ -260,11 +255,11 @@ button:disabled {
 .search-btn {
   position: absolute;
 
-  right: 14px;
-  bottom: 10px;
+  right: 15px;
+  bottom: 13px;
 
-  width: 48px;
-  height: 48px;
+  width: 45px;
+  height: 45px;
 
   display: flex;
 
@@ -275,33 +270,34 @@ button:disabled {
 
   color: #fff;
 
-  font-size: 21px;
+  background: rgba(0, 0, 0, .38);
 
-  background: rgba(0,0,0,.38);
-
-  border: 1px solid rgba(255,255,255,.35);
+  border: 1px solid rgba(255, 255, 255, .35);
 
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 
-  transition: transform .2s ease;
+  font-size: 20px;
+
+  z-index: 20;
+
+  transition: .2s ease;
 }
 
 .search-btn:active {
-  transform: scale(.90);
+  transform: scale(.9);
 }
 
 
 /* =========================================================
-   RIGHT ACTION BAR
+   ACTION BAR
    ========================================================= */
 
 .action-bar {
   position: absolute;
 
   right: 10px;
-
-  bottom: 125px;
+  bottom: 155px;
 
   width: 58px;
 
@@ -311,18 +307,22 @@ button:disabled {
 
   align-items: center;
 
-  gap: 17px;
+  gap: 15px;
 
-  z-index: 15;
+  z-index: 10;
 }
 
 
 /* =========================================================
-   ACTION
+   ACTION BUTTON
    ========================================================= */
 
 .action {
-  width: 52px;
+  width: 55px;
+
+  min-height: 58px;
+
+  padding: 0;
 
   display: flex;
 
@@ -331,25 +331,17 @@ button:disabled {
   align-items: center;
   justify-content: center;
 
-  color: #fff;
-}
-
-
-/* =========================================================
-   ACTION BUTTON
-   ========================================================= */
-
-.action-bar > button.action {
-  min-height: 56px;
+  gap: 3px;
 
   color: #fff;
 
-  transition:
-    transform .18s ease,
-    opacity .18s ease;
+  text-shadow:
+    0 1px 4px rgba(0, 0, 0, .7);
+
+  transition: transform .18s ease;
 }
 
-.action-bar > button.action:active {
+.action:active {
   transform: scale(.86);
 }
 
@@ -367,29 +359,24 @@ button:disabled {
   align-items: center;
   justify-content: center;
 
-  color: #fff;
-
   font-size: 29px;
 
-  line-height: 1;
+  color: #fff;
 
   filter:
-    drop-shadow(0 2px 4px rgba(0,0,0,.55));
+    drop-shadow(0 2px 5px rgba(0, 0, 0, .55));
 }
 
 .action-count {
-  margin-top: 3px;
-
   color: #fff;
 
   font-size: 13px;
-
   font-weight: 700;
 
   line-height: 16px;
 
   text-shadow:
-    0 1px 3px rgba(0,0,0,.8);
+    0 1px 4px #000;
 }
 
 
@@ -399,19 +386,18 @@ button:disabled {
 
 .like-btn .action-icon {
   color: #fff;
-
-  transition:
-    transform .18s ease,
-    color .18s ease;
 }
 
 .like-btn.liked .action-icon {
   color: #ff2d55;
 
-  transform: scale(1.16);
+  transform: scale(1.18);
 
-  filter:
-    drop-shadow(0 2px 7px rgba(255,45,85,.55));
+  animation: heartPop .28s ease;
+}
+
+.like-btn.liked .action-count {
+  color: #ff4f70;
 }
 
 
@@ -430,19 +416,16 @@ button:disabled {
 
 .save-btn .action-icon {
   color: #fff;
-
-  transition:
-    transform .18s ease,
-    color .18s ease;
 }
 
 .save-btn.saved .action-icon {
-  color: #42baff;
+  color: #28aef7;
 
-  transform: scale(1.10);
+  transform: scale(1.12);
+}
 
-  filter:
-    drop-shadow(0 2px 6px rgba(66,186,255,.45));
+.save-btn.saved .action-count {
+  color: #28aef7;
 }
 
 
@@ -465,25 +448,27 @@ button:disabled {
   width: 52px;
   height: 52px;
 
-  margin-bottom: 2px;
+  border-radius: 50%;
+
+  padding: 2px;
+
+  background: #fff;
+
+  box-shadow:
+    0 2px 12px rgba(0, 0, 0, .45);
 }
 
 .creator-avatar img {
-  width: 52px;
-  height: 52px;
-
-  object-fit: cover;
-
-  border-radius: 50%;
-
-  border: 2px solid #fff;
-
-  background: #222;
+  width: 100%;
+  height: 100%;
 
   display: block;
 
-  box-shadow:
-    0 2px 8px rgba(0,0,0,.55);
+  border-radius: 50%;
+
+  object-fit: cover;
+
+  background: #222;
 }
 
 
@@ -495,17 +480,12 @@ button:disabled {
   position: absolute;
 
   left: 50%;
-  bottom: -11px;
+  bottom: -9px;
 
-  width: 24px;
-  height: 24px;
+  width: 25px;
+  height: 25px;
 
   transform: translateX(-50%);
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
 
   border-radius: 50%;
 
@@ -515,26 +495,28 @@ button:disabled {
 
   border: 2px solid #fff;
 
-  font-size: 17px;
+  display: flex;
 
+  align-items: center;
+  justify-content: center;
+
+  font-size: 17px;
   font-weight: 800;
 
-  line-height: 1;
-
   box-shadow:
-    0 2px 7px rgba(0,0,0,.45);
+    0 2px 8px rgba(0, 0, 0, .5);
+
+  z-index: 5;
 
   transition: .2s ease;
 }
 
-.follow-plus:active {
-  transform: translateX(-50%) scale(.85);
+.follow-plus.following {
+  background: #555;
 }
 
-.follow-plus.following {
-  background: #fff;
-
-  color: #111;
+.follow-plus:active {
+  transform: translateX(-50%) scale(.85);
 }
 
 
@@ -545,31 +527,37 @@ button:disabled {
 .sound-btn {
   position: absolute;
 
-  left: 14px;
-  bottom: 130px;
+  right: 17px;
+  top: 125px;
 
-  width: 42px;
-  height: 42px;
+  width: 43px;
+  height: 43px;
+
+  border-radius: 50%;
 
   display: flex;
 
   align-items: center;
   justify-content: center;
 
-  border-radius: 50%;
-
   color: #fff;
 
-  font-size: 18px;
+  background: rgba(0, 0, 0, .42);
 
-  background: rgba(0,0,0,.40);
-
-  border: 1px solid rgba(255,255,255,.28);
+  border: 1px solid rgba(255, 255, 255, .28);
 
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 
-  z-index: 16;
+  font-size: 18px;
+
+  z-index: 10;
+
+  transition: .2s ease;
+}
+
+.sound-btn:active {
+  transform: scale(.88);
 }
 
 
@@ -580,44 +568,39 @@ button:disabled {
 .video-info {
   position: absolute;
 
-  left: 15px;
-  right: 78px;
+  left: 18px;
+  right: 85px;
 
-  bottom: 76px;
+  bottom: 78px;
 
-  z-index: 12;
+  z-index: 10;
 
   color: #fff;
 
   text-shadow:
-    0 1px 4px rgba(0,0,0,.85);
+    0 2px 6px rgba(0, 0, 0, .7);
 }
 
 
-/* =========================================================
-   USERNAME
-   ========================================================= */
+/* USERNAME */
 
 .username {
   display: inline-block;
 
-  margin-bottom: 7px;
+  max-width: 100%;
 
   color: #fff;
 
   font-size: 17px;
-
   font-weight: 800;
 
-  line-height: 22px;
+  margin-bottom: 7px;
 
   cursor: pointer;
 }
 
 
-/* =========================================================
-   CAPTION
-   ========================================================= */
+/* CAPTION */
 
 .caption {
   max-width: 100%;
@@ -626,26 +609,18 @@ button:disabled {
 
   font-size: 15px;
 
-  line-height: 1.35;
+  line-height: 1.45;
 
   word-break: break-word;
-
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-
-  overflow: hidden;
 }
 
 
-/* =========================================================
-   SOUND TEXT
-   ========================================================= */
+/* SOUND */
 
 .sound {
   margin-top: 7px;
 
-  color: rgba(255,255,255,.90);
+  color: rgba(255, 255, 255, .88);
 
   font-size: 13px;
 
@@ -664,45 +639,75 @@ button:disabled {
 .pause-indicator {
   position: absolute;
 
-  top: 50%;
   left: 50%;
+  top: 50%;
 
-  width: 72px;
-  height: 72px;
+  width: 70px;
+  height: 70px;
 
-  margin-left: -36px;
-  margin-top: -36px;
+  transform:
+    translate(-50%, -50%)
+    scale(.8);
+
+  border-radius: 50%;
 
   display: flex;
 
   align-items: center;
   justify-content: center;
 
-  border-radius: 50%;
-
-  background: rgba(0,0,0,.45);
+  background: rgba(0, 0, 0, .55);
 
   color: #fff;
 
-  font-size: 28px;
+  font-size: 30px;
 
   opacity: 0;
 
-  transform: scale(.75);
-
   pointer-events: none;
 
-  transition:
-    opacity .18s ease,
-    transform .18s ease;
+  z-index: 20;
 
-  z-index: 18;
+  transition: .2s ease;
 }
 
 .pause-indicator.show {
   opacity: 1;
 
-  transform: scale(1);
+  transform:
+    translate(-50%, -50%)
+    scale(1);
+}
+
+
+/* =========================================================
+   VIDEO LOADER
+   ========================================================= */
+
+.video-loader {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  transform: translate(-50%, -50%);
+
+  width: 45px;
+  height: 45px;
+
+  border-radius: 50%;
+
+  border: 4px solid rgba(255, 255, 255, .25);
+
+  border-top-color: #fff;
+
+  animation: spin 1s linear infinite;
+
+  z-index: 8;
+}
+
+.video-loader span {
+  display: none;
 }
 
 
@@ -717,18 +722,19 @@ button:disabled {
   right: 0;
   bottom: 0;
 
-  height: calc(66px + env(safe-area-inset-bottom));
+  height: 68px;
 
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom:
+    env(safe-area-inset-bottom);
 
   display: flex;
 
   align-items: center;
   justify-content: space-around;
 
-  background: rgba(0,0,0,.94);
+  background: rgba(0, 0, 0, .94);
 
-  border-top: 1px solid rgba(255,255,255,.08);
+  border-top: 1px solid rgba(255, 255, 255, .06);
 
   z-index: 50;
 
@@ -746,7 +752,7 @@ button:disabled {
 
   flex: 1;
 
-  height: 66px;
+  height: 100%;
 
   display: flex;
 
@@ -757,19 +763,16 @@ button:disabled {
 
   gap: 3px;
 
-  color: #999;
+  color: #888;
 
   font-size: 11px;
-
   font-weight: 600;
 
-  transition:
-    color .18s ease,
-    transform .18s ease;
+  transition: .18s ease;
 }
 
 .nav-btn:active {
-  transform: scale(.88);
+  transform: scale(.9);
 }
 
 .nav-btn.active {
@@ -777,9 +780,7 @@ button:disabled {
 }
 
 
-/* =========================================================
-   NAV ICON
-   ========================================================= */
+/* NAV ICON */
 
 .nav-icon {
   width: 30px;
@@ -793,21 +794,16 @@ button:disabled {
   font-size: 23px;
 }
 
-.nav-btn.active .nav-icon {
-  filter:
-    drop-shadow(0 2px 5px rgba(255,255,255,.20));
-}
-
 
 /* =========================================================
-   UPLOAD BUTTON
+   CREATE / UPLOAD BUTTON
    ========================================================= */
 
 .upload-btn {
-  width: 50px;
+  width: 48px;
   height: 38px;
 
-  margin-bottom: 3px;
+  margin-top: -5px;
 
   display: flex;
 
@@ -820,18 +816,45 @@ button:disabled {
 
   color: #000;
 
-  font-size: 25px;
+  font-size: 23px;
 
   box-shadow:
-    0 3px 12px rgba(255,255,255,.16);
+    0 3px 12px rgba(0, 0, 0, .5);
 
-  transition:
-    transform .18s ease,
-    box-shadow .18s ease;
+  position: relative;
 }
 
-.nav-btn:active .upload-btn {
-  transform: scale(.90);
+
+/* Small colored edge */
+
+.upload-btn::before {
+  content: "";
+
+  position: absolute;
+
+  left: -3px;
+
+  width: 4px;
+  height: 27px;
+
+  border-radius: 4px;
+
+  background: #25f4ee;
+}
+
+.upload-btn::after {
+  content: "";
+
+  position: absolute;
+
+  right: -3px;
+
+  width: 4px;
+  height: 27px;
+
+  border-radius: 4px;
+
+  background: #fe2c55;
 }
 
 
@@ -848,23 +871,25 @@ button:disabled {
 
   height: min(72dvh, 620px);
 
-  display: flex;
-
-  flex-direction: column;
-
   background: #151515;
 
   border-radius: 22px 22px 0 0;
 
   box-shadow:
-    0 -8px 35px rgba(0,0,0,.55);
+    0 -10px 35px rgba(0, 0, 0, .55);
 
   transform: translateY(105%);
 
   transition:
-    transform .25s cubic-bezier(.22,.61,.36,1);
+    transform .28s cubic-bezier(.2, .8, .2, 1);
 
   z-index: 100;
+
+  display: flex;
+
+  flex-direction: column;
+
+  overflow: hidden;
 }
 
 .comment-panel.open {
@@ -877,40 +902,40 @@ button:disabled {
    ========================================================= */
 
 .comment-header {
-  min-height: 58px;
+  height: 58px;
 
-  padding: 0 17px;
+  padding: 0 18px;
 
   display: flex;
 
   align-items: center;
   justify-content: space-between;
 
-  border-bottom: 1px solid #2d2d2d;
-
   color: #fff;
 
   font-size: 17px;
-
   font-weight: 800;
+
+  border-bottom:
+    1px solid rgba(255, 255, 255, .08);
 }
 
 .close-comments {
   width: 38px;
   height: 38px;
 
+  border-radius: 50%;
+
+  background: #292929;
+
+  color: #fff;
+
+  font-size: 17px;
+
   display: flex;
 
   align-items: center;
   justify-content: center;
-
-  border-radius: 50%;
-
-  color: #fff;
-
-  font-size: 18px;
-
-  background: #292929;
 }
 
 
@@ -923,7 +948,7 @@ button:disabled {
 
   overflow-y: auto;
 
-  padding: 12px 15px 20px;
+  padding: 12px 16px;
 
   scrollbar-width: none;
 }
@@ -933,20 +958,19 @@ button:disabled {
 }
 
 
-/* =========================================================
-   COMMENT
-   ========================================================= */
+/* COMMENT */
 
 .comment {
-  padding: 11px 0;
+  padding: 12px 4px;
 
-  color: #ddd;
+  color: #eee;
 
   font-size: 14px;
 
-  line-height: 1.45;
+  line-height: 1.5;
 
-  border-bottom: 1px solid #252525;
+  border-bottom:
+    1px solid rgba(255, 255, 255, .06);
 }
 
 .comment strong {
@@ -967,16 +991,17 @@ button:disabled {
 .comment-input {
   display: flex;
 
-  gap: 9px;
+  gap: 8px;
 
   padding:
     10px
-    12px
+    14px
     calc(10px + env(safe-area-inset-bottom));
 
-  background: #181818;
+  background: #101010;
 
-  border-top: 1px solid #292929;
+  border-top:
+    1px solid rgba(255, 255, 255, .08);
 }
 
 .comment-input input {
@@ -986,15 +1011,15 @@ button:disabled {
 
   height: 44px;
 
-  padding: 0 14px;
+  padding: 0 15px;
 
-  border: 1px solid #3a3a3a;
+  border: 1px solid #333;
 
   border-radius: 22px;
 
   outline: none;
 
-  background: #252525;
+  background: #222;
 
   color: #fff;
 
@@ -1002,7 +1027,7 @@ button:disabled {
 }
 
 .comment-input input::placeholder {
-  color: #888;
+  color: #777;
 }
 
 .comment-input button {
@@ -1011,18 +1036,18 @@ button:disabled {
 
   flex-shrink: 0;
 
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
   border-radius: 50%;
 
   background: #fe2c55;
 
   color: #fff;
 
-  font-size: 17px;
+  font-size: 16px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
 }
 
 
@@ -1034,39 +1059,36 @@ button:disabled {
   position: fixed;
 
   left: 50%;
-  bottom: 90px;
-
-  min-width: 120px;
-  max-width: 80%;
-
-  padding: 11px 17px;
+  bottom: 95px;
 
   transform:
     translate(-50%, 20px);
 
-  border-radius: 24px;
+  max-width: 85%;
 
-  background: rgba(30,30,30,.94);
+  padding: 10px 18px;
 
-  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 22px;
+
+  background: rgba(25, 25, 25, .92);
+
+  border: 1px solid rgba(255, 255, 255, .12);
 
   color: #fff;
 
-  text-align: center;
-
-  font-size: 14px;
-
+  font-size: 13px;
   font-weight: 600;
 
   opacity: 0;
 
   pointer-events: none;
 
-  transition:
-    opacity .2s ease,
-    transform .2s ease;
-
   z-index: 200;
+
+  transition: .25s ease;
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .toast.show {
@@ -1095,32 +1117,27 @@ button:disabled {
   padding: 25px;
 
   background: #000;
-
-  color: #fff;
 }
 
 .feed-message-inner {
-  width: 100%;
   max-width: 320px;
 }
 
 .feed-message-icon {
-  margin-bottom: 15px;
-
   font-size: 48px;
+
+  margin-bottom: 15px;
 }
 
-.feed-message-inner > div:not(.feed-message-icon) {
-  color: #fff;
+.feed-message-inner > div {
+  font-size: 16px;
 
-  font-size: 17px;
-
-  font-weight: 600;
+  color: #ddd;
 }
 
 
 /* =========================================================
-   RETRY / LOGIN BUTTON
+   LOGIN / RETRY
    ========================================================= */
 
 .retry-btn {
@@ -1135,37 +1152,34 @@ button:disabled {
   color: #000;
 
   font-size: 14px;
-
   font-weight: 800;
 }
 
 
 /* =========================================================
-   GENERAL PROFILE
+   ANIMATIONS
    ========================================================= */
 
-.profile-container {
-  width: 100%;
-  max-width: 500px;
-
-  min-height: 100dvh;
-
-  margin: 0 auto;
-
-  padding:
-    70px
-    16px
-    90px;
+@keyframes spin {
+  to {
+    transform:
+      translate(-50%, -50%)
+      rotate(360deg);
+  }
 }
 
-h1 {
-  margin-bottom: 10px;
+@keyframes heartPop {
+  0% {
+    transform: scale(.7);
+  }
 
-  font-size: 24px;
-}
+  55% {
+    transform: scale(1.35);
+  }
 
-p {
-  color: #888;
+  100% {
+    transform: scale(1.18);
+  }
 }
 
 
@@ -1175,42 +1189,47 @@ p {
 
 @media (max-width: 380px) {
 
+  .top-bar::before {
+    left: 13px;
+
+    font-size: 19px;
+  }
+
+  .tab {
+    min-width: 72px;
+
+    padding: 7px 9px;
+
+    font-size: 13px;
+  }
+
   .action-bar {
     right: 5px;
-    bottom: 112px;
+    bottom: 145px;
 
-    gap: 12px;
+    gap: 10px;
+  }
+
+  .action {
+    width: 50px;
   }
 
   .action-icon {
-    width: 43px;
-    height: 43px;
+    width: 44px;
+    height: 44px;
 
-    font-size: 25px;
+    font-size: 26px;
   }
 
   .action-count {
     font-size: 12px;
   }
 
-  .creator-avatar,
-  .creator-avatar img {
-    width: 47px;
-    height: 47px;
-  }
-
-  .follow-plus {
-    width: 22px;
-    height: 22px;
-
-    font-size: 15px;
-  }
-
   .video-info {
-    left: 11px;
-    right: 67px;
+    left: 13px;
+    right: 72px;
 
-    bottom: 72px;
+    bottom: 76px;
   }
 
   .username {
@@ -1225,60 +1244,34 @@ p {
     font-size: 12px;
   }
 
-  .sound-btn {
-    left: 10px;
-    bottom: 120px;
-
-    width: 38px;
-    height: 38px;
-  }
-
   .upload-btn {
-    width: 46px;
+    width: 45px;
     height: 36px;
-  }
-
-  .nav-btn {
-    font-size: 10px;
-  }
-
-  .nav-icon {
-    font-size: 21px;
   }
 }
 
 
 /* =========================================================
-   TALL PHONES
+   VERY SMALL SCREEN
    ========================================================= */
 
-@media (min-height: 750px) {
+@media (max-height: 650px) {
 
   .action-bar {
     bottom: 135px;
+
+    gap: 8px;
+  }
+
+  .action-icon {
+    font-size: 25px;
   }
 
   .video-info {
-    bottom: 82px;
+    bottom: 72px;
   }
 
-  .sound-btn {
-    bottom: 140px;
-  }
-}
-
-
-/* =========================================================
-   TOUCH
-   ========================================================= */
-
-@media (hover: none) {
-
-  .action-bar > button.action:hover {
-    transform: none;
-  }
-
-  .nav-btn:hover {
-    color: inherit;
+  .bottom-nav {
+    height: 62px;
   }
 }
