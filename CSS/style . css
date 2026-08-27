@@ -1,7 +1,6 @@
-/* =========================================================
-   WWC - MOBILE VIDEO FEED
-   TikTok Style UI
-   ========================================================= */
+/* ================================
+   WWC HOME — TIKTOK STYLE UI
+================================ */
 
 * {
   margin: 0;
@@ -27,38 +26,39 @@ body {
 
 body {
   overscroll-behavior: none;
-}
-
-button,
-input {
-  font-family: inherit;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 button {
   border: 0;
-  outline: none;
+  outline: 0;
   cursor: pointer;
   background: transparent;
   color: inherit;
-  -webkit-tap-highlight-color: transparent;
+  font-family: inherit;
 }
+
+/* ================================
+   MAIN APP
+================================ */
 
 .app {
-  position: relative;
+  position: fixed;
+  inset: 0;
   width: 100%;
   height: 100dvh;
-  overflow: hidden;
   background: #000;
+  overflow: hidden;
 }
 
-
-/* =========================================================
+/* ================================
    VIDEO FEED
-   ========================================================= */
+================================ */
 
 .feed {
-  position: relative;
-
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100dvh;
 
@@ -68,8 +68,9 @@ button {
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
 
-  -webkit-overflow-scrolling: touch;
+  background: #000;
 
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
 
@@ -77,28 +78,27 @@ button {
   display: none;
 }
 
-
-/* =========================================================
+/* ================================
    VIDEO ITEM
-   ========================================================= */
+================================ */
 
 .video-item {
   position: relative;
 
   width: 100%;
   height: 100dvh;
-  min-height: 100dvh;
+
+  overflow: hidden;
 
   background: #000;
 
   scroll-snap-align: start;
   scroll-snap-stop: always;
-
-  overflow: hidden;
 }
 
-
-/* VIDEO */
+/* ================================
+   VIDEO
+================================ */
 
 .video {
   position: absolute;
@@ -112,40 +112,75 @@ button {
 
   background: #000;
 
-  display: block;
+  z-index: 1;
 }
 
-
-/* =========================================================
-   DARK VIDEO GRADIENT
-   ========================================================= */
-
+/* Slight dark gradient for readability */
 .video-item::after {
   content: "";
 
   position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
 
-  inset: 0;
+  height: 42%;
+
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.78),
+    rgba(0, 0, 0, 0.25),
+    transparent
+  );
 
   pointer-events: none;
 
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, .40) 0%,
-      rgba(0, 0, 0, .05) 20%,
-      transparent 48%,
-      rgba(0, 0, 0, .08) 65%,
-      rgba(0, 0, 0, .72) 100%
-    );
-
-  z-index: 1;
+  z-index: 2;
 }
 
+/* ================================
+   VIDEO LOADER
+================================ */
 
-/* =========================================================
+.video-loader {
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  width: 42px;
+  height: 42px;
+
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  z-index: 8;
+}
+
+.video-loader span {
+  width: 35px;
+  height: 35px;
+
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #fff;
+
+  border-radius: 50%;
+
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ================================
    TOP BAR
-   ========================================================= */
+================================ */
 
 .top-bar {
   position: absolute;
@@ -156,291 +191,193 @@ button {
 
   height: 108px;
 
-  padding:
-    calc(18px + env(safe-area-inset-top))
-    18px
-    14px;
+  padding-top: 42px;
+  padding-left: 18px;
+  padding-right: 18px;
 
   display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-  align-items: flex-end;
-  justify-content: center;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.55),
+    rgba(0, 0, 0, 0)
+  );
 
-  z-index: 10;
-
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, .55),
-      rgba(0, 0, 0, .12),
-      transparent
-    );
+  z-index: 20;
 }
 
-
-/* =========================================================
-   WWC LOGO / TOP AREA
-   ========================================================= */
-
-.top-bar::before {
-  content: "🌐  WWC";
-
-  position: absolute;
-
-  left: 20px;
-  bottom: 19px;
-
-  color: #fff;
-
-  font-size: 22px;
-  font-weight: 800;
-
-  letter-spacing: .2px;
-
-  text-shadow:
-    0 1px 5px rgba(0, 0, 0, .5);
-}
-
-
-/* =========================================================
+/* ================================
    TABS
-   ========================================================= */
+================================ */
 
 .tabs {
   display: flex;
-
   align-items: center;
+  gap: 20px;
 
-  gap: 6px;
-
-  padding: 3px;
-
-  border-radius: 22px;
-
-  background: rgba(255, 255, 255, .08);
-
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  margin: 0 auto;
 }
 
 .tab {
-  min-width: 82px;
+  position: relative;
 
-  padding: 8px 13px;
+  padding: 9px 15px;
 
-  border-radius: 18px;
+  color: rgba(255, 255, 255, 0.55);
 
-  color: rgba(255, 255, 255, .55);
-
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
 
-  transition: .2s ease;
+  border-radius: 20px;
+
+  transition: 0.2s ease;
 }
 
 .tab.active {
   color: #fff;
 
-  background: rgba(255, 255, 255, .22);
+  background: rgba(255, 255, 255, 0.18);
 
-  box-shadow:
-    0 3px 12px rgba(0, 0, 0, .15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
-
-/* =========================================================
-   SEARCH BUTTON
-   ========================================================= */
+/* ================================
+   SEARCH
+================================ */
 
 .search-btn {
   position: absolute;
 
-  right: 15px;
-  bottom: 13px;
+  right: 18px;
+  top: 48px;
 
-  width: 45px;
-  height: 45px;
+  width: 40px;
+  height: 40px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
-  border-radius: 50%;
-
   color: #fff;
-
-  background: rgba(0, 0, 0, .38);
-
-  border: 1px solid rgba(255, 255, 255, .35);
-
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 
   font-size: 20px;
 
-  z-index: 20;
+  border-radius: 50%;
 
-  transition: .2s ease;
+  background: rgba(0, 0, 0, 0.28);
 }
 
 .search-btn:active {
-  transform: scale(.9);
+  transform: scale(0.9);
 }
 
-
-/* =========================================================
+/* ================================
    ACTION BAR
-   ========================================================= */
+================================ */
 
 .action-bar {
   position: absolute;
 
-  right: 10px;
-  bottom: 155px;
+  right: 12px;
+  bottom: 145px;
 
-  width: 58px;
+  width: 62px;
 
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
 
-  gap: 15px;
+  gap: 20px;
 
-  z-index: 10;
+  z-index: 15;
 }
 
-
-/* =========================================================
+/* ================================
    ACTION BUTTON
-   ========================================================= */
+================================ */
 
 .action {
-  width: 55px;
+  position: relative;
 
-  min-height: 58px;
-
-  padding: 0;
+  width: 56px;
 
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-  justify-content: center;
-
-  gap: 3px;
 
   color: #fff;
-
-  text-shadow:
-    0 1px 4px rgba(0, 0, 0, .7);
-
-  transition: transform .18s ease;
 }
-
-.action:active {
-  transform: scale(.86);
-}
-
-
-/* =========================================================
-   ACTION ICON
-   ========================================================= */
 
 .action-icon {
-  width: 48px;
-  height: 48px;
+  width: 50px;
+  height: 50px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
   font-size: 29px;
 
-  color: #fff;
-
-  filter:
-    drop-shadow(0 2px 5px rgba(0, 0, 0, .55));
+  text-shadow:
+    0 2px 5px rgba(0, 0, 0, 0.6),
+    0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .action-count {
+  margin-top: 2px;
+
+  font-size: 14px;
+  font-weight: 600;
+
   color: #fff;
 
-  font-size: 13px;
-  font-weight: 700;
-
-  line-height: 16px;
-
-  text-shadow:
-    0 1px 4px #000;
+  text-shadow: 0 1px 4px #000;
 }
 
-
-/* =========================================================
+/* ================================
    LIKE
-   ========================================================= */
+================================ */
 
-.like-btn .action-icon {
-  color: #fff;
+.like-btn.liked {
+  color: #ff2d55;
 }
 
 .like-btn.liked .action-icon {
-  color: #ff2d55;
-
-  transform: scale(1.18);
-
-  animation: heartPop .28s ease;
+  animation: likePop 0.25s ease;
 }
 
-.like-btn.liked .action-count {
-  color: #ff4f70;
+@keyframes likePop {
+  0% {
+    transform: scale(0.7);
+  }
+
+  60% {
+    transform: scale(1.25);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
-
-/* =========================================================
-   COMMENT
-   ========================================================= */
-
-.comment-btn .action-icon {
-  color: #fff;
-}
-
-
-/* =========================================================
+/* ================================
    SAVE
-   ========================================================= */
+================================ */
 
-.save-btn .action-icon {
-  color: #fff;
+.save-btn.saved {
+  color: #29b6f6;
 }
 
 .save-btn.saved .action-icon {
-  color: #28aef7;
-
-  transform: scale(1.12);
+  color: #29b6f6;
 }
 
-.save-btn.saved .action-count {
-  color: #28aef7;
-}
-
-
-/* =========================================================
-   SHARE
-   ========================================================= */
-
-.share-btn .action-icon {
-  color: #fff;
-}
-
-
-/* =========================================================
+/* ================================
    CREATOR AVATAR
-   ========================================================= */
+================================ */
 
 .creator-avatar {
   position: relative;
@@ -448,272 +385,198 @@ button {
   width: 52px;
   height: 52px;
 
-  border-radius: 50%;
-
-  padding: 2px;
-
-  background: #fff;
-
-  box-shadow:
-    0 2px 12px rgba(0, 0, 0, .45);
+  margin-bottom: 3px;
 }
 
 .creator-avatar img {
-  width: 100%;
-  height: 100%;
+  width: 52px;
+  height: 52px;
 
-  display: block;
+  object-fit: cover;
 
   border-radius: 50%;
 
-  object-fit: cover;
+  border: 2px solid #fff;
 
   background: #222;
 }
 
-
-/* =========================================================
+/* ================================
    FOLLOW PLUS
-   ========================================================= */
+================================ */
 
 .follow-plus {
   position: absolute;
 
+  bottom: -8px;
   left: 50%;
-  bottom: -9px;
-
-  width: 25px;
-  height: 25px;
 
   transform: translateX(-50%);
 
-  border-radius: 50%;
-
-  background: #fe2c55;
-
-  color: #fff;
-
-  border: 2px solid #fff;
+  width: 24px;
+  height: 24px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
+
+  border-radius: 50%;
+
+  background: #ff2d55;
+  color: #fff;
 
   font-size: 17px;
   font-weight: 800;
 
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, .5);
-
-  z-index: 5;
-
-  transition: .2s ease;
+  border: 2px solid #000;
 }
 
 .follow-plus.following {
-  background: #555;
+  background: #fff;
+  color: #111;
 }
 
-.follow-plus:active {
-  transform: translateX(-50%) scale(.85);
-}
-
-
-/* =========================================================
+/* ================================
    SOUND BUTTON
-   ========================================================= */
+================================ */
 
 .sound-btn {
   position: absolute;
 
-  right: 17px;
-  top: 125px;
+  right: 20px;
+  bottom: 85px;
 
-  width: 43px;
-  height: 43px;
-
-  border-radius: 50%;
+  width: 42px;
+  height: 42px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
   color: #fff;
 
-  background: rgba(0, 0, 0, .42);
+  font-size: 19px;
 
-  border: 1px solid rgba(255, 255, 255, .28);
+  border-radius: 50%;
+
+  background: rgba(0, 0, 0, 0.35);
 
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 
-  font-size: 18px;
-
-  z-index: 10;
-
-  transition: .2s ease;
+  z-index: 16;
 }
 
 .sound-btn:active {
-  transform: scale(.88);
+  transform: scale(0.9);
 }
 
-
-/* =========================================================
+/* ================================
    VIDEO INFO
-   ========================================================= */
+================================ */
 
 .video-info {
   position: absolute;
 
   left: 18px;
-  right: 85px;
+  right: 90px;
+  bottom: 82px;
 
-  bottom: 78px;
+  z-index: 14;
+}
 
-  z-index: 10;
+/* Username */
+
+.username {
+  margin-bottom: 8px;
+
+  font-size: 18px;
+  font-weight: 800;
 
   color: #fff;
 
   text-shadow:
-    0 2px 6px rgba(0, 0, 0, .7);
+    0 2px 5px rgba(0, 0, 0, 0.8),
+    0 1px 2px #000;
 }
 
-
-/* USERNAME */
-
-.username {
-  display: inline-block;
-
-  max-width: 100%;
-
-  color: #fff;
-
-  font-size: 17px;
-  font-weight: 800;
-
-  margin-bottom: 7px;
-
-  cursor: pointer;
-}
-
-
-/* CAPTION */
+/* Caption */
 
 .caption {
-  max-width: 100%;
+  max-width: 330px;
+
+  margin-bottom: 9px;
+
+  font-size: 15px;
+  line-height: 1.35;
 
   color: #fff;
 
-  font-size: 15px;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.8),
+    0 1px 2px #000;
 
-  line-height: 1.45;
-
-  word-break: break-word;
+  word-wrap: break-word;
 }
 
-
-/* SOUND */
+/* Sound */
 
 .sound {
-  margin-top: 7px;
+  max-width: 280px;
 
-  color: rgba(255, 255, 255, .88);
+  font-size: 14px;
 
-  font-size: 13px;
+  color: #fff;
 
   white-space: nowrap;
-
   overflow: hidden;
-
   text-overflow: ellipsis;
+
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
-
-/* =========================================================
+/* ================================
    PAUSE INDICATOR
-   ========================================================= */
+================================ */
 
 .pause-indicator {
   position: absolute;
 
-  left: 50%;
   top: 50%;
+  left: 50%;
 
-  width: 70px;
-  height: 70px;
+  width: 65px;
+  height: 65px;
 
-  transform:
-    translate(-50%, -50%)
-    scale(.8);
-
-  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
-  background: rgba(0, 0, 0, .55);
+  border-radius: 50%;
 
-  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
 
-  font-size: 30px;
+  font-size: 25px;
 
   opacity: 0;
-
   pointer-events: none;
 
-  z-index: 20;
+  z-index: 30;
 
-  transition: .2s ease;
+  transition: 0.2s ease;
 }
 
 .pause-indicator.show {
   opacity: 1;
-
-  transform:
-    translate(-50%, -50%)
-    scale(1);
+  transform: translate(-50%, -50%) scale(1);
 }
 
-
-/* =========================================================
-   VIDEO LOADER
-   ========================================================= */
-
-.video-loader {
-  position: absolute;
-
-  left: 50%;
-  top: 50%;
-
-  transform: translate(-50%, -50%);
-
-  width: 45px;
-  height: 45px;
-
-  border-radius: 50%;
-
-  border: 4px solid rgba(255, 255, 255, .25);
-
-  border-top-color: #fff;
-
-  animation: spin 1s linear infinite;
-
-  z-index: 8;
-}
-
-.video-loader span {
-  display: none;
-}
-
-
-/* =========================================================
+/* ================================
    BOTTOM NAVIGATION
-   ========================================================= */
+================================ */
 
 .bottom-nav {
   position: fixed;
@@ -722,145 +585,105 @@ button {
   right: 0;
   bottom: 0;
 
-  height: 68px;
+  height: 76px;
 
-  padding-bottom:
-    env(safe-area-inset-bottom);
+  padding:
+    7px
+    max(8px, env(safe-area-inset-right))
+    calc(7px + env(safe-area-inset-bottom))
+    max(8px, env(safe-area-inset-left));
 
   display: flex;
-
   align-items: center;
   justify-content: space-around;
 
-  background: rgba(0, 0, 0, .94);
+  background: rgba(5, 5, 5, 0.96);
 
-  border-top: 1px solid rgba(255, 255, 255, .06);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 
   z-index: 50;
 
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
 }
 
-
-/* =========================================================
+/* ================================
    NAV BUTTON
-   ========================================================= */
+================================ */
 
 .nav-btn {
-  position: relative;
+  width: 20%;
 
-  flex: 1;
-
-  height: 100%;
+  height: 65px;
 
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
   justify-content: center;
 
-  gap: 3px;
+  gap: 4px;
 
-  color: #888;
+  color: rgba(255, 255, 255, 0.55);
 
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 500;
 
-  transition: .18s ease;
+  transition: 0.2s ease;
 }
 
 .nav-btn:active {
-  transform: scale(.9);
+  transform: scale(0.88);
 }
 
 .nav-btn.active {
   color: #fff;
 }
 
-
-/* NAV ICON */
-
 .nav-icon {
   width: 30px;
   height: 30px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
-  font-size: 23px;
+  font-size: 22px;
 }
 
-
-/* =========================================================
-   CREATE / UPLOAD BUTTON
-   ========================================================= */
+/* ================================
+   UPLOAD BUTTON
+================================ */
 
 .upload-btn {
   width: 48px;
-  height: 38px;
-
-  margin-top: -5px;
+  height: 34px;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
-  border-radius: 11px;
-
-  background: #fff;
+  position: relative;
 
   color: #000;
 
-  font-size: 23px;
+  font-size: 22px;
+
+  background: #fff;
+
+  border-radius: 11px;
 
   box-shadow:
-    0 3px 12px rgba(0, 0, 0, .5);
-
-  position: relative;
+    -4px 0 0 #ff2d55,
+    4px 0 0 #29b6f6;
 }
 
-
-/* Small colored edge */
-
-.upload-btn::before {
-  content: "";
-
-  position: absolute;
-
-  left: -3px;
-
-  width: 4px;
-  height: 27px;
-
-  border-radius: 4px;
-
-  background: #25f4ee;
+.upload-btn i {
+  font-size: 20px;
 }
 
-.upload-btn::after {
-  content: "";
-
-  position: absolute;
-
-  right: -3px;
-
-  width: 4px;
-  height: 27px;
-
-  border-radius: 4px;
-
-  background: #fe2c55;
-}
-
-
-/* =========================================================
+/* ================================
    COMMENT PANEL
-   ========================================================= */
+================================ */
 
 .comment-panel {
   position: fixed;
@@ -869,37 +692,32 @@ button {
   right: 0;
   bottom: 0;
 
-  height: min(72dvh, 620px);
+  height: 70vh;
 
-  background: #151515;
+  background: #111;
 
-  border-radius: 22px 22px 0 0;
+  border-radius: 20px 20px 0 0;
 
-  box-shadow:
-    0 -10px 35px rgba(0, 0, 0, .55);
+  transform: translateY(100%);
 
-  transform: translateY(105%);
-
-  transition:
-    transform .28s cubic-bezier(.2, .8, .2, 1);
+  transition: transform 0.3s ease;
 
   z-index: 100;
 
   display: flex;
-
   flex-direction: column;
 
-  overflow: hidden;
+  box-shadow:
+    0 -5px 30px rgba(0, 0, 0, 0.5);
 }
 
 .comment-panel.open {
   transform: translateY(0);
 }
 
-
-/* =========================================================
+/* ================================
    COMMENT HEADER
-   ========================================================= */
+================================ */
 
 .comment-header {
   height: 58px;
@@ -907,107 +725,76 @@ button {
   padding: 0 18px;
 
   display: flex;
-
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 
-  color: #fff;
+  border-bottom: 1px solid #2b2b2b;
 
-  font-size: 17px;
-  font-weight: 800;
+  font-size: 16px;
+  font-weight: 700;
 
-  border-bottom:
-    1px solid rgba(255, 255, 255, .08);
+  position: relative;
 }
 
 .close-comments {
-  width: 38px;
-  height: 38px;
+  position: absolute;
 
-  border-radius: 50%;
+  right: 18px;
 
-  background: #292929;
+  font-size: 22px;
 
   color: #fff;
-
-  font-size: 17px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
 }
 
-
-/* =========================================================
-   COMMENTS LIST
-   ========================================================= */
+/* ================================
+   COMMENTS
+================================ */
 
 .comments-list {
   flex: 1;
 
   overflow-y: auto;
 
-  padding: 12px 16px;
-
-  scrollbar-width: none;
+  padding: 12px 18px;
 }
-
-.comments-list::-webkit-scrollbar {
-  display: none;
-}
-
-
-/* COMMENT */
 
 .comment {
-  padding: 12px 4px;
+  padding: 12px 0;
 
-  color: #eee;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 
   font-size: 14px;
-
-  line-height: 1.5;
-
-  border-bottom:
-    1px solid rgba(255, 255, 255, .06);
+  line-height: 1.4;
 }
 
 .comment strong {
   display: block;
 
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 
   color: #fff;
 
   font-size: 14px;
 }
 
-
-/* =========================================================
+/* ================================
    COMMENT INPUT
-   ========================================================= */
+================================ */
 
 .comment-input {
   display: flex;
 
   gap: 8px;
 
-  padding:
-    10px
-    14px
-    calc(10px + env(safe-area-inset-bottom));
+  padding: 10px 12px;
 
-  background: #101010;
+  background: #151515;
 
-  border-top:
-    1px solid rgba(255, 255, 255, .08);
+  border-top: 1px solid #292929;
 }
 
 .comment-input input {
   flex: 1;
-
-  min-width: 0;
 
   height: 44px;
 
@@ -1015,9 +802,9 @@ button {
 
   border: 1px solid #333;
 
-  border-radius: 22px;
-
   outline: none;
+
+  border-radius: 22px;
 
   background: #222;
 
@@ -1027,96 +814,80 @@ button {
 }
 
 .comment-input input::placeholder {
-  color: #777;
+  color: #888;
 }
 
 .comment-input button {
   width: 44px;
   height: 44px;
 
-  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   border-radius: 50%;
 
-  background: #fe2c55;
+  background: #ff2d55;
 
   color: #fff;
 
-  font-size: 16px;
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
+  font-size: 17px;
 }
 
-
-/* =========================================================
+/* ================================
    TOAST
-   ========================================================= */
+================================ */
 
 .toast {
   position: fixed;
 
   left: 50%;
-  bottom: 95px;
+  bottom: 100px;
 
-  transform:
-    translate(-50%, 20px);
-
-  max-width: 85%;
+  transform: translateX(-50%) translateY(20px);
 
   padding: 10px 18px;
 
-  border-radius: 22px;
+  border-radius: 20px;
 
-  background: rgba(25, 25, 25, .92);
-
-  border: 1px solid rgba(255, 255, 255, .12);
+  background: rgba(30, 30, 30, 0.92);
 
   color: #fff;
 
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
 
   opacity: 0;
 
   pointer-events: none;
 
+  transition: 0.25s ease;
+
   z-index: 200;
 
-  transition: .25s ease;
-
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  white-space: nowrap;
 }
 
 .toast.show {
   opacity: 1;
 
-  transform:
-    translate(-50%, 0);
+  transform: translateX(-50%) translateY(0);
 }
 
-
-/* =========================================================
-   FEED MESSAGE
-   ========================================================= */
+/* ================================
+   LOGIN / EMPTY MESSAGE
+================================ */
 
 .feed-message {
   width: 100%;
   height: 100dvh;
 
   display: flex;
-
   align-items: center;
   justify-content: center;
 
   text-align: center;
 
-  padding: 25px;
-
-  background: #000;
+  padding: 20px;
 }
 
 .feed-message-inner {
@@ -1124,154 +895,95 @@ button {
 }
 
 .feed-message-icon {
-  font-size: 48px;
-
   margin-bottom: 15px;
+
+  font-size: 45px;
 }
 
-.feed-message-inner > div {
+.feed-message-inner > div:not(.feed-message-icon) {
+  margin-bottom: 15px;
+
   font-size: 16px;
-
-  color: #ddd;
 }
-
-
-/* =========================================================
-   LOGIN / RETRY
-   ========================================================= */
 
 .retry-btn {
-  margin-top: 18px;
-
   padding: 11px 25px;
 
-  border-radius: 10px;
+  border-radius: 22px;
 
   background: #fff;
 
   color: #000;
 
-  font-size: 14px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
-
-/* =========================================================
-   ANIMATIONS
-   ========================================================= */
-
-@keyframes spin {
-  to {
-    transform:
-      translate(-50%, -50%)
-      rotate(360deg);
-  }
-}
-
-@keyframes heartPop {
-  0% {
-    transform: scale(.7);
-  }
-
-  55% {
-    transform: scale(1.35);
-  }
-
-  100% {
-    transform: scale(1.18);
-  }
-}
-
-
-/* =========================================================
+/* ================================
    SMALL PHONES
-   ========================================================= */
+================================ */
 
 @media (max-width: 380px) {
 
-  .top-bar::before {
-    left: 13px;
+  .top-bar {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
 
-    font-size: 19px;
+  .tabs {
+    gap: 8px;
   }
 
   .tab {
-    min-width: 72px;
-
-    padding: 7px 9px;
-
-    font-size: 13px;
+    padding: 8px 11px;
+    font-size: 14px;
   }
 
   .action-bar {
-    right: 5px;
-    bottom: 145px;
-
-    gap: 10px;
-  }
-
-  .action {
-    width: 50px;
+    right: 7px;
+    gap: 14px;
   }
 
   .action-icon {
-    width: 44px;
-    height: 44px;
-
-    font-size: 26px;
-  }
-
-  .action-count {
-    font-size: 12px;
+    width: 45px;
+    height: 45px;
+    font-size: 25px;
   }
 
   .video-info {
-    left: 13px;
-    right: 72px;
-
-    bottom: 76px;
+    left: 12px;
+    right: 75px;
   }
 
   .username {
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .caption {
     font-size: 14px;
   }
-
-  .sound {
-    font-size: 12px;
-  }
-
-  .upload-btn {
-    width: 45px;
-    height: 36px;
-  }
 }
 
+/* ================================
+   TABLET / DESKTOP
+================================ */
 
-/* =========================================================
-   VERY SMALL SCREEN
-   ========================================================= */
+@media (min-width: 768px) {
 
-@media (max-height: 650px) {
+  .app {
+    max-width: 500px;
+    margin: 0 auto;
 
-  .action-bar {
-    bottom: 135px;
-
-    gap: 8px;
-  }
-
-  .action-icon {
-    font-size: 25px;
-  }
-
-  .video-info {
-    bottom: 72px;
+    box-shadow:
+      0 0 50px rgba(0, 0, 0, 0.8);
   }
 
   .bottom-nav {
-    height: 62px;
+    max-width: 500px;
+    left: 50%;
+    right: auto;
+
+    transform: translateX(-50%);
+
+    width: 100%;
   }
 }
