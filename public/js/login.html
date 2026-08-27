@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>লগইন - WWC</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <h1 style="text-align:center;font-size:32px;margin-bottom:30px;">🌍 WWC</h1>
+        <input type="email" id="email" placeholder="ইমেইল" />
+        <input type="password" id="password" placeholder="পাসওয়ার্ড" />
+        <button id="login-btn">লগইন</button>
+        <p style="text-align:center;margin-top:15px;color:#888;">
+            নতুন? <a href="#" id="go-signup" style="color:#1da1f2;">রেজিস্টার</a>
+        </p>
+        <p id="auth-msg" style="text-align:center;margin-top:10px;color:#f44336;"></p>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script>
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const loginBtn = document.getElementById('login-btn');
+        const msg = document.getElementById('auth-msg');
+        const goSignup = document.getElementById('go-signup');
+
+        loginBtn.addEventListener('click', () => {
+            auth.signInWithEmailAndPassword(email.value, password.value)
+                .then(() => window.location.href = 'index.html')
+                .catch(err => msg.textContent = err.message);
+        });
+
+        goSignup.addEventListener('click', () => {
+            auth.createUserWithEmailAndPassword(email.value, password.value)
+                .then(() => {
+                    // ইউজার ডকুমেন্ট তৈরি
+                    db.collection('users').doc(auth.currentUser.uid).set({
+                        username: email.value.split('@')[0],
+                        email: email.value,
+                        createdAt: Date.now()
+                    });
+                    window.location.href = 'index.html';
+                })
+                .catch(err => msg.textContent = err.message);
+        });
+
+        auth.onAuthStateChanged(user => {
+            if (user) window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
