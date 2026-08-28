@@ -1,5 +1,5 @@
 /* ===============================
-   WWC - TikTok Style CSS
+   WWC - TikTok Style CSS (Improved)
    =============================== */
 
 * {
@@ -30,7 +30,7 @@ html, body {
     justify-content: space-between;
     padding: 0 12px;
     z-index: 90;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.55), transparent);
+    background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
     pointer-events: none;
 }
 
@@ -90,12 +90,15 @@ html, body {
 
 /* ========== Video Feed ========== */
 .video-feed {
-    height: 100vh;
+    height: 100%;
+    height: 100dvh;
     width: 100%;
     overflow-y: scroll;
+    overflow-x: hidden;
     scroll-snap-type: y mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    overscroll-behavior-y: contain;
 }
 
 .video-feed::-webkit-scrollbar {
@@ -104,11 +107,14 @@ html, body {
 
 .video-card {
     position: relative;
-    height: 100vh;
+    height: 100%;
+    height: 100dvh;
     width: 100%;
     scroll-snap-align: start;
+    scroll-snap-stop: always;
     background: #000;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .video-card video {
@@ -116,6 +122,7 @@ html, body {
     height: 100%;
     object-fit: cover;
     background: #111;
+    display: block;
 }
 
 /* ========== Overlay ========== */
@@ -358,11 +365,15 @@ html, body {
 /* ========== Loading ========== */
 .loading {
     height: 100vh;
+    height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #888;
     font-size: 15px;
+    text-align: center;
+    padding: 20px;
+    line-height: 1.5;
 }
 
 /* ছোট স্ক্রিন */
