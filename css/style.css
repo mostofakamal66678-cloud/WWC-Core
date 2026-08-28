@@ -163,6 +163,7 @@ html, body {
     align-items: center;
     gap: 22px;
     pointer-events: auto;
+    z-index: 20;
 }
 
 .action-buttons button {
