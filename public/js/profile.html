@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; min-height:100vh; padding-bottom:70px; }
+        body { background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; min-height:100vh; padding-bottom:70px; transition: background 0.3s, color 0.3s; }
         
         .top { 
             position:sticky; top:0; z-index:50; 
@@ -126,56 +126,146 @@
         }
         .empty-grid i { font-size: 48px; display: block; margin-bottom: 16px; opacity: 0.4; }
 
-        /* ===== সেটিংস মডাল ===== */
+        /* ===== সেটিংস মডাল - টিকটক স্টাইল ===== */
         .settings-modal {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.6);
             z-index: 200;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(4px);
+            justify-content: flex-end;
+            align-items: flex-end;
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.25s ease;
         }
         .settings-modal.active { display: flex; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
         .settings-box {
             background: #1a1a1a;
-            border-radius: 16px;
-            padding: 24px 20px;
-            width: 90%;
-            max-width: 360px;
-            border: 1px solid #333;
+            border-radius: 20px 20px 0 0;
+            padding: 20px 16px 30px;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-top: 1px solid #333;
+        }
+        .settings-box .settings-handle {
+            width: 40px;
+            height: 4px;
+            background: #555;
+            border-radius: 2px;
+            margin: 0 auto 16px;
         }
         .settings-box .settings-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #333;
             padding-bottom: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 8px;
         }
-        .settings-box .settings-header h3 { font-size: 18px; }
-        .settings-box .settings-header button { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; }
+        .settings-box .settings-header h3 { font-size: 18px; font-weight: 700; }
+        .settings-box .settings-header button { background:none; border:none; color:#888; font-size:22px; cursor:pointer; padding:4px 8px; }
         .settings-box .settings-item {
-            padding: 14px 0;
-            border-bottom: 1px solid #222;
+            padding: 14px 12px;
+            margin: 2px 0;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             cursor: pointer;
             color: #ddd;
-            transition: background 0.2s;
+            border-radius: 12px;
+            transition: background 0.15s ease;
         }
-        .settings-box .settings-item:hover { background: #252525; margin: 0 -10px; padding-left: 10px; padding-right: 10px; border-radius: 8px; }
-        .settings-box .settings-item i { font-size: 18px; width: 28px; color: #888; }
-        .settings-box .settings-item:last-child { border-bottom: none; }
+        .settings-box .settings-item:hover { background: #2a2a2a; }
+        .settings-box .settings-item:active { background: #333; transform: scale(0.98); }
+        .settings-box .settings-item i { font-size: 20px; width: 28px; color: #888; }
+        .settings-box .settings-item .arrow { margin-left: auto; color: #555; font-size: 14px; }
+        .settings-box .settings-item .badge {
+            background: #fe2c55;
+            color: #fff;
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            margin-left: auto;
+        }
         .settings-box .logout-item {
             color: #fe2c55;
-            margin-top: 8px;
             border-top: 1px solid #333;
+            margin-top: 8px;
             padding-top: 14px;
         }
         .settings-box .logout-item i { color: #fe2c55; }
+        .settings-box .logout-item .arrow { color: #fe2c55; }
+
+        /* ===== টোস্ট নোটিফিকেশন ===== */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2a2a2a;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            z-index: 300;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+            text-align: center;
+            max-width: 90%;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ===== কনফর্ম ডায়ালগ ===== */
+        .confirm-dialog {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 250;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(6px);
+        }
+        .confirm-dialog.active { display: flex; }
+        .confirm-box {
+            background: #1a1a1a;
+            border-radius: 16px;
+            padding: 24px 20px 20px;
+            width: 90%;
+            max-width: 340px;
+            border: 1px solid #333;
+            text-align: center;
+        }
+        .confirm-box .icon { font-size: 40px; color: #fe2c55; margin-bottom: 12px; }
+        .confirm-box h3 { font-size: 17px; margin-bottom: 8px; }
+        .confirm-box p { font-size: 14px; color: #aaa; margin-bottom: 20px; line-height: 1.5; }
+        .confirm-box .btn-group { display: flex; gap: 10px; }
+        .confirm-box .btn-group button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .confirm-box .btn-group .cancel-btn { background: #2a2a2a; color: #fff; }
+        .confirm-box .btn-group .confirm-btn { background: #fe2c55; color: #fff; }
 
         .bottom-nav {
             position: fixed;
@@ -216,34 +306,70 @@
             margin: 0 6px;
         }
         .nav-item.upload-btn i { font-size: 20px; color: #000; }
+
+        /* ডার্ক মোড ওভাররাইড */
+        body.light-mode {
+            background: #f5f5f5;
+            color: #1a1a1a;
+        }
+        body.light-mode .top,
+        body.light-mode .bottom-nav,
+        body.light-mode .profile-bio,
+        body.light-mode .profile-header,
+        body.light-mode .profile-tabs,
+        body.light-mode .settings-box {
+            background: #fff;
+            border-color: #e0e0e0;
+        }
+        body.light-mode .top h1,
+        body.light-mode .settings-box .settings-header h3,
+        body.light-mode .profile-bio .name,
+        body.light-mode .profile-tabs .tab.active { color: #1a1a1a; }
+        body.light-mode .stat-item .label,
+        body.light-mode .profile-bio .username,
+        body.light-mode .profile-tabs .tab { color: #888; }
+        body.light-mode .settings-box .settings-item { color: #333; }
+        body.light-mode .settings-box .settings-item:hover { background: #f0f0f0; }
+        body.light-mode .settings-box .logout-item { border-color: #e0e0e0; }
+        body.light-mode .settings-box .settings-handle { background: #ccc; }
     </style>
 </head>
 <body>
 
+    <!-- টোস্ট মেসেজ -->
+    <div class="toast" id="toast"></div>
+
+    <!-- কনফর্ম ডায়ালগ -->
+    <div class="confirm-dialog" id="confirm-dialog">
+        <div class="confirm-box">
+            <div class="icon"><i class="fas fa-sign-out-alt"></i></div>
+            <h3>লগআউট করুন</h3>
+            <p>আপনি কি নিশ্চিত যে আপনি লগআউট করতে চান?</p>
+            <div class="btn-group">
+                <button class="cancel-btn" id="confirm-cancel">বাতিল</button>
+                <button class="confirm-btn" id="confirm-ok">ঠিক আছে</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- টপ বার -->
     <div class="top">
         <button class="back-btn" id="back-btn"><i class="fas fa-arrow-left"></i></button>
         <h1 id="page-title">প্রোফাইল</h1>
         <button class="settings-btn" id="settings-btn"><i class="fas fa-gear"></i></button>
     </div>
 
+    <!-- প্রোফাইল হেডার -->
     <div class="profile-header">
         <div class="profile-avatar" id="profile-avatar">U</div>
         <div class="profile-stats">
-            <div class="stat-item">
-                <div class="num" id="video-count">0</div>
-                <div class="label">ভিডিও</div>
-            </div>
-            <div class="stat-item">
-                <div class="num" id="follower-count">0</div>
-                <div class="label">ফলোয়ার</div>
-            </div>
-            <div class="stat-item">
-                <div class="num" id="following-count">0</div>
-                <div class="label">ফলো করছেন</div>
-            </div>
+            <div class="stat-item"><div class="num" id="video-count">0</div><div class="label">ভিডিও</div></div>
+            <div class="stat-item"><div class="num" id="follower-count">0</div><div class="label">ফলোয়ার</div></div>
+            <div class="stat-item"><div class="num" id="following-count">0</div><div class="label">ফলো করছেন</div></div>
         </div>
     </div>
 
+    <!-- বায়ো -->
     <div class="profile-bio">
         <div class="name" id="display-name">ইউজার</div>
         <div class="username" id="username">@user</div>
@@ -252,6 +378,7 @@
 
     <button class="follow-btn" id="follow-btn" style="display:none;">ফলো</button>
 
+    <!-- ট্যাব -->
     <div class="profile-tabs">
         <div class="tab active" data-tab="videos"><i class="fas fa-grid"></i> ভিডিও</div>
         <div class="tab" data-tab="liked"><i class="fas fa-heart"></i> লাইক</div>
@@ -265,43 +392,46 @@
     <!-- ===== সেটিংস মডাল ===== -->
     <div class="settings-modal" id="settings-modal">
         <div class="settings-box">
+            <div class="settings-handle"></div>
             <div class="settings-header">
-                <h3><i class="fas fa-gear"></i> সেটিংস</h3>
+                <h3>সেটিংস</h3>
                 <button id="close-settings"><i class="fas fa-times"></i></button>
             </div>
 
-            <!-- ১. প্রাথমিক এন্ডি (প্রোফাইল এডিট) -->
             <div class="settings-item" id="edit-profile">
                 <i class="fas fa-user-edit"></i>
                 <span>প্রাথমিক এন্ডি</span>
+                <span class="arrow"><i class="fas fa-chevron-right"></i></span>
             </div>
 
-            <!-- ২. গ্রাইভেরিস (প্রাইভেসি) -->
             <div class="settings-item" id="privacy">
                 <i class="fas fa-lock"></i>
                 <span>গ্রাইভেরিস</span>
+                <span class="arrow"><i class="fas fa-chevron-right"></i></span>
             </div>
 
-            <!-- ৩. লাটিমিকেশন (নোটিফিকেশন) -->
             <div class="settings-item" id="notifications">
                 <i class="fas fa-bell"></i>
                 <span>লাটিমিকেশন</span>
+                <span class="badge">3</span>
+                <span class="arrow"><i class="fas fa-chevron-right"></i></span>
             </div>
 
-            <!-- ৪. ডাক মোড (ডার্ক মোড) -->
             <div class="settings-item" id="dark-mode">
                 <i class="fas fa-moon"></i>
                 <span>ডাক মোড</span>
+                <span class="arrow"><i class="fas fa-chevron-right"></i></span>
             </div>
 
-            <!-- ৫. লগজাউ (লগআউট) -->
             <div class="settings-item logout-item" id="logout-btn">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>লগজাউ</span>
+                <span class="arrow"><i class="fas fa-chevron-right"></i></span>
             </div>
         </div>
     </div>
 
+    <!-- নেভবার -->
     <nav class="bottom-nav">
         <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
         <a href="friends.html" class="nav-item"><i class="fas fa-users"></i><span>বন্ধু</span></a>
@@ -320,6 +450,15 @@
         let targetUserId = null;
         let currentTab = 'videos';
         let darkMode = false;
+
+        // ========== টোস্ট ফাংশন ==========
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => toast.classList.remove('show'), 2500);
+        }
 
         auth.onAuthStateChanged(user => {
             if (!user) { location.href = 'login.html'; return; }
@@ -343,67 +482,67 @@
 
         // ========== সেটিংস ==========
         const modal = document.getElementById('settings-modal');
-
         document.getElementById('settings-btn').addEventListener('click', () => modal.classList.add('active'));
         document.getElementById('close-settings').addEventListener('click', () => modal.classList.remove('active'));
         modal.addEventListener('click', (e) => { if (e.target === e.currentTarget) modal.classList.remove('active'); });
 
-        // ১. প্রাথমিক এন্ডি (প্রোফাইল এডিট)
+        // ১. প্রাথমিক এন্ডি
         document.getElementById('edit-profile').addEventListener('click', () => {
             modal.classList.remove('active');
-            const newName = prompt('আপনার নতুন নাম লিখুন:', document.getElementById('display-name').textContent);
+            const currentName = document.getElementById('display-name').textContent;
+            const newName = prompt('আপনার নতুন নাম লিখুন:', currentName);
             if (newName && newName.trim()) {
                 const name = newName.trim();
                 document.getElementById('display-name').textContent = name;
                 document.getElementById('username').textContent = `@${name}`;
                 document.getElementById('profile-avatar').textContent = name[0].toUpperCase();
-                // Firebase-এ সেভ
                 db.collection('users').doc(currentUser.uid).set({
                     username: name,
                     bio: document.getElementById('bio').textContent
                 }, { merge: true }).catch(err => console.error(err));
+                showToast('✅ নাম আপডেট হয়েছে!');
             }
         });
 
-        // ২. গ্রাইভেরিস (প্রাইভেসি)
+        // ২. গ্রাইভেরিস
         document.getElementById('privacy').addEventListener('click', () => {
             modal.classList.remove('active');
-            alert('🔒 প্রাইভেসি সেটিংস\n\n• অ্যাকাউন্ট প্রাইভেট করুন\n• কে আপনার ভিডিও দেখতে পারবে\n• কমেন্ট কন্ট্রোল\n\n(শীঘ্রই যোগ হবে)');
+            showToast('🔒 প্রাইভেসি সেটিংস শীঘ্রই আসছে');
         });
 
-        // ৩. লাটিমিকেশন (নোটিফিকেশন)
+        // ৩. লাটিমিকেশন
         document.getElementById('notifications').addEventListener('click', () => {
             modal.classList.remove('active');
-            alert('🔔 নোটিফিকেশন সেটিংস\n\n• লাইক নোটিফিকেশন\n• কমেন্ট নোটিফিকেশন\n• ফলো নোটিফিকেশন\n• পুশ নোটিফিকেশন\n\n(শীঘ্রই যোগ হবে)');
+            showToast('🔔 নোটিফিকেশন সেটিংস শীঘ্রই আসছে');
         });
 
-        // ৪. ডাক মোড (ডার্ক মোড)
+        // ৪. ডাক মোড
         document.getElementById('dark-mode').addEventListener('click', () => {
             modal.classList.remove('active');
             darkMode = !darkMode;
             if (darkMode) {
-                document.body.style.background = '#fff';
-                document.body.style.color = '#000';
-                document.querySelectorAll('.settings-box, .top, .bottom-nav, .profile-tabs, .profile-bio, .profile-header')
-                    .forEach(el => { el.style.background = '#f5f5f5'; el.style.borderColor = '#ddd'; });
-                document.querySelectorAll('.stat-item .label, .profile-bio .username, .settings-item, .nav-item')
-                    .forEach(el => el.style.color = '#555');
-                alert('🌙 ডার্ক মোড চালু হয়েছে!\n(আবার ক্লিক করলে বন্ধ হবে)');
+                document.body.classList.add('light-mode');
+                showToast('🌙 ডার্ক মোড বন্ধ হয়েছে');
             } else {
-                document.body.style.background = '#000';
-                document.body.style.color = '#fff';
-                location.reload(); // রিলোড দিয়ে সব ঠিক করা
+                document.body.classList.remove('light-mode');
+                showToast('🌙 ডার্ক মোড চালু হয়েছে');
             }
         });
 
-        // ৫. লগজাউ (লগআউট)
+        // ৫. লগজাউ - কনফর্ম ডায়ালগ
         document.getElementById('logout-btn').addEventListener('click', () => {
-            if (confirm('আপনি কি লগআউট করতে চান?')) {
-                auth.signOut().then(() => {
-                    modal.classList.remove('active');
-                    window.location.href = 'login.html';
-                });
-            }
+            modal.classList.remove('active');
+            document.getElementById('confirm-dialog').classList.add('active');
+        });
+        document.getElementById('confirm-cancel').addEventListener('click', () => {
+            document.getElementById('confirm-dialog').classList.remove('active');
+        });
+        document.getElementById('confirm-ok').addEventListener('click', () => {
+            document.getElementById('confirm-dialog').classList.remove('active');
+            auth.signOut().then(() => {
+                showToast('👋 লগআউট হচ্ছে...');
+                setTimeout(() => window.location.href = 'login.html', 500);
+            });
         });
 
         // ========== প্রোফাইল লোড ==========
@@ -451,7 +590,7 @@
                 document.getElementById('follower-count').textContent = followers.size;
                 const following = await db.collection('follows').where('follower', '==', uid).get();
                 document.getElementById('following-count').textContent = following.size;
-            } catch(e) { console.error(e); }
+            } catch(e) {}
         }
 
         async function loadContent(uid, tab) {
@@ -485,7 +624,7 @@
                         }
                     }
                 }
-            } catch(e) { console.error(e); }
+            } catch(e) {}
 
             if (!videos.length) {
                 const icons = { videos: 'video', liked: 'heart', saved: 'bookmark' };
@@ -530,7 +669,7 @@
                 if (doc.exists) { await ref.delete(); btn.textContent = 'ফলো'; btn.classList.remove('following'); }
                 else { await ref.set({ follower: currentUser.uid, following: uid, createdAt: Date.now() }); btn.textContent = 'ফলোয়িং'; btn.classList.add('following'); }
                 await loadStats(uid);
-            } catch(e) { alert('ফলো সমস্যা: ' + e.message); }
+            } catch(e) { showToast('❌ ফলো সমস্যা: ' + e.message); }
         }
     </script>
 </body>
