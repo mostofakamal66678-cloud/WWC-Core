@@ -1,5 +1,5 @@
 // ========================================
-// WWC - ফিড লোডার (ডান পাশের বাটন সহ)
+// WWC - ফিড লোডার (টিকটক স্টাইল)
 // ========================================
 
 let currentUser = null;
@@ -71,7 +71,6 @@ function loadFeed() {
         });
 }
 
-// ========== লাইক ==========
 function likeVideo(videoId) {
     if (!currentUser) return alert('লগইন করুন');
     const ref = db.collection('videos').doc(videoId);
@@ -81,7 +80,6 @@ function likeVideo(videoId) {
     });
 }
 
-// ========== শেয়ার ==========
 function shareVideo() {
     if (navigator.share) {
         navigator.share({ title: 'WWC', url: location.href });
