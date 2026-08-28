@@ -1,13 +1,8 @@
-/* ===============================
-   WWC - TikTok স্টাইল CSS (ভিডিও ওভারলে ঠিক করা)
-   =============================== */
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
 html, body {
     height: 100%;
     width: 100%;
@@ -30,27 +25,17 @@ html, body {
     padding: 0 12px;
     z-index: 90;
     background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
-    pointer-events: none;
 }
-.top-bar > * { pointer-events: auto; }
-
-.search-btn {
+.top-bar button, .top-bar .top-tabs {
     background: transparent;
     border: none;
     color: #fff;
-    font-size: 20px;
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
 }
 .top-tabs { display: flex; gap: 22px; }
-.tab-btn {
-    background: transparent;
-    border: none;
-    color: rgba(255,255,255,0.55);
-    font-size: 16px;
-    font-weight: 600;
-    padding: 6px 0;
-    cursor: pointer;
-}
+.tab-btn { color: rgba(255,255,255,0.55); }
 .tab-btn.active { color: #fff; }
 .tab-btn.active::after {
     content: '';
@@ -88,7 +73,7 @@ html, body {
 }
 
 /* ========== ওভারলে (নিচের অংশ) ========== */
-.video-overlay {
+.overlay {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -110,11 +95,13 @@ html, body {
     font-size: 16px;
     margin-bottom: 4px;
     text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    color: #fff;
 }
 .caption {
     font-size: 14px;
     opacity: 0.95;
     text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    color: #fff;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
