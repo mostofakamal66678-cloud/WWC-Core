@@ -25,7 +25,8 @@
         .profile-bio { padding:12px 16px 16px; border-bottom:1px solid #222; }
         .profile-bio .name { font-size:17px; font-weight:700; }
         .profile-bio .username { font-size:14px; color:#888; margin-top:2px; }
-        .profile-bio .bio { font-size:14px; margin-top:6px; line-height:1.4; color:#ddd; }
+        .profile-bio .bio { font-size:14px; margin-top:6px; line-height:1.4; color:#ddd; cursor:pointer; }
+        .profile-bio .bio:hover { color:#fff; }
 
         .follow-btn { padding:8px 24px; border:none; border-radius:6px; background:#fe2c55; color:#fff; font-weight:600; font-size:14px; cursor:pointer; margin:8px 16px 0; }
         .follow-btn.following { background:#2a2a2a; color:#fff; }
@@ -56,13 +57,23 @@
         .settings-box .settings-item:active { background:#333; transform:scale(0.98); }
         .settings-box .settings-item i { font-size:20px; width:28px; color:#888; }
         .settings-box .settings-item .arrow { margin-left:auto; color:#555; font-size:14px; }
-        .settings-box .settings-item .badge { background:#fe2c55; color:#fff; font-size:11px; padding:2px 10px; border-radius:12px; margin-left:auto; }
         .settings-box .settings-item .toggle-track { width:44px; height:24px; background:#333; border-radius:12px; position:relative; margin-left:auto; transition:background 0.3s; }
         .settings-box .settings-item .toggle-track .toggle-thumb { width:20px; height:20px; background:#fff; border-radius:50%; position:absolute; top:2px; left:2px; transition:transform 0.3s; }
         .settings-box .settings-item .toggle-track.active { background:#fe2c55; }
         .settings-box .settings-item .toggle-track.active .toggle-thumb { transform:translateX(20px); }
         .settings-box .logout-item { color:#fe2c55; border-top:1px solid #333; margin-top:8px; padding-top:14px; }
         .settings-box .logout-item i { color:#fe2c55; }
+
+        /* ===== বায়ো এডিট মডাল ===== */
+        .bio-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:250; justify-content:center; align-items:center; backdrop-filter:blur(6px); }
+        .bio-modal.active { display:flex; }
+        .bio-box { background:#1a1a1a; border-radius:16px; padding:24px 20px 20px; width:90%; max-width:340px; border:1px solid #333; }
+        .bio-box h3 { font-size:17px; margin-bottom:12px; text-align:center; }
+        .bio-box textarea { width:100%; background:#2a2a2a; border:1px solid #333; border-radius:10px; padding:12px; color:#fff; font-size:14px; outline:none; min-height:80px; resize:vertical; }
+        .bio-box .btn-group { display:flex; gap:10px; margin-top:14px; }
+        .bio-box .btn-group button { flex:1; padding:12px; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; }
+        .bio-box .btn-group .cancel-btn { background:#2a2a2a; color:#fff; }
+        .bio-box .btn-group .save-btn { background:#fe2c55; color:#fff; }
 
         /* ===== টোস্ট ===== */
         .toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#2a2a2a; color:#fff; padding:12px 24px; border-radius:12px; font-size:14px; z-index:300; opacity:0; transition:opacity 0.3s ease, transform 0.3s ease; pointer-events:none; box-shadow:0 4px 20px rgba(0,0,0,0.5); border:1px solid #333; text-align:center; max-width:90%; }
@@ -96,6 +107,9 @@
         body.light-mode .settings-box .settings-item:hover { background:#f0f0f0; }
         body.light-mode .settings-box .logout-item { border-color:#e0e0e0; }
         body.light-mode .settings-box .settings-handle { background:#ccc; }
+        body.light-mode .bio-box { background:#fff; border-color:#ddd; }
+        body.light-mode .bio-box textarea { background:#f5f5f5; color:#1a1a1a; border-color:#ddd; }
+        body.light-mode .bio-box .cancel-btn { background:#e0e0e0; color:#333; }
     </style>
 </head>
 <body>
@@ -110,6 +124,18 @@
             <div class="btn-group">
                 <button class="cancel-btn" id="confirm-cancel">বাতিল</button>
                 <button class="confirm-btn" id="confirm-ok">ঠিক আছে</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- বায়ো এডিট মডাল -->
+    <div class="bio-modal" id="bio-modal">
+        <div class="bio-box">
+            <h3>বায়ো এডিট করুন</h3>
+            <textarea id="bio-input" placeholder="আপনার বায়ো লিখুন..."></textarea>
+            <div class="btn-group">
+                <button class="cancel-btn" id="bio-cancel">বাতিল</button>
+                <button class="save-btn" id="bio-save">সংরক্ষণ</button>
             </div>
         </div>
     </div>
@@ -158,7 +184,7 @@
 
             <div class="settings-item" id="edit-profile">
                 <i class="fas fa-user-edit"></i>
-                <span>প্রাথমিক এন্ডি</span>
+                <span>প্রাথমিক এডি</span>
                 <span class="arrow"><i class="fas fa-chevron-right"></i></span>
             </div>
 
@@ -170,7 +196,7 @@
 
             <div class="settings-item" id="notifications">
                 <i class="fas fa-bell"></i>
-                <span>লাটিমিকেশন</span>
+                <span>ল্যাটিমিকেশন</span>
                 <div class="toggle-track active" id="notif-toggle"><div class="toggle-thumb"></div></div>
             </div>
 
@@ -182,7 +208,7 @@
 
             <div class="settings-item logout-item" id="logout-btn">
                 <i class="fas fa-sign-out-alt"></i>
-                <span>লগজাউ</span>
+                <span>লগজোড</span>
                 <span class="arrow"><i class="fas fa-chevron-right"></i></span>
             </div>
         </div>
@@ -206,7 +232,6 @@
         let targetUserId = null;
         let currentTab = 'videos';
 
-        // ========== টোস্ট ==========
         function showToast(msg) {
             const toast = document.getElementById('toast');
             toast.textContent = msg;
@@ -215,7 +240,6 @@
             toast._timer = setTimeout(() => toast.classList.remove('show'), 2500);
         }
 
-        // ========== টগল ফাংশন ==========
         function toggleSwitch(el, onChange) {
             el.addEventListener('click', () => {
                 el.classList.toggle('active');
@@ -231,7 +255,6 @@
             loadProfile(targetUserId);
         });
 
-        // ট্যাব
         document.querySelectorAll('.profile-tabs .tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.profile-tabs .tab').forEach(t => t.classList.remove('active'));
@@ -249,7 +272,7 @@
         document.getElementById('close-settings').addEventListener('click', () => modal.classList.remove('active'));
         modal.addEventListener('click', (e) => { if (e.target === e.currentTarget) modal.classList.remove('active'); });
 
-        // ১. প্রাথমিক এন্ডি
+        // ১. প্রাথমিক এডি
         document.getElementById('edit-profile').addEventListener('click', () => {
             modal.classList.remove('active');
             const currentName = document.getElementById('display-name').textContent;
@@ -267,7 +290,7 @@
             }
         });
 
-        // ২. গ্রাইভেরিস (প্রাইভেসি)
+        // ২. গ্রাইভেরিস
         const privacyToggle = document.getElementById('privacy-toggle');
         toggleSwitch(privacyToggle, (isPrivate) => {
             db.collection('users').doc(currentUser.uid).set({
@@ -276,7 +299,7 @@
             showToast(isPrivate ? '🔒 অ্যাকাউন্ট প্রাইভেট হয়েছে' : '🔓 অ্যাকাউন্ট পাবলিক হয়েছে');
         });
 
-        // ৩. লাটিমিকেশন (নোটিফিকেশন)
+        // ৩. ল্যাটিমিকেশন
         const notifToggle = document.getElementById('notif-toggle');
         toggleSwitch(notifToggle, (enabled) => {
             db.collection('users').doc(currentUser.uid).set({
@@ -295,7 +318,7 @@
             showToast(isLight ? '🌙 ডার্ক মোড বন্ধ' : '🌙 ডার্ক মোড চালু');
         });
 
-        // ৫. লগজাউ
+        // ৫. লগজোড
         document.getElementById('logout-btn').addEventListener('click', () => {
             modal.classList.remove('active');
             document.getElementById('confirm-dialog').classList.add('active');
@@ -309,6 +332,33 @@
                 showToast('👋 লগআউট হচ্ছে...');
                 setTimeout(() => window.location.href = 'login.html', 500);
             });
+        });
+
+        // ========== বায়ো এডিট ==========
+        const bioModal = document.getElementById('bio-modal');
+        const bioInput = document.getElementById('bio-input');
+        const bioEl = document.getElementById('bio');
+
+        bioEl.addEventListener('click', () => {
+            if (targetUserId === currentUser.uid) {
+                bioInput.value = bioEl.textContent;
+                bioModal.classList.add('active');
+            }
+        });
+
+        document.getElementById('bio-cancel').addEventListener('click', () => {
+            bioModal.classList.remove('active');
+        });
+        document.getElementById('bio-save').addEventListener('click', async () => {
+            const newBio = bioInput.value.trim();
+            if (newBio) {
+                bioEl.textContent = newBio;
+                await db.collection('users').doc(currentUser.uid).set({
+                    bio: newBio
+                }, { merge: true });
+                showToast('✅ বায়ো আপডেট হয়েছে!');
+            }
+            bioModal.classList.remove('active');
         });
 
         // ========== প্রোফাইল লোড ==========
@@ -335,7 +385,6 @@
             document.getElementById('bio').textContent = userData.bio || 'হ্যালো, আমি WWC ব্যবহার করছি';
             document.getElementById('page-title').textContent = isOwn ? 'প্রোফাইল' : `@${displayName}`;
 
-            // টগল স্টেট সেট করা
             if (isOwn) {
                 if (userData.isPrivate) privacyToggle.classList.add('active');
                 else privacyToggle.classList.remove('active');
