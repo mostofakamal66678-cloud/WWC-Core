@@ -5,7 +5,6 @@
 let currentVideoId = null;
 let currentUser = null;
 let currentTab = 'foryou';
-let allVideos = [];
 
 auth.onAuthStateChanged(user => {
     if (!user) {
@@ -45,122 +44,13 @@ function setupTopBar() {
     }
 }
 
-function setupSearchUI() {
-    if (!document.getElementById('search-overlay')) {
-        const overlay = document.createElement('div');
-        overlay.id = 'search-overlay';
-        overlay.className = 'search-overlay';
-        overlay.innerHTML = `
-            <div class="search-header">
-                <button class="search-back" id="search-back"><i class="fas fa-arrow-left"></i></button>
-                <div class="search-input-wrap">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="search-input" placeholder="সার্চ করুন..." autocomplete="off">
-                    <button class="search-clear" id="search-clear" style="display:none"><i class="fas fa-times"></i></button>
-                </div>
-            </div>
-            <div class="search-body">
-                <div class="search-suggestions">
-                    <div class="search-hint">জনপ্রিয় সার্চ</div>
-                    <div class="suggestion-item" data-q="trending">🔥 ট্রেন্ডিং</div>
-                    <div class="suggestion-item" data-q="funny">😂 ফানি</div>
-                    <div class="suggestion-item" data-q="dance">💃 ডান্স</div>
-                </div>
-                <div id="search-results" class="search-results"></div>
-            </div>
-        `;
-        document.body.appendChild(overlay);
-
-        document.getElementById('search-back').addEventListener('click', closeSearch);
-        document.getElementById('search-clear').addEventListener('click', () => {
-            document.getElementById('search-input').value = '';
-            document.getElementById('search-clear').style.display = 'none';
-            document.getElementById('search-results').innerHTML = '';
-        });
-
-        const input = document.getElementById('search-input');
-        input.addEventListener('input', (e) => {
-            const val = e.target.value.trim();
-            document.getElementById('search-clear').style.display = val ? 'block' : 'none';
-            if (val.length >= 2) doSearch(val);
-            else document.getElementById('search-results').innerHTML = '';
-        });
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const val = input.value.trim();
-                if (val) doSearch(val);
-            }
-        });
-        document.querySelectorAll('.suggestion-item').forEach(item => {
-            item.addEventListener('click', () => {
-                input.value = item.dataset.q;
-                document.getElementById('search-clear').style.display = 'block';
-                doSearch(item.dataset.q);
-            });
-        });
-    }
-}
-
-function openSearch() {
-    const overlay = document.getElementById('search-overlay');
-    if (overlay) {
-        overlay.classList.add('active');
-        setTimeout(() => document.getElementById('search-input')?.focus(), 200);
-    }
-}
-function closeSearch() {
-    document.getElementById('search-overlay')?.classList.remove('active');
-}
-
-function doSearch(query) {
-    const results = document.getElementById('search-results');
-    if (!results) return;
-    results.innerHTML = '<div class="search-loading">সার্চ করা হচ্ছে...</div>';
-
-    db.collection('videos').orderBy('createdAt', 'desc').limit(50).get()
-        .then(snap => {
-            const q = query.toLowerCase();
-            const matched = [];
-            snap.forEach(doc => {
-                const d = doc.data();
-                const caption = (d.caption || '').toLowerCase();
-                const username = (d.username || d.name || '').toLowerCase();
-                if (caption.includes(q) || username.includes(q)) {
-                    matched.push({ id: doc.id, ...d });
-                }
-            });
-            if (matched.length === 0) {
-                results.innerHTML = '<div class="search-empty">কোনো ফলাফল পাওয়া যায়নি</div>';
-                return;
-            }
-            results.innerHTML = matched.map(v => `
-                <div class="search-result-item" data-id="${v.id}" data-uid="${v.uid || ''}">
-                    <div class="result-user">@${v.username || v.name || 'user'}</div>
-                    <div class="result-caption">${(v.caption || '').substring(0, 60)}${(v.caption || '').length > 60 ? '...' : ''}</div>
-                </div>
-            `).join('');
-            results.querySelectorAll('.search-result-item').forEach(el => {
-                el.addEventListener('click', () => {
-                    closeSearch();
-                    const uid = el.dataset.uid;
-                    if (uid) {
-                        window.location.href = `profile.html?uid=${uid}`;
-                    } else {
-                        alert('ভিডিও খোলা হচ্ছে...');
-                    }
-                });
-            });
-        })
-        .catch(err => {
-            console.error(err);
-            results.innerHTML = '<div class="search-empty">সার্চ করতে সমস্যা হয়েছে</div>';
-        });
-}
-
 // ========== ফিড লোড ==========
 function loadFeed() {
     const feed = document.getElementById('video-feed');
-    if (!feed) return;
+    if (!feed) {
+        console.error('video-feed এলিমেন্ট পাওয়া যায়নি!');
+        return;
+    }
     feed.innerHTML = '<div class="loading">ভিডিও লোড হচ্ছে...</div>';
 
     let query = db.collection('videos').orderBy('createdAt', 'desc');
@@ -170,7 +60,9 @@ function loadFeed() {
         return;
     }
 
+    // For You ফিড
     query.onSnapshot(snapshot => {
+        console.log('ভিডিও ফিড আপডেট:', snapshot.size);
         renderFeed(snapshot, feed);
     }, error => {
         console.error('ফিড লোড সমস্যা:', error);
@@ -227,7 +119,10 @@ function renderFeed(snapshot, feed, isFollowing = false) {
         const data = doc.data();
         const videoId = doc.id;
         const videoSrc = data.videoURL || data.videoUrl || '';
-        if (!videoSrc) return;
+        if (!videoSrc) {
+            console.warn('ভিডিও URL নেই:', videoId);
+            return;
+        }
 
         if (isFollowing && data.uid === currentUser.uid) return;
 
@@ -284,7 +179,7 @@ function renderFeed(snapshot, feed, isFollowing = false) {
             }
         }
 
-        // ========== 🆕 ইউজারনেমে ক্লিক করলে প্রোফাইল খোলা ==========
+        // ইউজারনেমে ক্লিক করলে প্রোফাইল খোলা
         const usernameEl = card.querySelector('.username');
         if (usernameEl) {
             usernameEl.style.cursor = 'pointer';
@@ -553,26 +448,5 @@ async function toggleFollow(targetUid, btn) {
     } catch (err) {
         console.error('ফলো সমস্যা:', err);
         alert('ফলো করা যাচ্ছে না।\nসম্ভবত Firebase Rules-এ follows কালেকশন অনুমতি নেই।\n\nError: ' + (err.message || err));
-    }
-}
-
-// ========== FCM টোকেন সংগ্রহ ও সেভ ==========
-// (এই কোডটি আপনার auth.onAuthStateChanged-এর ভিতরে যোগ করুন)
-if (user) {
-    // FCM টোকেন নেওয়া
-    try {
-        const messaging = firebase.messaging();
-        const token = await messaging.getToken({
-            vapidKey: "YOUR_VAPID_KEY" // Firebase Console → Project Settings → Cloud Messaging → VAPID Key
-        });
-        if (token) {
-            // টোকেন ইউজারের ডকুমেন্টে সেভ করুন
-            await db.collection('users').doc(user.uid).set({
-                fcmToken: token
-            }, { merge: true });
-            console.log('FCM টোকেন সেভ হয়েছে:', token);
-        }
-    } catch (error) {
-        console.error('FCM টোকেন নিতে সমস্যা:', error);
     }
 }
