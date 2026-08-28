@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 html, body {
     height: 100%;
@@ -12,45 +13,55 @@ html, body {
     color: #fff;
 }
 
-/* ========== টপ বার ========== */
 .top-bar {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     height: 52px;
+    padding-top: env(safe-area-inset-top);
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 12px;
+    justify-content: center;
     z-index: 90;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+    background: linear-gradient(to bottom, rgba(0,0,0,0.55), transparent);
 }
-.top-bar button, .top-bar .top-tabs {
+.top-tabs {
+    display: flex;
+    gap: 22px;
+}
+.tab-btn {
     background: transparent;
     border: none;
-    color: #fff;
+    color: rgba(255,255,255,0.6);
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
+    padding: 4px 0;
+    position: relative;
 }
-.top-tabs { display: flex; gap: 22px; }
-.tab-btn { color: rgba(255,255,255,0.55); }
 .tab-btn.active { color: #fff; }
 .tab-btn.active::after {
     content: '';
     display: block;
-    width: 26px;
+    width: 22px;
     height: 3px;
     background: #fff;
-    margin: 4px auto 0;
+    margin: 5px auto 0;
     border-radius: 2px;
 }
-.top-right-space { width: 40px; }
+.search-btn {
+    position: absolute;
+    right: 14px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 19px;
+}
 
-/* ========== ভিডিও ফিড ========== */
 .video-feed {
     height: 100vh;
+    height: 100dvh;
     width: 100%;
     overflow-y: scroll;
     scroll-snap-type: y mandatory;
@@ -58,11 +69,25 @@ html, body {
 }
 .video-feed::-webkit-scrollbar { display: none; }
 
+.feed-loading {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #888;
+    font-size: 20px;
+    padding: 0 20px;
+}
+.feed-loading.error { color: #f44336; font-size: 14px; }
+
 .video-card {
     position: relative;
     height: 100vh;
+    height: 100dvh;
     width: 100%;
     scroll-snap-align: start;
+    scroll-snap-stop: always;
     background: #000;
     overflow: hidden;
 }
@@ -72,71 +97,240 @@ html, body {
     object-fit: cover;
 }
 
-/* ========== ওভারলে ========== */
-.overlay {
+.mute-indicator {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 16px 12px 30px;
-    background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%) scale(0.7);
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.5);
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 10;
+}
+.mute-indicator.show {
+    opacity: 1;
+    transform: translate(-50%,-50%) scale(1);
 }
 
-/* ========== বাম পাশ ========== */
-.left-info {
-    max-width: 65%;
-    padding-bottom: 8px;
-}
-.username {
-    font-weight: 700;
-    font-size: 16px;
-    margin-bottom: 4px;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
-    color: #fff;
-}
-.caption {
-    font-size: 14px;
-    opacity: 0.95;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
-    color: #fff;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+.video-card::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 40%;
+    background: linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+    pointer-events: none;
+    z-index: 1;
 }
 
-/* ========== ডান পাশের বাটন ========== */
-.action-buttons {
+.side-actions {
+    position: absolute;
+    right: 8px;
+    bottom: 100px;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 18px;
-    padding-bottom: 8px;
-    flex-shrink: 0;
+    z-index: 5;
 }
-.action-buttons button {
+
+.profile-pic-wrap {
+    position: relative;
+    margin-bottom: 4px;
+}
+.profile-pic {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    object-fit: cover;
+    display: block;
+}
+.follow-btn {
+    position: absolute;
+    bottom: -9px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fe2c55;
+    border: 2px solid #000;
+    color: #fff;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+}
+
+.action-btn {
     background: transparent;
     border: none;
     color: #fff;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
-    font-size: 12px;
+    gap: 4px;
+    font-size: 11px;
     font-weight: 600;
     cursor: pointer;
     text-shadow: 0 1px 4px rgba(0,0,0,0.6);
 }
-.action-buttons button i {
-    font-size: 28px;
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+.action-btn i {
+    font-size: 30px;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
 }
-.action-buttons button:active i { transform: scale(1.25); }
+.action-btn:active i { transform: scale(1.2); }
+.action-btn.like-btn.liked i { color: #fe2c55; }
+.action-btn.save-btn.saved i { color: #ffd400; }
 
-/* ========== নিচের নেভবার ========== */
+.music-disc {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #111 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42 42"><circle cx="21" cy="21" r="20" fill="%23222" stroke="%23555" stroke-width="1"/></svg>') center/cover;
+    border: 3px solid #333;
+    overflow: hidden;
+    margin-top: 6px;
+    animation: spin 4s linear infinite;
+    animation-play-state: paused;
+}
+.music-disc img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+.music-disc.spinning { animation-play-state: running; }
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.bottom-info {
+    position: absolute;
+    left: 12px;
+    right: 90px;
+    bottom: 100px;
+    z-index: 5;
+}
+.bottom-info .username {
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 6px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+}
+.bottom-info .caption {
+    font-size: 14px;
+    line-height: 1.4;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+.music-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #eee;
+    overflow: hidden;
+}
+.music-info i { font-size: 13px; flex-shrink: 0; }
+.music-info .music-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.comment-sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 65vh;
+    background: #121212;
+    border-radius: 16px 16px 0 0;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    z-index: 200;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+.comment-sheet.open { transform: translateY(0); }
+.comment-header {
+    position: relative;
+    padding: 14px 16px;
+    text-align: center;
+    border-bottom: 1px solid #222;
+}
+.comment-header .handle {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 4px;
+    background: #444;
+    border-radius: 2px;
+}
+.comment-header h3 { font-size: 15px; font-weight: 600; }
+.comment-header button {
+    position: absolute;
+    right: 12px;
+    top: 12px;
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 18px;
+}
+.comment-list { flex: 1; overflow-y: auto; padding: 12px 16px; }
+.comment-item { padding: 10px 0; border-bottom: 1px solid #1a1a1a; }
+.comment-item .comment-user { font-size: 13px; font-weight: 600; color: #25f4ee; margin-bottom: 3px; }
+.comment-item .comment-text { font-size: 14px; line-height: 1.4; color: #eee; }
+.comment-input-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-top: 1px solid #222;
+}
+.comment-input-box input {
+    flex: 1;
+    background: #1e1e1e;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 16px;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+}
+.comment-input-box button {
+    background: linear-gradient(45deg,#fe2c55,#25f4ee);
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
 .bottom-nav {
     position: fixed;
     bottom: 0;
@@ -149,6 +343,7 @@ html, body {
     align-items: center;
     border-top: 1px solid #222;
     z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom);
 }
 .nav-item {
     color: #888;
