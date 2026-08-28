@@ -1,14 +1,15 @@
 // ===============================
-// WWC - TikTok Style App Logic (v3.1 - Follow Fixed)
+// WWC - TikTok Style App Logic (v3.2 - Fixed)
 // ===============================
 
 let currentVideoId = null;
 let currentUser = null;
 let currentTab = 'foryou';
+let allVideos = [];
 
 auth.onAuthStateChanged(user => {
     if (!user) {
-        window.location.href = 'public/js/login.html';
+        window.location.href = 'login.html';
         return;
     }
     currentUser = user;
@@ -21,7 +22,7 @@ function setupTopBar() {
     const tabs = document.querySelectorAll('.tab-btn');
     const followingBtn = tabs[0];
     const forYouBtn = tabs[1];
-    const searchBtn = document.querySelector('.search-btn');
+    const searchBtn = document.getElementById('search-btn');
 
     if (forYouBtn) {
         forYouBtn.addEventListener('click', () => {
@@ -133,15 +134,20 @@ function doSearch(query) {
                 return;
             }
             results.innerHTML = matched.map(v => `
-                <div class="search-result-item" data-id="${v.id}">
+                <div class="search-result-item" data-id="${v.id}" data-uid="${v.uid || ''}">
                     <div class="result-user">@${v.username || v.name || 'user'}</div>
-                    <div class="result-caption">\( {(v.caption || '').substring(0, 60)} \){(v.caption || '').length > 60 ? '...' : ''}</div>
+                    <div class="result-caption">${(v.caption || '').substring(0, 60)}${(v.caption || '').length > 60 ? '...' : ''}</div>
                 </div>
             `).join('');
             results.querySelectorAll('.search-result-item').forEach(el => {
                 el.addEventListener('click', () => {
                     closeSearch();
-                    alert('ভিডিও খোলা হচ্ছে... (শীঘ্রই সরাসরি প্লে হবে)');
+                    const uid = el.dataset.uid;
+                    if (uid) {
+                        window.location.href = `profile.html?uid=${uid}`;
+                    } else {
+                        alert('ভিডিও খোলা হচ্ছে...');
+                    }
                 });
             });
         })
@@ -151,92 +157,158 @@ function doSearch(query) {
         });
 }
 
+// ========== ফিড লোড ==========
 function loadFeed() {
     const feed = document.getElementById('video-feed');
     if (!feed) return;
     feed.innerHTML = '<div class="loading">ভিডিও লোড হচ্ছে...</div>';
 
-    db.collection('videos').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-        feed.innerHTML = '';
-        if (snapshot.empty) {
-            feed.innerHTML = '<div class="loading">কোনো ভিডিও নেই। প্রথম ভিডিও আপলোড করো!</div>';
-            return;
-        }
-        let count = 0;
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            const videoId = doc.id;
-            if (currentTab === 'following' && data.uid === currentUser.uid) return;
-            const videoSrc = data.videoURL || data.videoUrl || '';
-            if (!videoSrc) return;
-            count++;
+    let query = db.collection('videos').orderBy('createdAt', 'desc');
 
-            const card = document.createElement('div');
-            card.className = 'video-card';
-            card.dataset.id = videoId;
-            card.innerHTML = `
-                <video src="${videoSrc}" loop muted playsinline preload="auto" webkit-playsinline></video>
-                <div class="overlay">
-                    <div class="left-info">
-                        <div class="username">@${data.username || data.name || 'user'}</div>
-                        <div class="caption">${data.caption || ''}</div>
-                    </div>
-                    <div class="action-buttons">
-                        <button class="like-btn" data-id="${videoId}">
-                            <i class="far fa-heart"></i>
-                            <span class="count">${data.likes || data.likeCount || 0}</span>
-                        </button>
-                        <button class="comment-btn" data-id="${videoId}">
-                            <i class="far fa-comment"></i>
-                            <span class="count">${data.comments || data.commentCount || 0}</span>
-                        </button>
-                        <button class="save-btn" data-id="${videoId}">
-                            <i class="far fa-bookmark"></i>
-                            <span class="count">${data.saves || 0}</span>
-                        </button>
-                        <button class="share-btn">
-                            <i class="fas fa-share"></i>
-                            <span>শেয়ার</span>
-                        </button>
-                        <button class="follow-btn" data-uid="${data.uid || ''}">
-                            <i class="far fa-user-plus"></i>
-                            <span>ফলো</span>
-                        </button>
-                        <button class="sound-btn">
-                            <i class="fas fa-volume-mute"></i>
-                        </button>
-                    </div>
-                </div>
-            `;
-            feed.appendChild(card);
-            setupAutoplay(card);
-            setupCardEvents(card, data, videoId);
-            checkLikeStatus(videoId, card.querySelector('.like-btn'));
-            checkSaveStatus(videoId, card.querySelector('.save-btn'));
+    if (currentTab === 'following') {
+        loadFollowingFeed(feed);
+        return;
+    }
 
-            const fBtn = card.querySelector('.follow-btn');
-            if (fBtn) {
-                if (!data.uid || data.uid === currentUser.uid) {
-                    fBtn.style.display = 'none';
-                } else {
-                    checkFollowStatus(data.uid, fBtn);
-                }
-            }
-        });
-
-        if (currentTab === 'following' && count === 0) {
-            feed.innerHTML = '<div class="loading">আপনি এখনো কাউকে ফলো করেননি।<br>For You ট্যাবে যান।</div>';
-        }
-        setTimeout(() => {
-            const firstVideo = feed.querySelector('.video-card video');
-            if (firstVideo) firstVideo.play().catch(() => {});
-        }, 400);
+    query.onSnapshot(snapshot => {
+        renderFeed(snapshot, feed);
     }, error => {
         console.error('ফিড লোড সমস্যা:', error);
         feed.innerHTML = '<div class="loading">ভিডিও লোড করতে সমস্যা হয়েছে</div>';
     });
 }
 
+// ========== ফলোইং ফিড ==========
+async function loadFollowingFeed(feed) {
+    try {
+        const followsSnap = await db.collection('follows')
+            .where('follower', '==', currentUser.uid)
+            .get();
+        
+        const followingUids = [];
+        followsSnap.forEach(doc => {
+            const data = doc.data();
+            if (data.following) followingUids.push(data.following);
+        });
+
+        if (followingUids.length === 0) {
+            feed.innerHTML = '<div class="loading">আপনি এখনো কাউকে ফলো করেননি।<br>For You ট্যাবে যান।</div>';
+            return;
+        }
+
+        const videosSnap = await db.collection('videos')
+            .where('uid', 'in', followingUids)
+            .orderBy('createdAt', 'desc')
+            .get();
+
+        if (videosSnap.empty) {
+            feed.innerHTML = '<div class="loading">আপনি ফলো করা ইউজারদের কোনো ভিডিও নেই।</div>';
+            return;
+        }
+
+        renderFeed(videosSnap, feed, true);
+
+    } catch (err) {
+        console.error('ফলোইং ফিড সমস্যা:', err);
+        feed.innerHTML = '<div class="loading">ফলোইং ফিড লোড করতে সমস্যা হয়েছে</div>';
+    }
+}
+
+// ========== ফিড রেন্ডার ==========
+function renderFeed(snapshot, feed, isFollowing = false) {
+    feed.innerHTML = '';
+    if (snapshot.empty) {
+        feed.innerHTML = '<div class="loading">কোনো ভিডিও নেই। প্রথম ভিডিও আপলোড করো!</div>';
+        return;
+    }
+
+    let count = 0;
+    snapshot.forEach(doc => {
+        const data = doc.data();
+        const videoId = doc.id;
+        const videoSrc = data.videoURL || data.videoUrl || '';
+        if (!videoSrc) return;
+
+        if (isFollowing && data.uid === currentUser.uid) return;
+
+        count++;
+        const card = document.createElement('div');
+        card.className = 'video-card';
+        card.dataset.id = videoId;
+        card.innerHTML = `
+            <video src="${videoSrc}" loop muted playsinline preload="auto" webkit-playsinline></video>
+            <div class="overlay">
+                <div class="left-info">
+                    <div class="username" data-uid="${data.uid || ''}">@${data.username || data.name || 'user'}</div>
+                    <div class="caption">${data.caption || ''}</div>
+                </div>
+                <div class="action-buttons">
+                    <button class="like-btn" data-id="${videoId}">
+                        <i class="far fa-heart"></i>
+                        <span class="count">${data.likes || data.likeCount || 0}</span>
+                    </button>
+                    <button class="comment-btn" data-id="${videoId}">
+                        <i class="far fa-comment"></i>
+                        <span class="count">${data.comments || data.commentCount || 0}</span>
+                    </button>
+                    <button class="save-btn" data-id="${videoId}">
+                        <i class="far fa-bookmark"></i>
+                        <span class="count">${data.saves || 0}</span>
+                    </button>
+                    <button class="share-btn">
+                        <i class="fas fa-share"></i>
+                        <span>শেয়ার</span>
+                    </button>
+                    <button class="follow-btn" data-uid="${data.uid || ''}">
+                        <i class="far fa-user-plus"></i>
+                        <span>ফলো</span>
+                    </button>
+                    <button class="sound-btn">
+                        <i class="fas fa-volume-mute"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        feed.appendChild(card);
+        setupAutoplay(card);
+        setupCardEvents(card, data, videoId);
+        checkLikeStatus(videoId, card.querySelector('.like-btn'));
+        checkSaveStatus(videoId, card.querySelector('.save-btn'));
+
+        const fBtn = card.querySelector('.follow-btn');
+        if (fBtn) {
+            if (!data.uid || data.uid === currentUser.uid) {
+                fBtn.style.display = 'none';
+            } else {
+                checkFollowStatus(data.uid, fBtn);
+            }
+        }
+
+        // ========== 🆕 ইউজারনেমে ক্লিক করলে প্রোফাইল খোলা ==========
+        const usernameEl = card.querySelector('.username');
+        if (usernameEl) {
+            usernameEl.style.cursor = 'pointer';
+            usernameEl.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const uid = usernameEl.dataset.uid || data.uid || '';
+                if (uid) {
+                    window.location.href = `profile.html?uid=${uid}`;
+                }
+            });
+        }
+    });
+
+    if (count === 0 && isFollowing) {
+        feed.innerHTML = '<div class="loading">আপনি ফলো করা ইউজারদের কোনো ভিডিও নেই।</div>';
+    }
+
+    setTimeout(() => {
+        const firstVideo = feed.querySelector('.video-card video');
+        if (firstVideo) firstVideo.play().catch(() => {});
+    }, 400);
+}
+
+// ========== অটোপ্লে ==========
 function setupAutoplay(card) {
     const video = card.querySelector('video');
     if (!video) return;
@@ -261,6 +333,7 @@ function setupAutoplay(card) {
     observer.observe(card);
 }
 
+// ========== কার্ড ইভেন্ট ==========
 function setupCardEvents(card, data, videoId) {
     const video = card.querySelector('video');
 
@@ -310,10 +383,11 @@ function setupCardEvents(card, data, videoId) {
     });
 }
 
+// ========== লাইক চেক ==========
 async function checkLikeStatus(videoId, btn) {
     if (!currentUser || !btn) return;
     try {
-        const likeDoc = await db.collection('likes').doc(`\( {currentUser.uid}_ \){videoId}`).get();
+        const likeDoc = await db.collection('likes').doc(`${currentUser.uid}_${videoId}`).get();
         if (likeDoc.exists) {
             btn.classList.add('liked');
             btn.querySelector('i').className = 'fas fa-heart';
@@ -321,10 +395,11 @@ async function checkLikeStatus(videoId, btn) {
     } catch (e) {}
 }
 
+// ========== সেভ চেক ==========
 async function checkSaveStatus(videoId, btn) {
     if (!currentUser || !btn) return;
     try {
-        const saveDoc = await db.collection('saves').doc(`\( {currentUser.uid}_ \){videoId}`).get();
+        const saveDoc = await db.collection('saves').doc(`${currentUser.uid}_${videoId}`).get();
         if (saveDoc.exists) {
             btn.classList.add('saved');
             btn.querySelector('i').className = 'fas fa-bookmark';
@@ -332,9 +407,10 @@ async function checkSaveStatus(videoId, btn) {
     } catch (e) {}
 }
 
+// ========== লাইক টগল ==========
 async function toggleLike(videoId, btn) {
     if (!currentUser) return;
-    const likeRef = db.collection('likes').doc(`\( {currentUser.uid}_ \){videoId}`);
+    const likeRef = db.collection('likes').doc(`${currentUser.uid}_${videoId}`);
     const videoRef = db.collection('videos').doc(videoId);
     try {
         const likeDoc = await likeRef.get();
@@ -358,9 +434,10 @@ async function toggleLike(videoId, btn) {
     } catch (err) { console.error('লাইক সমস্যা:', err); }
 }
 
+// ========== সেভ টগল ==========
 async function toggleSave(videoId, btn) {
     if (!currentUser) return;
-    const saveRef = db.collection('saves').doc(`\( {currentUser.uid}_ \){videoId}`);
+    const saveRef = db.collection('saves').doc(`${currentUser.uid}_${videoId}`);
     const videoRef = db.collection('videos').doc(videoId);
     try {
         const saveDoc = await saveRef.get();
@@ -384,6 +461,7 @@ async function toggleSave(videoId, btn) {
     } catch (err) { console.error('সেভ সমস্যা:', err); }
 }
 
+// ========== কমেন্ট ==========
 function openComment(videoId) {
     currentVideoId = videoId;
     const modal = document.getElementById('comment-modal');
@@ -428,7 +506,7 @@ document.getElementById('close-comment')?.addEventListener('click', () => {
 async function checkFollowStatus(targetUid, btn) {
     if (!currentUser || !targetUid || !btn) return;
     try {
-        const followId = `\( {currentUser.uid}_ \){targetUid}`;
+        const followId = `${currentUser.uid}_${targetUid}`;
         const doc = await db.collection('follows').doc(followId).get();
         if (doc.exists) {
             btn.innerHTML = '<i class="fas fa-user-check"></i><span>ফলোয়িং</span>';
@@ -454,7 +532,7 @@ async function toggleFollow(targetUid, btn) {
         return;
     }
 
-    const followId = `\( {currentUser.uid}_ \){targetUid}`;
+    const followId = `${currentUser.uid}_${targetUid}`;
     const followRef = db.collection('follows').doc(followId);
 
     try {
