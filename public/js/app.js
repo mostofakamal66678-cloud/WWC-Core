@@ -1,5 +1,5 @@
 // ===============================
-// WWC - TikTok Style App Logic
+// WWC - TikTok Style App Logic (Fixed)
 // ===============================
 
 let currentVideoId = null;
@@ -36,7 +36,7 @@ function loadFeed() {
                 const data = doc.data();
                 const videoId = doc.id;
 
-                // videoURL বা videoUrl দুটোই সাপোর্ট করবে
+                // videoURL বা videoUrl দুটোই সাপোর্ট
                 const videoSrc = data.videoURL || data.videoUrl || '';
 
                 const card = document.createElement('div');
@@ -44,7 +44,7 @@ function loadFeed() {
                 card.dataset.id = videoId;
 
                 card.innerHTML = `
-                    <video src="${videoSrc}" loop muted playsinline preload="metadata"></video>
+                    <video src="${videoSrc}" loop muted playsinline preload="auto"></video>
                     
                     <div class="overlay">
                         <div class="left-info">
@@ -94,21 +94,27 @@ function loadFeed() {
         });
 }
 
-// ========== অটোপ্লে ==========
+// ========== অটোপ্লে (TikTok স্টাইল) ==========
 function setupAutoplay(card) {
     const video = card.querySelector('video');
     if (!video) return;
 
     const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
-            if (entry.isIntersecting) {
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+                // অন্য সব ভিডিও পজ করে দাও
+                document.querySelectorAll('.video-card video').forEach(v => {
+                    if (v !== video) {
+                        v.pause();
+                        v.currentTime = 0;
+                    }
+                });
                 video.play().catch(() => {});
             } else {
                 video.pause();
-                video.currentTime = 0;
             }
         });
-    }, { threshold: 0.65 });
+    }, { threshold: [0.6, 0.8] });
 
     observer.observe(card);
 }
@@ -119,44 +125,74 @@ function setupCardEvents(card, data, videoId) {
 
     // লাইক
     const likeBtn = card.querySelector('.like-btn');
-    likeBtn.addEventListener('click', () => toggleLike(videoId, likeBtn));
+    if (likeBtn) {
+        likeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleLike(videoId, likeBtn);
+        });
+    }
 
     // কমেন্ট
-    card.querySelector('.comment-btn').addEventListener('click', () => {
-        openComment(videoId);
-    });
+    const commentBtn = card.querySelector('.comment-btn');
+    if (commentBtn) {
+        commentBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openComment(videoId);
+        });
+    }
 
     // শেয়ার
-    card.querySelector('.share-btn').addEventListener('click', () => {
-        const url = window.location.href;
-        if (navigator.share) {
-            navigator.share({
-                title: 'WWC ভিডিও',
-                text: data.caption || 'একটা ভিডিও দেখো',
-                url: url
-            }).catch(() => {});
-        } else {
-            navigator.clipboard.writeText(url).then(() => {
-                alert('লিংক কপি হয়েছে!');
-            });
-        }
-    });
+    const shareBtn = card.querySelector('.share-btn');
+    if (shareBtn) {
+        shareBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const url = window.location.href;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'WWC ভিডিও',
+                    text: data.caption || 'একটা ভিডিও দেখো',
+                    url: url
+                }).catch(() => {});
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('লিংক কপি হয়েছে!');
+                });
+            }
+        });
+    }
 
     // ফলো
     const followBtn = card.querySelector('.follow-btn');
-    followBtn.addEventListener('click', () => toggleFollow(data.uid, followBtn));
+    if (followBtn) {
+        followBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleFollow(data.uid, followBtn);
+        });
+    }
 
     // সাউন্ড
     const soundBtn = card.querySelector('.sound-btn');
-    soundBtn.addEventListener('click', () => {
-        video.muted = !video.muted;
-        soundBtn.innerHTML = video.muted
-            ? `<i class="fas fa-volume-mute"></i>`
-            : `<i class="fas fa-volume-up"></i>`;
+    if (soundBtn) {
+        soundBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            video.muted = !video.muted;
+            soundBtn.innerHTML = video.muted
+                ? `<i class="fas fa-volume-mute"></i>`
+                : `<i class="fas fa-volume-up"></i>`;
+        });
+    }
+
+    // ভিডিওতে ট্যাপ করে প্লে/পজ
+    video.addEventListener('click', () => {
+        if (video.paused) {
+            video.play().catch(() => {});
+        } else {
+            video.pause();
+        }
     });
 }
 
-// ========== লাইক টগল ==========
+// ========== লাইক টগল (FIXED) ==========
 async function toggleLike(videoId, btn) {
     if (!currentUser) return;
 
@@ -174,6 +210,11 @@ async function toggleLike(videoId, btn) {
             });
             btn.classList.remove('liked');
             btn.querySelector('i').className = 'far fa-heart';
+            const countEl = btn.querySelector('.count');
+            if (countEl) {
+                const n = parseInt(countEl.textContent) || 0;
+                countEl.textContent = Math.max(0, n - 1);
+            }
         } else {
             // লাইক
             await likeRef.set({
@@ -186,6 +227,11 @@ async function toggleLike(videoId, btn) {
             });
             btn.classList.add('liked');
             btn.querySelector('i').className = 'fas fa-heart';
+            const countEl = btn.querySelector('.count');
+            if (countEl) {
+                const n = parseInt(countEl.textContent) || 0;
+                countEl.textContent = n + 1;
+            }
         }
     } catch (err) {
         console.error('লাইক সমস্যা:', err);
@@ -255,7 +301,7 @@ document.getElementById('close-comment')?.addEventListener('click', () => {
     document.getElementById('comment-modal')?.classList.remove('active');
 });
 
-// ========== ফলো টগল ==========
+// ========== ফলো টগল (FIXED) ==========
 async function toggleFollow(targetUid, btn) {
     if (!currentUser || !targetUid || currentUser.uid === targetUid) return;
 
