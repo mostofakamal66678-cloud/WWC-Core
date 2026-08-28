@@ -128,7 +128,6 @@
         </div>
     </div>
 
-    <!-- বায়ো এডিট মডাল -->
     <div class="bio-modal" id="bio-modal">
         <div class="bio-box">
             <h3>বায়ো এডিট করুন</h3>
@@ -173,7 +172,6 @@
         <div class="video-grid" id="video-grid"></div>
     </div>
 
-    <!-- ===== সেটিংস মডাল ===== -->
     <div class="settings-modal" id="settings-modal">
         <div class="settings-box">
             <div class="settings-handle"></div>
@@ -454,11 +452,17 @@
                         }
                     }
                 }
-            } catch(e) {}
+            } catch(e) {
+                console.error('কন্টেন্ট লোড সমস্যা:', e);
+            }
 
             if (!videos.length) {
                 const icons = { videos: 'video', liked: 'heart', saved: 'bookmark' };
-                const msgs = { videos: 'কোনো ভিডিও আপলোড করেননি', liked: 'লাইক করা ভিডিও নেই', saved: 'সেভ করা ভিডিও নেই' };
+                const msgs = { 
+                    videos: 'কোনো ভিডিও আপলোড করেননি', 
+                    liked: 'লাইক করা ভিডিও নেই', 
+                    saved: 'সেভ করা ভিডিও নেই' 
+                };
                 grid.innerHTML = `<div class="empty-grid"><i class="fas fa-${icons[tab] || 'video'}"></i>${msgs[tab] || 'কোনো ভিডিও নেই'}</div>`;
                 return;
             }
