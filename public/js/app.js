@@ -8,7 +8,8 @@ let currentUser = null;
 // ========== Auth Check ==========
 auth.onAuthStateChanged(user => {
     if (!user) {
-        window.location.href = 'login.html';
+        // লগইন না থাকলে লগইন পেজে পাঠাও
+        window.location.href = 'public/js/login.html';
         return;
     }
     currentUser = user;
@@ -18,6 +19,8 @@ auth.onAuthStateChanged(user => {
 // ========== ভিডিও ফিড লোড ==========
 function loadFeed() {
     const feed = document.getElementById('video-feed');
+    if (!feed) return;
+
     feed.innerHTML = `<div class="loading">ভিডিও লোড হচ্ছে...</div>`;
 
     db.collection('videos')
@@ -63,7 +66,7 @@ function loadFeed() {
                                 <span>শেয়ার</span>
                             </button>
 
-                            <button class="follow-btn" data-uid="${data.uid}">
+                            <button class="follow-btn" data-uid="${data.uid || ''}">
                                 <i class="far fa-user-plus"></i>
                                 <span>ফলো</span>
                             </button>
@@ -77,21 +80,22 @@ function loadFeed() {
 
                 feed.appendChild(card);
 
-                // অটোপ্লে সেটআপ
+                // অটোপ্লে
                 setupAutoplay(card);
 
-                // ইভেন্ট লিসেনার
+                // বাটন ইভেন্ট
                 setupCardEvents(card, data, videoId);
             });
         }, error => {
-            console.error('ফিড লোড করতে সমস্যা:', error);
+            console.error('ফিড লোড সমস্যা:', error);
             feed.innerHTML = `<div class="loading">ভিডিও লোড করতে সমস্যা হয়েছে</div>`;
         });
 }
 
-// ========== অটোপ্লে (Intersection Observer) ==========
+// ========== অটোপ্লে ==========
 function setupAutoplay(card) {
     const video = card.querySelector('video');
+    if (!video) return;
 
     const observer = new IntersectionObserver(entries => {
         entries.forEach(entry => {
@@ -107,7 +111,7 @@ function setupAutoplay(card) {
     observer.observe(card);
 }
 
-// ========== কার্ডের সব বাটন ইভেন্ট ==========
+// ========== কার্ড ইভেন্ট ==========
 function setupCardEvents(card, data, videoId) {
     const video = card.querySelector('video');
 
@@ -140,17 +144,17 @@ function setupCardEvents(card, data, videoId) {
     const followBtn = card.querySelector('.follow-btn');
     followBtn.addEventListener('click', () => toggleFollow(data.uid, followBtn));
 
-    // সাউন্ড টগল
+    // সাউন্ড
     const soundBtn = card.querySelector('.sound-btn');
     soundBtn.addEventListener('click', () => {
         video.muted = !video.muted;
-        soundBtn.innerHTML = video.muted 
-            ? `<i class="fas fa-volume-mute"></i>` 
+        soundBtn.innerHTML = video.muted
+            ? `<i class="fas fa-volume-mute"></i>`
             : `<i class="fas fa-volume-up"></i>`;
     });
 }
 
-// ========== লাইক টগল (সঠিকভাবে) ==========
+// ========== লাইক টগল ==========
 async function toggleLike(videoId, btn) {
     if (!currentUser) return;
 
@@ -182,7 +186,7 @@ async function toggleLike(videoId, btn) {
             btn.querySelector('i').className = 'fas fa-heart';
         }
     } catch (err) {
-        console.error('লাইক করতে সমস্যা:', err);
+        console.error('লাইক সমস্যা:', err);
     }
 }
 
@@ -192,10 +196,11 @@ function openComment(videoId) {
     const modal = document.getElementById('comment-modal');
     const list = document.getElementById('comment-list');
 
+    if (!modal || !list) return;
+
     modal.classList.add('active');
     list.innerHTML = `<div style="text-align:center;color:#888;padding:20px;">লোড হচ্ছে...</div>`;
 
-    // রিয়েল-টাইম কমেন্ট লোড
     db.collection('videos').doc(videoId)
         .collection('comments')
         .orderBy('createdAt', 'desc')
@@ -220,7 +225,7 @@ function openComment(videoId) {
 // কমেন্ট সাবমিট
 document.getElementById('comment-submit')?.addEventListener('click', async () => {
     const input = document.getElementById('comment-input');
-    const text = input.value.trim();
+    const text = input?.value.trim();
     if (!text || !currentVideoId || !currentUser) return;
 
     try {
@@ -233,25 +238,24 @@ document.getElementById('comment-submit')?.addEventListener('click', async () =>
                 createdAt: Date.now()
             });
 
-        // কমেন্ট কাউন্ট বাড়ানো
         await db.collection('videos').doc(currentVideoId).update({
             comments: firebase.firestore.FieldValue.increment(1)
         });
 
         input.value = '';
     } catch (err) {
-        console.error('কমেন্ট করতে সমস্যা:', err);
+        console.error('কমেন্ট সমস্যা:', err);
     }
 });
 
 // কমেন্ট বন্ধ
 document.getElementById('close-comment')?.addEventListener('click', () => {
-    document.getElementById('comment-modal').classList.remove('active');
+    document.getElementById('comment-modal')?.classList.remove('active');
 });
 
 // ========== ফলো টগল ==========
 async function toggleFollow(targetUid, btn) {
-    if (!currentUser || currentUser.uid === targetUid) return;
+    if (!currentUser || !targetUid || currentUser.uid === targetUid) return;
 
     const followId = `\( {currentUser.uid}_ \){targetUid}`;
     const followRef = db.collection('follows').doc(followId);
@@ -271,6 +275,6 @@ async function toggleFollow(targetUid, btn) {
             btn.innerHTML = `<i class="fas fa-user-check"></i><span>ফলোয়িং</span>`;
         }
     } catch (err) {
-        console.error('ফলো করতে সমস্যা:', err);
+        console.error('ফলো সমস্যা:', err);
     }
 }
