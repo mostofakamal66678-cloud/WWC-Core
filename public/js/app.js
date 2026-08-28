@@ -1,5 +1,5 @@
 // ===============================
-// WWC - TikTok Style App Logic (Firestore ফিক্স)
+// WWC - ফিড লোডার (সরাসরি কাজ করবে)
 // ===============================
 
 let currentUser = null;
@@ -16,7 +16,7 @@ auth.onAuthStateChanged(user => {
 function loadFeed() {
     const feed = document.getElementById('video-feed');
     if (!feed) {
-        console.error('video-feed এলিমেন্ট পাওয়া যায়নি!');
+        console.error('video-feed পাওয়া যায়নি!');
         return;
     }
 
@@ -25,19 +25,21 @@ function loadFeed() {
     db.collection('videos')
         .orderBy('createdAt', 'desc')
         .get()
-        .then(snapshot => {
-            console.log('ভিডিও সংখ্যা:', snapshot.size);
-            
+        .then((snapshot) => {
+            console.log('মোট ভিডিও:', snapshot.size);
+
             if (snapshot.empty) {
                 feed.innerHTML = '<div style="text-align:center;color:#888;padding:40px;">কোনো ভিডিও নেই। প্রথম ভিডিও আপলোড করো!</div>';
                 return;
             }
 
             feed.innerHTML = '';
-            snapshot.forEach(doc => {
+
+            snapshot.forEach((doc) => {
                 const data = doc.data();
                 const videoId = doc.id;
-                // 🔥 এখানে videoURL (বড় হাতের URL) ব্যবহার করুন
+
+                // 🔥 videoURL ফিল্ড (বড় হাতের URL)
                 const videoSrc = data.videoURL || data.videoUrl || '';
 
                 if (!videoSrc) {
@@ -54,6 +56,7 @@ function loadFeed() {
                     position: relative;
                     background: #000;
                 `;
+
                 card.innerHTML = `
                     <video src="${videoSrc}" loop muted playsinline style="width:100%;height:100%;object-fit:cover;"></video>
                     <div style="position:absolute;bottom:0;left:0;right:0;padding:20px;background:linear-gradient(transparent,rgba(0,0,0,0.8));">
@@ -69,6 +72,7 @@ function loadFeed() {
                         </button>
                     </div>
                 `;
+
                 feed.appendChild(card);
 
                 // অটোপ্লে
@@ -85,13 +89,12 @@ function loadFeed() {
                 observer.observe(card);
             });
         })
-        .catch(err => {
+        .catch((err) => {
             console.error('ফিড লোড সমস্যা:', err);
             feed.innerHTML = `<div style="text-align:center;color:#f44336;padding:40px;">ভিডিও লোড করতে সমস্যা হয়েছে: ${err.message}</div>`;
         });
 }
 
-// লাইক ফাংশন
 function likeVideo(videoId) {
     const videoRef = db.collection('videos').doc(videoId);
     videoRef.get().then(doc => {
@@ -102,7 +105,6 @@ function likeVideo(videoId) {
     }).catch(err => console.error('লাইক সমস্যা:', err));
 }
 
-// শেয়ার ফাংশন
 function shareVideo() {
     if (navigator.share) {
         navigator.share({ title: 'WWC ভিডিও', url: window.location.href }).catch(() => {});
