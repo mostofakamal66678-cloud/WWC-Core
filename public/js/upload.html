@@ -24,7 +24,11 @@
         .field textarea { width:100%; background:#1a1a1a; border:1px solid #333; border-radius:10px; padding:12px 14px; color:#fff; font-size:15px; outline:none; min-height:80px; resize:vertical; }
         .upload-btn { width:100%; padding:14px; border:none; border-radius:10px; background:linear-gradient(45deg,#fe2c55,#25f4ee); color:#000; font-size:16px; font-weight:700; cursor:pointer; margin-top:8px; }
         .upload-btn:disabled { opacity:0.5; cursor:not-allowed; }
-        .progress { margin-top:12px; text-align:center; color:#25f4ee; font-size:14px; }
+        .progress-wrap { margin-top:16px; display:none; }
+        .progress-bar-bg { height:6px; background:#222; border-radius:3px; overflow:hidden; }
+        .progress-bar { height:100%; width:0%; background:linear-gradient(90deg,#fe2c55,#25f4ee); transition:width 0.2s; }
+        .progress-text { text-align:center; color:#25f4ee; font-size:14px; margin-top:8px; }
+        .error-box { display:none; margin-top:12px; padding:12px; background:#2a1010; border:1px solid #fe2c55; border-radius:8px; color:#ff8a8a; font-size:13px; line-height:1.5; }
         .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:60px; background:#000; display:flex; justify-content:space-around; align-items:center; border-top:1px solid #222; z-index:100; padding-bottom:env(safe-area-inset-bottom); }
         .nav-item { color:#888; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:11px; gap:3px; flex:1; }
         .nav-item i { font-size:22px; }
@@ -56,7 +60,12 @@
         </div>
 
         <button class="upload-btn" id="upload-btn">আপলোড করুন</button>
-        <div class="progress" id="progress"></div>
+
+        <div class="progress-wrap" id="progress-wrap">
+            <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar"></div></div>
+            <div class="progress-text" id="progress-text">আপলোড: 0%</div>
+        </div>
+        <div class="error-box" id="error-box"></div>
     </div>
 
     <nav class="bottom-nav">
@@ -81,10 +90,29 @@
         const previewBox = document.getElementById('preview-box');
         const previewVideo = document.getElementById('preview-video');
         const placeholder = document.getElementById('placeholder');
+        const errorBox = document.getElementById('error-box');
+        const progressWrap = document.getElementById('progress-wrap');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+
+        function showError(msg) {
+            errorBox.style.display = 'block';
+            errorBox.innerHTML = msg;
+        }
+        function hideError() {
+            errorBox.style.display = 'none';
+            errorBox.innerHTML = '';
+        }
 
         fileInput.addEventListener('change', () => {
+            hideError();
             const file = fileInput.files[0];
             if (!file) return;
+            if (file.size > 100 * 1024 * 1024) {
+                showError('ভিডিও খুব বড় (১০০MB এর বেশি)। ছোট ভিডিও দিন।');
+                fileInput.value = '';
+                return;
+            }
             const url = URL.createObjectURL(file);
             previewVideo.src = url;
             previewVideo.style.display = 'block';
@@ -93,50 +121,94 @@
             previewVideo.play().catch(() => {});
         });
 
-        document.getElementById('upload-btn').addEventListener('click', () => {
+        document.getElementById('upload-btn').addEventListener('click', async () => {
+            hideError();
             const file = fileInput.files[0];
             const caption = document.getElementById('caption').value.trim();
             const user = auth.currentUser;
-            if (!file) return alert('ভিডিও সিলেক্ট করুন!');
-            if (!user) return alert('লগইন করুন');
+
+            if (!file) return showError('আগে ভিডিও সিলেক্ট করুন।');
+            if (!user) return showError('লগইন নেই। আবার লগইন করুন।');
 
             const btn = document.getElementById('upload-btn');
-            const progress = document.getElementById('progress');
             btn.disabled = true;
             btn.textContent = 'আপলোড হচ্ছে...';
+            progressWrap.style.display = 'block';
+            progressBar.style.width = '0%';
+            progressText.textContent = 'আপলোড: ০%';
 
-            const storageRef = storage.ref(`videos/\( {user.uid}/ \){Date.now()}_${file.name}`);
-            const uploadTask = storageRef.put(file);
+            try {
+                await user.getIdToken(true);
 
-            uploadTask.on('state_changed',
-                snap => {
-                    const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
-                    progress.textContent = `আপলোড: ${pct}%`;
-                },
-                err => {
-                    alert('সমস্যা: ' + err.message);
-                    btn.disabled = false;
-                    btn.textContent = 'আপলোড করুন';
-                },
-                () => {
-                    uploadTask.snapshot.ref.getDownloadURL().then(url => {
-                        db.collection('videos').add({
-                            videoUrl: url,
-                            videoURL: url,
-                            caption: caption,
-                            username: user.displayName || 'user',
-                            uid: user.uid,
-                            likes: 0,
-                            comments: 0,
-                            saves: 0,
-                            createdAt: Date.now()
-                        }).then(() => {
-                            progress.textContent = '✅ আপলোড সম্পন্ন!';
-                            setTimeout(() => location.href = '../../index.html', 1200);
-                        });
-                    });
-                }
-            );
+                const fileName = `\( {Date.now()}_ \){file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+                const storageRef = storage.ref(`videos/\( {user.uid}/ \){fileName}`);
+
+                const metadata = {
+                    contentType: file.type || 'video/mp4',
+                    customMetadata: { uploadedBy: user.uid }
+                };
+
+                const uploadTask = storageRef.put(file, metadata);
+
+                uploadTask.on('state_changed',
+                    (snap) => {
+                        const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+                        progressBar.style.width = pct + '%';
+                        progressText.textContent = `আপলোড: ${pct}%`;
+                    },
+                    (err) => {
+                        console.error('Upload error:', err);
+                        let msg = 'আপলোড ব্যর্থ। ';
+                        if (err.code === 'storage/unauthorized') {
+                            msg += 'Firebase Storage Rules অনুমতি দিচ্ছে না। Console → Storage → Rules চেক করুন।';
+                        } else if (err.code === 'storage/canceled') {
+                            msg += 'বাতিল করা হয়েছে।';
+                        } else if (err.code === 'storage/retry-limit-exceeded') {
+                            msg += 'নেটওয়ার্ক সমস্যা। আবার চেষ্টা করুন।';
+                        } else {
+                            msg += (err.message || err.code || 'অজানা সমস্যা');
+                        }
+                        showError(msg);
+                        btn.disabled = false;
+                        btn.textContent = 'আপলোড করুন';
+                        progressWrap.style.display = 'none';
+                    },
+                    async () => {
+                        try {
+                            progressText.textContent = 'লিংক নেওয়া হচ্ছে...';
+                            const url = await uploadTask.snapshot.ref.getDownloadURL();
+
+                            progressText.textContent = 'ডাটাবেসে সেভ হচ্ছে...';
+                            await db.collection('videos').add({
+                                videoUrl: url,
+                                videoURL: url,
+                                caption: caption,
+                                username: user.displayName || 'user',
+                                uid: user.uid,
+                                likes: 0,
+                                comments: 0,
+                                saves: 0,
+                                createdAt: Date.now()
+                            });
+
+                            progressBar.style.width = '100%';
+                            progressText.textContent = '✅ আপলোড সম্পন্ন!';
+                            setTimeout(() => location.href = '../../index.html', 1000);
+                        } catch (e) {
+                            console.error(e);
+                            showError('ভিডিও আপলোড হয়েছে কিন্তু ডাটাবেসে সেভ হয়নি: ' + e.message);
+                            btn.disabled = false;
+                            btn.textContent = 'আপলোড করুন';
+                        }
+                    }
+                );
+            } catch (e) {
+                console.error(e);
+                showError('সমস্যা: ' + (e.message || e));
+                btn.disabled = false;
+                btn.textContent = 'আপলোড করুন';
+                progressWrap.style.display = 'none';
+            }
         });
     </script>
 </body>
