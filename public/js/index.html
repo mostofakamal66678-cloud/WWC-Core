@@ -10,14 +10,28 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- CSS -->
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-    <!-- ভিডিও ফিড (টিকটক স্টাইল) -->
+    <!-- টপ বার (Search + Following + For You) -->
+    <div class="top-bar">
+        <button class="search-btn" id="search-btn">
+            <i class="fas fa-search"></i>
+        </button>
+
+        <div class="top-tabs">
+            <button class="tab-btn" data-tab="following">Following</button>
+            <button class="tab-btn active" data-tab="foryou">For You</button>
+        </div>
+
+        <div class="top-right-space"></div>
+    </div>
+
+    <!-- ভিডিও ফিড -->
     <div id="video-feed" class="video-feed"></div>
 
-    <!-- কমেন্ট বটম শিট -->
+    <!-- কমেন্ট শিট -->
     <div id="comment-modal" class="comment-sheet">
         <div class="comment-header">
             <div class="handle"></div>
@@ -31,24 +45,24 @@
         </div>
     </div>
 
-    <!-- বটম নেভবার (টিকটক স্টাইল) -->
+    <!-- বটম নেভবার -->
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item active">
             <i class="fas fa-home"></i>
             <span>হোম</span>
         </a>
-        <a href="friends.html" class="nav-item">
+        <a href="public/js/friends.html" class="nav-item">
             <i class="fas fa-users"></i>
             <span>বন্ধু</span>
         </a>
-        <a href="upload.html" class="nav-item upload-btn">
+        <a href="public/js/upload.html" class="nav-item upload-btn">
             <i class="fas fa-plus"></i>
         </a>
-        <a href="inbox.html" class="nav-item">
+        <a href="public/js/inbox.html" class="nav-item">
             <i class="fas fa-message"></i>
             <span>ইনবক্স</span>
         </a>
-        <a href="profile.html" class="nav-item">
+        <a href="public/js/profile.html" class="nav-item">
             <i class="fas fa-user"></i>
             <span>প্রোফাইল</span>
         </a>
@@ -60,8 +74,9 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     
-    <script src="firebase-config.js"></script>
-    <script src="app.js"></script>
+    <!-- Config & App -->
+    <script src="public/js/firebase-config.js"></script>
+    <script src="public/js/app.js"></script>
 
 </body>
 </html>
