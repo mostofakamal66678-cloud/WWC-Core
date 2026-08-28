@@ -19,6 +19,7 @@
         .preview-box .placeholder { text-align:center; color:#666; }
         .preview-box .placeholder i { font-size:40px; margin-bottom:10px; display:block; }
         .preview-box input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+        .thumbnail-preview { width:100%; max-width:200px; border-radius:8px; margin:10px auto; display:none; }
         .field { margin-bottom:16px; }
         .field label { display:block; font-size:13px; color:#888; margin-bottom:6px; }
         .field textarea { width:100%; background:#1a1a1a; border:1px solid #333; border-radius:10px; padding:12px 14px; color:#fff; font-size:15px; outline:none; min-height:80px; resize:vertical; }
@@ -39,12 +40,13 @@
 </head>
 <body>
     <div class="top">
-        <button onclick="location.href='../../index.html'"><i class="fas fa-times"></i></button>
+        <button onclick="location.href='../index.html'"><i class="fas fa-times"></i></button>
         <h1>নতুন ভিডিও</h1>
         <div style="width:24px"></div>
     </div>
 
     <div class="upload-area">
+        <!-- প্রিভিউ বক্স -->
         <div class="preview-box" id="preview-box">
             <div class="placeholder" id="placeholder">
                 <i class="fas fa-video"></i>
@@ -53,6 +55,10 @@
             <video id="preview-video" style="display:none" muted loop playsinline></video>
             <input type="file" id="videoFile" accept="video/*">
         </div>
+
+        <!-- থাম্বনেইল প্রিভিউ (নতুন যোগ করা) -->
+        <canvas id="thumbnail-canvas" style="display:none;"></canvas>
+        <img id="thumbnail-preview" class="thumbnail-preview" />
 
         <div class="field">
             <label>ক্যাপশন</label>
@@ -69,7 +75,7 @@
     </div>
 
     <nav class="bottom-nav">
-        <a href="../../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
+        <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
         <a href="friends.html" class="nav-item"><i class="fas fa-users"></i><span>বন্ধু</span></a>
         <a href="upload.html" class="nav-item upload-btn-nav"><i class="fas fa-plus"></i></a>
         <a href="inbox.html" class="nav-item"><i class="fas fa-message"></i><span>ইনবক্স</span></a>
@@ -81,6 +87,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     <script src="firebase-config.js"></script>
+
     <script>
         auth.onAuthStateChanged(user => {
             if (!user) location.href = 'login.html';
@@ -94,6 +101,23 @@
         const progressWrap = document.getElementById('progress-wrap');
         const progressBar = document.getElementById('progress-bar');
         const progressText = document.getElementById('progress-text');
+
+        // ========== থাম্বনেইল জেনারেট ==========
+        function generateThumbnail(file) {
+            const video = document.createElement('video');
+            const canvas = document.getElementById('thumbnail-canvas');
+            const ctx = canvas.getContext('2d');
+            const preview = document.getElementById('thumbnail-preview');
+            
+            video.src = URL.createObjectURL(file);
+            video.onloadeddata = () => {
+                canvas.width = 200;
+                canvas.height = 200 * (video.videoHeight / video.videoWidth);
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                preview.src = canvas.toDataURL('image/jpeg');
+                preview.style.display = 'block';
+            };
+        }
 
         function showError(msg) {
             errorBox.style.display = 'block';
@@ -113,6 +137,9 @@
                 fileInput.value = '';
                 return;
             }
+            // থাম্বনেইল জেনারেট
+            generateThumbnail(file);
+
             const url = URL.createObjectURL(file);
             previewVideo.src = url;
             previewVideo.style.display = 'block';
@@ -140,8 +167,8 @@
             try {
                 await user.getIdToken(true);
 
-                const fileName = `\( {Date.now()}_ \){file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-                const storageRef = storage.ref(`videos/\( {user.uid}/ \){fileName}`);
+                const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+                const storageRef = storage.ref(`videos/${user.uid}/${fileName}`);
 
                 const metadata = {
                     contentType: file.type || 'video/mp4',
@@ -178,10 +205,21 @@
                             progressText.textContent = 'লিংক নেওয়া হচ্ছে...';
                             const url = await uploadTask.snapshot.ref.getDownloadURL();
 
+                            // থাম্বনেইল আপলোড
+                            let thumbnailUrl = '';
+                            const preview = document.getElementById('thumbnail-preview');
+                            if (preview.src && preview.src.startsWith('data:image')) {
+                                const thumbBlob = await fetch(preview.src).then(r => r.blob());
+                                const thumbRef = storage.ref(`thumbnails/${user.uid}/${fileName}.jpg`);
+                                await thumbRef.put(thumbBlob);
+                                thumbnailUrl = await thumbRef.getDownloadURL();
+                            }
+
                             progressText.textContent = 'ডাটাবেসে সেভ হচ্ছে...';
                             await db.collection('videos').add({
                                 videoUrl: url,
                                 videoURL: url,
+                                thumbnailUrl: thumbnailUrl,
                                 caption: caption,
                                 username: user.displayName || 'user',
                                 uid: user.uid,
@@ -193,7 +231,7 @@
 
                             progressBar.style.width = '100%';
                             progressText.textContent = '✅ আপলোড সম্পন্ন!';
-                            setTimeout(() => location.href = '../../index.html', 1000);
+                            setTimeout(() => location.href = '../index.html', 1000);
                         } catch (e) {
                             console.error(e);
                             showError('ভিডিও আপলোড হয়েছে কিন্তু ডাটাবেসে সেভ হয়নি: ' + e.message);
