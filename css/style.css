@@ -1,218 +1,308 @@
+/* ===============================
+   WWC - TikTok Style CSS
+   =============================== */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-}
-body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background: #000;
-    color: #fff;
-    overflow: hidden;
-    height: 100vh;
-}
-/* নেভবার */
-.navbar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #111;
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-    border-top: 1px solid #333;
-    z-index: 99;
-}
-.navbar a {
-    color: #888;
-    font-size: 24px;
-    text-decoration: none;
-    transition: 0.3s;
-}
-.navbar a.active {
-    color: #fff;
-}
-.navbar a i {
-    display: block;
-    font-size: 26px;
-}
-.navbar a span {
-    font-size: 11px;
-    display: block;
-    margin-top: 2px;
+    -webkit-tap-highlight-color: transparent;
 }
 
-/* ফিড */
-#video-feed {
-    height: calc(100vh - 70px);
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: #000;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #fff;
+}
+
+/* ========== Video Feed ========== */
+.video-feed {
+    height: 100vh;
+    width: 100%;
     overflow-y: scroll;
     scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
 }
-#video-feed::-webkit-scrollbar {
-    display: none;
+
+.video-feed::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
 }
+
 .video-card {
-    height: calc(100vh - 70px);
-    scroll-snap-align: start;
     position: relative;
-    background: #111;
+    height: 100vh;
+    width: 100%;
+    scroll-snap-align: start;
+    background: #000;
+    overflow: hidden;
 }
+
 .video-card video {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    background: #111;
 }
+
+/* ========== Overlay ========== */
 .overlay {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 20px 16px 30px;
-    background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+    inset: 0;
+    pointer-events: none;
     display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 90px; /* navbar এর জন্য জায়গা */
 }
+
+/* বাম দিকের ইনফো */
 .left-info {
+    pointer-events: auto;
+    padding: 0 16px 20px 16px;
     max-width: 70%;
 }
-.left-info .username {
+
+.username {
     font-weight: 700;
-    font-size: 17px;
+    font-size: 16px;
+    margin-bottom: 6px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
 }
-.left-info .caption {
+
+.caption {
     font-size: 14px;
-    opacity: 0.9;
-    margin-top: 4px;
+    line-height: 1.4;
+    opacity: 0.95;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
+
+/* ========== রাইট সাইড অ্যাকশন বাটন ========== */
 .action-buttons {
+    position: absolute;
+    right: 12px;
+    bottom: 120px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 18px;
-}
-.action-buttons button {
-    background: none;
-    border: none;
-    color: #fff;
-    text-align: center;
-    cursor: pointer;
-    font-size: 12px;
-}
-.action-buttons button i {
-    font-size: 30px;
-    display: block;
-}
-.action-buttons button .count {
-    font-size: 12px;
-    margin-top: 2px;
-}
-.liked i {
-    color: #ff2d55;
+    gap: 22px;
+    pointer-events: auto;
 }
 
-/* কমেন্ট মডেল */
-#comment-modal {
-    display: none;
+.action-buttons button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.action-buttons button i {
+    font-size: 28px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    transition: transform 0.15s ease;
+}
+
+.action-buttons button:active i {
+    transform: scale(1.25);
+}
+
+.action-buttons .count {
+    font-size: 13px;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+}
+
+/* লাইক হলে লাল */
+.action-buttons button.liked i {
+    color: #fe2c55;
+}
+
+/* ========== বটম নেভবার ========== */
+.bottom-nav {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(0, 0, 0, 0.95);
-    padding: 20px;
-    border-radius: 20px 20px 0 0;
-    max-height: 60vh;
-    z-index: 999;
-}
-#comment-modal.active {
-    display: block;
-}
-#comment-modal .close {
-    float: right;
-    background: none;
-    border: none;
-    color: #fff;
-    font-size: 22px;
-}
-#comment-modal .comment-list {
-    max-height: 30vh;
-    overflow-y: auto;
-    margin: 10px 0;
-}
-#comment-modal .comment-item {
-    padding: 6px 0;
-    border-bottom: 1px solid #333;
-}
-#comment-modal .comment-item strong {
-    color: #1da1f2;
-}
-.comment-input-area {
+    height: 60px;
+    background: #000;
     display: flex;
-    gap: 8px;
-    margin-top: 10px;
-}
-.comment-input-area input {
-    flex: 1;
-    padding: 10px 14px;
-    border-radius: 30px;
-    border: none;
-    background: #222;
-    color: #fff;
-}
-.comment-input-area button {
-    background: #1da1f2;
-    border: none;
-    border-radius: 30px;
-    padding: 0 20px;
-    color: #fff;
-    font-weight: 700;
+    justify-content: space-around;
+    align-items: center;
+    border-top: 1px solid #222;
+    z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* লগইন/আপলোড/প্রোফাইল পেজ */
-.auth-container,
-.upload-container,
-.profile-container {
-    padding: 30px 20px;
-    max-width: 400px;
-    margin: 80px auto 0;
+.nav-item {
+    color: #888;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 11px;
+    gap: 3px;
+    flex: 1;
 }
-.auth-container input,
-.upload-container input,
-.upload-container textarea {
-    width: 100%;
-    padding: 14px;
-    margin: 8px 0;
-    border-radius: 30px;
-    border: none;
-    background: #222;
+
+.nav-item i {
+    font-size: 22px;
+}
+
+.nav-item.active {
     color: #fff;
-    font-size: 16px;
 }
-.auth-container button,
-.upload-container button {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 30px;
-    background: #1da1f2;
-    color: #fff;
-    font-size: 18px;
-    font-weight: 700;
-    margin-top: 10px;
-}
-.profile-container .avatar-big {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background: #555;
-    margin: 0 auto 20px;
+
+.nav-item.upload-btn {
+    background: linear-gradient(45deg, #fe2c55, #25f4ee);
+    width: 48px;
+    height: 32px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
+    color: #000;
+    flex: 0 0 auto;
+    margin: 0 6px;
 }
-.profile-container .stats {
+
+.nav-item.upload-btn i {
+    font-size: 20px;
+    color: #000;
+}
+
+/* ========== কমেন্ট শিট (টিকটক স্টাইল) ========== */
+.comment-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 65vh;
+    background: #1a1a1a;
+    border-radius: 16px 16px 0 0;
+    z-index: 200;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
-    justify-content: space-around;
-    margin: 20px 0;
+    flex-direction: column;
+}
+
+.comment-sheet.active {
+    transform: translateY(0);
+}
+
+.comment-header {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-bottom: 1px solid #333;
+}
+
+.comment-header .handle {
+    width: 40px;
+    height: 4px;
+    background: #555;
+    border-radius: 2px;
+    position: absolute;
+    top: 8px;
+}
+
+.comment-header h3 {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.comment-header button {
+    position: absolute;
+    right: 16px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.comment-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 16px;
+}
+
+.comment-item {
+    margin-bottom: 14px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.comment-item strong {
+    margin-right: 6px;
+    color: #25f4ee;
+}
+
+.comment-input-box {
+    display: flex;
+    padding: 10px 12px;
+    gap: 10px;
+    border-top: 1px solid #333;
+    background: #111;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+}
+
+.comment-input-box input {
+    flex: 1;
+    background: #2a2a2a;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 16px;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+}
+
+.comment-input-box button {
+    background: #fe2c55;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ========== লোডিং ========== */
+.loading {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 15px;
+}
+
+/* ছোট স্ক্রিন অ্যাডজাস্টমেন্ট */
+@media (max-width: 400px) {
+    .action-buttons {
+        right: 8px;
+        gap: 18px;
+    }
+    .action-buttons button i {
+        font-size: 26px;
+    }
 }
