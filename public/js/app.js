@@ -1,5 +1,5 @@
 // ========================================
-// WWC - ভিডিও ফিড (ডান পাশের বাটন সহ)
+// WWC - ফিড লোডার (ডান পাশের বাটন সহ)
 // ========================================
 
 let currentUser = null;
@@ -10,7 +10,6 @@ auth.onAuthStateChanged(user => {
         return;
     }
     currentUser = user;
-    console.log('✅ লগইন:', user.uid);
     loadFeed();
 });
 
@@ -24,7 +23,6 @@ function loadFeed() {
         .orderBy('createdAt', 'desc')
         .get()
         .then(snapshot => {
-            console.log('📹 ভিডিও পেয়েছি:', snapshot.size);
             if (snapshot.empty) {
                 feed.innerHTML = '<div style="text-align:center;color:#888;padding:40px;">🎬 কোনো ভিডিও নেই</div>';
                 return;
@@ -40,7 +38,7 @@ function loadFeed() {
                 card.className = 'video-card';
                 card.innerHTML = `
                     <video src="${src}" loop muted playsinline></video>
-                    <div class="video-overlay">
+                    <div class="overlay">
                         <div class="left-info">
                             <div class="username">@${data.username || 'user'}</div>
                             <div class="caption">${data.caption || ''}</div>
@@ -69,7 +67,6 @@ function loadFeed() {
             });
         })
         .catch(err => {
-            console.error('❌ এরর:', err);
             feed.innerHTML = `<div style="color:#f44336;padding:40px;">❌ ${err.message}</div>`;
         });
 }
@@ -81,8 +78,6 @@ function likeVideo(videoId) {
     ref.get().then(doc => {
         const likes = (doc.data().likes || 0) + 1;
         ref.update({ likes });
-        // UI আপডেট
-        document.querySelector(`#video-feed .video-card`)?.querySelector('.action-buttons button span')?.textContent = likes;
     });
 }
 
