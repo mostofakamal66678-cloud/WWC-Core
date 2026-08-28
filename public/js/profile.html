@@ -9,70 +9,275 @@
     <style>
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
         body { background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; min-height:100vh; padding-bottom:70px; }
-        .top { position:sticky; top:0; z-index:50; background:#000; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #222; }
+        
+        .top { 
+            position:sticky; top:0; z-index:50; 
+            background:#000; 
+            padding:12px 16px; 
+            display:flex; 
+            align-items:center; 
+            justify-content:space-between; 
+            border-bottom:1px solid #222; 
+        }
         .top h1 { font-size:17px; font-weight:700; }
-        .top button { background:none; border:none; color:#fff; font-size:18px; cursor:pointer; }
-        .profile-header { text-align:center; padding:24px 16px 16px; }
-        .avatar { width:96px; height:96px; border-radius:50%; background:linear-gradient(135deg,#fe2c55,#25f4ee); display:flex; align-items:center; justify-content:center; font-size:40px; font-weight:700; margin:0 auto 12px; color:#000; }
-        .username { font-size:18px; font-weight:700; margin-bottom:4px; }
-        .bio { color:#aaa; font-size:14px; margin-bottom:16px; }
-        .stats { display:flex; justify-content:center; gap:28px; margin-bottom:18px; }
-        .stats div { text-align:center; }
-        .stats strong { display:block; font-size:17px; }
-        .stats span { font-size:12px; color:#888; }
-        .btn-row { display:flex; gap:10px; justify-content:center; padding:0 20px; }
-        .btn { flex:1; max-width:160px; padding:10px; border:none; border-radius:8px; font-weight:600; font-size:14px; cursor:pointer; }
-        .btn-edit { background:#2a2a2a; color:#fff; }
-        .btn-logout { background:#fe2c55; color:#fff; }
-        .tabs { display:flex; border-bottom:1px solid #222; margin-top:20px; }
-        .tab { flex:1; text-align:center; padding:12px; color:#888; font-size:14px; cursor:pointer; border-bottom:2px solid transparent; }
-        .tab.active { color:#fff; border-bottom-color:#fff; }
-        .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; padding:2px; }
-        .grid-item { position:relative; aspect-ratio:9/16; background:#111; overflow:hidden; }
-        .grid-item video { width:100%; height:100%; object-fit:cover; display:block; }
-        .grid-item .views { position:absolute; bottom:6px; left:6px; font-size:12px; text-shadow:0 1px 2px #000; }
-        .empty { text-align:center; color:#666; padding:40px 20px; font-size:14px; }
-        .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:60px; background:#000; display:flex; justify-content:space-around; align-items:center; border-top:1px solid #222; z-index:100; padding-bottom:env(safe-area-inset-bottom); }
-        .nav-item { color:#888; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:11px; gap:3px; flex:1; }
-        .nav-item i { font-size:22px; }
-        .nav-item.active { color:#fff; }
-        .nav-item.upload-btn { background:linear-gradient(45deg,#fe2c55,#25f4ee); width:48px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#000; flex:0 0 auto; margin:0 6px; }
-        .nav-item.upload-btn i { font-size:20px; color:#000; }
+        .top .back-btn { 
+            background:none; border:none; color:#fff; 
+            font-size:20px; cursor:pointer; 
+        }
+        .top .settings-btn { 
+            background:none; border:none; color:#fff; 
+            font-size:18px; cursor:pointer; 
+        }
+
+        .profile-header {
+            padding: 20px 16px 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 1px solid #222;
+        }
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fe2c55, #25f4ee);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            font-weight: 700;
+            color: #000;
+            flex-shrink: 0;
+        }
+        .profile-stats {
+            flex: 1;
+            display: flex;
+            justify-content: space-around;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-item .num {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .stat-item .label {
+            font-size: 12px;
+            color: #888;
+            margin-top: 2px;
+        }
+
+        .profile-bio {
+            padding: 12px 16px 16px;
+            border-bottom: 1px solid #222;
+        }
+        .profile-bio .name {
+            font-size: 17px;
+            font-weight: 700;
+        }
+        .profile-bio .username {
+            font-size: 14px;
+            color: #888;
+            margin-top: 2px;
+        }
+        .profile-bio .bio {
+            font-size: 14px;
+            margin-top: 6px;
+            line-height: 1.4;
+            color: #ddd;
+        }
+
+        .profile-tabs {
+            display: flex;
+            border-bottom: 1px solid #222;
+        }
+        .profile-tabs .tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            color: #888;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        .profile-tabs .tab.active {
+            color: #fff;
+            border-bottom-color: #fe2c55;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+            padding: 3px;
+        }
+        .video-grid .grid-item {
+            aspect-ratio: 9 / 16;
+            background: #111;
+            overflow: hidden;
+            position: relative;
+            border-radius: 4px;
+        }
+        .video-grid .grid-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .video-grid .grid-item .overlay-icon {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            color: #fff;
+            font-size: 14px;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .empty-grid {
+            text-align: center;
+            color: #666;
+            padding: 60px 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .empty-grid i {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 16px;
+            opacity: 0.4;
+        }
+
+        .follow-btn {
+            padding: 8px 24px;
+            border: none;
+            border-radius: 6px;
+            background: #fe2c55;
+            color: #fff;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            margin: 8px 16px 0;
+        }
+        .follow-btn.following {
+            background: #2a2a2a;
+            color: #fff;
+        }
+
+        .logout-btn {
+            width: calc(100% - 32px);
+            margin: 16px;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #2a2a2a;
+            color: #fe2c55;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .logout-btn:hover {
+            background: #3a1a1a;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: #000;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #222;
+            z-index: 100;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .nav-item {
+            color: #888;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 11px;
+            gap: 3px;
+            flex: 1;
+        }
+        .nav-item i {
+            font-size: 22px;
+        }
+        .nav-item.active {
+            color: #fff;
+        }
+        .nav-item.upload-btn {
+            background: linear-gradient(45deg, #fe2c55, #25f4ee);
+            width: 48px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            flex: 0 0 auto;
+            margin: 0 6px;
+        }
+        .nav-item.upload-btn i {
+            font-size: 20px;
+            color: #000;
+        }
     </style>
 </head>
 <body>
+
     <div class="top">
-        <button onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+        <button class="back-btn" id="back-btn"><i class="fas fa-arrow-left"></i></button>
         <h1 id="page-title">প্রোফাইল</h1>
-        <button id="menu-btn"><i class="fas fa-bars"></i></button>
+        <button class="settings-btn" id="settings-btn"><i class="fas fa-gear"></i></button>
     </div>
 
     <div class="profile-header">
-        <div class="avatar" id="avatar">U</div>
-        <div class="username" id="username">@user</div>
-        <div class="bio" id="bio">WWC ইউজার</div>
-        <div class="stats">
-            <div><strong id="following-count">0</strong><span>Following</span></div>
-            <div><strong id="follower-count">0</strong><span>Followers</span></div>
-            <div><strong id="like-count">0</strong><span>Likes</span></div>
-        </div>
-        <div class="btn-row">
-            <button class="btn btn-edit" id="edit-btn">এডিট প্রোফাইল</button>
-            <button class="btn btn-logout" id="logout-btn">লগআউট</button>
+        <div class="profile-avatar" id="profile-avatar">U</div>
+        <div class="profile-stats">
+            <div class="stat-item">
+                <div class="num" id="video-count">0</div>
+                <div class="label">ভিডিও</div>
+            </div>
+            <div class="stat-item">
+                <div class="num" id="follower-count">0</div>
+                <div class="label">ফলোয়ার</div>
+            </div>
+            <div class="stat-item">
+                <div class="num" id="following-count">0</div>
+                <div class="label">ফলো করছেন</div>
+            </div>
         </div>
     </div>
 
-    <div class="tabs">
-        <div class="tab active" data-tab="videos"><i class="fas fa-th"></i></div>
-        <div class="tab" data-tab="liked"><i class="fas fa-heart"></i></div>
-        <div class="tab" data-tab="saved"><i class="fas fa-bookmark"></i></div>
+    <div class="profile-bio">
+        <div class="name" id="display-name">ইউজার</div>
+        <div class="username" id="username">@user</div>
+        <div class="bio" id="bio">হ্যালো, আমি WWC ব্যবহার করছি</div>
     </div>
-    <div class="grid" id="video-grid">
-        <div class="empty">লোড হচ্ছে...</div>
+
+    <button class="follow-btn" id="follow-btn" style="display:none;">ফলো</button>
+
+    <div class="profile-tabs">
+        <div class="tab active" data-tab="videos"><i class="fas fa-grid"></i> ভিডিও</div>
+        <div class="tab" data-tab="liked"><i class="fas fa-heart"></i> লাইক</div>
+        <div class="tab" data-tab="saved"><i class="fas fa-bookmark"></i> সেভ</div>
     </div>
+
+    <div id="content-area">
+        <div class="video-grid" id="video-grid"></div>
+    </div>
+
+    <button class="logout-btn" id="logout-btn" style="display:none;"><i class="fas fa-sign-out-alt"></i> লগআউট</button>
 
     <nav class="bottom-nav">
-        <a href="../../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
+        <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
         <a href="friends.html" class="nav-item"><i class="fas fa-users"></i><span>বন্ধু</span></a>
         <a href="upload.html" class="nav-item upload-btn"><i class="fas fa-plus"></i></a>
         <a href="inbox.html" class="nav-item"><i class="fas fa-message"></i><span>ইনবক্স</span></a>
@@ -82,107 +287,204 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     <script src="firebase-config.js"></script>
+
     <script>
         let currentUser = null;
+        let targetUserId = null; // অন্যের প্রোফাইল দেখতে
         let currentTab = 'videos';
 
         auth.onAuthStateChanged(user => {
-            if (!user) { window.location.href = 'login.html'; return; }
+            if (!user) {
+                location.href = 'login.html';
+                return;
+            }
             currentUser = user;
-            loadProfile(user);
-            loadVideos('videos');
+
+            // URL থেকে targetUserId নেওয়া
+            const params = new URLSearchParams(window.location.search);
+            targetUserId = params.get('uid') || currentUser.uid;
+
+            loadProfile(targetUserId);
         });
 
-        function loadProfile(user) {
-            const name = user.displayName || 'user';
-            document.getElementById('username').textContent = '@' + name;
-            document.getElementById('page-title').textContent = name;
-            document.getElementById('avatar').textContent = name[0].toUpperCase();
-
-            db.collection('follows').where('following', '==', user.uid).onSnapshot(s => {
-                document.getElementById('follower-count').textContent = s.size;
+        document.querySelectorAll('.profile-tabs .tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.profile-tabs .tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentTab = tab.dataset.tab;
+                loadContent(targetUserId, currentTab);
             });
-            db.collection('follows').where('follower', '==', user.uid).onSnapshot(s => {
-                document.getElementById('following-count').textContent = s.size;
-            });
-            db.collection('videos').where('uid', '==', user.uid).get().then(s => {
-                let totalLikes = 0;
-                s.forEach(d => { totalLikes += (d.data().likes || 0); });
-                document.getElementById('like-count').textContent = totalLikes;
-            });
-        }
+        });
 
-        function loadVideos(tab) {
-            const grid = document.getElementById('video-grid');
-            grid.innerHTML = '<div class="empty">লোড হচ্ছে...</div>';
-            currentTab = tab;
-
-            if (tab === 'videos') {
-                db.collection('videos').where('uid', '==', currentUser.uid).get()
-                    .then(snap => renderGrid(snap, grid));
-            } else if (tab === 'liked') {
-                db.collection('likes').where('userId', '==', currentUser.uid).get().then(async snap => {
-                    if (snap.empty) { grid.innerHTML = '<div class="empty">কোনো লাইক করা ভিডিও নেই</div>'; return; }
-                    grid.innerHTML = '';
-                    for (const doc of snap.docs) {
-                        const vid = await db.collection('videos').doc(doc.data().videoId).get();
-                        if (vid.exists) addGridItem(vid.id, vid.data(), grid);
-                    }
-                    if (!grid.children.length) grid.innerHTML = '<div class="empty">কোনো লাইক করা ভিডিও নেই</div>';
-                });
-            } else if (tab === 'saved') {
-                db.collection('saves').where('userId', '==', currentUser.uid).get().then(async snap => {
-                    if (snap.empty) { grid.innerHTML = '<div class="empty">কোনো সেভ করা ভিডিও নেই</div>'; return; }
-                    grid.innerHTML = '';
-                    for (const doc of snap.docs) {
-                        const vid = await db.collection('videos').doc(doc.data().videoId).get();
-                        if (vid.exists) addGridItem(vid.id, vid.data(), grid);
-                    }
-                    if (!grid.children.length) grid.innerHTML = '<div class="empty">কোনো সেভ করা ভিডিও নেই</div>';
-                });
+        document.getElementById('back-btn').addEventListener('click', () => {
+            if (targetUserId !== currentUser.uid) {
+                window.location.href = '../index.html';
+            } else {
+                window.location.href = '../index.html';
             }
-        }
+        });
 
-        function renderGrid(snap, grid) {
-            if (snap.empty) { grid.innerHTML = '<div class="empty">এখনো কোনো ভিডিও নেই<br>আপলোড করুন!</div>'; return; }
-            grid.innerHTML = '';
-            const docs = snap.docs.sort((a,b) => (b.data().createdAt||0) - (a.data().createdAt||0));
-            docs.forEach(doc => addGridItem(doc.id, doc.data(), grid));
-        }
-
-        function addGridItem(id, data, grid) {
-            const src = data.videoURL || data.videoUrl || '';
-            const el = document.createElement('div');
-            el.className = 'grid-item';
-            el.innerHTML = `<video src="${src}" muted loop playsinline preload="metadata"></video>
-                <div class="views"><i class="fas fa-play"></i> ${data.likes || 0}</div>`;
-            el.addEventListener('click', () => window.location.href = '../../index.html');
-            grid.appendChild(el);
-        }
-
-        document.querySelectorAll('.tab').forEach(t => {
-            t.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-                t.classList.add('active');
-                loadVideos(t.dataset.tab);
-            });
+        document.getElementById('settings-btn').addEventListener('click', () => {
+            alert('সেটিংস শীঘ্রই যোগ হবে!');
         });
 
         document.getElementById('logout-btn').addEventListener('click', () => {
-            if (confirm('লগআউট করবেন?')) auth.signOut().then(() => location.href = 'login.html');
+            auth.signOut().then(() => location.href = 'login.html');
         });
 
-        document.getElementById('edit-btn').addEventListener('click', () => {
-            const name = prompt('নতুন নাম:', currentUser.displayName || '');
-            if (name && name.trim()) {
-                currentUser.updateProfile({ displayName: name.trim() }).then(() => {
-                    loadProfile(currentUser);
-                    alert('আপডেট হয়েছে!');
-                });
+        async function loadProfile(uid) {
+            const isOwn = (uid === currentUser.uid);
+
+            // ইউজারের ডেটা বের করা
+            const userDoc = await db.collection('users').doc(uid).get();
+            let userData = userDoc.exists ? userDoc.data() : {};
+            
+            // যদি users কালেকশনে না থাকে, তাহলে videos থেকে নাম নেওয়া
+            if (!userData.username) {
+                const vids = await db.collection('videos').where('uid', '==', uid).limit(1).get();
+                if (!vids.empty) {
+                    const d = vids.docs[0].data();
+                    userData.username = d.username || d.name || 'user';
+                } else {
+                    userData.username = 'user';
+                }
             }
-        });
+
+            const displayName = userData.username || 'ইউজার';
+            const avatar = document.getElementById('profile-avatar');
+            const nameEl = document.getElementById('display-name');
+            const usernameEl = document.getElementById('username');
+            const bioEl = document.getElementById('bio');
+
+            avatar.textContent = displayName[0].toUpperCase();
+            nameEl.textContent = displayName;
+            usernameEl.textContent = `@${displayName}`;
+            bioEl.textContent = userData.bio || 'হ্যালো, আমি WWC ব্যবহার করছি';
+
+            document.getElementById('page-title').textContent = isOwn ? 'প্রোফাইল' : `@${displayName}`;
+
+            // ফলো বাটন (নিজের জন্য দেখাবে না)
+            const followBtn = document.getElementById('follow-btn');
+            if (!isOwn && uid) {
+                followBtn.style.display = 'block';
+                await updateFollowButton(uid, followBtn);
+                followBtn.addEventListener('click', () => toggleFollow(uid, followBtn));
+            } else {
+                followBtn.style.display = 'none';
+            }
+
+            // লগআউট বাটন (শুধু নিজের প্রোফাইলে)
+            document.getElementById('logout-btn').style.display = isOwn ? 'block' : 'none';
+
+            await loadStats(uid);
+            loadContent(uid, 'videos');
+        }
+
+        async function loadStats(uid) {
+            const vids = await db.collection('videos').where('uid', '==', uid).get();
+            document.getElementById('video-count').textContent = vids.size;
+
+            const followers = await db.collection('follows').where('following', '==', uid).get();
+            document.getElementById('follower-count').textContent = followers.size;
+
+            const following = await db.collection('follows').where('follower', '==', uid).get();
+            document.getElementById('following-count').textContent = following.size;
+        }
+
+        async function loadContent(uid, tab) {
+            const grid = document.getElementById('video-grid');
+            grid.innerHTML = '<div class="empty-grid"><i class="fas fa-spinner fa-spin"></i>লোড হচ্ছে...</div>';
+
+            let videos = [];
+
+            if (tab === 'videos') {
+                const snap = await db.collection('videos').where('uid', '==', uid).orderBy('createdAt', 'desc').get();
+                snap.forEach(doc => videos.push({ id: doc.id, ...doc.data() }));
+            } else if (tab === 'liked') {
+                const likes = await db.collection('likes').where('userId', '==', uid).get();
+                for (const l of likes.docs) {
+                    const videoId = l.data().videoId;
+                    if (videoId) {
+                        try {
+                            const v = await db.collection('videos').doc(videoId).get();
+                            if (v.exists) videos.push({ id: v.id, ...v.data() });
+                        } catch(e) {}
+                    }
+                }
+            } else if (tab === 'saved') {
+                const saves = await db.collection('saves').where('userId', '==', uid).get();
+                for (const s of saves.docs) {
+                    const videoId = s.data().videoId;
+                    if (videoId) {
+                        try {
+                            const v = await db.collection('videos').doc(videoId).get();
+                            if (v.exists) videos.push({ id: v.id, ...v.data() });
+                        } catch(e) {}
+                    }
+                }
+            }
+
+            if (!videos.length) {
+                grid.innerHTML = `<div class="empty-grid"><i class="fas fa-${tab === 'videos' ? 'video' : tab === 'liked' ? 'heart' : 'bookmark'}"></i>${tab === 'videos' ? 'কোনো ভিডিও নেই' : tab === 'liked' ? 'লাইক করা ভিডিও নেই' : 'সেভ করা ভিডিও নেই'}</div>`;
+                return;
+            }
+
+            grid.innerHTML = '';
+            videos.forEach(v => {
+                const item = document.createElement('div');
+                item.className = 'grid-item';
+                const src = v.videoURL || v.videoUrl || '';
+                item.innerHTML = `
+                    <video src="${src}" muted loop playsinline preload="metadata"></video>
+                    ${tab === 'liked' ? '<div class="overlay-icon"><i class="fas fa-heart" style="color:#fe2c55;"></i></div>' : ''}
+                    ${tab === 'saved' ? '<div class="overlay-icon"><i class="fas fa-bookmark" style="color:#facc15;"></i></div>' : ''}
+                `;
+                const vid = item.querySelector('video');
+                item.addEventListener('click', () => {
+                    if (vid.paused) vid.play();
+                    else vid.pause();
+                });
+                item.addEventListener('mouseenter', () => { vid.play(); });
+                item.addEventListener('mouseleave', () => { vid.pause(); });
+                grid.appendChild(item);
+            });
+        }
+
+        // ========== ফলো ফাংশন ==========
+        async function updateFollowButton(uid, btn) {
+            const followId = `${currentUser.uid}_${uid}`;
+            const doc = await db.collection('follows').doc(followId).get();
+            if (doc.exists) {
+                btn.textContent = 'ফলোয়িং';
+                btn.classList.add('following');
+            } else {
+                btn.textContent = 'ফলো';
+                btn.classList.remove('following');
+            }
+        }
+
+        async function toggleFollow(uid, btn) {
+            if (!currentUser || currentUser.uid === uid) return;
+            const followId = `${currentUser.uid}_${uid}`;
+            const ref = db.collection('follows').doc(followId);
+            try {
+                const doc = await ref.get();
+                if (doc.exists) {
+                    await ref.delete();
+                    btn.textContent = 'ফলো';
+                    btn.classList.remove('following');
+                } else {
+                    await ref.set({ follower: currentUser.uid, following: uid, createdAt: Date.now() });
+                    btn.textContent = 'ফলোয়িং';
+                    btn.classList.add('following');
+                }
+                // স্ট্যাটাস আপডেট
+                await loadStats(uid);
+            } catch(e) {
+                alert('ফলো করতে সমস্যা: ' + e.message);
+            }
+        }
     </script>
 </body>
 </html>
