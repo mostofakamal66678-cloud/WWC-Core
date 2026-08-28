@@ -1,26 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#000000">
     <title>আপলোড - WWC</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        body { background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; min-height:100vh; padding-bottom:70px; }
+        .top { position:sticky; top:0; z-index:50; background:#000; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #222; }
+        .top h1 { font-size:17px; font-weight:700; }
+        .top button { background:none; border:none; color:#fff; font-size:16px; cursor:pointer; }
+        .upload-area { padding:24px 16px; }
+        .preview-box { width:100%; max-width:280px; margin:0 auto 20px; aspect-ratio:9/16; background:#111; border-radius:12px; border:2px dashed #333; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; position:relative; cursor:pointer; }
+        .preview-box.has-video { border-style:solid; border-color:#25f4ee; }
+        .preview-box video { width:100%; height:100%; object-fit:cover; }
+        .preview-box .placeholder { text-align:center; color:#666; }
+        .preview-box .placeholder i { font-size:40px; margin-bottom:10px; display:block; }
+        .preview-box input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+        .field { margin-bottom:16px; }
+        .field label { display:block; font-size:13px; color:#888; margin-bottom:6px; }
+        .field textarea { width:100%; background:#1a1a1a; border:1px solid #333; border-radius:10px; padding:12px 14px; color:#fff; font-size:15px; outline:none; min-height:80px; resize:vertical; }
+        .upload-btn { width:100%; padding:14px; border:none; border-radius:10px; background:linear-gradient(45deg,#fe2c55,#25f4ee); color:#000; font-size:16px; font-weight:700; cursor:pointer; margin-top:8px; }
+        .upload-btn:disabled { opacity:0.5; cursor:not-allowed; }
+        .progress { margin-top:12px; text-align:center; color:#25f4ee; font-size:14px; }
+        .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:60px; background:#000; display:flex; justify-content:space-around; align-items:center; border-top:1px solid #222; z-index:100; padding-bottom:env(safe-area-inset-bottom); }
+        .nav-item { color:#888; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:11px; gap:3px; flex:1; }
+        .nav-item i { font-size:22px; }
+        .nav-item.active { color:#fff; }
+        .nav-item.upload-btn-nav { background:linear-gradient(45deg,#fe2c55,#25f4ee); width:48px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#000; flex:0 0 auto; margin:0 6px; }
+        .nav-item.upload-btn-nav i { font-size:20px; color:#000; }
+    </style>
 </head>
 <body>
-    <div class="upload-container">
-        <h2 style="text-align:center;">ভিডিও আপলোড</h2>
-        <input type="file" id="videoFile" accept="video/*" />
-        <input type="text" id="caption" placeholder="ক্যাপশন লিখুন..." />
-        <button id="upload-btn"><i class="fas fa-cloud-upload-alt"></i> আপলোড</button>
-        <div id="progress" style="margin-top:10px;color:#1da1f2;"></div>
+    <div class="top">
+        <button onclick="location.href='../../index.html'"><i class="fas fa-times"></i></button>
+        <h1>নতুন ভিডিও</h1>
+        <div style="width:24px"></div>
     </div>
 
-    <div class="navbar">
-        <a href="index.html"><i class="fas fa-home"></i><span>হোম</span></a>
-        <a href="upload.html" class="active"><i class="fas fa-plus-circle"></i><span>আপলোড</span></a>
-        <a href="profile.html"><i class="fas fa-user"></i><span>প্রোফাইল</span></a>
+    <div class="upload-area">
+        <div class="preview-box" id="preview-box">
+            <div class="placeholder" id="placeholder">
+                <i class="fas fa-video"></i>
+                ভিডিও সিলেক্ট করুন
+            </div>
+            <video id="preview-video" style="display:none" muted loop playsinline></video>
+            <input type="file" id="videoFile" accept="video/*">
+        </div>
+
+        <div class="field">
+            <label>ক্যাপশন</label>
+            <textarea id="caption" placeholder="ক্যাপশন লিখুন..."></textarea>
+        </div>
+
+        <button class="upload-btn" id="upload-btn">আপলোড করুন</button>
+        <div class="progress" id="progress"></div>
     </div>
+
+    <nav class="bottom-nav">
+        <a href="../../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
+        <a href="friends.html" class="nav-item"><i class="fas fa-users"></i><span>বন্ধু</span></a>
+        <a href="upload.html" class="nav-item upload-btn-nav"><i class="fas fa-plus"></i></a>
+        <a href="inbox.html" class="nav-item"><i class="fas fa-message"></i><span>ইনবক্স</span></a>
+        <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>প্রোফাইল</span></a>
+    </nav>
 
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
@@ -29,38 +74,65 @@
     <script src="firebase-config.js"></script>
     <script>
         auth.onAuthStateChanged(user => {
-            if (!user) window.location.href = 'login.html';
+            if (!user) location.href = 'login.html';
+        });
+
+        const fileInput = document.getElementById('videoFile');
+        const previewBox = document.getElementById('preview-box');
+        const previewVideo = document.getElementById('preview-video');
+        const placeholder = document.getElementById('placeholder');
+
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+            const url = URL.createObjectURL(file);
+            previewVideo.src = url;
+            previewVideo.style.display = 'block';
+            placeholder.style.display = 'none';
+            previewBox.classList.add('has-video');
+            previewVideo.play().catch(() => {});
         });
 
         document.getElementById('upload-btn').addEventListener('click', () => {
-            const file = document.getElementById('videoFile').files[0];
-            const caption = document.getElementById('caption').value;
+            const file = fileInput.files[0];
+            const caption = document.getElementById('caption').value.trim();
             const user = auth.currentUser;
             if (!file) return alert('ভিডিও সিলেক্ট করুন!');
+            if (!user) return alert('লগইন করুন');
 
-            const storageRef = storage.ref(`videos/${user.uid}/${Date.now()}_${file.name}`);
-            const uploadTask = storageRef.put(file);
+            const btn = document.getElementById('upload-btn');
             const progress = document.getElementById('progress');
+            btn.disabled = true;
+            btn.textContent = 'আপলোড হচ্ছে...';
+
+            const storageRef = storage.ref(`videos/\( {user.uid}/ \){Date.now()}_${file.name}`);
+            const uploadTask = storageRef.put(file);
 
             uploadTask.on('state_changed',
-                snapshot => {
-                    const pct = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    progress.textContent = `আপলোড: ${Math.round(pct)}%`;
+                snap => {
+                    const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+                    progress.textContent = `আপলোড: ${pct}%`;
                 },
-                err => alert(err.message),
+                err => {
+                    alert('সমস্যা: ' + err.message);
+                    btn.disabled = false;
+                    btn.textContent = 'আপলোড করুন';
+                },
                 () => {
                     uploadTask.snapshot.ref.getDownloadURL().then(url => {
                         db.collection('videos').add({
                             videoUrl: url,
+                            videoURL: url,
                             caption: caption,
-                            username: user.displayName || 'ইউজার',
+                            username: user.displayName || 'user',
                             uid: user.uid,
                             likes: 0,
                             comments: 0,
+                            saves: 0,
                             createdAt: Date.now()
                         }).then(() => {
                             progress.textContent = '✅ আপলোড সম্পন্ন!';
-                            setTimeout(() => window.location.href = 'index.html', 1500);
+                            setTimeout(() => location.href = '../../index.html', 1200);
                         });
                     });
                 }
