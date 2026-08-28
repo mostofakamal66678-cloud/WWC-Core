@@ -555,3 +555,24 @@ async function toggleFollow(targetUid, btn) {
         alert('ফলো করা যাচ্ছে না।\nসম্ভবত Firebase Rules-এ follows কালেকশন অনুমতি নেই।\n\nError: ' + (err.message || err));
     }
 }
+
+// ========== FCM টোকেন সংগ্রহ ও সেভ ==========
+// (এই কোডটি আপনার auth.onAuthStateChanged-এর ভিতরে যোগ করুন)
+if (user) {
+    // FCM টোকেন নেওয়া
+    try {
+        const messaging = firebase.messaging();
+        const token = await messaging.getToken({
+            vapidKey: "YOUR_VAPID_KEY" // Firebase Console → Project Settings → Cloud Messaging → VAPID Key
+        });
+        if (token) {
+            // টোকেন ইউজারের ডকুমেন্টে সেভ করুন
+            await db.collection('users').doc(user.uid).set({
+                fcmToken: token
+            }, { merge: true });
+            console.log('FCM টোকেন সেভ হয়েছে:', token);
+        }
+    } catch (error) {
+        console.error('FCM টোকেন নিতে সমস্যা:', error);
+    }
+}
