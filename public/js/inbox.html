@@ -9,31 +9,41 @@
     <style>
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
         body { background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; min-height:100vh; padding-bottom:70px; }
-        .top { position:sticky; top:0; z-index:50; background:#000; padding:12px 16px; border-bottom:1px solid #222; text-align:center; }
+        .top { position:sticky; top:0; z-index:50; background:#000; padding:12px 16px; border-bottom:1px solid #222; display:flex; align-items:center; justify-content:space-between; }
         .top h1 { font-size:18px; font-weight:700; }
-        .tabs { display:flex; border-bottom:1px solid #222; }
-        .tab { flex:1; text-align:center; padding:12px; color:#888; font-size:14px; font-weight:600; cursor:pointer; border-bottom:2px solid transparent; }
+        .top .mark-read { background:none; border:none; color:#25f4ee; font-size:14px; font-weight:600; cursor:pointer; }
+        .tabs { display:flex; border-bottom:1px solid #222; overflow-x:auto; }
+        .tab { flex:1; text-align:center; padding:12px; color:#888; font-size:14px; font-weight:600; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; min-width:60px; }
         .tab.active { color:#fff; border-bottom-color:#fe2c55; }
-        .notif { display:flex; align-items:center; padding:14px 16px; gap:12px; border-bottom:1px solid #111; }
+        .notif { display:flex; align-items:center; padding:14px 16px; gap:12px; border-bottom:1px solid #111; transition:background 0.2s; }
+        .notif:active { background:#1a1a1a; }
+        .notif.unread { background:#1a1a2a; border-left:3px solid #fe2c55; }
         .notif-icon { width:44px; height:44px; border-radius:50%; background:#1a1a1a; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
         .notif-icon.like { color:#fe2c55; }
         .notif-icon.follow { color:#25f4ee; }
         .notif-icon.comment { color:#facc15; }
-        .notif-body { flex:1; min-width:0; }
+        .notif-body { flex:1; min-width:0; cursor:pointer; }
+        .notif-body .username { font-weight:600; color:#25f4ee; }
         .notif-text { font-size:14px; line-height:1.4; }
         .notif-time { color:#666; font-size:12px; margin-top:3px; }
+        .notif-delete { background:none; border:none; color:#555; font-size:16px; cursor:pointer; padding:4px 8px; }
+        .notif-delete:active { color:#fe2c55; }
         .empty { text-align:center; color:#666; padding:60px 20px; font-size:14px; line-height:1.6; }
         .empty i { font-size:48px; margin-bottom:16px; display:block; opacity:0.4; }
         .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:60px; background:#000; display:flex; justify-content:space-around; align-items:center; border-top:1px solid #222; z-index:100; padding-bottom:env(safe-area-inset-bottom); }
-        .nav-item { color:#888; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:11px; gap:3px; flex:1; }
+        .nav-item { color:#888; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:11px; gap:3px; flex:1; position:relative; }
         .nav-item i { font-size:22px; }
         .nav-item.active { color:#fff; }
+        .nav-item .badge { position:absolute; top:-4px; right:-8px; background:#fe2c55; color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:10px; min-width:18px; text-align:center; }
         .nav-item.upload-btn { background:linear-gradient(45deg,#fe2c55,#25f4ee); width:48px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#000; flex:0 0 auto; margin:0 6px; }
         .nav-item.upload-btn i { font-size:20px; color:#000; }
     </style>
 </head>
 <body>
-    <div class="top"><h1>ইনবক্স</h1></div>
+    <div class="top">
+        <h1>ইনবক্স</h1>
+        <button class="mark-read" id="mark-read-btn"><i class="fas fa-check-double"></i> সব দেখেছি</button>
+    </div>
     <div class="tabs">
         <div class="tab active" data-tab="all">সব</div>
         <div class="tab" data-tab="likes">লাইক</div>
@@ -41,14 +51,18 @@
         <div class="tab" data-tab="comments">কমেন্ট</div>
     </div>
     <div id="notif-list">
-        <div class="empty"><i class="fas fa-bell"></i>এখনো কোনো নোটিফিকেশন নেই</div>
+        <div class="empty"><i class="fas fa-bell"></i>লোড হচ্ছে...</div>
     </div>
 
     <nav class="bottom-nav">
-        <a href="../../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
+        <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
         <a href="friends.html" class="nav-item"><i class="fas fa-users"></i><span>বন্ধু</span></a>
         <a href="upload.html" class="nav-item upload-btn"><i class="fas fa-plus"></i></a>
-        <a href="inbox.html" class="nav-item active"><i class="fas fa-message"></i><span>ইনবক্স</span></a>
+        <a href="inbox.html" class="nav-item active" id="inbox-nav">
+            <i class="fas fa-message"></i>
+            <span>ইনবক্স</span>
+            <span class="badge" id="unread-badge" style="display:none;">0</span>
+        </a>
         <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>প্রোফাইল</span></a>
     </nav>
 
@@ -56,104 +70,190 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="firebase-config.js"></script>
+
     <script>
         let currentUser = null;
+        let currentTab = 'all';
+        let allNotifications = [];
+        let unreadCount = 0;
 
         auth.onAuthStateChanged(user => {
             if (!user) { location.href = 'login.html'; return; }
             currentUser = user;
             loadNotifs('all');
+            listenForNewNotifications();
         });
 
         document.querySelectorAll('.tab').forEach(t => {
             t.addEventListener('click', () => {
                 document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
                 t.classList.add('active');
-                loadNotifs(t.dataset.tab);
+                currentTab = t.dataset.tab;
+                renderNotifs(currentTab);
             });
         });
 
+        document.getElementById('mark-read-btn').addEventListener('click', () => {
+            const unread = document.querySelectorAll('.notif.unread');
+            unread.forEach(el => {
+                el.classList.remove('unread');
+                const id = el.dataset.id;
+                if (id) {
+                    db.collection('notifications').doc(id).update({ read: true }).catch(() => {});
+                }
+            });
+            unreadCount = 0;
+            updateBadge();
+        });
+
+        function listenForNewNotifications() {
+            db.collection('notifications')
+                .where('userId', '==', currentUser.uid)
+                .orderBy('createdAt', 'desc')
+                .onSnapshot(snapshot => {
+                    snapshot.docChanges().forEach(change => {
+                        if (change.type === 'added') {
+                            const data = change.doc.data();
+                            // যদি ইউজার নিজে না করে
+                            if (data.fromUserId !== currentUser.uid) {
+                                const existing = allNotifications.find(n => n.id === change.doc.id);
+                                if (!existing) {
+                                    allNotifications.unshift({ id: change.doc.id, ...data });
+                                    if (!data.read) unreadCount++;
+                                    renderNotifs(currentTab);
+                                    updateBadge();
+                                }
+                            }
+                        }
+                    });
+                }, err => console.error('নোটিফিকেশন লিসেনার সমস্যা:', err));
+        }
+
         async function loadNotifs(tab) {
             const list = document.getElementById('notif-list');
-            list.innerHTML = '<div class="empty">লোড হচ্ছে...</div>';
-            const items = [];
+            list.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i>লোড হচ্ছে...</div>';
 
-            if (tab === 'all' || tab === 'follows') {
-                const follows = await db.collection('follows').where('following', '==', currentUser.uid).get();
-                follows.forEach(doc => {
-                    const d = doc.data();
-                    items.push({ type: 'follow', uid: d.follower, time: d.createdAt || 0 });
+            try {
+                const snap = await db.collection('notifications')
+                    .where('userId', '==', currentUser.uid)
+                    .orderBy('createdAt', 'desc')
+                    .limit(100)
+                    .get();
+
+                allNotifications = [];
+                unreadCount = 0;
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    allNotifications.push({ id: doc.id, ...data });
+                    if (!data.read) unreadCount++;
                 });
+
+                renderNotifs(tab);
+                updateBadge();
+
+            } catch (e) {
+                console.error('নোটিফিকেশন লোড সমস্যা:', e);
+                list.innerHTML = '<div class="empty"><i class="fas fa-exclamation-circle"></i>লোড করতে সমস্যা হয়েছে</div>';
             }
+        }
 
-            if (tab === 'all' || tab === 'likes') {
-                const myVids = await db.collection('videos').where('uid', '==', currentUser.uid).get();
-                for (const v of myVids.docs) {
-                    const likes = await db.collection('likes').where('videoId', '==', v.id).get();
-                    likes.forEach(doc => {
-                        const d = doc.data();
-                        if (d.userId !== currentUser.uid) {
-                            items.push({ type: 'like', uid: d.userId, videoId: v.id, time: d.createdAt || 0 });
-                        }
-                    });
-                }
-            }
+        function renderNotifs(tab) {
+            const list = document.getElementById('notif-list');
+            let filtered = allNotifications;
 
-            if (tab === 'all' || tab === 'comments') {
-                const myVids = await db.collection('videos').where('uid', '==', currentUser.uid).get();
-                for (const v of myVids.docs) {
-                    const comments = await db.collection('videos').doc(v.id).collection('comments').get();
-                    comments.forEach(doc => {
-                        const d = doc.data();
-                        if (d.uid !== currentUser.uid) {
-                            items.push({ type: 'comment', uid: d.uid, username: d.username, text: d.text, time: d.createdAt || 0 });
-                        }
-                    });
-                }
-            }
+            if (tab === 'likes') filtered = filtered.filter(n => n.type === 'like');
+            else if (tab === 'follows') filtered = filtered.filter(n => n.type === 'follow');
+            else if (tab === 'comments') filtered = filtered.filter(n => n.type === 'comment');
 
-            items.sort((a,b) => b.time - a.time);
-
-            if (!items.length) {
-                list.innerHTML = '<div class="empty"><i class="fas fa-bell"></i>এখনো কোনো নোটিফিকেশন নেই</div>';
+            if (!filtered.length) {
+                const icons = { all: 'bell', likes: 'heart', follows: 'user-plus', comments: 'comment' };
+                const msgs = { 
+                    all: 'এখনো কোনো নোটিফিকেশন নেই',
+                    likes: 'লাইক নোটিফিকেশন নেই',
+                    follows: 'ফলো নোটিফিকেশন নেই',
+                    comments: 'কমেন্ট নোটিফিকেশন নেই'
+                };
+                list.innerHTML = `<div class="empty"><i class="fas fa-${icons[tab] || 'bell'}"></i>${msgs[tab] || 'কোনো নোটিফিকেশন নেই'}</div>`;
                 return;
             }
 
             list.innerHTML = '';
-            for (const item of items.slice(0, 50)) {
-                const name = item.username || await getName(item.uid);
+            filtered.forEach(item => {
                 const el = document.createElement('div');
-                el.className = 'notif';
-                let icon = 'follow', text = '';
+                el.className = `notif${item.read ? '' : ' unread'}`;
+                el.dataset.id = item.id;
+
+                let iconClass = 'follow';
+                let icon = 'user-plus';
+                let text = `<span class="username">@${item.fromUsername || 'user'}</span> আপনাকে ফলো করেছে`;
+
                 if (item.type === 'like') {
-                    icon = 'like';
-                    text = `<strong>@${name}</strong> আপনার ভিডিও লাইক করেছে`;
+                    iconClass = 'like';
+                    icon = 'heart';
+                    text = `<span class="username">@${item.fromUsername || 'user'}</span> আপনার ভিডিও লাইক করেছে`;
                 } else if (item.type === 'follow') {
-                    icon = 'follow';
-                    text = `<strong>@${name}</strong> আপনাকে ফলো করেছে`;
-                } else {
+                    iconClass = 'follow';
+                    icon = 'user-plus';
+                    text = `<span class="username">@${item.fromUsername || 'user'}</span> আপনাকে ফলো করেছে`;
+                } else if (item.type === 'comment') {
+                    iconClass = 'comment';
                     icon = 'comment';
-                    text = `<strong>@${name}</strong> কমেন্ট করেছে: ${item.text || ''}`;
+                    text = `<span class="username">@${item.fromUsername || 'user'}</span> কমেন্ট করেছে: ${item.text || ''}`;
                 }
-                const timeStr = item.time ? timeAgo(item.time) : '';
+
+                const timeStr = item.createdAt ? timeAgo(item.createdAt) : '';
+
                 el.innerHTML = `
-                    <div class="notif-icon \( {icon}"><i class="fas fa- \){icon === 'like' ? 'heart' : icon === 'follow' ? 'user-plus' : 'comment'}"></i></div>
-                    <div class="notif-body">
+                    <div class="notif-icon ${iconClass}"><i class="fas fa-${icon}"></i></div>
+                    <div class="notif-body" data-uid="${item.fromUserId || ''}">
                         <div class="notif-text">${text}</div>
                         <div class="notif-time">${timeStr}</div>
                     </div>
+                    <button class="notif-delete" data-id="${item.id}"><i class="fas fa-times"></i></button>
                 `;
+
+                // ইউজারনেমে ক্লিক -> প্রোফাইল খোলা
+                const body = el.querySelector('.notif-body');
+                body.addEventListener('click', () => {
+                    const uid = body.dataset.uid;
+                    if (uid) {
+                        // আনরিড মার্ক করা
+                        if (!item.read) {
+                            db.collection('notifications').doc(item.id).update({ read: true }).catch(() => {});
+                            el.classList.remove('unread');
+                            unreadCount = Math.max(0, unreadCount - 1);
+                            updateBadge();
+                        }
+                        window.location.href = `profile.html?uid=${uid}`;
+                    }
+                });
+
+                // ডিলিট
+                const delBtn = el.querySelector('.notif-delete');
+                delBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (confirm('এই নোটিফিকেশন ডিলিট করবেন?')) {
+                        db.collection('notifications').doc(item.id).delete().catch(() => {});
+                        el.remove();
+                        if (!item.read) {
+                            unreadCount = Math.max(0, unreadCount - 1);
+                            updateBadge();
+                        }
+                    }
+                });
+
                 list.appendChild(el);
-            }
+            });
         }
 
-        async function getName(uid) {
-            if (!uid) return 'user';
-            try {
-                const vids = await db.collection('videos').where('uid', '==', uid).limit(1).get();
-                if (!vids.empty) return vids.docs[0].data().username || 'user';
-            } catch(e) {}
-            return 'user';
+        function updateBadge() {
+            const badge = document.getElementById('unread-badge');
+            if (unreadCount > 0) {
+                badge.style.display = 'inline';
+                badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+            } else {
+                badge.style.display = 'none';
+            }
         }
 
         function timeAgo(ts) {
