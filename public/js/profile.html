@@ -10,336 +10,98 @@
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
         body { background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; min-height:100vh; padding-bottom:70px; transition: background 0.3s, color 0.3s; }
         
-        .top { 
-            position:sticky; top:0; z-index:50; 
-            background:#000; 
-            padding:12px 16px; 
-            display:flex; 
-            align-items:center; 
-            justify-content:space-between; 
-            border-bottom:1px solid #222; 
-        }
+        .top { position:sticky; top:0; z-index:50; background:#000; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #222; }
         .top h1 { font-size:17px; font-weight:700; }
         .top .back-btn { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; }
         .top .settings-btn { background:none; border:none; color:#fff; font-size:18px; cursor:pointer; }
 
-        .profile-header {
-            padding: 20px 16px 16px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            border-bottom: 1px solid #222;
-        }
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #fe2c55, #25f4ee);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 34px;
-            font-weight: 700;
-            color: #000;
-            flex-shrink: 0;
-        }
-        .profile-stats {
-            flex: 1;
-            display: flex;
-            justify-content: space-around;
-        }
-        .stat-item { text-align: center; }
-        .stat-item .num { font-size: 20px; font-weight: 700; }
-        .stat-item .label { font-size: 12px; color: #888; margin-top: 2px; }
+        .profile-header { padding: 20px 16px 16px; display:flex; align-items:center; gap:16px; border-bottom:1px solid #222; }
+        .profile-avatar { width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg,#fe2c55,#25f4ee); display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:700; color:#000; flex-shrink:0; }
+        .profile-stats { flex:1; display:flex; justify-content:space-around; }
+        .stat-item { text-align:center; }
+        .stat-item .num { font-size:20px; font-weight:700; }
+        .stat-item .label { font-size:12px; color:#888; margin-top:2px; }
 
-        .profile-bio {
-            padding: 12px 16px 16px;
-            border-bottom: 1px solid #222;
-        }
-        .profile-bio .name { font-size: 17px; font-weight: 700; }
-        .profile-bio .username { font-size: 14px; color: #888; margin-top: 2px; }
-        .profile-bio .bio { font-size: 14px; margin-top: 6px; line-height: 1.4; color: #ddd; }
+        .profile-bio { padding:12px 16px 16px; border-bottom:1px solid #222; }
+        .profile-bio .name { font-size:17px; font-weight:700; }
+        .profile-bio .username { font-size:14px; color:#888; margin-top:2px; }
+        .profile-bio .bio { font-size:14px; margin-top:6px; line-height:1.4; color:#ddd; }
 
-        .follow-btn {
-            padding: 8px 24px;
-            border: none;
-            border-radius: 6px;
-            background: #fe2c55;
-            color: #fff;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            margin: 8px 16px 0;
-        }
-        .follow-btn.following { background: #2a2a2a; color: #fff; }
+        .follow-btn { padding:8px 24px; border:none; border-radius:6px; background:#fe2c55; color:#fff; font-weight:600; font-size:14px; cursor:pointer; margin:8px 16px 0; }
+        .follow-btn.following { background:#2a2a2a; color:#fff; }
 
-        .profile-tabs {
-            display: flex;
-            border-bottom: 1px solid #222;
-            margin-top: 8px;
-        }
-        .profile-tabs .tab {
-            flex: 1;
-            text-align: center;
-            padding: 12px;
-            color: #888;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-        }
-        .profile-tabs .tab.active { color: #fff; border-bottom-color: #fe2c55; }
+        .profile-tabs { display:flex; border-bottom:1px solid #222; margin-top:8px; }
+        .profile-tabs .tab { flex:1; text-align:center; padding:12px; color:#888; font-size:13px; font-weight:600; cursor:pointer; border-bottom:2px solid transparent; }
+        .profile-tabs .tab.active { color:#fff; border-bottom-color:#fe2c55; }
 
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 3px;
-            padding: 3px;
-        }
-        .video-grid .grid-item {
-            aspect-ratio: 9 / 16;
-            background: #111;
-            overflow: hidden;
-            position: relative;
-            border-radius: 4px;
-        }
-        .video-grid .grid-item video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .video-grid .grid-item .overlay-icon {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            color: #fff;
-            font-size: 14px;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.8);
-        }
+        .video-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; padding:3px; }
+        .video-grid .grid-item { aspect-ratio:9/16; background:#111; overflow:hidden; position:relative; border-radius:4px; }
+        .video-grid .grid-item video { width:100%; height:100%; object-fit:cover; }
+        .video-grid .grid-item .overlay-icon { position:absolute; top:8px; right:8px; color:#fff; font-size:14px; text-shadow:0 1px 4px rgba(0,0,0,0.8); }
+        .empty-grid { text-align:center; color:#666; padding:60px 20px; font-size:14px; line-height:1.6; }
+        .empty-grid i { font-size:48px; display:block; margin-bottom:16px; opacity:0.4; }
 
-        .empty-grid {
-            text-align: center;
-            color: #666;
-            padding: 60px 20px;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-        .empty-grid i { font-size: 48px; display: block; margin-bottom: 16px; opacity: 0.4; }
-
-        /* ===== সেটিংস মডাল - টিকটক স্টাইল ===== */
-        .settings-modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.6);
-            z-index: 200;
-            justify-content: flex-end;
-            align-items: flex-end;
-            backdrop-filter: blur(8px);
-            animation: fadeIn 0.25s ease;
-        }
-        .settings-modal.active { display: flex; }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-        .settings-box {
-            background: #1a1a1a;
-            border-radius: 20px 20px 0 0;
-            padding: 20px 16px 30px;
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-            animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-top: 1px solid #333;
-        }
-        .settings-box .settings-handle {
-            width: 40px;
-            height: 4px;
-            background: #555;
-            border-radius: 2px;
-            margin: 0 auto 16px;
-        }
-        .settings-box .settings-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 12px;
-            margin-bottom: 8px;
-        }
-        .settings-box .settings-header h3 { font-size: 18px; font-weight: 700; }
+        /* ===== সেটিংস মডাল ===== */
+        .settings-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; justify-content:flex-end; align-items:flex-end; backdrop-filter:blur(8px); animation:fadeIn 0.25s ease; }
+        .settings-modal.active { display:flex; }
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+        @keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+        .settings-box { background:#1a1a1a; border-radius:20px 20px 0 0; padding:20px 16px 30px; width:100%; max-width:500px; margin:0 auto; animation:slideUp 0.3s cubic-bezier(0.4,0,0.2,1); border-top:1px solid #333; }
+        .settings-box .settings-handle { width:40px; height:4px; background:#555; border-radius:2px; margin:0 auto 16px; }
+        .settings-box .settings-header { display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; margin-bottom:8px; }
+        .settings-box .settings-header h3 { font-size:18px; font-weight:700; }
         .settings-box .settings-header button { background:none; border:none; color:#888; font-size:22px; cursor:pointer; padding:4px 8px; }
-        .settings-box .settings-item {
-            padding: 14px 12px;
-            margin: 2px 0;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            cursor: pointer;
-            color: #ddd;
-            border-radius: 12px;
-            transition: background 0.15s ease;
-        }
-        .settings-box .settings-item:hover { background: #2a2a2a; }
-        .settings-box .settings-item:active { background: #333; transform: scale(0.98); }
-        .settings-box .settings-item i { font-size: 20px; width: 28px; color: #888; }
-        .settings-box .settings-item .arrow { margin-left: auto; color: #555; font-size: 14px; }
-        .settings-box .settings-item .badge {
-            background: #fe2c55;
-            color: #fff;
-            font-size: 11px;
-            padding: 2px 10px;
-            border-radius: 12px;
-            margin-left: auto;
-        }
-        .settings-box .logout-item {
-            color: #fe2c55;
-            border-top: 1px solid #333;
-            margin-top: 8px;
-            padding-top: 14px;
-        }
-        .settings-box .logout-item i { color: #fe2c55; }
-        .settings-box .logout-item .arrow { color: #fe2c55; }
+        .settings-box .settings-item { padding:14px 12px; margin:2px 0; display:flex; align-items:center; gap:14px; cursor:pointer; color:#ddd; border-radius:12px; transition:background 0.15s ease; }
+        .settings-box .settings-item:hover { background:#2a2a2a; }
+        .settings-box .settings-item:active { background:#333; transform:scale(0.98); }
+        .settings-box .settings-item i { font-size:20px; width:28px; color:#888; }
+        .settings-box .settings-item .arrow { margin-left:auto; color:#555; font-size:14px; }
+        .settings-box .settings-item .badge { background:#fe2c55; color:#fff; font-size:11px; padding:2px 10px; border-radius:12px; margin-left:auto; }
+        .settings-box .settings-item .toggle-track { width:44px; height:24px; background:#333; border-radius:12px; position:relative; margin-left:auto; transition:background 0.3s; }
+        .settings-box .settings-item .toggle-track .toggle-thumb { width:20px; height:20px; background:#fff; border-radius:50%; position:absolute; top:2px; left:2px; transition:transform 0.3s; }
+        .settings-box .settings-item .toggle-track.active { background:#fe2c55; }
+        .settings-box .settings-item .toggle-track.active .toggle-thumb { transform:translateX(20px); }
+        .settings-box .logout-item { color:#fe2c55; border-top:1px solid #333; margin-top:8px; padding-top:14px; }
+        .settings-box .logout-item i { color:#fe2c55; }
 
-        /* ===== টোস্ট নোটিফিকেশন ===== */
-        .toast {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #2a2a2a;
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            z-index: 300;
-            opacity: 0;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            pointer-events: none;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            border: 1px solid #333;
-            text-align: center;
-            max-width: 90%;
-        }
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
+        /* ===== টোস্ট ===== */
+        .toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#2a2a2a; color:#fff; padding:12px 24px; border-radius:12px; font-size:14px; z-index:300; opacity:0; transition:opacity 0.3s ease, transform 0.3s ease; pointer-events:none; box-shadow:0 4px 20px rgba(0,0,0,0.5); border:1px solid #333; text-align:center; max-width:90%; }
+        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
         /* ===== কনফর্ম ডায়ালগ ===== */
-        .confirm-dialog {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            z-index: 250;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(6px);
-        }
-        .confirm-dialog.active { display: flex; }
-        .confirm-box {
-            background: #1a1a1a;
-            border-radius: 16px;
-            padding: 24px 20px 20px;
-            width: 90%;
-            max-width: 340px;
-            border: 1px solid #333;
-            text-align: center;
-        }
-        .confirm-box .icon { font-size: 40px; color: #fe2c55; margin-bottom: 12px; }
-        .confirm-box h3 { font-size: 17px; margin-bottom: 8px; }
-        .confirm-box p { font-size: 14px; color: #aaa; margin-bottom: 20px; line-height: 1.5; }
-        .confirm-box .btn-group { display: flex; gap: 10px; }
-        .confirm-box .btn-group button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .confirm-box .btn-group .cancel-btn { background: #2a2a2a; color: #fff; }
-        .confirm-box .btn-group .confirm-btn { background: #fe2c55; color: #fff; }
+        .confirm-dialog { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:250; justify-content:center; align-items:center; backdrop-filter:blur(6px); }
+        .confirm-dialog.active { display:flex; }
+        .confirm-box { background:#1a1a1a; border-radius:16px; padding:24px 20px 20px; width:90%; max-width:340px; border:1px solid #333; text-align:center; }
+        .confirm-box .icon { font-size:40px; color:#fe2c55; margin-bottom:12px; }
+        .confirm-box h3 { font-size:17px; margin-bottom:8px; }
+        .confirm-box p { font-size:14px; color:#aaa; margin-bottom:20px; line-height:1.5; }
+        .confirm-box .btn-group { display:flex; gap:10px; }
+        .confirm-box .btn-group button { flex:1; padding:12px; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; }
+        .confirm-box .btn-group .cancel-btn { background:#2a2a2a; color:#fff; }
+        .confirm-box .btn-group .confirm-btn { background:#fe2c55; color:#fff; }
 
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: #000;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border-top: 1px solid #222;
-            z-index: 100;
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-        .nav-item {
-            color: #888;
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 11px;
-            gap: 3px;
-            flex: 1;
-        }
-        .nav-item i { font-size: 22px; }
-        .nav-item.active { color: #fff; }
-        .nav-item.upload-btn {
-            background: linear-gradient(45deg, #fe2c55, #25f4ee);
-            width: 48px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #000;
-            flex: 0 0 auto;
-            margin: 0 6px;
-        }
-        .nav-item.upload-btn i { font-size: 20px; color: #000; }
+        .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:60px; background:#000; display:flex; justify-content:space-around; align-items:center; border-top:1px solid #222; z-index:100; padding-bottom:env(safe-area-inset-bottom); }
+        .nav-item { color:#888; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:11px; gap:3px; flex:1; }
+        .nav-item i { font-size:22px; }
+        .nav-item.active { color:#fff; }
+        .nav-item.upload-btn { background:linear-gradient(45deg,#fe2c55,#25f4ee); width:48px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#000; flex:0 0 auto; margin:0 6px; }
+        .nav-item.upload-btn i { font-size:20px; color:#000; }
 
-        /* ডার্ক মোড ওভাররাইড */
-        body.light-mode {
-            background: #f5f5f5;
-            color: #1a1a1a;
-        }
-        body.light-mode .top,
-        body.light-mode .bottom-nav,
-        body.light-mode .profile-bio,
-        body.light-mode .profile-header,
-        body.light-mode .profile-tabs,
-        body.light-mode .settings-box {
-            background: #fff;
-            border-color: #e0e0e0;
-        }
-        body.light-mode .top h1,
-        body.light-mode .settings-box .settings-header h3,
-        body.light-mode .profile-bio .name,
-        body.light-mode .profile-tabs .tab.active { color: #1a1a1a; }
-        body.light-mode .stat-item .label,
-        body.light-mode .profile-bio .username,
-        body.light-mode .profile-tabs .tab { color: #888; }
-        body.light-mode .settings-box .settings-item { color: #333; }
-        body.light-mode .settings-box .settings-item:hover { background: #f0f0f0; }
-        body.light-mode .settings-box .logout-item { border-color: #e0e0e0; }
-        body.light-mode .settings-box .settings-handle { background: #ccc; }
+        /* লাইট মোড */
+        body.light-mode { background:#f5f5f5; color:#1a1a1a; }
+        body.light-mode .top, body.light-mode .bottom-nav, body.light-mode .profile-bio, body.light-mode .profile-header, body.light-mode .profile-tabs, body.light-mode .settings-box { background:#fff; border-color:#e0e0e0; }
+        body.light-mode .top h1, body.light-mode .settings-box .settings-header h3, body.light-mode .profile-bio .name, body.light-mode .profile-tabs .tab.active { color:#1a1a1a; }
+        body.light-mode .stat-item .label, body.light-mode .profile-bio .username, body.light-mode .profile-tabs .tab { color:#888; }
+        body.light-mode .settings-box .settings-item { color:#333; }
+        body.light-mode .settings-box .settings-item:hover { background:#f0f0f0; }
+        body.light-mode .settings-box .logout-item { border-color:#e0e0e0; }
+        body.light-mode .settings-box .settings-handle { background:#ccc; }
     </style>
 </head>
 <body>
 
-    <!-- টোস্ট মেসেজ -->
     <div class="toast" id="toast"></div>
 
-    <!-- কনফর্ম ডায়ালগ -->
     <div class="confirm-dialog" id="confirm-dialog">
         <div class="confirm-box">
             <div class="icon"><i class="fas fa-sign-out-alt"></i></div>
@@ -352,14 +114,12 @@
         </div>
     </div>
 
-    <!-- টপ বার -->
     <div class="top">
         <button class="back-btn" id="back-btn"><i class="fas fa-arrow-left"></i></button>
         <h1 id="page-title">প্রোফাইল</h1>
         <button class="settings-btn" id="settings-btn"><i class="fas fa-gear"></i></button>
     </div>
 
-    <!-- প্রোফাইল হেডার -->
     <div class="profile-header">
         <div class="profile-avatar" id="profile-avatar">U</div>
         <div class="profile-stats">
@@ -369,7 +129,6 @@
         </div>
     </div>
 
-    <!-- বায়ো -->
     <div class="profile-bio">
         <div class="name" id="display-name">ইউজার</div>
         <div class="username" id="username">@user</div>
@@ -378,7 +137,6 @@
 
     <button class="follow-btn" id="follow-btn" style="display:none;">ফলো</button>
 
-    <!-- ট্যাব -->
     <div class="profile-tabs">
         <div class="tab active" data-tab="videos"><i class="fas fa-grid"></i> ভিডিও</div>
         <div class="tab" data-tab="liked"><i class="fas fa-heart"></i> লাইক</div>
@@ -407,20 +165,19 @@
             <div class="settings-item" id="privacy">
                 <i class="fas fa-lock"></i>
                 <span>গ্রাইভেরিস</span>
-                <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+                <div class="toggle-track" id="privacy-toggle"><div class="toggle-thumb"></div></div>
             </div>
 
             <div class="settings-item" id="notifications">
                 <i class="fas fa-bell"></i>
                 <span>লাটিমিকেশন</span>
-                <span class="badge">3</span>
-                <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+                <div class="toggle-track active" id="notif-toggle"><div class="toggle-thumb"></div></div>
             </div>
 
             <div class="settings-item" id="dark-mode">
                 <i class="fas fa-moon"></i>
                 <span>ডাক মোড</span>
-                <span class="arrow"><i class="fas fa-chevron-right"></i></span>
+                <div class="toggle-track" id="dark-toggle"><div class="toggle-thumb"></div></div>
             </div>
 
             <div class="settings-item logout-item" id="logout-btn">
@@ -431,7 +188,6 @@
         </div>
     </div>
 
-    <!-- নেভবার -->
     <nav class="bottom-nav">
         <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
         <a href="friends.html" class="nav-item"><i class="fas fa-users"></i><span>বন্ধু</span></a>
@@ -449,15 +205,22 @@
         let currentUser = null;
         let targetUserId = null;
         let currentTab = 'videos';
-        let darkMode = false;
 
-        // ========== টোস্ট ফাংশন ==========
+        // ========== টোস্ট ==========
         function showToast(msg) {
             const toast = document.getElementById('toast');
             toast.textContent = msg;
             toast.classList.add('show');
             clearTimeout(toast._timer);
             toast._timer = setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // ========== টগল ফাংশন ==========
+        function toggleSwitch(el, onChange) {
+            el.addEventListener('click', () => {
+                el.classList.toggle('active');
+                onChange(el.classList.contains('active'));
+            });
         }
 
         auth.onAuthStateChanged(user => {
@@ -504,32 +267,35 @@
             }
         });
 
-        // ২. গ্রাইভেরিস
-        document.getElementById('privacy').addEventListener('click', () => {
-            modal.classList.remove('active');
-            showToast('🔒 প্রাইভেসি সেটিংস শীঘ্রই আসছে');
+        // ২. গ্রাইভেরিস (প্রাইভেসি)
+        const privacyToggle = document.getElementById('privacy-toggle');
+        toggleSwitch(privacyToggle, (isPrivate) => {
+            db.collection('users').doc(currentUser.uid).set({
+                isPrivate: isPrivate
+            }, { merge: true });
+            showToast(isPrivate ? '🔒 অ্যাকাউন্ট প্রাইভেট হয়েছে' : '🔓 অ্যাকাউন্ট পাবলিক হয়েছে');
         });
 
-        // ৩. লাটিমিকেশন
-        document.getElementById('notifications').addEventListener('click', () => {
-            modal.classList.remove('active');
-            showToast('🔔 নোটিফিকেশন সেটিংস শীঘ্রই আসছে');
+        // ৩. লাটিমিকেশন (নোটিফিকেশন)
+        const notifToggle = document.getElementById('notif-toggle');
+        toggleSwitch(notifToggle, (enabled) => {
+            db.collection('users').doc(currentUser.uid).set({
+                notificationsEnabled: enabled
+            }, { merge: true });
+            showToast(enabled ? '🔔 নোটিফিকেশন চালু হয়েছে' : '🔕 নোটিফিকেশন বন্ধ হয়েছে');
         });
 
         // ৪. ডাক মোড
-        document.getElementById('dark-mode').addEventListener('click', () => {
-            modal.classList.remove('active');
-            darkMode = !darkMode;
-            if (darkMode) {
-                document.body.classList.add('light-mode');
-                showToast('🌙 ডার্ক মোড বন্ধ হয়েছে');
-            } else {
-                document.body.classList.remove('light-mode');
-                showToast('🌙 ডার্ক মোড চালু হয়েছে');
-            }
+        const darkToggle = document.getElementById('dark-toggle');
+        toggleSwitch(darkToggle, (isLight) => {
+            document.body.classList.toggle('light-mode', isLight);
+            db.collection('users').doc(currentUser.uid).set({
+                darkMode: isLight
+            }, { merge: true });
+            showToast(isLight ? '🌙 ডার্ক মোড বন্ধ' : '🌙 ডার্ক মোড চালু');
         });
 
-        // ৫. লগজাউ - কনফর্ম ডায়ালগ
+        // ৫. লগজাউ
         document.getElementById('logout-btn').addEventListener('click', () => {
             modal.classList.remove('active');
             document.getElementById('confirm-dialog').classList.add('active');
@@ -568,6 +334,21 @@
             document.getElementById('username').textContent = `@${displayName}`;
             document.getElementById('bio').textContent = userData.bio || 'হ্যালো, আমি WWC ব্যবহার করছি';
             document.getElementById('page-title').textContent = isOwn ? 'প্রোফাইল' : `@${displayName}`;
+
+            // টগল স্টেট সেট করা
+            if (isOwn) {
+                if (userData.isPrivate) privacyToggle.classList.add('active');
+                else privacyToggle.classList.remove('active');
+                if (userData.notificationsEnabled !== false) notifToggle.classList.add('active');
+                else notifToggle.classList.remove('active');
+                if (userData.darkMode) {
+                    document.body.classList.add('light-mode');
+                    darkToggle.classList.add('active');
+                } else {
+                    document.body.classList.remove('light-mode');
+                    darkToggle.classList.remove('active');
+                }
+            }
 
             const followBtn = document.getElementById('follow-btn');
             if (!isOwn && uid) {
