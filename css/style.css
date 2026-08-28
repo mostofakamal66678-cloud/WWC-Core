@@ -1,5 +1,5 @@
 /* ===============================
-   WWC - TikTok Style CSS (Improved)
+   WWC - TikTok Style CSS (v3)
    =============================== */
 
 * {
@@ -168,7 +168,7 @@ html, body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 22px;
+    gap: 20px;
     pointer-events: auto;
     z-index: 20;
 }
@@ -188,7 +188,7 @@ html, body {
 .action-buttons button i {
     font-size: 28px;
     filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
-    transition: transform 0.15s ease;
+    transition: transform 0.15s ease, color 0.15s ease;
 }
 
 .action-buttons button:active i {
@@ -201,8 +201,14 @@ html, body {
     text-shadow: 0 1px 2px rgba(0,0,0,0.6);
 }
 
+/* লাইক = লাল হার্ট */
 .action-buttons button.liked i {
     color: #fe2c55;
+}
+
+/* সেভ = হলুদ বুকমার্ক */
+.action-buttons button.saved i {
+    color: #facc15;
 }
 
 /* ========== Bottom Nav ========== */
@@ -362,6 +368,128 @@ html, body {
     justify-content: center;
 }
 
+/* ========== Search Overlay ========== */
+.search-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.search-overlay.active {
+    transform: translateY(0);
+}
+
+.search-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    padding-top: calc(10px + env(safe-area-inset-top));
+    border-bottom: 1px solid #222;
+}
+
+.search-back {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.search-input-wrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: #1a1a1a;
+    border-radius: 20px;
+    padding: 8px 14px;
+    gap: 8px;
+}
+
+.search-input-wrap i {
+    color: #888;
+    font-size: 14px;
+}
+
+.search-input-wrap input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 15px;
+    outline: none;
+}
+
+.search-clear {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.search-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.search-hint {
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.suggestion-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #1a1a1a;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.suggestion-item:active {
+    opacity: 0.7;
+}
+
+.search-results {
+    margin-top: 10px;
+}
+
+.search-result-item {
+    padding: 14px 0;
+    border-bottom: 1px solid #1a1a1a;
+    cursor: pointer;
+}
+
+.result-user {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+
+.result-caption {
+    font-size: 13px;
+    color: #aaa;
+}
+
+.search-loading, .search-empty {
+    text-align: center;
+    color: #888;
+    padding: 40px 20px;
+    font-size: 14px;
+}
+
 /* ========== Loading ========== */
 .loading {
     height: 100vh;
@@ -376,11 +504,10 @@ html, body {
     line-height: 1.5;
 }
 
-/* ছোট স্ক্রিন */
 @media (max-width: 400px) {
     .action-buttons {
         right: 8px;
-        gap: 18px;
+        gap: 16px;
     }
     .action-buttons button i {
         font-size: 26px;
