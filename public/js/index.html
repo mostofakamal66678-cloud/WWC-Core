@@ -1,38 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>WWC - World Wide Connect</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <title>WWC</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <div id="video-feed"></div>
 
-    <!-- কমেন্ট মডেল -->
-    <div id="comment-modal">
-        <button class="close" id="close-comment"><i class="fas fa-times"></i></button>
-        <h3>মন্তব্য</h3>
-        <div class="comment-list" id="comment-list"></div>
-        <div class="comment-input-area">
-            <input type="text" id="comment-input" placeholder="মন্তব্য লিখুন..." />
+    <!-- ভিডিও ফিড (টিকটক স্টাইল) -->
+    <div id="video-feed" class="video-feed"></div>
+
+    <!-- কমেন্ট বটম শিট -->
+    <div id="comment-modal" class="comment-sheet">
+        <div class="comment-header">
+            <div class="handle"></div>
+            <h3>মন্তব্য</h3>
+            <button id="close-comment"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="comment-list" class="comment-list"></div>
+        <div class="comment-input-box">
+            <input type="text" id="comment-input" placeholder="মন্তব্য যোগ করুন..." autocomplete="off">
             <button id="comment-submit"><i class="fas fa-paper-plane"></i></button>
         </div>
     </div>
 
-    <!-- নেভবার -->
-    <div class="navbar">
-        <a href="index.html" class="active"><i class="fas fa-home"></i><span>হোম</span></a>
-        <a href="upload.html"><i class="fas fa-plus-circle"></i><span>আপলোড</span></a>
-        <a href="profile.html"><i class="fas fa-user"></i><span>প্রোফাইল</span></a>
-    </div>
+    <!-- বটম নেভবার (টিকটক স্টাইল) -->
+    <nav class="bottom-nav">
+        <a href="index.html" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>হোম</span>
+        </a>
+        <a href="friends.html" class="nav-item">
+            <i class="fas fa-users"></i>
+            <span>বন্ধু</span>
+        </a>
+        <a href="upload.html" class="nav-item upload-btn">
+            <i class="fas fa-plus"></i>
+        </a>
+        <a href="inbox.html" class="nav-item">
+            <i class="fas fa-message"></i>
+            <span>ইনবক্স</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>প্রোফাইল</span>
+        </a>
+    </nav>
 
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+    
     <script src="firebase-config.js"></script>
     <script src="app.js"></script>
+
 </body>
 </html>
