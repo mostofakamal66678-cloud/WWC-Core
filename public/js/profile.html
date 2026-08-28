@@ -20,14 +20,8 @@
             border-bottom:1px solid #222; 
         }
         .top h1 { font-size:17px; font-weight:700; }
-        .top .back-btn { 
-            background:none; border:none; color:#fff; 
-            font-size:20px; cursor:pointer; 
-        }
-        .top .settings-btn { 
-            background:none; border:none; color:#fff; 
-            font-size:18px; cursor:pointer; 
-        }
+        .top .back-btn { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; }
+        .top .settings-btn { background:none; border:none; color:#fff; font-size:18px; cursor:pointer; }
 
         .profile-header {
             padding: 20px 16px 16px;
@@ -54,38 +48,17 @@
             display: flex;
             justify-content: space-around;
         }
-        .stat-item {
-            text-align: center;
-        }
-        .stat-item .num {
-            font-size: 20px;
-            font-weight: 700;
-        }
-        .stat-item .label {
-            font-size: 12px;
-            color: #888;
-            margin-top: 2px;
-        }
+        .stat-item { text-align: center; }
+        .stat-item .num { font-size: 20px; font-weight: 700; }
+        .stat-item .label { font-size: 12px; color: #888; margin-top: 2px; }
 
         .profile-bio {
             padding: 12px 16px 16px;
             border-bottom: 1px solid #222;
         }
-        .profile-bio .name {
-            font-size: 17px;
-            font-weight: 700;
-        }
-        .profile-bio .username {
-            font-size: 14px;
-            color: #888;
-            margin-top: 2px;
-        }
-        .profile-bio .bio {
-            font-size: 14px;
-            margin-top: 6px;
-            line-height: 1.4;
-            color: #ddd;
-        }
+        .profile-bio .name { font-size: 17px; font-weight: 700; }
+        .profile-bio .username { font-size: 14px; color: #888; margin-top: 2px; }
+        .profile-bio .bio { font-size: 14px; margin-top: 6px; line-height: 1.4; color: #ddd; }
 
         .follow-btn {
             padding: 8px 24px;
@@ -98,10 +71,7 @@
             cursor: pointer;
             margin: 8px 16px 0;
         }
-        .follow-btn.following {
-            background: #2a2a2a;
-            color: #fff;
-        }
+        .follow-btn.following { background: #2a2a2a; color: #fff; }
 
         .profile-tabs {
             display: flex;
@@ -118,10 +88,7 @@
             cursor: pointer;
             border-bottom: 2px solid transparent;
         }
-        .profile-tabs .tab.active {
-            color: #fff;
-            border-bottom-color: #fe2c55;
-        }
+        .profile-tabs .tab.active { color: #fff; border-bottom-color: #fe2c55; }
 
         .video-grid {
             display: grid;
@@ -148,9 +115,6 @@
             color: #fff;
             font-size: 14px;
             text-shadow: 0 1px 4px rgba(0,0,0,0.8);
-            display: flex;
-            align-items: center;
-            gap: 4px;
         }
 
         .empty-grid {
@@ -160,12 +124,7 @@
             font-size: 14px;
             line-height: 1.6;
         }
-        .empty-grid i {
-            font-size: 48px;
-            display: block;
-            margin-bottom: 16px;
-            opacity: 0.4;
-        }
+        .empty-grid i { font-size: 48px; display: block; margin-bottom: 16px; opacity: 0.4; }
 
         /* ===== সেটিংস মডাল ===== */
         .settings-modal {
@@ -178,9 +137,7 @@
             align-items: center;
             backdrop-filter: blur(4px);
         }
-        .settings-modal.active {
-            display: flex;
-        }
+        .settings-modal.active { display: flex; }
         .settings-box {
             background: #1a1a1a;
             border-radius: 16px;
@@ -197,16 +154,8 @@
             padding-bottom: 12px;
             margin-bottom: 16px;
         }
-        .settings-box .settings-header h3 {
-            font-size: 18px;
-        }
-        .settings-box .settings-header button {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 20px;
-            cursor: pointer;
-        }
+        .settings-box .settings-header h3 { font-size: 18px; }
+        .settings-box .settings-header button { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; }
         .settings-box .settings-item {
             padding: 14px 0;
             border-bottom: 1px solid #222;
@@ -215,24 +164,18 @@
             gap: 12px;
             cursor: pointer;
             color: #ddd;
+            transition: background 0.2s;
         }
-        .settings-box .settings-item i {
-            font-size: 18px;
-            width: 28px;
-            color: #888;
-        }
-        .settings-box .settings-item:last-child {
-            border-bottom: none;
-        }
+        .settings-box .settings-item:hover { background: #252525; margin: 0 -10px; padding-left: 10px; padding-right: 10px; border-radius: 8px; }
+        .settings-box .settings-item i { font-size: 18px; width: 28px; color: #888; }
+        .settings-box .settings-item:last-child { border-bottom: none; }
         .settings-box .logout-item {
             color: #fe2c55;
             margin-top: 8px;
             border-top: 1px solid #333;
             padding-top: 14px;
         }
-        .settings-box .logout-item i {
-            color: #fe2c55;
-        }
+        .settings-box .logout-item i { color: #fe2c55; }
 
         .bottom-nav {
             position: fixed;
@@ -258,12 +201,8 @@
             gap: 3px;
             flex: 1;
         }
-        .nav-item i {
-            font-size: 22px;
-        }
-        .nav-item.active {
-            color: #fff;
-        }
+        .nav-item i { font-size: 22px; }
+        .nav-item.active { color: #fff; }
         .nav-item.upload-btn {
             background: linear-gradient(45deg, #fe2c55, #25f4ee);
             width: 48px;
@@ -276,10 +215,7 @@
             flex: 0 0 auto;
             margin: 0 6px;
         }
-        .nav-item.upload-btn i {
-            font-size: 20px;
-            color: #000;
-        }
+        .nav-item.upload-btn i { font-size: 20px; color: #000; }
     </style>
 </head>
 <body>
@@ -333,25 +269,35 @@
                 <h3><i class="fas fa-gear"></i> সেটিংস</h3>
                 <button id="close-settings"><i class="fas fa-times"></i></button>
             </div>
-            <div class="settings-item">
+
+            <!-- ১. প্রাথমিক এন্ডি (প্রোফাইল এডিট) -->
+            <div class="settings-item" id="edit-profile">
                 <i class="fas fa-user-edit"></i>
-                <span>প্রোফাইল এডিট</span>
+                <span>প্রাথমিক এন্ডি</span>
             </div>
-            <div class="settings-item">
+
+            <!-- ২. গ্রাইভেরিস (প্রাইভেসি) -->
+            <div class="settings-item" id="privacy">
                 <i class="fas fa-lock"></i>
-                <span>প্রাইভেসি</span>
+                <span>গ্রাইভেরিস</span>
             </div>
-            <div class="settings-item">
+
+            <!-- ৩. লাটিমিকেশন (নোটিফিকেশন) -->
+            <div class="settings-item" id="notifications">
                 <i class="fas fa-bell"></i>
-                <span>নোটিফিকেশন</span>
+                <span>লাটিমিকেশন</span>
             </div>
-            <div class="settings-item">
+
+            <!-- ৪. ডাক মোড (ডার্ক মোড) -->
+            <div class="settings-item" id="dark-mode">
                 <i class="fas fa-moon"></i>
-                <span>ডার্ক মোড</span>
+                <span>ডাক মোড</span>
             </div>
+
+            <!-- ৫. লগজাউ (লগআউট) -->
             <div class="settings-item logout-item" id="logout-btn">
                 <i class="fas fa-sign-out-alt"></i>
-                <span>লগআউট</span>
+                <span>লগজাউ</span>
             </div>
         </div>
     </div>
@@ -373,19 +319,17 @@
         let currentUser = null;
         let targetUserId = null;
         let currentTab = 'videos';
+        let darkMode = false;
 
         auth.onAuthStateChanged(user => {
-            if (!user) {
-                location.href = 'login.html';
-                return;
-            }
+            if (!user) { location.href = 'login.html'; return; }
             currentUser = user;
             const params = new URLSearchParams(window.location.search);
             targetUserId = params.get('uid') || currentUser.uid;
             loadProfile(targetUserId);
         });
 
-        // ট্যাব ইভেন্ট
+        // ট্যাব
         document.querySelectorAll('.profile-tabs .tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.profile-tabs .tab').forEach(t => t.classList.remove('active'));
@@ -395,29 +339,68 @@
             });
         });
 
-        // ব্যাক বাটন
-        document.getElementById('back-btn').addEventListener('click', () => {
-            window.location.href = '../index.html';
-        });
+        document.getElementById('back-btn').addEventListener('click', () => window.location.href = '../index.html');
 
-        // সেটিংস খোলা/বন্ধ
-        document.getElementById('settings-btn').addEventListener('click', () => {
-            document.getElementById('settings-modal').classList.add('active');
-        });
-        document.getElementById('close-settings').addEventListener('click', () => {
-            document.getElementById('settings-modal').classList.remove('active');
-        });
-        document.getElementById('settings-modal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) {
-                document.getElementById('settings-modal').classList.remove('active');
+        // ========== সেটিংস ==========
+        const modal = document.getElementById('settings-modal');
+
+        document.getElementById('settings-btn').addEventListener('click', () => modal.classList.add('active'));
+        document.getElementById('close-settings').addEventListener('click', () => modal.classList.remove('active'));
+        modal.addEventListener('click', (e) => { if (e.target === e.currentTarget) modal.classList.remove('active'); });
+
+        // ১. প্রাথমিক এন্ডি (প্রোফাইল এডিট)
+        document.getElementById('edit-profile').addEventListener('click', () => {
+            modal.classList.remove('active');
+            const newName = prompt('আপনার নতুন নাম লিখুন:', document.getElementById('display-name').textContent);
+            if (newName && newName.trim()) {
+                const name = newName.trim();
+                document.getElementById('display-name').textContent = name;
+                document.getElementById('username').textContent = `@${name}`;
+                document.getElementById('profile-avatar').textContent = name[0].toUpperCase();
+                // Firebase-এ সেভ
+                db.collection('users').doc(currentUser.uid).set({
+                    username: name,
+                    bio: document.getElementById('bio').textContent
+                }, { merge: true }).catch(err => console.error(err));
             }
         });
 
-        // লগআউট (সেটিংসের ভিতর)
+        // ২. গ্রাইভেরিস (প্রাইভেসি)
+        document.getElementById('privacy').addEventListener('click', () => {
+            modal.classList.remove('active');
+            alert('🔒 প্রাইভেসি সেটিংস\n\n• অ্যাকাউন্ট প্রাইভেট করুন\n• কে আপনার ভিডিও দেখতে পারবে\n• কমেন্ট কন্ট্রোল\n\n(শীঘ্রই যোগ হবে)');
+        });
+
+        // ৩. লাটিমিকেশন (নোটিফিকেশন)
+        document.getElementById('notifications').addEventListener('click', () => {
+            modal.classList.remove('active');
+            alert('🔔 নোটিফিকেশন সেটিংস\n\n• লাইক নোটিফিকেশন\n• কমেন্ট নোটিফিকেশন\n• ফলো নোটিফিকেশন\n• পুশ নোটিফিকেশন\n\n(শীঘ্রই যোগ হবে)');
+        });
+
+        // ৪. ডাক মোড (ডার্ক মোড)
+        document.getElementById('dark-mode').addEventListener('click', () => {
+            modal.classList.remove('active');
+            darkMode = !darkMode;
+            if (darkMode) {
+                document.body.style.background = '#fff';
+                document.body.style.color = '#000';
+                document.querySelectorAll('.settings-box, .top, .bottom-nav, .profile-tabs, .profile-bio, .profile-header')
+                    .forEach(el => { el.style.background = '#f5f5f5'; el.style.borderColor = '#ddd'; });
+                document.querySelectorAll('.stat-item .label, .profile-bio .username, .settings-item, .nav-item')
+                    .forEach(el => el.style.color = '#555');
+                alert('🌙 ডার্ক মোড চালু হয়েছে!\n(আবার ক্লিক করলে বন্ধ হবে)');
+            } else {
+                document.body.style.background = '#000';
+                document.body.style.color = '#fff';
+                location.reload(); // রিলোড দিয়ে সব ঠিক করা
+            }
+        });
+
+        // ৫. লগজাউ (লগআউট)
         document.getElementById('logout-btn').addEventListener('click', () => {
             if (confirm('আপনি কি লগআউট করতে চান?')) {
                 auth.signOut().then(() => {
-                    document.getElementById('settings-modal').classList.remove('active');
+                    modal.classList.remove('active');
                     window.location.href = 'login.html';
                 });
             }
@@ -426,8 +409,6 @@
         // ========== প্রোফাইল লোড ==========
         async function loadProfile(uid) {
             const isOwn = (uid === currentUser.uid);
-
-            // ইউজারের ডেটা বের করা
             let userData = {};
             try {
                 const userDoc = await db.collection('users').doc(uid).get();
@@ -437,15 +418,9 @@
             if (!userData.username) {
                 try {
                     const vids = await db.collection('videos').where('uid', '==', uid).limit(1).get();
-                    if (!vids.empty) {
-                        const d = vids.docs[0].data();
-                        userData.username = d.username || d.name || 'user';
-                    } else {
-                        userData.username = 'user';
-                    }
-                } catch(e) {
-                    userData.username = 'user';
-                }
+                    if (!vids.empty) userData.username = vids.docs[0].data().username || 'user';
+                    else userData.username = 'user';
+                } catch(e) { userData.username = 'user'; }
             }
 
             const displayName = userData.username || 'ইউজার';
@@ -455,7 +430,6 @@
             document.getElementById('bio').textContent = userData.bio || 'হ্যালো, আমি WWC ব্যবহার করছি';
             document.getElementById('page-title').textContent = isOwn ? 'প্রোফাইল' : `@${displayName}`;
 
-            // ফলো বাটন
             const followBtn = document.getElementById('follow-btn');
             if (!isOwn && uid) {
                 followBtn.style.display = 'block';
@@ -469,29 +443,21 @@
             await loadContent(uid, 'videos');
         }
 
-        // ========== স্ট্যাটাস ==========
         async function loadStats(uid) {
             try {
                 const vids = await db.collection('videos').where('uid', '==', uid).get();
                 document.getElementById('video-count').textContent = vids.size;
-
                 const followers = await db.collection('follows').where('following', '==', uid).get();
                 document.getElementById('follower-count').textContent = followers.size;
-
                 const following = await db.collection('follows').where('follower', '==', uid).get();
                 document.getElementById('following-count').textContent = following.size;
-            } catch(e) {
-                console.error('স্ট্যাটাস লোড সমস্যা:', e);
-            }
+            } catch(e) { console.error(e); }
         }
 
-        // ========== কন্টেন্ট লোড ==========
         async function loadContent(uid, tab) {
             const grid = document.getElementById('video-grid');
             grid.innerHTML = '<div class="empty-grid"><i class="fas fa-spinner fa-spin"></i>লোড হচ্ছে...</div>';
-
             let videos = [];
-
             try {
                 if (tab === 'videos') {
                     const snap = await db.collection('videos').where('uid', '==', uid).orderBy('createdAt', 'desc').get();
@@ -519,9 +485,7 @@
                         }
                     }
                 }
-            } catch(e) {
-                console.error('কন্টেন্ট লোড সমস্যা:', e);
-            }
+            } catch(e) { console.error(e); }
 
             if (!videos.length) {
                 const icons = { videos: 'video', liked: 'heart', saved: 'bookmark' };
@@ -541,31 +505,20 @@
                     ${tab === 'saved' ? '<div class="overlay-icon"><i class="fas fa-bookmark" style="color:#facc15;"></i></div>' : ''}
                 `;
                 const vid = item.querySelector('video');
-                item.addEventListener('click', () => {
-                    if (vid.paused) vid.play();
-                    else vid.pause();
-                });
+                item.addEventListener('click', () => { if (vid.paused) vid.play(); else vid.pause(); });
                 item.addEventListener('mouseenter', () => { vid.play(); });
                 item.addEventListener('mouseleave', () => { vid.pause(); });
                 grid.appendChild(item);
             });
         }
 
-        // ========== ফলো ফাংশন ==========
         async function updateFollowButton(uid, btn) {
             try {
                 const followId = `${currentUser.uid}_${uid}`;
                 const doc = await db.collection('follows').doc(followId).get();
-                if (doc.exists) {
-                    btn.textContent = 'ফলোয়িং';
-                    btn.classList.add('following');
-                } else {
-                    btn.textContent = 'ফলো';
-                    btn.classList.remove('following');
-                }
-            } catch(e) {
-                console.error('ফলো বাটন আপডেট সমস্যা:', e);
-            }
+                if (doc.exists) { btn.textContent = 'ফলোয়িং'; btn.classList.add('following'); }
+                else { btn.textContent = 'ফলো'; btn.classList.remove('following'); }
+            } catch(e) {}
         }
 
         async function toggleFollow(uid, btn) {
@@ -574,19 +527,10 @@
             const ref = db.collection('follows').doc(followId);
             try {
                 const doc = await ref.get();
-                if (doc.exists) {
-                    await ref.delete();
-                    btn.textContent = 'ফলো';
-                    btn.classList.remove('following');
-                } else {
-                    await ref.set({ follower: currentUser.uid, following: uid, createdAt: Date.now() });
-                    btn.textContent = 'ফলোয়িং';
-                    btn.classList.add('following');
-                }
+                if (doc.exists) { await ref.delete(); btn.textContent = 'ফলো'; btn.classList.remove('following'); }
+                else { await ref.set({ follower: currentUser.uid, following: uid, createdAt: Date.now() }); btn.textContent = 'ফলোয়িং'; btn.classList.add('following'); }
                 await loadStats(uid);
-            } catch(e) {
-                alert('ফলো করতে সমস্যা: ' + e.message);
-            }
+            } catch(e) { alert('ফলো সমস্যা: ' + e.message); }
         }
     </script>
 </body>
