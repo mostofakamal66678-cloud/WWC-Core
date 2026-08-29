@@ -19,10 +19,23 @@
         .top-bar h1 i { color:#25f4ee; }
         .top-bar button { background:none; border:none; color:#fff; font-size:20px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
 
+        /* Search bar */
+        .search-bar {
+            display:none; padding:10px 16px; background:#000; border-bottom:1px solid #1a1a1a;
+            position:sticky; top:57px; z-index:45;
+        }
+        .search-bar.open { display:block; }
+        .search-bar input {
+            width:100%; background:#1a1a1a; border:none; border-radius:20px;
+            padding:10px 16px; color:#fff; font-size:15px; outline:none;
+        }
+        .search-bar input::placeholder { color:#666; }
+
         .inbox-tabs {
             display:flex; border-bottom:1px solid #1a1a1a; background:#000;
             position:sticky; top:57px; z-index:40;
         }
+        .search-bar.open + .inbox-tabs { top:113px; }
         .inbox-tabs .tab {
             flex:1; padding:14px 0; text-align:center; font-size:14px; font-weight:600;
             color:#666; background:none; border:0; cursor:pointer; position:relative;
@@ -79,7 +92,12 @@
     <div class="top-bar">
         <button onclick="window.location.href='../index.html'"><i class="fas fa-arrow-left"></i></button>
         <h1><i class="fas fa-inbox"></i> ইনবক্স</h1>
-        <button><i class="fas fa-search"></i></button>
+        <button id="search-toggle"><i class="fas fa-search"></i></button>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar" id="search-bar">
+        <input type="text" id="search-input" placeholder="ইউজারনেম খুঁজুন..." autocomplete="off">
     </div>
 
     <div class="inbox-tabs">
@@ -113,6 +131,7 @@
         let currentUser = null;
         let currentFilter = 'all';
         let allNotifications = [];
+        let searchQuery = '';
 
         function timeAgo(timestamp) {
             if (!timestamp) return '';
@@ -125,6 +144,25 @@
             if (sec < 604800) return Math.floor(sec / 86400) + ' দিন আগে';
             return date.toLocaleDateString('bn-BD');
         }
+
+        // Search toggle
+        document.getElementById('search-toggle').addEventListener('click', function () {
+            const bar = document.getElementById('search-bar');
+            bar.classList.toggle('open');
+            if (bar.classList.contains('open')) {
+                document.getElementById('search-input').focus();
+            } else {
+                document.getElementById('search-input').value = '';
+                searchQuery = '';
+                renderNotifications();
+            }
+        });
+
+        // Search input
+        document.getElementById('search-input').addEventListener('input', function (e) {
+            searchQuery = e.target.value.trim().toLowerCase();
+            renderNotifications();
+        });
 
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
@@ -154,29 +192,27 @@
             `;
 
             try {
-                const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 7000));
-                const query = db.collection('notifications')
+                const snapshot = await db.collection('notifications')
                     .where('toUserId', '==', currentUser.uid)
+                    .orderBy('createdAt', 'desc')
+                    .limit(100)
                     .get();
 
-                const snap = await Promise.race([query, timeout]);
-
                 allNotifications = [];
-                snap.forEach(doc => {
+                snapshot.forEach(doc => {
                     allNotifications.push({ id: doc.id, ...doc.data() });
-                });
-
-                allNotifications.sort((a, b) => {
-                    const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt || 0);
-                    const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt || 0);
-                    return tb - ta;
                 });
 
                 renderNotifications();
             } catch (e) {
                 console.error(e);
-                allNotifications = [];
-                renderNotifications();
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-bell-slash"></i>
+                        <div class="title">কোনো নোটিফিকেশন নেই</div>
+                        <div class="subtitle">লাইক, কমেন্ট বা ফলো পেলে এখানে দেখাবে</div>
+                    </div>
+                `;
             }
         }
 
@@ -184,8 +220,16 @@
             const list = document.getElementById('notifications-list');
             let filtered = allNotifications;
 
+            // Filter by tab
             if (currentFilter !== 'all') {
-                filtered = allNotifications.filter(n => n.type === currentFilter);
+                filtered = filtered.filter(n => n.type === currentFilter);
+            }
+
+            // Filter by search
+            if (searchQuery) {
+                filtered = filtered.filter(n =>
+                    (n.fromUsername || '').toLowerCase().includes(searchQuery)
+                );
             }
 
             if (filtered.length === 0) {
@@ -193,7 +237,7 @@
                     <div class="empty-state">
                         <i class="fas fa-bell-slash"></i>
                         <div class="title">কোনো নোটিফিকেশন নেই</div>
-                        <div class="subtitle">লাইক, কমেন্ট বা ফলো পেলে এখানে দেখাবে</div>
+                        <div class="subtitle">${searchQuery ? 'খোঁজার ফলাফল নেই' : 'লাইক, কমেন্ট বা ফলো পেলে এখানে দেখাবে'}</div>
                     </div>
                 `;
                 return;
