@@ -1,34 +1,31 @@
 // ========================================
-// WWC - Complete Fixed App
-// All buttons working: Like, Comment, Save, Follow, Profile
+// WWC - SIMPLE WORKING APP
 // ========================================
 
-// ===== Firebase Config =====
-const firebaseConfig = {
-    apiKey: "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
-    authDomain: "world-wide-connect-62c87.firebaseapp.com",
-    projectId: "world-wide-connect-62c87",
-    storageBucket: "world-wide-connect-62c87.firebasestorage.app",
-    messagingSenderId: "93178453668",
-    appId: "1:93178453668:web:2184630caa8e61f7445031",
-    measurementId: "G-PKFJ5NEMGQ"
-};
+// Firebase ইতিমধ্যে firebase-config.js এ initialized আছে
+// তাই এখানে শুধু ব্যবহার করছি
 
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-const storage = firebase.storage();
+// ===== DOM REFS =====
+const feed = document.getElementById('video-feed');
+const searchBtn = document.getElementById('search-btn');
+const searchOverlay = document.getElementById('search-overlay');
+const searchBack = document.getElementById('search-back');
+const searchInput = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
+const commentModal = document.getElementById('comment-modal');
+const commentList = document.getElementById('comment-list');
+const commentInput = document.getElementById('comment-input');
+const commentSubmit = document.getElementById('comment-submit');
+const closeComment = document.getElementById('close-comment');
 
-// ===== Global State =====
+// ===== STATE =====
 let currentUser = null;
-let currentProfile = null;
 let allVideos = [];
 let likedVideos = new Set();
 let savedVideos = new Set();
 let followingUsers = new Set();
 let currentFeed = 'foryou';
 let currentVideoId = null;
-let isCommentOpen = false;
 
 // ========================================
 // AUTH
@@ -39,28 +36,11 @@ auth.onAuthStateChanged(async (user) => {
         return;
     }
     currentUser = user;
-    await loadUserProfile();
-    await loadUserInteractions();
+    await loadUserData();
     await loadVideos();
 });
 
-async function loadUserProfile() {
-    try {
-        const doc = await db.collection('users').doc(currentUser.uid).get();
-        currentProfile = doc.exists ? doc.data() : { followingIds: [], savedVideoIds: [] };
-        if (currentProfile.followingIds) {
-            followingUsers = new Set(currentProfile.followingIds);
-        }
-        if (currentProfile.savedVideoIds) {
-            savedVideos = new Set(currentProfile.savedVideoIds);
-        }
-    } catch (e) {
-        console.error('Profile load error:', e);
-        currentProfile = { followingIds: [], savedVideoIds: [] };
-    }
-}
-
-async function loadUserInteractions() {
+async function loadUserData() {
     try {
         // Load likes
         const likesSnap = await db.collection('likes').where('userId', '==', currentUser.uid).get();
@@ -69,8 +49,12 @@ async function loadUserInteractions() {
         // Load saves
         const savesSnap = await db.collection('saves').where('userId', '==', currentUser.uid).get();
         savesSnap.forEach(doc => savedVideos.add(doc.data().videoId));
+        
+        // Load following
+        const followsSnap = await db.collection('follows').where('follower', '==', currentUser.uid).get();
+        followsSnap.forEach(doc => followingUsers.add(doc.data().following));
     } catch (e) {
-        console.error('Interactions load error:', e);
+        console.error('User data load error:', e);
     }
 }
 
@@ -87,17 +71,16 @@ async function loadVideos() {
         allVideos = [];
         snapshot.forEach(doc => {
             const data = doc.data();
-            // Ensure uid field exists
+            // Make sure uid exists
             if (!data.uid) data.uid = data.userId || '';
             allVideos.push({ id: doc.id, ...data });
         });
 
+        console.log('✅ Videos loaded:', allVideos.length);
         renderFeed();
     } catch (e) {
         console.error('Video load error:', e);
-        document.getElementById('video-feed').innerHTML = `
-            <div class="feed-loading error">❌ ভিডিও লোড করা যায়নি</div>
-        `;
+        if (feed) feed.innerHTML = `<div class="feed-loading error">❌ ${e.message}</div>`;
     }
 }
 
@@ -105,7 +88,6 @@ async function loadVideos() {
 // RENDER FEED
 // ========================================
 function renderFeed() {
-    const feed = document.getElementById('video-feed');
     if (!feed) return;
 
     if (!allVideos.length) {
@@ -133,7 +115,7 @@ function renderFeed() {
 }
 
 // ========================================
-// ✅ CREATE VIDEO CARD - ALL BUTTONS WORKING
+// CREATE VIDEO CARD
 // ========================================
 function createVideoCard(video) {
     const card = document.createElement('div');
@@ -146,10 +128,9 @@ function createVideoCard(video) {
 
     const videoUrl = video.videoURL || video.downloadURL || '';
     const username = video.username || 'wwc_user';
-    const displayName = video.name || username;
     const photoUrl = video.photoURL || '';
     const caption = video.caption || '';
-    const sound = video.sound || '🎵 Original sound - WWC';
+    const sound = video.sound || '🎵 Original sound';
 
     card.innerHTML = `
         <video src="${videoUrl}" loop muted playsinline preload="metadata"></video>
@@ -157,7 +138,7 @@ function createVideoCard(video) {
 
         <div class="side-actions">
             <div class="profile-pic-wrap">
-                <img class="profile-pic" src="${photoUrl || './images/profile.png'}" alt="${displayName}" onerror="this.src='./images/profile.png'">
+                <img class="profile-pic" src="${photoUrl || './images/profile.png'}" onerror="this.src='./images/profile.png'">
                 ${video.uid && video.uid !== currentUser?.uid ? `
                     <button class="follow-btn ${isFollowing ? 'following' : ''}" data-uid="${video.uid}">${isFollowing ? '✓' : '+'}</button>
                 ` : ''}
@@ -202,7 +183,6 @@ function createVideoCard(video) {
     const videoEl = card.querySelector('video');
     const muteIndicator = card.querySelector('.mute-indicator');
 
-    // Click = mute toggle
     videoEl.addEventListener('click', (e) => {
         e.stopPropagation();
         videoEl.muted = !videoEl.muted;
@@ -211,38 +191,33 @@ function createVideoCard(video) {
         setTimeout(() => muteIndicator.classList.remove('show'), 800);
     });
 
-    // Double click = like
     videoEl.addEventListener('dblclick', (e) => {
         e.preventDefault();
         const likeBtn = card.querySelector('.like-btn');
         if (likeBtn) toggleLike(likeBtn);
     });
 
-    // ===== ✅ LIKE BUTTON =====
+    // ===== BUTTON EVENTS =====
     card.querySelector('.like-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         toggleLike(e.currentTarget);
     });
 
-    // ===== ✅ COMMENT BUTTON =====
     card.querySelector('.comment-btn').addEventListener('click', (e) => {
         e.stopPropagation();
-        openCommentModal(e.currentTarget.dataset.videoId);
+        openComment(e.currentTarget.dataset.videoId);
     });
 
-    // ===== ✅ SAVE BUTTON =====
     card.querySelector('.save-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         toggleSave(e.currentTarget);
     });
 
-    // ===== ✅ SHARE BUTTON =====
     card.querySelector('.share-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         shareVideo(e.currentTarget.dataset.videoId);
     });
 
-    // ===== ✅ FOLLOW BUTTON =====
     const followBtn = card.querySelector('.follow-btn');
     if (followBtn) {
         followBtn.addEventListener('click', (e) => {
@@ -251,36 +226,23 @@ function createVideoCard(video) {
         });
     }
 
-    // ===== ✅ PROFILE CLICK =====
+    // ===== PROFILE CLICK =====
     card.querySelector('.profile-pic').addEventListener('click', (e) => {
         e.stopPropagation();
-        const uid = e.target.closest('.profile-pic-wrap')?.querySelector('.follow-btn')?.dataset.uid || video.uid;
-        if (uid) goToProfile(uid);
+        if (video.uid) window.location.href = `profile.html?uid=${video.uid}`;
     });
 
     card.querySelector('.username').addEventListener('click', (e) => {
         e.stopPropagation();
         const uid = e.currentTarget.dataset.uid;
-        if (uid) goToProfile(uid);
-    });
-
-    card.querySelector('.music-disc').addEventListener('click', (e) => {
-        e.stopPropagation();
-        const uid = video.uid;
-        if (uid) goToProfile(uid);
-    });
-
-    card.querySelector('.music-info').addEventListener('click', (e) => {
-        e.stopPropagation();
-        const uid = video.uid;
-        if (uid) goToProfile(uid);
+        if (uid) window.location.href = `profile.html?uid=${uid}`;
     });
 
     return card;
 }
 
 // ========================================
-// ✅ LIKE - COMPLETE FIX
+// ✅ LIKE
 // ========================================
 async function toggleLike(btn) {
     if (!currentUser) { showToast('লগইন করুন'); return; }
@@ -290,18 +252,15 @@ async function toggleLike(btn) {
     const videoId = btn.dataset.videoId;
     const countSpan = btn.querySelector('.count');
     const isLiked = btn.classList.contains('liked');
-    const currentCount = parseInt(countSpan.dataset.raw) || parseInt(countSpan.textContent) || 0;
+    const currentCount = parseInt(countSpan.textContent) || 0;
 
-    // Optimistic update
     btn.classList.toggle('liked', !isLiked);
     const newCount = isLiked ? Math.max(0, currentCount - 1) : currentCount + 1;
     countSpan.textContent = formatNumber(newCount);
-    countSpan.dataset.raw = newCount;
 
     try {
         const videoRef = db.collection('videos').doc(videoId);
-        const likeId = `${currentUser.uid}_${videoId}`;
-        const likeRef = db.collection('likes').doc(likeId);
+        const likeRef = db.collection('likes').doc(`${currentUser.uid}_${videoId}`);
 
         if (isLiked) {
             await likeRef.delete();
@@ -313,18 +272,15 @@ async function toggleLike(btn) {
             likedVideos.add(videoId);
         }
     } catch (e) {
-        // Rollback on error
         btn.classList.toggle('liked', isLiked);
         countSpan.textContent = formatNumber(currentCount);
-        countSpan.dataset.raw = currentCount;
         console.error('Like error:', e);
-        showToast('❌ লাইক করতে ব্যর্থ হয়েছে');
     }
     btn.disabled = false;
 }
 
 // ========================================
-// ✅ SAVE - COMPLETE FIX
+// ✅ SAVE
 // ========================================
 async function toggleSave(btn) {
     if (!currentUser) { showToast('লগইন করুন'); return; }
@@ -334,56 +290,36 @@ async function toggleSave(btn) {
     const videoId = btn.dataset.videoId;
     const countSpan = btn.querySelector('.count');
     const isSaved = btn.classList.contains('saved');
-    const currentCount = parseInt(countSpan.dataset.raw) || parseInt(countSpan.textContent) || 0;
+    const currentCount = parseInt(countSpan.textContent) || 0;
 
-    // Optimistic update
     btn.classList.toggle('saved', !isSaved);
     const newCount = isSaved ? Math.max(0, currentCount - 1) : currentCount + 1;
     countSpan.textContent = formatNumber(newCount);
-    countSpan.dataset.raw = newCount;
 
     try {
         const videoRef = db.collection('videos').doc(videoId);
-        const userRef = db.collection('users').doc(currentUser.uid);
-        const saveId = `${currentUser.uid}_${videoId}`;
-        const saveRef = db.collection('saves').doc(saveId);
+        const saveRef = db.collection('saves').doc(`${currentUser.uid}_${videoId}`);
 
         if (isSaved) {
             await saveRef.delete();
             await videoRef.update({ saves: firebase.firestore.FieldValue.increment(-1) });
             savedVideos.delete(videoId);
-            // Update user profile
-            if (currentProfile?.savedVideoIds) {
-                currentProfile.savedVideoIds = currentProfile.savedVideoIds.filter(id => id !== videoId);
-                await userRef.update({ savedVideoIds: currentProfile.savedVideoIds });
-            }
         } else {
             await saveRef.set({ userId: currentUser.uid, videoId, createdAt: Date.now() });
             await videoRef.update({ saves: firebase.firestore.FieldValue.increment(1) });
             savedVideos.add(videoId);
-            // Update user profile
-            if (currentProfile) {
-                if (!currentProfile.savedVideoIds) currentProfile.savedVideoIds = [];
-                if (!currentProfile.savedVideoIds.includes(videoId)) {
-                    currentProfile.savedVideoIds.push(videoId);
-                    await userRef.update({ savedVideoIds: currentProfile.savedVideoIds });
-                }
-            }
+            showToast('🔖 ভিডিও সেভ করা হয়েছে');
         }
-        showToast(isSaved ? 'সেভ থেকে রিমুভ করা হয়েছে' : '🔖 ভিডিও সেভ করা হয়েছে');
     } catch (e) {
-        // Rollback
         btn.classList.toggle('saved', isSaved);
         countSpan.textContent = formatNumber(currentCount);
-        countSpan.dataset.raw = currentCount;
         console.error('Save error:', e);
-        showToast('❌ সেভ করতে ব্যর্থ হয়েছে');
     }
     btn.disabled = false;
 }
 
 // ========================================
-// ✅ FOLLOW - COMPLETE FIX
+// ✅ FOLLOW
 // ========================================
 async function toggleFollow(btn) {
     if (!currentUser) { showToast('লগইন করুন'); return; }
@@ -396,51 +332,20 @@ async function toggleFollow(btn) {
     const isFollowing = btn.classList.contains('following');
 
     try {
-        const myRef = db.collection('users').doc(currentUser.uid);
-        const targetRef = db.collection('users').doc(targetUid);
-        const followId = `${currentUser.uid}_${targetUid}`;
-        const followRef = db.collection('follows').doc(followId);
+        const followRef = db.collection('follows').doc(`${currentUser.uid}_${targetUid}`);
 
         if (isFollowing) {
-            // Unfollow
             await followRef.delete();
-            await myRef.update({
-                followingIds: firebase.firestore.FieldValue.arrayRemove(targetUid),
-                following: firebase.firestore.FieldValue.increment(-1)
-            });
-            await targetRef.update({
-                followerIds: firebase.firestore.FieldValue.arrayRemove(currentUser.uid),
-                followers: firebase.firestore.FieldValue.increment(-1)
-            });
             followingUsers.delete(targetUid);
             btn.classList.remove('following');
             btn.textContent = '+';
             showToast('আনফলো করা হয়েছে');
         } else {
-            // Follow
-            await followRef.set({
-                follower: currentUser.uid,
-                following: targetUid,
-                createdAt: Date.now()
-            });
-            await myRef.update({
-                followingIds: firebase.firestore.FieldValue.arrayUnion(targetUid),
-                following: firebase.firestore.FieldValue.increment(1)
-            });
-            await targetRef.update({
-                followerIds: firebase.firestore.FieldValue.arrayUnion(currentUser.uid),
-                followers: firebase.firestore.FieldValue.increment(1)
-            });
+            await followRef.set({ follower: currentUser.uid, following: targetUid, createdAt: Date.now() });
             followingUsers.add(targetUid);
             btn.classList.add('following');
             btn.textContent = '✓';
             showToast('✅ ফলো করা হয়েছে');
-        }
-
-        // Update currentProfile
-        const updatedProfile = await db.collection('users').doc(currentUser.uid).get();
-        if (updatedProfile.exists) {
-            currentProfile = updatedProfile.data();
         }
     } catch (e) {
         console.error('Follow error:', e);
@@ -450,38 +355,24 @@ async function toggleFollow(btn) {
 }
 
 // ========================================
-// ✅ PROFILE - COMPLETE FIX
+// ✅ COMMENT
 // ========================================
-function goToProfile(uid) {
-    if (!uid) return;
-    window.location.href = `profile.html?uid=${uid}`;
-}
-
-// ========================================
-// ✅ COMMENT - COMPLETE FIX
-// ========================================
-function openCommentModal(videoId) {
+function openComment(videoId) {
     if (!currentUser) { showToast('লগইন করুন'); return; }
     currentVideoId = videoId;
-    const modal = document.getElementById('comment-modal');
-    if (modal) {
-        modal.classList.add('open');
-        loadComments(videoId);
-    }
+    if (commentModal) commentModal.classList.add('open');
+    loadComments(videoId);
 }
 
-// Close comment modal
-document.addEventListener('click', (e) => {
-    if (e.target.closest('#close-comment') || e.target.closest('.comment-header button')) {
-        const modal = document.getElementById('comment-modal');
-        if (modal) modal.classList.remove('open');
-    }
-});
+if (closeComment) {
+    closeComment.addEventListener('click', () => {
+        if (commentModal) commentModal.classList.remove('open');
+    });
+}
 
 async function loadComments(videoId) {
-    const list = document.getElementById('comment-list');
-    if (!list) return;
-    list.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">⏳ লোড হচ্ছে...</div>';
+    if (!commentList) return;
+    commentList.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">⏳ লোড হচ্ছে...</div>';
 
     try {
         const snapshot = await db.collection('videos').doc(videoId)
@@ -490,15 +381,12 @@ async function loadComments(videoId) {
             .limit(50)
             .get();
 
-        const countEl = document.getElementById('comment-count-title');
-        if (countEl) countEl.textContent = `মন্তব্য (${snapshot.size})`;
-
         if (snapshot.empty) {
-            list.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">💬 কোনো মন্তব্য নেই</div>';
+            commentList.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">💬 কোনো মন্তব্য নেই</div>';
             return;
         }
 
-        list.innerHTML = '';
+        commentList.innerHTML = '';
         snapshot.forEach(doc => {
             const data = doc.data();
             const div = document.createElement('div');
@@ -507,28 +395,29 @@ async function loadComments(videoId) {
                 <div class="comment-user">@${escapeHtml(data.username || 'WWC User')}</div>
                 <div class="comment-text">${escapeHtml(data.text || '')}</div>
             `;
-            list.appendChild(div);
+            commentList.appendChild(div);
         });
     } catch (e) {
-        console.error('Comment load error:', e);
-        list.innerHTML = '<div style="text-align:center;color:#f44336;padding:20px;">❌ মন্তব্য লোড করা যায়নি</div>';
+        commentList.innerHTML = '<div style="text-align:center;color:#f44336;padding:20px;">❌ মন্তব্য লোড করা যায়নি</div>';
     }
 }
 
-// Submit comment
-document.getElementById('comment-submit')?.addEventListener('click', submitComment);
-document.getElementById('comment-input')?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') submitComment();
-});
+if (commentSubmit) {
+    commentSubmit.addEventListener('click', submitComment);
+}
+
+if (commentInput) {
+    commentInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') submitComment();
+    });
+}
 
 async function submitComment() {
     if (!currentUser || !currentVideoId) return;
-    const input = document.getElementById('comment-input');
-    if (!input) return;
-    const text = input.value.trim();
+    if (!commentInput) return;
+    const text = commentInput.value.trim();
     if (!text) return;
 
-    input.disabled = true;
     try {
         await db.collection('videos').doc(currentVideoId).collection('comments').add({
             uid: currentUser.uid,
@@ -541,39 +430,23 @@ async function submitComment() {
             comments: firebase.firestore.FieldValue.increment(1)
         });
 
-        input.value = '';
+        commentInput.value = '';
         await loadComments(currentVideoId);
         showToast('💬 মন্তব্য যোগ করা হয়েছে');
-
-        // Update comment count in feed
-        const card = document.querySelector(`.video-card[data-video-id="${currentVideoId}"]`);
-        if (card) {
-            const countSpan = card.querySelector('.comment-btn .count');
-            if (countSpan) {
-                const current = parseInt(countSpan.dataset.raw) || parseInt(countSpan.textContent) || 0;
-                countSpan.textContent = formatNumber(current + 1);
-                countSpan.dataset.raw = current + 1;
-            }
-        }
     } catch (e) {
         console.error('Comment error:', e);
         showToast('❌ মন্তব্য করতে ব্যর্থ হয়েছে');
     }
-    input.disabled = false;
 }
 
 // ========================================
-// ✅ SHARE - COMPLETE FIX
+// ✅ SHARE
 // ========================================
 async function shareVideo(videoId) {
     const url = `${window.location.origin}${window.location.pathname}?video=${videoId}`;
     try {
         if (navigator.share) {
-            await navigator.share({
-                title: 'WWC - World Wide Connect',
-                text: 'এই ভিডিওটি দেখুন! 🎬',
-                url: url
-            });
+            await navigator.share({ title: 'WWC', text: 'এই ভিডিওটি দেখুন! 🎬', url });
         } else {
             await navigator.clipboard.writeText(url);
             showToast('🔗 লিংক কপি করা হয়েছে');
@@ -586,77 +459,72 @@ async function shareVideo(videoId) {
 }
 
 // ========================================
-// ✅ SEARCH - COMPLETE FIX
+// ✅ SEARCH
 // ========================================
-document.getElementById('search-btn')?.addEventListener('click', () => {
-    const overlay = document.getElementById('search-overlay');
-    if (overlay) {
-        overlay.classList.add('open');
-        document.getElementById('search-input')?.focus();
-    }
-});
-
-document.getElementById('search-back')?.addEventListener('click', () => {
-    const overlay = document.getElementById('search-overlay');
-    if (overlay) overlay.classList.remove('open');
-});
-
-document.getElementById('search-input')?.addEventListener('input', (e) => {
-    const query = e.target.value.trim().toLowerCase();
-    const results = document.getElementById('search-results');
-    if (!results) return;
-
-    if (!query) {
-        results.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">ইউজারনেম লিখে খুঁজুন</div>';
-        return;
-    }
-
-    const found = allVideos.filter(v => 
-        (v.username || '').toLowerCase().includes(query) ||
-        (v.name || '').toLowerCase().includes(query)
-    );
-
-    if (!found.length) {
-        results.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">😕 কোনো ফলাফল পাওয়া যায়নি</div>';
-        return;
-    }
-
-    results.innerHTML = '';
-    found.forEach(v => {
-        const div = document.createElement('div');
-        div.className = 'search-result-item';
-        div.innerHTML = `
-            <img src="${v.photoURL || './images/profile.png'}" onerror="this.src='./images/profile.png'">
-            <span class="search-result-name">@${escapeHtml(v.username || 'WWC User')}</span>
-        `;
-        div.addEventListener('click', () => {
-            if (v.uid) goToProfile(v.uid);
-        });
-        results.appendChild(div);
+if (searchBtn) {
+    searchBtn.addEventListener('click', () => {
+        if (searchOverlay) searchOverlay.classList.add('open');
+        if (searchInput) searchInput.focus();
     });
-});
+}
+
+if (searchBack) {
+    searchBack.addEventListener('click', () => {
+        if (searchOverlay) searchOverlay.classList.remove('open');
+        if (searchInput) searchInput.value = '';
+    });
+}
+
+if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.trim().toLowerCase();
+        if (!searchResults) return;
+
+        if (!query) {
+            searchResults.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">ইউজারনেম লিখে খুঁজুন</div>';
+            return;
+        }
+
+        const found = allVideos.filter(v => 
+            (v.username || '').toLowerCase().includes(query) ||
+            (v.name || '').toLowerCase().includes(query)
+        );
+
+        if (!found.length) {
+            searchResults.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">😕 কোনো ফলাফল পাওয়া যায়নি</div>';
+            return;
+        }
+
+        searchResults.innerHTML = '';
+        found.forEach(v => {
+            const div = document.createElement('div');
+            div.className = 'search-result-item';
+            div.innerHTML = `
+                <img src="${v.photoURL || './images/profile.png'}" onerror="this.src='./images/profile.png'">
+                <span class="search-result-name">@${escapeHtml(v.username || 'WWC User')}</span>
+            `;
+            div.addEventListener('click', () => {
+                if (v.uid) window.location.href = `profile.html?uid=${v.uid}`;
+            });
+            searchResults.appendChild(div);
+        });
+    });
+}
 
 // ========================================
-// ✅ TABS - COMPLETE FIX
+// ✅ TABS
 // ========================================
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        const tab = btn.dataset.tab;
-        if (tab === 'following') {
-            currentFeed = 'following';
-        } else if (tab === 'foryou') {
-            currentFeed = 'foryou';
-        } else if (tab === 'live') {
-            currentFeed = 'live';
-        }
+        currentFeed = btn.dataset.tab === 'following' ? 'following' : 'foryou';
         renderFeed();
     });
 });
 
 // ========================================
-// ✅ VIDEO OBSERVER - AUTOPLAY
+// ✅ VIDEO OBSERVER
 // ========================================
 function setupVideoObserver() {
     const videos = document.querySelectorAll('.video-card video');
@@ -680,7 +548,6 @@ function setupVideoObserver() {
 
     videos.forEach(v => observer.observe(v));
 
-    // Play first video
     setTimeout(() => {
         const first = videos[0];
         if (first) first.play().catch(() => {});
@@ -716,7 +583,6 @@ function showToast(message) {
             opacity: 0; transition: opacity 0.3s ease;
             pointer-events: none; white-space: nowrap;
             border: 1px solid rgba(255,255,255,0.1);
-            max-width: 90%;
         `;
         document.body.appendChild(toast);
     }
@@ -726,4 +592,4 @@ function showToast(message) {
     toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 2500);
 }
 
-console.log('✅ WWC App Loaded - All buttons working!');
+console.log('✅ WWC App Loaded!');
