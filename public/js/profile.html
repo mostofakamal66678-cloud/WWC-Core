@@ -12,11 +12,11 @@
         
         .top { position:sticky; top:0; z-index:50; background:#000; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #222; }
         .top h1 { font-size:17px; font-weight:700; }
-        .top .back-btn { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; }
-        .top .settings-btn { background:none; border:none; color:#fff; font-size:18px; cursor:pointer; }
+        .top .back-btn, .top .settings-btn { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; }
 
         .profile-header { padding: 20px 16px 16px; display:flex; align-items:center; gap:16px; border-bottom:1px solid #222; }
-        .profile-avatar { width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg,#fe2c55,#25f4ee); display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:700; color:#000; flex-shrink:0; }
+        .profile-avatar { width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg,#fe2c55,#25f4ee); display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:700; color:#000; flex-shrink:0; overflow:hidden; }
+        .profile-avatar img { width:100%; height:100%; object-fit:cover; }
         .profile-stats { flex:1; display:flex; justify-content:space-around; }
         .stat-item { text-align:center; }
         .stat-item .num { font-size:20px; font-weight:700; }
@@ -26,10 +26,9 @@
         .profile-bio .name { font-size:17px; font-weight:700; }
         .profile-bio .username { font-size:14px; color:#888; margin-top:2px; }
         .profile-bio .bio { font-size:14px; margin-top:6px; line-height:1.4; color:#ddd; cursor:pointer; }
-        .profile-bio .bio:hover { color:#fff; }
 
         .follow-btn { padding:8px 24px; border:none; border-radius:6px; background:#fe2c55; color:#fff; font-weight:600; font-size:14px; cursor:pointer; margin:8px 16px 0; }
-        .follow-btn.following { background:#2a2a2a; color:#fff; }
+        .follow-btn.following { background:#2a2a2a; }
 
         .profile-tabs { display:flex; border-bottom:1px solid #222; margin-top:8px; }
         .profile-tabs .tab { flex:1; text-align:center; padding:12px; color:#888; font-size:13px; font-weight:600; cursor:pointer; border-bottom:2px solid transparent; }
@@ -37,59 +36,42 @@
 
         .video-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; padding:3px; }
         .video-grid .grid-item { aspect-ratio:9/16; background:#111; overflow:hidden; position:relative; border-radius:4px; }
-        .video-grid .grid-item video { width:100%; height:100%; object-fit:cover; }
-        .video-grid .grid-item .overlay-icon { position:absolute; top:8px; right:8px; color:#fff; font-size:14px; text-shadow:0 1px 4px rgba(0,0,0,0.8); }
+        .video-grid .grid-item video, .video-grid .grid-item img { width:100%; height:100%; object-fit:cover; }
         .empty-grid { text-align:center; color:#666; padding:60px 20px; font-size:14px; line-height:1.6; }
         .empty-grid i { font-size:48px; display:block; margin-bottom:16px; opacity:0.4; }
 
-        /* ===== সেটিংস মডাল ===== */
-        .settings-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; justify-content:flex-end; align-items:flex-end; backdrop-filter:blur(8px); animation:fadeIn 0.25s ease; }
+        .settings-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; justify-content:flex-end; align-items:flex-end; backdrop-filter:blur(8px); }
         .settings-modal.active { display:flex; }
-        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-        @keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
-        .settings-box { background:#1a1a1a; border-radius:20px 20px 0 0; padding:20px 16px 30px; width:100%; max-width:500px; margin:0 auto; animation:slideUp 0.3s cubic-bezier(0.4,0,0.2,1); border-top:1px solid #333; }
+        .settings-box { background:#1a1a1a; border-radius:20px 20px 0 0; padding:20px 16px 30px; width:100%; max-width:500px; margin:0 auto; border-top:1px solid #333; }
         .settings-box .settings-handle { width:40px; height:4px; background:#555; border-radius:2px; margin:0 auto 16px; }
         .settings-box .settings-header { display:flex; justify-content:space-between; align-items:center; padding-bottom:12px; margin-bottom:8px; }
         .settings-box .settings-header h3 { font-size:18px; font-weight:700; }
-        .settings-box .settings-header button { background:none; border:none; color:#888; font-size:22px; cursor:pointer; padding:4px 8px; }
-        .settings-box .settings-item { padding:14px 12px; margin:2px 0; display:flex; align-items:center; gap:14px; cursor:pointer; color:#ddd; border-radius:12px; transition:background 0.15s ease; }
-        .settings-box .settings-item:hover { background:#2a2a2a; }
-        .settings-box .settings-item:active { background:#333; transform:scale(0.98); }
+        .settings-box .settings-header button { background:none; border:none; color:#888; font-size:22px; cursor:pointer; }
+        .settings-box .settings-item { padding:14px 12px; margin:2px 0; display:flex; align-items:center; gap:14px; cursor:pointer; color:#ddd; border-radius:12px; }
+        .settings-box .settings-item:active { background:#333; }
         .settings-box .settings-item i { font-size:20px; width:28px; color:#888; }
         .settings-box .settings-item .arrow { margin-left:auto; color:#555; font-size:14px; }
-        .settings-box .settings-item .toggle-track { width:44px; height:24px; background:#333; border-radius:12px; position:relative; margin-left:auto; transition:background 0.3s; }
+        .settings-box .settings-item .toggle-track { width:44px; height:24px; background:#333; border-radius:12px; position:relative; margin-left:auto; }
         .settings-box .settings-item .toggle-track .toggle-thumb { width:20px; height:20px; background:#fff; border-radius:50%; position:absolute; top:2px; left:2px; transition:transform 0.3s; }
         .settings-box .settings-item .toggle-track.active { background:#fe2c55; }
         .settings-box .settings-item .toggle-track.active .toggle-thumb { transform:translateX(20px); }
         .settings-box .logout-item { color:#fe2c55; border-top:1px solid #333; margin-top:8px; padding-top:14px; }
         .settings-box .logout-item i { color:#fe2c55; }
 
-        /* ===== বায়ো এডিট মডাল ===== */
-        .bio-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:250; justify-content:center; align-items:center; backdrop-filter:blur(6px); }
-        .bio-modal.active { display:flex; }
-        .bio-box { background:#1a1a1a; border-radius:16px; padding:24px 20px 20px; width:90%; max-width:340px; border:1px solid #333; }
-        .bio-box h3 { font-size:17px; margin-bottom:12px; text-align:center; }
+        .bio-modal, .confirm-dialog { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:250; justify-content:center; align-items:center; backdrop-filter:blur(6px); }
+        .bio-modal.active, .confirm-dialog.active { display:flex; }
+        .bio-box, .confirm-box { background:#1a1a1a; border-radius:16px; padding:24px 20px 20px; width:90%; max-width:340px; border:1px solid #333; }
+        .bio-box h3, .confirm-box h3 { font-size:17px; margin-bottom:12px; text-align:center; }
         .bio-box textarea { width:100%; background:#2a2a2a; border:1px solid #333; border-radius:10px; padding:12px; color:#fff; font-size:14px; outline:none; min-height:80px; resize:vertical; }
-        .bio-box .btn-group { display:flex; gap:10px; margin-top:14px; }
-        .bio-box .btn-group button { flex:1; padding:12px; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; }
-        .bio-box .btn-group .cancel-btn { background:#2a2a2a; color:#fff; }
-        .bio-box .btn-group .save-btn { background:#fe2c55; color:#fff; }
+        .btn-group { display:flex; gap:10px; margin-top:14px; }
+        .btn-group button { flex:1; padding:12px; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; }
+        .btn-group .cancel-btn { background:#2a2a2a; color:#fff; }
+        .btn-group .save-btn, .btn-group .confirm-btn { background:#fe2c55; color:#fff; }
+        .confirm-box .icon { font-size:40px; color:#fe2c55; margin-bottom:12px; text-align:center; }
+        .confirm-box p { font-size:14px; color:#aaa; margin-bottom:20px; line-height:1.5; text-align:center; }
 
-        /* ===== টোস্ট ===== */
-        .toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#2a2a2a; color:#fff; padding:12px 24px; border-radius:12px; font-size:14px; z-index:300; opacity:0; transition:opacity 0.3s ease, transform 0.3s ease; pointer-events:none; box-shadow:0 4px 20px rgba(0,0,0,0.5); border:1px solid #333; text-align:center; max-width:90%; }
-        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
-
-        /* ===== কনফর্ম ডায়ালগ ===== */
-        .confirm-dialog { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:250; justify-content:center; align-items:center; backdrop-filter:blur(6px); }
-        .confirm-dialog.active { display:flex; }
-        .confirm-box { background:#1a1a1a; border-radius:16px; padding:24px 20px 20px; width:90%; max-width:340px; border:1px solid #333; text-align:center; }
-        .confirm-box .icon { font-size:40px; color:#fe2c55; margin-bottom:12px; }
-        .confirm-box h3 { font-size:17px; margin-bottom:8px; }
-        .confirm-box p { font-size:14px; color:#aaa; margin-bottom:20px; line-height:1.5; }
-        .confirm-box .btn-group { display:flex; gap:10px; }
-        .confirm-box .btn-group button { flex:1; padding:12px; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; }
-        .confirm-box .btn-group .cancel-btn { background:#2a2a2a; color:#fff; }
-        .confirm-box .btn-group .confirm-btn { background:#fe2c55; color:#fff; }
+        .toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#2a2a2a; color:#fff; padding:12px 24px; border-radius:12px; font-size:14px; z-index:300; opacity:0; transition:opacity 0.3s; pointer-events:none; border:1px solid #333; }
+        .toast.show { opacity:1; }
 
         .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:60px; background:#000; display:flex; justify-content:space-around; align-items:center; border-top:1px solid #222; z-index:100; padding-bottom:env(safe-area-inset-bottom); }
         .nav-item { color:#888; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:11px; gap:3px; flex:1; }
@@ -98,18 +80,13 @@
         .nav-item.upload-btn { background:linear-gradient(45deg,#fe2c55,#25f4ee); width:48px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#000; flex:0 0 auto; margin:0 6px; }
         .nav-item.upload-btn i { font-size:20px; color:#000; }
 
-        /* লাইট মোড */
         body.light-mode { background:#f5f5f5; color:#1a1a1a; }
         body.light-mode .top, body.light-mode .bottom-nav, body.light-mode .profile-bio, body.light-mode .profile-header, body.light-mode .profile-tabs, body.light-mode .settings-box { background:#fff; border-color:#e0e0e0; }
         body.light-mode .top h1, body.light-mode .settings-box .settings-header h3, body.light-mode .profile-bio .name, body.light-mode .profile-tabs .tab.active { color:#1a1a1a; }
         body.light-mode .stat-item .label, body.light-mode .profile-bio .username, body.light-mode .profile-tabs .tab { color:#888; }
         body.light-mode .settings-box .settings-item { color:#333; }
-        body.light-mode .settings-box .settings-item:hover { background:#f0f0f0; }
-        body.light-mode .settings-box .logout-item { border-color:#e0e0e0; }
-        body.light-mode .settings-box .settings-handle { background:#ccc; }
         body.light-mode .bio-box { background:#fff; border-color:#ddd; }
         body.light-mode .bio-box textarea { background:#f5f5f5; color:#1a1a1a; border-color:#ddd; }
-        body.light-mode .bio-box .cancel-btn { background:#e0e0e0; color:#333; }
     </style>
 </head>
 <body>
@@ -142,7 +119,7 @@
     <div class="top">
         <button class="back-btn" id="back-btn"><i class="fas fa-arrow-left"></i></button>
         <h1 id="page-title">প্রোফাইল</h1>
-        <button class="settings-btn" id="settings-btn"><i class="fas fa-gear"></i></button>
+        <button class="settings-btn" id="settings-btn"><i class="fas fa-ellipsis-v"></i></button>
     </div>
 
     <div class="profile-header">
@@ -163,7 +140,7 @@
     <button class="follow-btn" id="follow-btn" style="display:none;">ফলো</button>
 
     <div class="profile-tabs">
-        <div class="tab active" data-tab="videos"><i class="fas fa-grid"></i> ভিডিও</div>
+        <div class="tab active" data-tab="videos"><i class="fas fa-th"></i> ভিডিও</div>
         <div class="tab" data-tab="liked"><i class="fas fa-heart"></i> লাইক</div>
         <div class="tab" data-tab="saved"><i class="fas fa-bookmark"></i> সেভ</div>
     </div>
@@ -182,31 +159,31 @@
 
             <div class="settings-item" id="edit-profile">
                 <i class="fas fa-user-edit"></i>
-                <span>প্রাথমিক এডি</span>
+                <span>প্রোফাইল এডিট</span>
                 <span class="arrow"><i class="fas fa-chevron-right"></i></span>
             </div>
 
             <div class="settings-item" id="privacy">
                 <i class="fas fa-lock"></i>
-                <span>গ্রাইভেরিস</span>
+                <span>প্রাইভেসি</span>
                 <div class="toggle-track" id="privacy-toggle"><div class="toggle-thumb"></div></div>
             </div>
 
             <div class="settings-item" id="notifications">
                 <i class="fas fa-bell"></i>
-                <span>ল্যাটিমিকেশন</span>
+                <span>নোটিফিকেশন</span>
                 <div class="toggle-track active" id="notif-toggle"><div class="toggle-thumb"></div></div>
             </div>
 
             <div class="settings-item" id="dark-mode">
                 <i class="fas fa-moon"></i>
-                <span>ডাক মোড</span>
+                <span>ডার্ক মোড</span>
                 <div class="toggle-track" id="dark-toggle"><div class="toggle-thumb"></div></div>
             </div>
 
             <div class="settings-item logout-item" id="logout-btn">
                 <i class="fas fa-sign-out-alt"></i>
-                <span>লগজোড</span>
+                <span>লগআউট</span>
                 <span class="arrow"><i class="fas fa-chevron-right"></i></span>
             </div>
         </div>
@@ -239,14 +216,15 @@
         }
 
         function toggleSwitch(el, onChange) {
-            el.addEventListener('click', () => {
+            el.addEventListener('click', (e) => {
+                e.stopPropagation();
                 el.classList.toggle('active');
                 onChange(el.classList.contains('active'));
             });
         }
 
         auth.onAuthStateChanged(user => {
-            if (!user) { location.href = 'login.html'; return; }
+            if (!user) { location.href = 'auth.html'; return; }
             currentUser = user;
             const params = new URLSearchParams(window.location.search);
             targetUserId = params.get('uid') || currentUser.uid;
@@ -264,13 +242,13 @@
 
         document.getElementById('back-btn').addEventListener('click', () => window.location.href = '../index.html');
 
-        // ========== সেটিংস ==========
+        // Settings
         const modal = document.getElementById('settings-modal');
         document.getElementById('settings-btn').addEventListener('click', () => modal.classList.add('active'));
         document.getElementById('close-settings').addEventListener('click', () => modal.classList.remove('active'));
         modal.addEventListener('click', (e) => { if (e.target === e.currentTarget) modal.classList.remove('active'); });
 
-        // ১. প্রাথমিক এডি
+        // প্রোফাইল এডিট (নাম)
         document.getElementById('edit-profile').addEventListener('click', () => {
             modal.classList.remove('active');
             const currentName = document.getElementById('display-name').textContent;
@@ -278,45 +256,39 @@
             if (newName && newName.trim()) {
                 const name = newName.trim();
                 document.getElementById('display-name').textContent = name;
-                document.getElementById('username').textContent = `@${name}`;
+                document.getElementById('username').textContent = `@${name.toLowerCase().replace(/\s+/g, '_')}`;
                 document.getElementById('profile-avatar').textContent = name[0].toUpperCase();
                 db.collection('users').doc(currentUser.uid).set({
                     username: name,
-                    bio: document.getElementById('bio').textContent
+                    displayName: name
                 }, { merge: true }).catch(err => console.error(err));
                 showToast('✅ নাম আপডেট হয়েছে!');
             }
         });
 
-        // ২. গ্রাইভেরিস
+        // প্রাইভেসি
         const privacyToggle = document.getElementById('privacy-toggle');
         toggleSwitch(privacyToggle, (isPrivate) => {
-            db.collection('users').doc(currentUser.uid).set({
-                isPrivate: isPrivate
-            }, { merge: true });
+            db.collection('users').doc(currentUser.uid).set({ isPrivate }, { merge: true });
             showToast(isPrivate ? '🔒 অ্যাকাউন্ট প্রাইভেট হয়েছে' : '🔓 অ্যাকাউন্ট পাবলিক হয়েছে');
         });
 
-        // ৩. ল্যাটিমিকেশন
+        // নোটিফিকেশন
         const notifToggle = document.getElementById('notif-toggle');
         toggleSwitch(notifToggle, (enabled) => {
-            db.collection('users').doc(currentUser.uid).set({
-                notificationsEnabled: enabled
-            }, { merge: true });
-            showToast(enabled ? '🔔 নোটিফিকেশন চালু হয়েছে' : '🔕 নোটিফিকেশন বন্ধ হয়েছে');
+            db.collection('users').doc(currentUser.uid).set({ notificationsEnabled: enabled }, { merge: true });
+            showToast(enabled ? '🔔 নোটিফিকেশন চালু' : '🔕 নোটিফিকেশন বন্ধ');
         });
 
-        // ৪. ডাক মোড
+        // ডার্ক মোড
         const darkToggle = document.getElementById('dark-toggle');
         toggleSwitch(darkToggle, (isLight) => {
             document.body.classList.toggle('light-mode', isLight);
-            db.collection('users').doc(currentUser.uid).set({
-                darkMode: isLight
-            }, { merge: true });
-            showToast(isLight ? '🌙 ডার্ক মোড বন্ধ' : '🌙 ডার্ক মোড চালু');
+            db.collection('users').doc(currentUser.uid).set({ darkMode: isLight }, { merge: true });
+            showToast(isLight ? '☀️ লাইট মোড' : '🌙 ডার্ক মোড');
         });
 
-        // ৫. লগজোড
+        // লগআউট
         document.getElementById('logout-btn').addEventListener('click', () => {
             modal.classList.remove('active');
             document.getElementById('confirm-dialog').classList.add('active');
@@ -328,11 +300,11 @@
             document.getElementById('confirm-dialog').classList.remove('active');
             auth.signOut().then(() => {
                 showToast('👋 লগআউট হচ্ছে...');
-                setTimeout(() => window.location.href = 'login.html', 500);
+                setTimeout(() => window.location.href = 'auth.html', 500);
             });
         });
 
-        // ========== বায়ো এডিট ==========
+        // বায়ো এডিট
         const bioModal = document.getElementById('bio-modal');
         const bioInput = document.getElementById('bio-input');
         const bioEl = document.getElementById('bio');
@@ -343,23 +315,18 @@
                 bioModal.classList.add('active');
             }
         });
-
-        document.getElementById('bio-cancel').addEventListener('click', () => {
-            bioModal.classList.remove('active');
-        });
+        document.getElementById('bio-cancel').addEventListener('click', () => bioModal.classList.remove('active'));
         document.getElementById('bio-save').addEventListener('click', async () => {
             const newBio = bioInput.value.trim();
             if (newBio) {
                 bioEl.textContent = newBio;
-                await db.collection('users').doc(currentUser.uid).set({
-                    bio: newBio
-                }, { merge: true });
+                await db.collection('users').doc(currentUser.uid).set({ bio: newBio }, { merge: true });
                 showToast('✅ বায়ো আপডেট হয়েছে!');
             }
             bioModal.classList.remove('active');
         });
 
-        // ========== প্রোফাইল লোড ==========
+        // প্রোফাইল লোড
         async function loadProfile(uid) {
             const isOwn = (uid === currentUser.uid);
             let userData = {};
@@ -368,20 +335,34 @@
                 if (userDoc.exists) userData = userDoc.data();
             } catch(e) {}
 
-            if (!userData.username) {
+            // fallback from videos if no user doc
+            if (!userData.username && !userData.displayName) {
                 try {
                     const vids = await db.collection('videos').where('uid', '==', uid).limit(1).get();
-                    if (!vids.empty) userData.username = vids.docs[0].data().username || 'user';
-                    else userData.username = 'user';
+                    if (!vids.empty) {
+                        const v = vids.docs[0].data();
+                        userData.username = v.username || 'user';
+                        userData.photoURL = v.photoURL || '';
+                    } else {
+                        userData.username = 'user';
+                    }
                 } catch(e) { userData.username = 'user'; }
             }
 
-            const displayName = userData.username || 'ইউজার';
-            document.getElementById('profile-avatar').textContent = displayName[0].toUpperCase();
+            const displayName = userData.displayName || userData.username || 'ইউজার';
+            const username = (userData.username || displayName).toLowerCase().replace(/\s+/g, '_');
+
+            const avatarEl = document.getElementById('profile-avatar');
+            if (userData.photoURL) {
+                avatarEl.innerHTML = `<img src="\( {userData.photoURL}" alt="avatar" onerror="this.parentElement.textContent=' \){displayName[0].toUpperCase()}'">`;
+            } else {
+                avatarEl.textContent = displayName[0].toUpperCase();
+            }
+
             document.getElementById('display-name').textContent = displayName;
-            document.getElementById('username').textContent = `@${displayName}`;
+            document.getElementById('username').textContent = `@${username}`;
             document.getElementById('bio').textContent = userData.bio || 'হ্যালো, আমি WWC ব্যবহার করছি';
-            document.getElementById('page-title').textContent = isOwn ? 'প্রোফাইল' : `@${displayName}`;
+            document.getElementById('page-title').textContent = isOwn ? 'প্রোফাইল' : `@${username}`;
 
             if (isOwn) {
                 if (userData.isPrivate) privacyToggle.classList.add('active');
@@ -423,7 +404,7 @@
 
         async function loadContent(uid, tab) {
             const grid = document.getElementById('video-grid');
-            grid.innerHTML = '<div class="empty-grid"><i class="fas fa-spinner fa-spin"></i>লোড হচ্ছে...</div>';
+            grid.innerHTML = '<div class="empty-grid"><i class="fas fa-spinner fa-spin"></i><br>লোড হচ্ছে...</div>';
             let videos = [];
             try {
                 if (tab === 'videos') {
@@ -453,17 +434,11 @@
                     }
                 }
             } catch(e) {
-                console.error('কন্টেন্ট লোড সমস্যা:', e);
+                console.error(e);
             }
 
-            if (!videos.length) {
-                const icons = { videos: 'video', liked: 'heart', saved: 'bookmark' };
-                const msgs = { 
-                    videos: 'কোনো ভিডিও আপলোড করেননি', 
-                    liked: 'লাইক করা ভিডিও নেই', 
-                    saved: 'সেভ করা ভিডিও নেই' 
-                };
-                grid.innerHTML = `<div class="empty-grid"><i class="fas fa-${icons[tab] || 'video'}"></i>${msgs[tab] || 'কোনো ভিডিও নেই'}</div>`;
+            if (videos.length === 0) {
+                grid.innerHTML = `<div class="empty-grid"><i class="fas fa-video"></i>কোনো ভিডিও নেই</div>`;
                 return;
             }
 
@@ -471,39 +446,46 @@
             videos.forEach(v => {
                 const item = document.createElement('div');
                 item.className = 'grid-item';
-                const src = v.videoURL || v.videoUrl || '';
-                item.innerHTML = `
-                    <video src="${src}" muted loop playsinline preload="metadata"></video>
-                    ${tab === 'liked' ? '<div class="overlay-icon"><i class="fas fa-heart" style="color:#fe2c55;"></i></div>' : ''}
-                    ${tab === 'saved' ? '<div class="overlay-icon"><i class="fas fa-bookmark" style="color:#facc15;"></i></div>' : ''}
-                `;
-                const vid = item.querySelector('video');
-                item.addEventListener('click', () => { if (vid.paused) vid.play(); else vid.pause(); });
-                item.addEventListener('mouseenter', () => { vid.play(); });
-                item.addEventListener('mouseleave', () => { vid.pause(); });
+                const url = v.videoURL || v.downloadURL || '';
+                item.innerHTML = `<video src="${url}" muted playsinline preload="metadata"></video>`;
+                item.onclick = () => window.location.href = `../index.html?video=${v.id}`;
                 grid.appendChild(item);
             });
         }
 
         async function updateFollowButton(uid, btn) {
             try {
-                const followId = `${currentUser.uid}_${uid}`;
-                const doc = await db.collection('follows').doc(followId).get();
-                if (doc.exists) { btn.textContent = 'ফলোয়িং'; btn.classList.add('following'); }
-                else { btn.textContent = 'ফলো'; btn.classList.remove('following'); }
+                const doc = await db.collection('follows').doc(`\( {currentUser.uid}_ \){uid}`).get();
+                if (doc.exists) {
+                    btn.textContent = 'ফলোয়িং';
+                    btn.classList.add('following');
+                } else {
+                    btn.textContent = 'ফলো';
+                    btn.classList.remove('following');
+                }
             } catch(e) {}
         }
 
         async function toggleFollow(uid, btn) {
-            if (!currentUser || currentUser.uid === uid) return;
-            const followId = `${currentUser.uid}_${uid}`;
-            const ref = db.collection('follows').doc(followId);
+            const isFollowing = btn.classList.contains('following');
             try {
-                const doc = await ref.get();
-                if (doc.exists) { await ref.delete(); btn.textContent = 'ফলো'; btn.classList.remove('following'); }
-                else { await ref.set({ follower: currentUser.uid, following: uid, createdAt: Date.now() }); btn.textContent = 'ফলোয়িং'; btn.classList.add('following'); }
+                const ref = db.collection('follows').doc(`\( {currentUser.uid}_ \){uid}`);
+                if (isFollowing) {
+                    await ref.delete();
+                    btn.textContent = 'ফলো';
+                    btn.classList.remove('following');
+                    showToast('আনফলো করা হয়েছে');
+                } else {
+                    await ref.set({ follower: currentUser.uid, following: uid, createdAt: Date.now() });
+                    btn.textContent = 'ফলোয়িং';
+                    btn.classList.add('following');
+                    showToast('ফলো করা হয়েছে');
+                }
                 await loadStats(uid);
-            } catch(e) { showToast('❌ ফলো সমস্যা: ' + e.message); }
+            } catch(e) {
+                console.error(e);
+                showToast('কিছু ভুল হয়েছে');
+            }
         }
     </script>
 </body>
