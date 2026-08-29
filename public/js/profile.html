@@ -40,6 +40,7 @@
         .empty-grid { text-align:center; color:#666; padding:60px 20px; font-size:14px; line-height:1.6; }
         .empty-grid i { font-size:48px; display:block; margin-bottom:16px; opacity:0.4; }
 
+        /* Settings Bottom Sheet */
         .settings-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; justify-content:flex-end; align-items:flex-end; }
         .settings-modal.active { display:flex; }
         .settings-box { background:#1a1a1a; border-radius:20px 20px 0 0; padding:20px 16px 30px; width:100%; max-width:500px; margin:0 auto; border-top:1px solid #333; }
@@ -51,29 +52,49 @@
         .settings-box .settings-item:active { background:#333; }
         .settings-box .settings-item i { font-size:20px; width:28px; color:#888; }
         .settings-box .settings-item .arrow { margin-left:auto; color:#555; font-size:14px; }
-        .settings-box .settings-item .toggle-track { width:44px; height:24px; background:#333; border-radius:12px; position:relative; margin-left:auto; }
-        .settings-box .settings-item .toggle-track .toggle-thumb { width:20px; height:20px; background:#fff; border-radius:50%; position:absolute; top:2px; left:2px; transition:transform 0.3s; }
-        .settings-box .settings-item .toggle-track.active { background:#fe2c55; }
-        .settings-box .settings-item .toggle-track.active .toggle-thumb { transform:translateX(20px); }
         .settings-box .logout-item { color:#fe2c55; border-top:1px solid #333; margin-top:8px; padding-top:14px; }
         .settings-box .logout-item i { color:#fe2c55; }
 
-        .bio-modal, .confirm-dialog { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:250; justify-content:center; align-items:center; }
-        .bio-modal.active, .confirm-dialog.active { display:flex; }
-        .bio-box, .confirm-box { background:#1a1a1a; border-radius:16px; padding:24px 20px 20px; width:90%; max-width:340px; border:1px solid #333; }
-        .bio-box h3, .confirm-box h3 { font-size:17px; margin-bottom:12px; text-align:center; }
-        .bio-box textarea, .bio-box input { width:100%; background:#2a2a2a; border:1px solid #333; border-radius:10px; padding:12px; color:#fff; font-size:14px; outline:none; font-family:inherit; }
-        .bio-box textarea { min-height:80px; resize:vertical; }
-        .bio-box label { font-size:12px; color:#888; display:block; margin-bottom:4px; }
-        .bio-box .form-row { margin-bottom:12px; }
-        .btn-group { display:flex; gap:10px; margin-top:14px; }
+        /* Full Screen Modals (TikTok style) */
+        .full-modal { display:none; position:fixed; inset:0; background:#000; z-index:300; flex-direction:column; }
+        .full-modal.active { display:flex; }
+        .full-modal .modal-top { padding:12px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #222; }
+        .full-modal .modal-top h2 { font-size:17px; font-weight:700; }
+        .full-modal .modal-top button { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; width:40px; height:40px; }
+        .full-modal .modal-body { flex:1; overflow-y:auto; padding:16px; }
+        
+        .form-group { margin-bottom:20px; }
+        .form-group label { display:block; font-size:13px; color:#888; margin-bottom:8px; font-weight:500; }
+        .form-group input, .form-group textarea { width:100%; padding:14px 16px; border-radius:12px; border:1px solid #333; background:#1a1a1a; color:#fff; font-size:15px; outline:none; font-family:inherit; }
+        .form-group input:focus, .form-group textarea:focus { border-color:#fe2c55; }
+        .form-group textarea { min-height:100px; resize:vertical; }
+        .form-group .hint { font-size:12px; color:#666; margin-top:6px; }
+
+        .option-item { display:flex; align-items:center; justify-content:space-between; padding:16px 0; border-bottom:1px solid #1a1a1a; }
+        .option-item .left { flex:1; }
+        .option-item .title { font-size:15px; font-weight:500; }
+        .option-item .desc { font-size:12px; color:#888; margin-top:3px; line-height:1.4; }
+        .toggle-track { width:48px; height:28px; background:#333; border-radius:14px; position:relative; flex-shrink:0; cursor:pointer; }
+        .toggle-track .toggle-thumb { width:24px; height:24px; background:#fff; border-radius:50%; position:absolute; top:2px; left:2px; transition:transform 0.25s; }
+        .toggle-track.active { background:#fe2c55; }
+        .toggle-track.active .toggle-thumb { transform:translateX(20px); }
+
+        .save-bar { padding:12px 16px; border-top:1px solid #222; }
+        .save-bar button { width:100%; padding:14px; border:none; border-radius:12px; background:#fe2c55; color:#fff; font-size:16px; font-weight:700; cursor:pointer; }
+        .save-bar button:active { opacity:0.85; }
+
+        .confirm-dialog { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:350; justify-content:center; align-items:center; }
+        .confirm-dialog.active { display:flex; }
+        .confirm-box { background:#1a1a1a; border-radius:16px; padding:24px 20px 20px; width:90%; max-width:320px; border:1px solid #333; text-align:center; }
+        .confirm-box .icon { font-size:40px; color:#fe2c55; margin-bottom:12px; }
+        .confirm-box h3 { font-size:17px; margin-bottom:8px; }
+        .confirm-box p { font-size:14px; color:#aaa; margin-bottom:20px; line-height:1.5; }
+        .btn-group { display:flex; gap:10px; }
         .btn-group button { flex:1; padding:12px; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; }
         .btn-group .cancel-btn { background:#2a2a2a; color:#fff; }
-        .btn-group .save-btn, .btn-group .confirm-btn { background:#fe2c55; color:#fff; }
-        .confirm-box .icon { font-size:40px; color:#fe2c55; margin-bottom:12px; text-align:center; }
-        .confirm-box p { font-size:14px; color:#aaa; margin-bottom:20px; line-height:1.5; text-align:center; }
+        .btn-group .confirm-btn { background:#fe2c55; color:#fff; }
 
-        .toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#2a2a2a; color:#fff; padding:12px 24px; border-radius:12px; font-size:14px; z-index:300; opacity:0; transition:opacity 0.3s; pointer-events:none; border:1px solid #333; white-space:nowrap; }
+        .toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#2a2a2a; color:#fff; padding:12px 24px; border-radius:12px; font-size:14px; z-index:400; opacity:0; transition:opacity 0.3s; pointer-events:none; border:1px solid #333; white-space:nowrap; }
         .toast.show { opacity:1; }
 
         .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:60px; background:#000; display:flex; justify-content:space-around; align-items:center; border-top:1px solid #222; z-index:100; padding-bottom:env(safe-area-inset-bottom); }
@@ -101,45 +122,126 @@
         </div>
     </div>
 
-    <!-- Bio Edit Modal -->
-    <div class="bio-modal" id="bio-modal">
-        <div class="bio-box">
-            <h3>বায়ো এডিট করুন</h3>
-            <textarea id="bio-input" placeholder="আপনার বায়ো লিখুন..."></textarea>
-            <div class="btn-group">
-                <button class="cancel-btn" id="bio-cancel">বাতিল</button>
-                <button class="save-btn" id="bio-save">সংরক্ষণ</button>
-            </div>
+    <!-- ========== PROFILE EDIT (Full Screen) ========== -->
+    <div class="full-modal" id="edit-profile-modal">
+        <div class="modal-top">
+            <button id="edit-back"><i class="fas fa-arrow-left"></i></button>
+            <h2>প্রোফাইল এডিট</h2>
+            <div style="width:40px;"></div>
         </div>
-    </div>
-
-    <!-- Profile Edit Modal -->
-    <div class="bio-modal" id="edit-profile-modal">
-        <div class="bio-box">
-            <h3>প্রোফাইল এডিট</h3>
-            <div class="form-row">
+        <div class="modal-body">
+            <div class="form-group">
                 <label>নাম</label>
-                <input type="text" id="edit-name-input" placeholder="আপনার নাম">
+                <input type="text" id="edit-name-input" placeholder="আপনার নাম" maxlength="30">
             </div>
-            <div class="form-row">
+            <div class="form-group">
                 <label>ইউজারনেম</label>
-                <input type="text" id="edit-username-input" placeholder="username">
+                <input type="text" id="edit-username-input" placeholder="username" maxlength="24">
+                <div class="hint">শুধুমাত্র অক্ষর, সংখ্যা এবং _ ব্যবহার করুন</div>
             </div>
-            <div class="btn-group">
-                <button class="cancel-btn" id="edit-cancel">বাতিল</button>
-                <button class="save-btn" id="edit-save">সংরক্ষণ</button>
+            <div class="form-group">
+                <label>বায়ো</label>
+                <textarea id="edit-bio-input" placeholder="নিজের সম্পর্কে কিছু লিখুন..." maxlength="80"></textarea>
+                <div class="hint"><span id="bio-char">0</span>/80</div>
+            </div>
+        </div>
+        <div class="save-bar">
+            <button id="edit-save">সংরক্ষণ করুন</button>
+        </div>
+    </div>
+
+    <!-- ========== PRIVACY (Full Screen) ========== -->
+    <div class="full-modal" id="privacy-modal">
+        <div class="modal-top">
+            <button id="privacy-back"><i class="fas fa-arrow-left"></i></button>
+            <h2>প্রাইভেসি</h2>
+            <div style="width:40px;"></div>
+        </div>
+        <div class="modal-body">
+            <div class="option-item">
+                <div class="left">
+                    <div class="title">প্রাইভেট অ্যাকাউন্ট</div>
+                    <div class="desc">শুধুমাত্র অনুমোদিত ফলোয়াররা আপনার ভিডিও দেখতে পারবে</div>
+                </div>
+                <div class="toggle-track" id="privacy-private"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="option-item">
+                <div class="left">
+                    <div class="title">কমেন্ট অনুমতি</div>
+                    <div class="desc">সবাই আপনার ভিডিওতে কমেন্ট করতে পারবে</div>
+                </div>
+                <div class="toggle-track active" id="privacy-comment"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="option-item">
+                <div class="left">
+                    <div class="title">ডুয়েট ও স্টITCH</div>
+                    <div class="desc">অন্যরা আপনার ভিডিও দিয়ে ডুয়েট/স্টিচ করতে পারবে</div>
+                </div>
+                <div class="toggle-track active" id="privacy-duet"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="option-item">
+                <div class="left">
+                    <div class="title">লাইক কাউন্ট দেখান</div>
+                    <div class="desc">অন্যরা আপনার ভিডিওর লাইক সংখ্যা দেখতে পারবে</div>
+                </div>
+                <div class="toggle-track active" id="privacy-likes"><div class="toggle-thumb"></div></div>
             </div>
         </div>
     </div>
 
-    <!-- Top Bar -->
+    <!-- ========== NOTIFICATIONS (Full Screen) ========== -->
+    <div class="full-modal" id="notif-modal">
+        <div class="modal-top">
+            <button id="notif-back"><i class="fas fa-arrow-left"></i></button>
+            <h2>নোটিফিকেশন</h2>
+            <div style="width:40px;"></div>
+        </div>
+        <div class="modal-body">
+            <div class="option-item">
+                <div class="left">
+                    <div class="title">লাইক</div>
+                    <div class="desc">কেউ আপনার ভিডিও লাইক করলে জানান</div>
+                </div>
+                <div class="toggle-track active" id="notif-like"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="option-item">
+                <div class="left">
+                    <div class="title">কমেন্ট</div>
+                    <div class="desc">কেউ আপনার ভিডিওতে কমেন্ট করলে জানান</div>
+                </div>
+                <div class="toggle-track active" id="notif-comment"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="option-item">
+                <div class="left">
+                    <div class="title">নতুন ফলোয়ার</div>
+                    <div class="desc">কেউ আপনাকে ফলো করলে জানান</div>
+                </div>
+                <div class="toggle-track active" id="notif-follow"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="option-item">
+                <div class="left">
+                    <div class="title">মেন্টেশন</div>
+                    <div class="desc">কেউ আপনাকে মেন্টেশন করলে জানান</div>
+                </div>
+                <div class="toggle-track active" id="notif-mention"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="option-item">
+                <div class="left">
+                    <div class="title">সব নোটিফিকেশন</div>
+                    <div class="desc">সব ধরনের নোটিফিকেশন চালু/বন্ধ করুন</div>
+                </div>
+                <div class="toggle-track active" id="notif-all"><div class="toggle-thumb"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Profile -->
     <div class="top">
         <button class="back-btn" id="back-btn"><i class="fas fa-arrow-left"></i></button>
         <h1 id="page-title">প্রোফাইল</h1>
         <button class="settings-btn" id="settings-btn"><i class="fas fa-ellipsis-v"></i></button>
     </div>
 
-    <!-- Profile Header -->
     <div class="profile-header">
         <div class="profile-avatar" id="profile-avatar">U</div>
         <div class="profile-stats">
@@ -157,7 +259,6 @@
 
     <button class="follow-btn" id="follow-btn" style="display:none;">ফলো</button>
 
-    <!-- Tabs -->
     <div class="profile-tabs">
         <div class="tab active" data-tab="videos"><i class="fas fa-th"></i> ভিডিও</div>
         <div class="tab" data-tab="liked"><i class="fas fa-heart"></i> লাইক</div>
@@ -168,7 +269,7 @@
         <div class="video-grid" id="video-grid"></div>
     </div>
 
-    <!-- Settings Modal -->
+    <!-- Settings Bottom Sheet -->
     <div class="settings-modal" id="settings-modal">
         <div class="settings-box">
             <div class="settings-handle"></div>
@@ -176,25 +277,25 @@
                 <h3>সেটিংস</h3>
                 <button id="close-settings"><i class="fas fa-times"></i></button>
             </div>
-            <div class="settings-item" id="edit-profile">
+            <div class="settings-item" id="open-edit">
                 <i class="fas fa-user-edit"></i>
                 <span>প্রোফাইল এডিট</span>
                 <span class="arrow"><i class="fas fa-chevron-right"></i></span>
             </div>
-            <div class="settings-item" id="privacy">
+            <div class="settings-item" id="open-privacy">
                 <i class="fas fa-lock"></i>
                 <span>প্রাইভেসি</span>
-                <div class="toggle-track" id="privacy-toggle"><div class="toggle-thumb"></div></div>
+                <span class="arrow"><i class="fas fa-chevron-right"></i></span>
             </div>
-            <div class="settings-item" id="notifications">
+            <div class="settings-item" id="open-notif">
                 <i class="fas fa-bell"></i>
                 <span>নোটিফিকেশন</span>
-                <div class="toggle-track active" id="notif-toggle"><div class="toggle-thumb"></div></div>
+                <span class="arrow"><i class="fas fa-chevron-right"></i></span>
             </div>
-            <div class="settings-item" id="dark-mode">
+            <div class="settings-item" id="dark-mode-item">
                 <i class="fas fa-moon"></i>
                 <span>ডার্ক মোড</span>
-                <div class="toggle-track" id="dark-toggle"><div class="toggle-thumb"></div></div>
+                <div class="toggle-track" id="dark-toggle" style="margin-left:auto;"><div class="toggle-thumb"></div></div>
             </div>
             <div class="settings-item logout-item" id="logout-btn">
                 <i class="fas fa-sign-out-alt"></i>
@@ -204,7 +305,6 @@
         </div>
     </div>
 
-    <!-- Bottom Nav -->
     <nav class="bottom-nav">
         <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
         <a href="friends.html" class="nav-item"><i class="fas fa-users"></i><span>বন্ধু</span></a>
@@ -231,24 +331,32 @@
             toast._timer = setTimeout(() => toast.classList.remove('show'), 2500);
         }
 
-        // ========== AUTH ==========
+        function setupToggle(el, key) {
+            el.addEventListener('click', async () => {
+                el.classList.toggle('active');
+                const value = el.classList.contains('active');
+                try {
+                    await db.collection('users').doc(currentUser.uid).set({ [key]: value }, { merge: true });
+                } catch (e) {
+                    console.error(e);
+                }
+            });
+        }
+
+        // AUTH
         auth.onAuthStateChanged(user => {
-            if (!user) {
-                window.location.href = 'auth.html';
-                return;
-            }
+            if (!user) { window.location.href = 'auth.html'; return; }
             currentUser = user;
             const params = new URLSearchParams(window.location.search);
             targetUserId = params.get('uid') || currentUser.uid;
             loadProfile(targetUserId);
         });
 
-        // ========== BACK BUTTON ==========
         document.getElementById('back-btn').addEventListener('click', () => {
             window.location.href = '../index.html';
         });
 
-        // ========== TABS ==========
+        // TABS
         document.querySelectorAll('.profile-tabs .tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.profile-tabs .tab').forEach(t => t.classList.remove('active'));
@@ -258,106 +366,96 @@
             });
         });
 
-        // ========== SETTINGS MODAL ==========
-        const modal = document.getElementById('settings-modal');
-        document.getElementById('settings-btn').addEventListener('click', () => modal.classList.add('active'));
-        document.getElementById('close-settings').addEventListener('click', () => modal.classList.remove('active'));
-        modal.addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) modal.classList.remove('active');
+        // SETTINGS
+        const settingsModal = document.getElementById('settings-modal');
+        document.getElementById('settings-btn').addEventListener('click', () => settingsModal.classList.add('active'));
+        document.getElementById('close-settings').addEventListener('click', () => settingsModal.classList.remove('active'));
+        settingsModal.addEventListener('click', e => { if (e.target === settingsModal) settingsModal.classList.remove('active'); });
+
+        // Open Edit
+        document.getElementById('open-edit').addEventListener('click', () => {
+            settingsModal.classList.remove('active');
+            document.getElementById('edit-name-input').value = document.getElementById('display-name').textContent;
+            document.getElementById('edit-username-input').value = document.getElementById('username').textContent.replace('@', '');
+            document.getElementById('edit-bio-input').value = document.getElementById('bio').textContent;
+            document.getElementById('bio-char').textContent = document.getElementById('edit-bio-input').value.length;
+            document.getElementById('edit-profile-modal').classList.add('active');
         });
-
-        // 1. Profile Edit
-        const editModal = document.getElementById('edit-profile-modal');
-        const editNameInput = document.getElementById('edit-name-input');
-        const editUsernameInput = document.getElementById('edit-username-input');
-
-        document.getElementById('edit-profile').addEventListener('click', () => {
-            modal.classList.remove('active');
-            editNameInput.value = document.getElementById('display-name').textContent;
-            editUsernameInput.value = document.getElementById('username').textContent.replace('@', '');
-            editModal.classList.add('active');
+        document.getElementById('edit-back').addEventListener('click', () => {
+            document.getElementById('edit-profile-modal').classList.remove('active');
         });
-
-        document.getElementById('edit-cancel').addEventListener('click', () => {
-            editModal.classList.remove('active');
+        document.getElementById('edit-bio-input').addEventListener('input', () => {
+            document.getElementById('bio-char').textContent = document.getElementById('edit-bio-input').value.length;
         });
-
         document.getElementById('edit-save').addEventListener('click', async () => {
-            const name = editNameInput.value.trim();
-            let username = editUsernameInput.value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '_');
-            if (!name) {
-                showToast('নাম লিখুন');
-                return;
-            }
+            const name = document.getElementById('edit-name-input').value.trim();
+            let username = document.getElementById('edit-username-input').value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '_');
+            const bio = document.getElementById('edit-bio-input').value.trim();
+            if (!name) { showToast('নাম লিখুন'); return; }
             if (!username) username = name.toLowerCase().replace(/\s+/g, '_');
 
             document.getElementById('display-name').textContent = name;
             document.getElementById('username').textContent = `@${username}`;
+            document.getElementById('bio').textContent = bio || 'হ্যালো, আমি WWC ব্যবহার করছি';
             document.getElementById('profile-avatar').textContent = name[0].toUpperCase();
 
             try {
                 await db.collection('users').doc(currentUser.uid).set({
                     displayName: name,
                     username: username,
-                    name: name
+                    name: name,
+                    bio: bio
                 }, { merge: true });
-                showToast('✅ প্রোফাইল আপডেট হয়েছে!');
-            } catch (e) {
-                console.error(e);
-                showToast('❌ আপডেট ব্যর্থ');
-            }
-            editModal.classList.remove('active');
-        });
-
-        // 2. Privacy Toggle
-        const privacyToggle = document.getElementById('privacy-toggle');
-        privacyToggle.addEventListener('click', async () => {
-            privacyToggle.classList.toggle('active');
-            const isPrivate = privacyToggle.classList.contains('active');
-            try {
-                await db.collection('users').doc(currentUser.uid).set({ isPrivate }, { merge: true });
-                showToast(isPrivate ? '🔒 অ্যাকাউন্ট প্রাইভেট করা হয়েছে' : '🔓 অ্যাকাউন্ট পাবলিক করা হয়েছে');
+                showToast('✅ প্রোফাইল আপডেট হয়েছে');
             } catch (e) {
                 showToast('❌ সেভ হয়নি');
             }
+            document.getElementById('edit-profile-modal').classList.remove('active');
         });
 
-        // 3. Notification Toggle
-        const notifToggle = document.getElementById('notif-toggle');
-        notifToggle.addEventListener('click', async () => {
-            notifToggle.classList.toggle('active');
-            const enabled = notifToggle.classList.contains('active');
-            try {
-                await db.collection('users').doc(currentUser.uid).set({ notificationsEnabled: enabled }, { merge: true });
-                showToast(enabled ? '🔔 নোটিফিকেশন চালু' : '🔕 নোটিফিকেশন বন্ধ');
-            } catch (e) {
-                showToast('❌ সেভ হয়নি');
-            }
+        // Open Privacy
+        document.getElementById('open-privacy').addEventListener('click', () => {
+            settingsModal.classList.remove('active');
+            document.getElementById('privacy-modal').classList.add('active');
         });
+        document.getElementById('privacy-back').addEventListener('click', () => {
+            document.getElementById('privacy-modal').classList.remove('active');
+        });
+        setupToggle(document.getElementById('privacy-private'), 'isPrivate');
+        setupToggle(document.getElementById('privacy-comment'), 'allowComments');
+        setupToggle(document.getElementById('privacy-duet'), 'allowDuet');
+        setupToggle(document.getElementById('privacy-likes'), 'showLikes');
 
-        // 4. Dark Mode Toggle
+        // Open Notifications
+        document.getElementById('open-notif').addEventListener('click', () => {
+            settingsModal.classList.remove('active');
+            document.getElementById('notif-modal').classList.add('active');
+        });
+        document.getElementById('notif-back').addEventListener('click', () => {
+            document.getElementById('notif-modal').classList.remove('active');
+        });
+        setupToggle(document.getElementById('notif-like'), 'notifLike');
+        setupToggle(document.getElementById('notif-comment'), 'notifComment');
+        setupToggle(document.getElementById('notif-follow'), 'notifFollow');
+        setupToggle(document.getElementById('notif-mention'), 'notifMention');
+        setupToggle(document.getElementById('notif-all'), 'notificationsEnabled');
+
+        // Dark Mode
         const darkToggle = document.getElementById('dark-toggle');
         darkToggle.addEventListener('click', async () => {
             darkToggle.classList.toggle('active');
             const isDark = darkToggle.classList.contains('active');
+            document.body.style.background = isDark ? '#000' : '#f5f5f5';
+            document.body.style.color = isDark ? '#fff' : '#1a1a1a';
             try {
-                if (isDark) {
-                    document.body.style.background = '#000';
-                    document.body.style.color = '#fff';
-                } else {
-                    document.body.style.background = '#f5f5f5';
-                    document.body.style.color = '#1a1a1a';
-                }
                 await db.collection('users').doc(currentUser.uid).set({ darkMode: isDark }, { merge: true });
-                showToast(isDark ? '🌙 ডার্ক মোড চালু' : '☀️ লাইট মোড চালু');
-            } catch (e) {
-                showToast('❌ সেভ হয়নি');
-            }
+            } catch (e) {}
+            showToast(isDark ? '🌙 ডার্ক মোড' : '☀️ লাইট মোড');
         });
 
-        // 5. Logout
+        // Logout
         document.getElementById('logout-btn').addEventListener('click', () => {
-            modal.classList.remove('active');
+            settingsModal.classList.remove('active');
             document.getElementById('confirm-dialog').classList.add('active');
         });
         document.getElementById('confirm-cancel').addEventListener('click', () => {
@@ -371,33 +469,7 @@
             });
         });
 
-        // ========== BIO EDIT ==========
-        const bioModal = document.getElementById('bio-modal');
-        const bioInput = document.getElementById('bio-input');
-        const bioEl = document.getElementById('bio');
-
-        bioEl.addEventListener('click', () => {
-            if (targetUserId === currentUser.uid) {
-                bioInput.value = bioEl.textContent;
-                bioModal.classList.add('active');
-            }
-        });
-        document.getElementById('bio-cancel').addEventListener('click', () => bioModal.classList.remove('active'));
-        document.getElementById('bio-save').addEventListener('click', async () => {
-            const newBio = bioInput.value.trim();
-            if (newBio) {
-                bioEl.textContent = newBio;
-                try {
-                    await db.collection('users').doc(currentUser.uid).set({ bio: newBio }, { merge: true });
-                    showToast('✅ বায়ো আপডেট হয়েছে!');
-                } catch (e) {
-                    showToast('❌ সেভ হয়নি');
-                }
-            }
-            bioModal.classList.remove('active');
-        });
-
-        // ========== LOAD PROFILE ==========
+        // LOAD PROFILE
         async function loadProfile(uid) {
             const isOwn = (uid === currentUser.uid);
             let userData = {};
@@ -405,9 +477,7 @@
             try {
                 const userDoc = await db.collection('users').doc(uid).get();
                 if (userDoc.exists) userData = userDoc.data();
-            } catch (e) {
-                console.error(e);
-            }
+            } catch (e) { console.error(e); }
 
             if (!userData.username && !userData.displayName) {
                 try {
@@ -419,23 +489,18 @@
                     } else {
                         userData.username = 'user';
                     }
-                } catch (e) {
-                    userData.username = 'user';
-                }
+                } catch (e) { userData.username = 'user'; }
             }
 
             const displayName = userData.displayName || userData.username || userData.name || 'ইউজার';
             const username = (userData.username || displayName).toLowerCase().replace(/\s+/g, '_');
 
-            // Avatar
             const avatarEl = document.getElementById('profile-avatar');
             avatarEl.innerHTML = '';
             if (userData.photoURL && userData.photoURL.startsWith('http')) {
                 const img = document.createElement('img');
                 img.src = userData.photoURL;
-                img.onerror = () => {
-                    avatarEl.textContent = displayName[0] ? displayName[0].toUpperCase() : 'U';
-                };
+                img.onerror = () => { avatarEl.textContent = displayName[0] ? displayName[0].toUpperCase() : 'U'; };
                 avatarEl.appendChild(img);
             } else {
                 avatarEl.textContent = displayName[0] ? displayName[0].toUpperCase() : 'U';
@@ -448,22 +513,24 @@
 
             // Restore toggles
             if (isOwn) {
-                if (userData.isPrivate) privacyToggle.classList.add('active');
-                else privacyToggle.classList.remove('active');
+                if (userData.isPrivate) document.getElementById('privacy-private').classList.add('active');
+                if (userData.allowComments === false) document.getElementById('privacy-comment').classList.remove('active');
+                if (userData.allowDuet === false) document.getElementById('privacy-duet').classList.remove('active');
+                if (userData.showLikes === false) document.getElementById('privacy-likes').classList.remove('active');
 
-                if (userData.notificationsEnabled !== false) notifToggle.classList.add('active');
-                else notifToggle.classList.remove('active');
+                if (userData.notifLike === false) document.getElementById('notif-like').classList.remove('active');
+                if (userData.notifComment === false) document.getElementById('notif-comment').classList.remove('active');
+                if (userData.notifFollow === false) document.getElementById('notif-follow').classList.remove('active');
+                if (userData.notifMention === false) document.getElementById('notif-mention').classList.remove('active');
+                if (userData.notificationsEnabled === false) document.getElementById('notif-all').classList.remove('active');
 
                 if (userData.darkMode) {
                     darkToggle.classList.add('active');
                     document.body.style.background = '#000';
                     document.body.style.color = '#fff';
-                } else {
-                    darkToggle.classList.remove('active');
                 }
             }
 
-            // Follow button
             const followBtn = document.getElementById('follow-btn');
             if (!isOwn && uid) {
                 followBtn.style.display = 'block';
@@ -481,29 +548,21 @@
             try {
                 const vids = await db.collection('videos').where('uid', '==', uid).get();
                 document.getElementById('video-count').textContent = vids.size;
-
                 const followers = await db.collection('follows').where('following', '==', uid).get();
                 document.getElementById('follower-count').textContent = followers.size;
-
                 const following = await db.collection('follows').where('follower', '==', uid).get();
                 document.getElementById('following-count').textContent = following.size;
-            } catch (e) {
-                console.error('Stats error:', e);
-            }
+            } catch (e) { console.error(e); }
         }
 
-        // ========== VIDEO LOAD (no orderBy to avoid index error) ==========
         async function loadContent(uid, tab) {
             const grid = document.getElementById('video-grid');
             grid.innerHTML = '<div class="empty-grid"><i class="fas fa-spinner fa-spin"></i><br>লোড হচ্ছে...</div>';
-
             let videos = [];
             try {
                 if (tab === 'videos') {
                     const snap = await db.collection('videos').where('uid', '==', uid).get();
                     snap.forEach(doc => videos.push({ id: doc.id, ...doc.data() }));
-
-                    // Client-side sort
                     videos.sort((a, b) => {
                         const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt || 0);
                         const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt || 0);
@@ -532,15 +591,12 @@
                         }
                     }
                 }
-            } catch (e) {
-                console.error('Content load error:', e);
-            }
+            } catch (e) { console.error(e); }
 
             if (videos.length === 0) {
                 grid.innerHTML = `<div class="empty-grid"><i class="fas fa-video"></i>কোনো ভিডিও নেই</div>`;
                 return;
             }
-
             grid.innerHTML = '';
             videos.forEach(v => {
                 const item = document.createElement('div');
@@ -575,18 +631,13 @@
                     btn.classList.remove('following');
                     showToast('আনফলো করা হয়েছে');
                 } else {
-                    await ref.set({
-                        follower: currentUser.uid,
-                        following: uid,
-                        createdAt: Date.now()
-                    });
+                    await ref.set({ follower: currentUser.uid, following: uid, createdAt: Date.now() });
                     btn.textContent = 'ফলোয়িং';
                     btn.classList.add('following');
                     showToast('ফলো করা হয়েছে');
                 }
                 await loadStats(uid);
             } catch (e) {
-                console.error(e);
                 showToast('কিছু ভুল হয়েছে');
             }
         }
