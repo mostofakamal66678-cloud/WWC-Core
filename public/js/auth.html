@@ -49,11 +49,11 @@
   <div class="logo">🌍</div>
   <h1>World Wide Connect</h1>
   <p class="subtitle" id="subtitle">Sign in to continue</p>
-  
+
   <button class="google-btn" id="googleBtn"><i class="fab fa-google" style="font-size:20px;"></i>Continue with Google</button>
-  
+
   <div class="divider">or</div>
-  
+
   <form id="authForm">
     <div class="form-group">
       <label>Email</label>
@@ -72,12 +72,12 @@
       <span class="btn-text" id="authBtnText">Sign In</span>
     </button>
   </form>
-  
+
   <div class="mode-toggle">
     <span id="modeText">Don't have an account?</span>
     <button id="modeBtn" type="button">Sign Up</button>
   </div>
-  
+
   <div class="message" id="message"></div>
   <a class="back-home" href="./index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
 </div>
@@ -136,12 +136,16 @@ async function createUserProfile(user, extraData = {}) {
     username = String(username).toLowerCase().trim().replace(/[^a-z0-9_]/g, '_').replace(/^_+|_+$/g, '');
     if (!username) username = 'wwc_user';
     username = username + '_' + user.uid.substring(0, 6);
+
+    // ফিক্স: রিলেটিভ path ('./images/profile.png') এর বদলে সবসময় কাজ করবে এমন অ্যাভাটার ব্যবহার করা হচ্ছে
+    const defaultAvatar = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(extraData.name || user.displayName || 'User') + '&background=25f4ee&color=000&bold=true';
+
     await setDoc(userRef, {
       uid: user.uid,
       name: extraData.name || user.displayName || 'WWC User',
       username: username,
       email: user.email || '',
-      photoURL: user.photoURL || './images/profile.png',
+      photoURL: user.photoURL || defaultAvatar,
       bio: '🌍 Welcome to World Wide Connect',
       followers: 0, following: 0, likes: 0,
       followerIds: [], followingIds: [], savedVideoIds: [],
