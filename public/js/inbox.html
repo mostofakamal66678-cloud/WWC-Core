@@ -2,267 +2,309 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <title>ইনবক্স - WWC</title>
+    <title>Inbox · WWC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; min-height:100vh; padding-bottom:70px; }
-        .top { position:sticky; top:0; z-index:50; background:#000; padding:12px 16px; border-bottom:1px solid #222; display:flex; align-items:center; justify-content:space-between; }
-        .top h1 { font-size:18px; font-weight:700; }
-        .top .mark-read { background:none; border:none; color:#25f4ee; font-size:14px; font-weight:600; cursor:pointer; }
-        .tabs { display:flex; border-bottom:1px solid #222; overflow-x:auto; }
-        .tab { flex:1; text-align:center; padding:12px; color:#888; font-size:14px; font-weight:600; cursor:pointer; border-bottom:2px solid transparent; white-space:nowrap; min-width:60px; }
-        .tab.active { color:#fff; border-bottom-color:#fe2c55; }
-        .notif { display:flex; align-items:center; padding:14px 16px; gap:12px; border-bottom:1px solid #111; transition:background 0.2s; }
-        .notif:active { background:#1a1a1a; }
-        .notif.unread { background:#1a1a2a; border-left:3px solid #fe2c55; }
-        .notif-icon { width:44px; height:44px; border-radius:50%; background:#1a1a1a; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
-        .notif-icon.like { color:#fe2c55; }
-        .notif-icon.follow { color:#25f4ee; }
-        .notif-icon.comment { color:#facc15; }
-        .notif-body { flex:1; min-width:0; cursor:pointer; }
-        .notif-body .username { font-weight:600; color:#25f4ee; }
-        .notif-text { font-size:14px; line-height:1.4; }
-        .notif-time { color:#666; font-size:12px; margin-top:3px; }
-        .notif-delete { background:none; border:none; color:#555; font-size:16px; cursor:pointer; padding:4px 8px; }
-        .notif-delete:active { color:#fe2c55; }
-        .empty { text-align:center; color:#666; padding:60px 20px; font-size:14px; line-height:1.6; }
-        .empty i { font-size:48px; margin-bottom:16px; display:block; opacity:0.4; }
-        .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:60px; background:#000; display:flex; justify-content:space-around; align-items:center; border-top:1px solid #222; z-index:100; padding-bottom:env(safe-area-inset-bottom); }
-        .nav-item { color:#888; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:11px; gap:3px; flex:1; position:relative; }
-        .nav-item i { font-size:22px; }
-        .nav-item.active { color:#fff; }
-        .nav-item .badge { position:absolute; top:-4px; right:-8px; background:#fe2c55; color:#fff; font-size:10px; font-weight:700; padding:2px 6px; border-radius:10px; min-width:18px; text-align:center; }
-        .nav-item.upload-btn { background:linear-gradient(45deg,#fe2c55,#25f4ee); width:48px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#000; flex:0 0 auto; margin:0 6px; }
-        .nav-item.upload-btn i { font-size:20px; color:#000; }
+        body {
+            background: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-top: 60px;
+            padding-bottom: 80px;
+            min-height: 100vh;
+        }
+        .inbox-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+        .inbox-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+        }
+        .inbox-header h1 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .inbox-header h1 i {
+            color: #25f4ee;
+            margin-right: 8px;
+        }
+        .inbox-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid #222;
+            margin-bottom: 16px;
+        }
+        .inbox-tabs .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            background: none;
+            border: 0;
+            cursor: pointer;
+            position: relative;
+        }
+        .inbox-tabs .tab.active {
+            color: #fff;
+        }
+        .inbox-tabs .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background: #fff;
+            border-radius: 3px;
+        }
+        .notification-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #141414;
+        }
+        .notification-item img {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #222;
+        }
+        .notification-item .content {
+            flex: 1;
+        }
+        .notification-item .content .user {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .notification-item .content .action {
+            font-size: 13px;
+            color: #aaa;
+        }
+        .notification-item .content .time {
+            font-size: 11px;
+            color: #666;
+            margin-top: 2px;
+        }
+        .notification-item .badge {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #25f4ee;
+            flex-shrink: 0;
+        }
+        .empty-state {
+            text-align: center;
+            color: #666;
+            padding: 50px 0;
+        }
+        .empty-state i {
+            font-size: 50px;
+            color: #333;
+            display: block;
+            margin-bottom: 15px;
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: #000;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #222;
+            z-index: 100;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .nav-item {
+            color: #888;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            gap: 2px;
+            flex: 1;
+            cursor: pointer;
+            background: none;
+            border: 0;
+        }
+        .nav-item i {
+            font-size: 22px;
+        }
+        .nav-item.active {
+            color: #fff;
+        }
+        .nav-item.upload-btn {
+            background: linear-gradient(45deg, #fe2c55, #25f4ee);
+            width: 48px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            flex: 0 0 auto;
+            margin: 0 6px;
+        }
+        .nav-item.upload-btn i {
+            font-size: 20px;
+            color: #000;
+        }
+        .back-btn {
+            color: #fff;
+            font-size: 22px;
+            background: none;
+            border: 0;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
-    <div class="top">
-        <h1>ইনবক্স</h1>
-        <button class="mark-read" id="mark-read-btn"><i class="fas fa-check-double"></i> সব দেখেছি</button>
+
+<!-- টপ বার -->
+<div style="position:fixed;top:0;left:0;right:0;z-index:100;height:50px;display:flex;align-items:center;padding:0 16px;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.06)">
+    <button class="back-btn" onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i></button>
+    <span style="font-size:17px;font-weight:700;flex:1;text-align:center;">ইনবক্স</span>
+    <div style="width:40px;"></div>
+</div>
+
+<div class="inbox-container">
+    <div class="inbox-header">
+        <h1><i class="fas fa-inbox"></i>ইনবক্স</h1>
+        <button style="color:#888;background:none;border:0;font-size:18px;cursor:pointer;" onclick="showToast('🔍 খুঁজুন')"><i class="fas fa-search"></i></button>
     </div>
-    <div class="tabs">
-        <div class="tab active" data-tab="all">সব</div>
-        <div class="tab" data-tab="likes">লাইক</div>
-        <div class="tab" data-tab="follows">ফলো</div>
-        <div class="tab" data-tab="comments">কমেন্ট</div>
-    </div>
-    <div id="notif-list">
-        <div class="empty"><i class="fas fa-bell"></i>লোড হচ্ছে...</div>
+
+    <div class="inbox-tabs">
+        <button class="tab active" data-tab="all">সব</button>
+        <button class="tab" data-tab="likes">লাইক</button>
+        <button class="tab" data-tab="follows">ফলো</button>
+        <button class="tab" data-tab="comments">কমেন্ট</button>
     </div>
 
-    <nav class="bottom-nav">
-        <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
-        <a href="friends.html" class="nav-item"><i class="fas fa-users"></i><span>বন্ধু</span></a>
-        <a href="upload.html" class="nav-item upload-btn"><i class="fas fa-plus"></i></a>
-        <a href="inbox.html" class="nav-item active" id="inbox-nav">
-            <i class="fas fa-message"></i>
-            <span>ইনবক্স</span>
-            <span class="badge" id="unread-badge" style="display:none;">0</span>
-        </a>
-        <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>প্রোফাইল</span></a>
-    </nav>
+    <div id="notifications-list">
+        <div class="empty-state">
+            <i class="fas fa-bell-slash"></i>
+            <div style="font-size:16px;color:#888;">কোনো নোটিফিকেশন নেই</div>
+            <div style="font-size:13px;color:#555;">লাইক, কমেন্ট, ফলো পেলে দেখাবে</div>
+        </div>
+    </div>
+</div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="firebase-config.js"></script>
+<!-- বটম নেভ -->
+<nav class="bottom-nav">
+    <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
+    <a href="friends.html" class="nav-item"><i class="fas fa-user-friends"></i><span>বন্ধু</span></a>
+    <a href="upload.html" class="nav-item upload-btn"><i class="fas fa-plus"></i></a>
+    <a href="inbox.html" class="nav-item active"><i class="fas fa-message"></i><span>ইনবক্স</span></a>
+    <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>প্রোফাইল</span></a>
+</nav>
 
-    <script>
-        let currentUser = null;
-        let currentTab = 'all';
-        let allNotifications = [];
-        let unreadCount = 0;
+<script>
+const notificationsList = document.getElementById('notifications-list');
+let currentUser = null;
 
-        auth.onAuthStateChanged(user => {
-            if (!user) { location.href = 'login.html'; return; }
-            currentUser = user;
-            loadNotifs('all');
-            listenForNewNotifications();
-        });
+auth.onAuthStateChanged(async (user) => {
+    if (!user) { window.location.href = 'auth.html'; return; }
+    currentUser = user;
+    await loadNotifications();
+});
 
-        document.querySelectorAll('.tab').forEach(t => {
-            t.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-                t.classList.add('active');
-                currentTab = t.dataset.tab;
-                renderNotifs(currentTab);
-            });
-        });
+async function loadNotifications() {
+    try {
+        const snap = await db.collection('notifications')
+            .where('userId', '==', currentUser.uid)
+            .orderBy('createdAt', 'desc')
+            .limit(50)
+            .get();
 
-        document.getElementById('mark-read-btn').addEventListener('click', () => {
-            const unread = document.querySelectorAll('.notif.unread');
-            unread.forEach(el => {
-                el.classList.remove('unread');
-                const id = el.dataset.id;
-                if (id) {
-                    db.collection('notifications').doc(id).update({ read: true }).catch(() => {});
-                }
-            });
-            unreadCount = 0;
-            updateBadge();
-        });
-
-        function listenForNewNotifications() {
-            db.collection('notifications')
-                .where('userId', '==', currentUser.uid)
-                .orderBy('createdAt', 'desc')
-                .onSnapshot(snapshot => {
-                    snapshot.docChanges().forEach(change => {
-                        if (change.type === 'added') {
-                            const data = change.doc.data();
-                            // যদি ইউজার নিজে না করে
-                            if (data.fromUserId !== currentUser.uid) {
-                                const existing = allNotifications.find(n => n.id === change.doc.id);
-                                if (!existing) {
-                                    allNotifications.unshift({ id: change.doc.id, ...data });
-                                    if (!data.read) unreadCount++;
-                                    renderNotifs(currentTab);
-                                    updateBadge();
-                                }
-                            }
-                        }
-                    });
-                }, err => console.error('নোটিফিকেশন লিসেনার সমস্যা:', err));
+        if (snap.empty) {
+            notificationsList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-bell-slash"></i>
+                    <div style="font-size:16px;color:#888;">কোনো নোটিফিকেশন নেই</div>
+                </div>
+            `;
+            return;
         }
 
-        async function loadNotifs(tab) {
-            const list = document.getElementById('notif-list');
-            list.innerHTML = '<div class="empty"><i class="fas fa-spinner fa-spin"></i>লোড হচ্ছে...</div>';
+        let html = '';
+        snap.forEach(doc => {
+            const data = doc.data();
+            const actionText = data.type === 'like' ? 'আপনার ভিডিও লাইক করেছেন' :
+                              data.type === 'follow' ? 'আপনাকে ফলো করেছেন' :
+                              data.type === 'comment' ? 'কমেন্ট করেছেন: ' + (data.text || '') : '';
+            const time = new Date(data.createdAt).toLocaleDateString('bn', { hour: '2-digit', minute: '2-digit' });
+            const avatar = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(data.fromUsername || 'U') + '&background=25f4ee&color=000&bold=true';
 
-            try {
-                const snap = await db.collection('notifications')
-                    .where('userId', '==', currentUser.uid)
-                    .orderBy('createdAt', 'desc')
-                    .limit(100)
-                    .get();
-
-                allNotifications = [];
-                unreadCount = 0;
-                snap.forEach(doc => {
-                    const data = doc.data();
-                    allNotifications.push({ id: doc.id, ...data });
-                    if (!data.read) unreadCount++;
-                });
-
-                renderNotifs(tab);
-                updateBadge();
-
-            } catch (e) {
-                console.error('নোটিফিকেশন লোড সমস্যা:', e);
-                list.innerHTML = '<div class="empty"><i class="fas fa-exclamation-circle"></i>লোড করতে সমস্যা হয়েছে</div>';
-            }
-        }
-
-        function renderNotifs(tab) {
-            const list = document.getElementById('notif-list');
-            let filtered = allNotifications;
-
-            if (tab === 'likes') filtered = filtered.filter(n => n.type === 'like');
-            else if (tab === 'follows') filtered = filtered.filter(n => n.type === 'follow');
-            else if (tab === 'comments') filtered = filtered.filter(n => n.type === 'comment');
-
-            if (!filtered.length) {
-                const icons = { all: 'bell', likes: 'heart', follows: 'user-plus', comments: 'comment' };
-                const msgs = { 
-                    all: 'এখনো কোনো নোটিফিকেশন নেই',
-                    likes: 'লাইক নোটিফিকেশন নেই',
-                    follows: 'ফলো নোটিফিকেশন নেই',
-                    comments: 'কমেন্ট নোটিফিকেশন নেই'
-                };
-                list.innerHTML = `<div class="empty"><i class="fas fa-${icons[tab] || 'bell'}"></i>${msgs[tab] || 'কোনো নোটিফিকেশন নেই'}</div>`;
-                return;
-            }
-
-            list.innerHTML = '';
-            filtered.forEach(item => {
-                const el = document.createElement('div');
-                el.className = `notif${item.read ? '' : ' unread'}`;
-                el.dataset.id = item.id;
-
-                let iconClass = 'follow';
-                let icon = 'user-plus';
-                let text = `<span class="username">@${item.fromUsername || 'user'}</span> আপনাকে ফলো করেছে`;
-
-                if (item.type === 'like') {
-                    iconClass = 'like';
-                    icon = 'heart';
-                    text = `<span class="username">@${item.fromUsername || 'user'}</span> আপনার ভিডিও লাইক করেছে`;
-                } else if (item.type === 'follow') {
-                    iconClass = 'follow';
-                    icon = 'user-plus';
-                    text = `<span class="username">@${item.fromUsername || 'user'}</span> আপনাকে ফলো করেছে`;
-                } else if (item.type === 'comment') {
-                    iconClass = 'comment';
-                    icon = 'comment';
-                    text = `<span class="username">@${item.fromUsername || 'user'}</span> কমেন্ট করেছে: ${item.text || ''}`;
-                }
-
-                const timeStr = item.createdAt ? timeAgo(item.createdAt) : '';
-
-                el.innerHTML = `
-                    <div class="notif-icon ${iconClass}"><i class="fas fa-${icon}"></i></div>
-                    <div class="notif-body" data-uid="${item.fromUserId || ''}">
-                        <div class="notif-text">${text}</div>
-                        <div class="notif-time">${timeStr}</div>
+            html += `
+                <div class="notification-item">
+                    <img src="${avatar}" onerror="this.src='./images/profile.png'">
+                    <div class="content">
+                        <div class="user">@${data.fromUsername || 'user'}</div>
+                        <div class="action">${actionText}</div>
+                        <div class="time">${time}</div>
                     </div>
-                    <button class="notif-delete" data-id="${item.id}"><i class="fas fa-times"></i></button>
-                `;
+                    ${!data.read ? '<div class="badge"></div>' : ''}
+                </div>
+            `;
+        });
 
-                // ইউজারনেমে ক্লিক -> প্রোফাইল খোলা
-                const body = el.querySelector('.notif-body');
-                body.addEventListener('click', () => {
-                    const uid = body.dataset.uid;
-                    if (uid) {
-                        // আনরিড মার্ক করা
-                        if (!item.read) {
-                            db.collection('notifications').doc(item.id).update({ read: true }).catch(() => {});
-                            el.classList.remove('unread');
-                            unreadCount = Math.max(0, unreadCount - 1);
-                            updateBadge();
-                        }
-                        window.location.href = `profile.html?uid=${uid}`;
-                    }
-                });
+        notificationsList.innerHTML = html;
+    } catch (e) {
+        console.error('Notifications load error:', e);
+        notificationsList.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><div style="font-size:16px;color:#888;">লোড করতে ব্যর্থ হয়েছে</div></div>';
+    }
+}
 
-                // ডিলিট
-                const delBtn = el.querySelector('.notif-delete');
-                delBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    if (confirm('এই নোটিফিকেশন ডিলিট করবেন?')) {
-                        db.collection('notifications').doc(item.id).delete().catch(() => {});
-                        el.remove();
-                        if (!item.read) {
-                            unreadCount = Math.max(0, unreadCount - 1);
-                            updateBadge();
-                        }
-                    }
-                });
+// Tabs
+document.querySelectorAll('.inbox-tabs .tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.inbox-tabs .tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        loadNotifications();
+    });
+});
 
-                list.appendChild(el);
-            });
-        }
+function showToast(msg) {
+    let toast = document.getElementById('toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.style.cssText = `
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+            background: rgba(30,30,30,0.95); color: #fff; padding: 10px 24px;
+            border-radius: 24px; font-size: 14px; z-index: 999;
+            opacity: 0; transition: opacity 0.3s ease;
+            pointer-events: none; white-space: nowrap;
+            border: 1px solid rgba(255,255,255,0.1);
+        `;
+        document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.opacity = '1';
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+}
+</script>
 
-        function updateBadge() {
-            const badge = document.getElementById('unread-badge');
-            if (unreadCount > 0) {
-                badge.style.display = 'inline';
-                badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
-            } else {
-                badge.style.display = 'none';
-            }
-        }
-
-        function timeAgo(ts) {
-            const s = Math.floor((Date.now() - ts) / 1000);
-            if (s < 60) return 'এইমাত্র';
-            if (s < 3600) return Math.floor(s/60) + ' মিনিট আগে';
-            if (s < 86400) return Math.floor(s/3600) + ' ঘণ্টা আগে';
-            return Math.floor(s/86400) + ' দিন আগে';
-        }
-    </script>
 </body>
 </html>
