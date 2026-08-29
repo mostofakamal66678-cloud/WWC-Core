@@ -232,7 +232,7 @@ function buildVideoCard(videoId, data, src) {
 
         <div class="side-actions">
             <div class="profile-pic-wrap">
-                <img class="profile-pic" src="${avatar}" alt="profile">
+                <img class="profile-pic" src="${avatar}" alt="profile" data-uid="${data.userId || ''}">
                 ${!isFollowing ? `<button class="follow-btn" data-uid="${data.userId || ''}"><i class="fas fa-plus"></i></button>` : ''}
             </div>
 
