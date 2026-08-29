@@ -1,6 +1,7 @@
 // ========================================
 // WWC (World Wide Connect) - টিকটক-স্টাইল ফিড
 // (profile.html ও upload.html-এর সাথে মিলিয়ে ফিল্ড নাম ঠিক করা হয়েছে: uid, follower/following, comments, saves)
+// এখন লাইক/কমেন্ট/ফলো করলে notifications কালেকশনে এন্ট্রি লেখে
 // ========================================
 
 let currentUser = null;
@@ -12,6 +13,7 @@ let savedVideoIds = new Set();
 let followingIds = new Set();
 let globalMuted = true;
 let activeCommentVideoId = null;
+let activeCommentOwnerUid = null;
 let searchTimeout = null;
 const userProfileCache = {}; // uid -> user doc data | null
 
@@ -300,12 +302,12 @@ function buildVideoCard(videoId, data, src) {
 
     card.querySelector('.like-btn').addEventListener('click', (e) => {
         e.stopPropagation();
-        toggleLike(videoId, e.currentTarget);
+        toggleLike(videoId, e.currentTarget, ownerUid);
     });
 
     card.querySelector('.comment-btn').addEventListener('click', (e) => {
         e.stopPropagation();
-        openComments(videoId);
+        openComments(videoId, ownerUid);
     });
 
     card.querySelector('.save-btn').addEventListener('click', (e) => {
@@ -340,7 +342,7 @@ function buildVideoCard(videoId, data, src) {
 }
 
 // ===== লাইক টগল =====
-async function toggleLike(videoId, btnEl) {
+async function toggleLike(videoId, btnEl, ownerUid) {
     if (!currentUser) return alert('লগইন করুন');
 
     const likeId = `${currentUser.uid}_${videoId}`;
@@ -364,6 +366,7 @@ async function toggleLike(videoId, btnEl) {
             await likeRef.set({ userId: currentUser.uid, videoId, createdAt: Date.now() });
             await videoRef.update({ likes: firebase.firestore.FieldValue.increment(1) });
             likedVideoIds.add(videoId);
+            sendNotification(ownerUid, 'like');
         }
     } catch (e) {
         btnEl.classList.toggle('liked', isLiked);
@@ -417,6 +420,7 @@ async function followUser(targetUid, btnEl) {
         });
         followingIds.add(targetUid);
         btnEl.remove();
+        sendNotification(targetUid, 'follow');
     } catch (e) {
         console.error('ফলো সমস্যা:', e);
     }
@@ -441,8 +445,9 @@ function setupCommentModal() {
     });
 }
 
-function openComments(videoId) {
+function openComments(videoId, ownerUid) {
     activeCommentVideoId = videoId;
+    activeCommentOwnerUid = ownerUid || null;
     document.getElementById('comment-modal').classList.add('open');
     loadComments(videoId);
 }
@@ -503,6 +508,7 @@ async function submitComment() {
         await db.collection('videos').doc(activeCommentVideoId).update({
             comments: firebase.firestore.FieldValue.increment(1)
         });
+        sendNotification(activeCommentOwnerUid, 'comment', text);
 
         const cardCountSpan = document.querySelector(`.comment-btn[data-id="${activeCommentVideoId}"] .count`);
         if (cardCountSpan) {
@@ -515,6 +521,21 @@ async function submitComment() {
     } catch (e) {
         alert('মন্তব্য পাঠাতে সমস্যা হয়েছে: ' + e.message);
     }
+}
+
+// ===== নোটিফিকেশন পাঠানো (inbox.html যেভাবে পড়ে সেই ফরম্যাটে) =====
+function sendNotification(targetUid, type, text) {
+    if (!targetUid || !currentUser || targetUid === currentUser.uid) return;
+    const payload = {
+        userId: targetUid,
+        fromUserId: currentUser.uid,
+        fromUsername: currentUser.displayName || 'user',
+        type: type,
+        read: false,
+        createdAt: Date.now()
+    };
+    if (text) payload.text = text;
+    db.collection('notifications').add(payload).catch(e => console.error('নোটিফিকেশন পাঠাতে সমস্যা:', e));
 }
 
 // ===== হেল্পার =====
