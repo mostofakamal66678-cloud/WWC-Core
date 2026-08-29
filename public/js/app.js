@@ -1,5 +1,5 @@
 // ========================================
-// WWC - FINAL FIXED APP
+// WWC - FINAL FIXED APP (Like + Comment Count Fixed)
 // ========================================
 
 const feed = document.getElementById('video-feed');
@@ -126,20 +126,17 @@ function createVideoCard(video) {
     const sound = video.sound || 'Original sound';
     const uid = video.uid || '';
 
-    // IMPORTANT: use string concat to avoid template corruption
     let followBtnHtml = '';
     if (uid && uid !== currentUser?.uid) {
         followBtnHtml = '<button class="follow-btn ' + (isFollowing ? 'following' : '') + '" data-uid="' + uid + '">' + (isFollowing ? '✓' : '+') + '</button>';
     }
-
-    const avatarSrc = photoUrl || ('https://ui-avatars.com/api/?name=' + encodeURIComponent(username) + '&background=25f4ee&color=000');
 
     card.innerHTML =
         '<video src="' + videoUrl + '" loop muted playsinline preload="metadata"></video>' +
         '<div class="mute-indicator"><i class="fas fa-volume-mute"></i></div>' +
         '<div class="side-actions">' +
             '<div class="profile-pic-wrap">' +
-                '<img class="profile-pic" src="' + avatarSrc + '" onerror="this.src=\'https://ui-avatars.com/api/?name=U&background=25f4ee&color=000\'" data-uid="' + uid + '">' +
+                '<img class="profile-pic" src="' + (photoUrl || './images/profile.png') + '" onerror="this.src=\'./images/profile.png\'" data-uid="' + uid + '">' +
                 followBtnHtml +
             '</div>' +
             '<button class="action-btn like-btn ' + (isLiked ? 'liked' : '') + '" data-video-id="' + video.id + '">' +
@@ -319,18 +316,6 @@ async function toggleFollow(btn) {
             btn.classList.add('following');
             btn.textContent = '✓';
             showToast('ফলো করা হয়েছে');
-
-            try {
-                await db.collection('notifications').add({
-                    toUserId: targetUid,
-                    fromUserId: currentUser.uid,
-                    fromUsername: (currentUserData && currentUserData.username) || 'user',
-                    fromPhotoURL: (currentUserData && currentUserData.photoURL) || '',
-                    type: 'follow',
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    read: false
-                });
-            } catch (ne) {}
         }
     } catch (e) {
         showToast('ফলো ব্যর্থ');
@@ -354,18 +339,27 @@ if (closeComment) {
 async function loadComments(videoId) {
     if (!commentList) return;
     commentList.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">লোড হচ্ছে...</div>';
+
     try {
-        var snapshot = await db.collection('videos').doc(videoId).collection('comments').orderBy('createdAt', 'desc').limit(50).get();
+        const snapshot = await db.collection('videos').doc(videoId)
+            .collection('comments')
+            .orderBy('createdAt', 'desc')
+            .limit(50)
+            .get();
+
         if (snapshot.empty) {
             commentList.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">কোনো মন্তব্য নেই</div>';
             return;
         }
+
         commentList.innerHTML = '';
-        snapshot.forEach(function (doc) {
-            var data = doc.data();
-            var div = document.createElement('div');
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            const div = document.createElement('div');
             div.className = 'comment-item';
-            div.innerHTML = '<div class="comment-user">@' + escapeHtml(data.username || 'user') + '</div><div class="comment-text">' + escapeHtml(data.text || '') + '</div>';
+            div.innerHTML =
+                '<div class="comment-user">@' + escapeHtml(data.username || 'WWC User') + '</div>' +
+                '<div class="comment-text">' + escapeHtml(data.text || '') + '</div>';
             commentList.appendChild(div);
         });
     } catch (e) {
@@ -373,7 +367,9 @@ async function loadComments(videoId) {
     }
 }
 
-if (commentSubmit) commentSubmit.addEventListener('click', submitComment);
+if (commentSubmit) {
+    commentSubmit.addEventListener('click', submitComment);
+}
 if (commentInput) {
     commentInput.addEventListener('keydown', function (e) {
         if (e.key === 'Enter') submitComment();
@@ -393,11 +389,28 @@ async function submitComment() {
             text: text,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
+
         await db.collection('videos').doc(currentVideoId).update({
             comments: firebase.firestore.FieldValue.increment(1)
         });
+
         commentInput.value = '';
         await loadComments(currentVideoId);
+
+        // ✅ সাইডের কমেন্ট কাউন্ট আপডেট
+        var commentBtn = document.querySelector('.comment-btn[data-video-id="' + currentVideoId + '"]');
+        if (commentBtn) {
+            var countSpan = commentBtn.querySelector('.count');
+            if (countSpan) {
+                var current = parseInt((countSpan.textContent || '0').replace(/[^\d]/g, '')) || 0;
+                countSpan.textContent = formatNumber(current + 1);
+            }
+        }
+
+        // allVideos আপডেট
+        var video = allVideos.find(function (v) { return v.id === currentVideoId; });
+        if (video) video.comments = (video.comments || 0) + 1;
+
         showToast('মন্তব্য যোগ হয়েছে');
 
         try {
@@ -420,6 +433,7 @@ async function submitComment() {
             }
         } catch (ne) {}
     } catch (e) {
+        console.error(e);
         showToast('মন্তব্য ব্যর্থ');
     }
 }
@@ -458,7 +472,9 @@ if (searchInput) {
             searchResults.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">ইউজারনেম লিখুন</div>';
             return;
         }
-        var found = allVideos.filter(function (v) { return (v.username || '').toLowerCase().indexOf(query) !== -1; });
+        var found = allVideos.filter(function (v) {
+            return (v.username || '').toLowerCase().indexOf(query) !== -1;
+        });
         var unique = [];
         var seen = {};
         found.forEach(function (v) {
@@ -475,9 +491,12 @@ if (searchInput) {
         unique.forEach(function (v) {
             var div = document.createElement('div');
             div.className = 'search-result-item';
-            var src = v.photoURL || ('https://ui-avatars.com/api/?name=' + encodeURIComponent(v.username || 'U') + '&background=25f4ee&color=000');
-            div.innerHTML = '<img src="' + src + '"><span class="search-result-name">@' + escapeHtml(v.username || 'user') + '</span>';
-            div.addEventListener('click', function () { if (v.uid) goToProfile(v.uid); });
+            div.innerHTML =
+                '<img src="' + (v.photoURL || './images/profile.png') + '" onerror="this.src=\'./images/profile.png\'">' +
+                '<span class="search-result-name">@' + escapeHtml(v.username || 'WWC User') + '</span>';
+            div.addEventListener('click', function () {
+                if (v.uid) goToProfile(v.uid);
+            });
             searchResults.appendChild(div);
         });
     });
