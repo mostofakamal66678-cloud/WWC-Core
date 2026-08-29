@@ -12,9 +12,9 @@
         
         .top { position:sticky; top:0; z-index:50; background:#000; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #222; }
         .top h1 { font-size:17px; font-weight:700; }
-        .top .back-btn, .top .settings-btn { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; }
+        .top .back-btn, .top .settings-btn { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
 
-        .profile-header { padding: 20px 16px 16px; display:flex; align-items:center; gap:16px; border-bottom:1px solid #222; }
+        .profile-header { padding:20px 16px 16px; display:flex; align-items:center; gap:16px; border-bottom:1px solid #222; }
         .profile-avatar { width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg,#fe2c55,#25f4ee); display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:700; color:#000; flex-shrink:0; overflow:hidden; }
         .profile-avatar img { width:100%; height:100%; object-fit:cover; }
         .profile-stats { flex:1; display:flex; justify-content:space-around; }
@@ -62,7 +62,10 @@
         .bio-modal.active, .confirm-dialog.active { display:flex; }
         .bio-box, .confirm-box { background:#1a1a1a; border-radius:16px; padding:24px 20px 20px; width:90%; max-width:340px; border:1px solid #333; }
         .bio-box h3, .confirm-box h3 { font-size:17px; margin-bottom:12px; text-align:center; }
-        .bio-box textarea { width:100%; background:#2a2a2a; border:1px solid #333; border-radius:10px; padding:12px; color:#fff; font-size:14px; outline:none; min-height:80px; resize:vertical; }
+        .bio-box textarea, .bio-box input { width:100%; background:#2a2a2a; border:1px solid #333; border-radius:10px; padding:12px; color:#fff; font-size:14px; outline:none; font-family:inherit; }
+        .bio-box textarea { min-height:80px; resize:vertical; }
+        .bio-box label { font-size:12px; color:#888; display:block; margin-bottom:4px; }
+        .bio-box .form-row { margin-bottom:12px; }
         .btn-group { display:flex; gap:10px; margin-top:14px; }
         .btn-group button { flex:1; padding:12px; border:none; border-radius:10px; font-size:15px; font-weight:600; cursor:pointer; }
         .btn-group .cancel-btn { background:#2a2a2a; color:#fff; }
@@ -70,7 +73,7 @@
         .confirm-box .icon { font-size:40px; color:#fe2c55; margin-bottom:12px; text-align:center; }
         .confirm-box p { font-size:14px; color:#aaa; margin-bottom:20px; line-height:1.5; text-align:center; }
 
-        .toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#2a2a2a; color:#fff; padding:12px 24px; border-radius:12px; font-size:14px; z-index:300; opacity:0; transition:opacity 0.3s; pointer-events:none; border:1px solid #333; }
+        .toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#2a2a2a; color:#fff; padding:12px 24px; border-radius:12px; font-size:14px; z-index:300; opacity:0; transition:opacity 0.3s; pointer-events:none; border:1px solid #333; white-space:nowrap; }
         .toast.show { opacity:1; }
 
         .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:60px; background:#000; display:flex; justify-content:space-around; align-items:center; border-top:1px solid #222; z-index:100; padding-bottom:env(safe-area-inset-bottom); }
@@ -85,6 +88,7 @@
 
     <div class="toast" id="toast"></div>
 
+    <!-- Logout Confirm -->
     <div class="confirm-dialog" id="confirm-dialog">
         <div class="confirm-box">
             <div class="icon"><i class="fas fa-sign-out-alt"></i></div>
@@ -97,6 +101,7 @@
         </div>
     </div>
 
+    <!-- Bio Edit Modal -->
     <div class="bio-modal" id="bio-modal">
         <div class="bio-box">
             <h3>বায়ো এডিট করুন</h3>
@@ -108,12 +113,33 @@
         </div>
     </div>
 
+    <!-- Profile Edit Modal -->
+    <div class="bio-modal" id="edit-profile-modal">
+        <div class="bio-box">
+            <h3>প্রোফাইল এডিট</h3>
+            <div class="form-row">
+                <label>নাম</label>
+                <input type="text" id="edit-name-input" placeholder="আপনার নাম">
+            </div>
+            <div class="form-row">
+                <label>ইউজারনেম</label>
+                <input type="text" id="edit-username-input" placeholder="username">
+            </div>
+            <div class="btn-group">
+                <button class="cancel-btn" id="edit-cancel">বাতিল</button>
+                <button class="save-btn" id="edit-save">সংরক্ষণ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Bar -->
     <div class="top">
         <button class="back-btn" id="back-btn"><i class="fas fa-arrow-left"></i></button>
         <h1 id="page-title">প্রোফাইল</h1>
         <button class="settings-btn" id="settings-btn"><i class="fas fa-ellipsis-v"></i></button>
     </div>
 
+    <!-- Profile Header -->
     <div class="profile-header">
         <div class="profile-avatar" id="profile-avatar">U</div>
         <div class="profile-stats">
@@ -131,6 +157,7 @@
 
     <button class="follow-btn" id="follow-btn" style="display:none;">ফলো</button>
 
+    <!-- Tabs -->
     <div class="profile-tabs">
         <div class="tab active" data-tab="videos"><i class="fas fa-th"></i> ভিডিও</div>
         <div class="tab" data-tab="liked"><i class="fas fa-heart"></i> লাইক</div>
@@ -141,6 +168,7 @@
         <div class="video-grid" id="video-grid"></div>
     </div>
 
+    <!-- Settings Modal -->
     <div class="settings-modal" id="settings-modal">
         <div class="settings-box">
             <div class="settings-handle"></div>
@@ -176,6 +204,7 @@
         </div>
     </div>
 
+    <!-- Bottom Nav -->
     <nav class="bottom-nav">
         <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
         <a href="friends.html" class="nav-item"><i class="fas fa-users"></i><span>বন্ধু</span></a>
@@ -202,22 +231,24 @@
             toast._timer = setTimeout(() => toast.classList.remove('show'), 2500);
         }
 
-        function toggleSwitch(el, onChange) {
-            el.addEventListener('click', (e) => {
-                e.stopPropagation();
-                el.classList.toggle('active');
-                onChange(el.classList.contains('active'));
-            });
-        }
-
+        // ========== AUTH ==========
         auth.onAuthStateChanged(user => {
-            if (!user) { location.href = 'auth.html'; return; }
+            if (!user) {
+                window.location.href = 'auth.html';
+                return;
+            }
             currentUser = user;
             const params = new URLSearchParams(window.location.search);
             targetUserId = params.get('uid') || currentUser.uid;
             loadProfile(targetUserId);
         });
 
+        // ========== BACK BUTTON ==========
+        document.getElementById('back-btn').addEventListener('click', () => {
+            window.location.href = '../index.html';
+        });
+
+        // ========== TABS ==========
         document.querySelectorAll('.profile-tabs .tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.profile-tabs .tab').forEach(t => t.classList.remove('active'));
@@ -227,53 +258,104 @@
             });
         });
 
-        document.getElementById('back-btn').addEventListener('click', () => {
-            window.location.href = '../index.html';
-        });
-
-        // Settings
+        // ========== SETTINGS MODAL ==========
         const modal = document.getElementById('settings-modal');
         document.getElementById('settings-btn').addEventListener('click', () => modal.classList.add('active'));
         document.getElementById('close-settings').addEventListener('click', () => modal.classList.remove('active'));
-        modal.addEventListener('click', (e) => { if (e.target === e.currentTarget) modal.classList.remove('active'); });
+        modal.addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) modal.classList.remove('active');
+        });
+
+        // 1. Profile Edit
+        const editModal = document.getElementById('edit-profile-modal');
+        const editNameInput = document.getElementById('edit-name-input');
+        const editUsernameInput = document.getElementById('edit-username-input');
 
         document.getElementById('edit-profile').addEventListener('click', () => {
             modal.classList.remove('active');
-            const currentName = document.getElementById('display-name').textContent;
-            const newName = prompt('আপনার নতুন নাম লিখুন:', currentName);
-            if (newName && newName.trim()) {
-                const name = newName.trim();
-                document.getElementById('display-name').textContent = name;
-                document.getElementById('username').textContent = `@${name.toLowerCase().replace(/\s+/g, '_')}`;
-                document.getElementById('profile-avatar').textContent = name[0].toUpperCase();
-                db.collection('users').doc(currentUser.uid).set({
-                    username: name,
-                    displayName: name
-                }, { merge: true }).catch(console.error);
-                showToast('✅ নাম আপডেট হয়েছে!');
+            editNameInput.value = document.getElementById('display-name').textContent;
+            editUsernameInput.value = document.getElementById('username').textContent.replace('@', '');
+            editModal.classList.add('active');
+        });
+
+        document.getElementById('edit-cancel').addEventListener('click', () => {
+            editModal.classList.remove('active');
+        });
+
+        document.getElementById('edit-save').addEventListener('click', async () => {
+            const name = editNameInput.value.trim();
+            let username = editUsernameInput.value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '_');
+            if (!name) {
+                showToast('নাম লিখুন');
+                return;
+            }
+            if (!username) username = name.toLowerCase().replace(/\s+/g, '_');
+
+            document.getElementById('display-name').textContent = name;
+            document.getElementById('username').textContent = `@${username}`;
+            document.getElementById('profile-avatar').textContent = name[0].toUpperCase();
+
+            try {
+                await db.collection('users').doc(currentUser.uid).set({
+                    displayName: name,
+                    username: username,
+                    name: name
+                }, { merge: true });
+                showToast('✅ প্রোফাইল আপডেট হয়েছে!');
+            } catch (e) {
+                console.error(e);
+                showToast('❌ আপডেট ব্যর্থ');
+            }
+            editModal.classList.remove('active');
+        });
+
+        // 2. Privacy Toggle
+        const privacyToggle = document.getElementById('privacy-toggle');
+        privacyToggle.addEventListener('click', async () => {
+            privacyToggle.classList.toggle('active');
+            const isPrivate = privacyToggle.classList.contains('active');
+            try {
+                await db.collection('users').doc(currentUser.uid).set({ isPrivate }, { merge: true });
+                showToast(isPrivate ? '🔒 অ্যাকাউন্ট প্রাইভেট করা হয়েছে' : '🔓 অ্যাকাউন্ট পাবলিক করা হয়েছে');
+            } catch (e) {
+                showToast('❌ সেভ হয়নি');
             }
         });
 
-        const privacyToggle = document.getElementById('privacy-toggle');
-        toggleSwitch(privacyToggle, (isPrivate) => {
-            db.collection('users').doc(currentUser.uid).set({ isPrivate }, { merge: true });
-            showToast(isPrivate ? '🔒 অ্যাকাউন্ট প্রাইভেট' : '🔓 অ্যাকাউন্ট পাবলিক');
-        });
-
+        // 3. Notification Toggle
         const notifToggle = document.getElementById('notif-toggle');
-        toggleSwitch(notifToggle, (enabled) => {
-            db.collection('users').doc(currentUser.uid).set({ notificationsEnabled: enabled }, { merge: true });
-            showToast(enabled ? '🔔 নোটিফিকেশন চালু' : '🔕 নোটিফিকেশন বন্ধ');
+        notifToggle.addEventListener('click', async () => {
+            notifToggle.classList.toggle('active');
+            const enabled = notifToggle.classList.contains('active');
+            try {
+                await db.collection('users').doc(currentUser.uid).set({ notificationsEnabled: enabled }, { merge: true });
+                showToast(enabled ? '🔔 নোটিফিকেশন চালু' : '🔕 নোটিফিকেশন বন্ধ');
+            } catch (e) {
+                showToast('❌ সেভ হয়নি');
+            }
         });
 
+        // 4. Dark Mode Toggle
         const darkToggle = document.getElementById('dark-toggle');
-        toggleSwitch(darkToggle, (isLight) => {
-            document.body.style.background = isLight ? '#f5f5f5' : '#000';
-            document.body.style.color = isLight ? '#1a1a1a' : '#fff';
-            db.collection('users').doc(currentUser.uid).set({ darkMode: isLight }, { merge: true });
-            showToast(isLight ? '☀️ লাইট মোড' : '🌙 ডার্ক মোড');
+        darkToggle.addEventListener('click', async () => {
+            darkToggle.classList.toggle('active');
+            const isDark = darkToggle.classList.contains('active');
+            try {
+                if (isDark) {
+                    document.body.style.background = '#000';
+                    document.body.style.color = '#fff';
+                } else {
+                    document.body.style.background = '#f5f5f5';
+                    document.body.style.color = '#1a1a1a';
+                }
+                await db.collection('users').doc(currentUser.uid).set({ darkMode: isDark }, { merge: true });
+                showToast(isDark ? '🌙 ডার্ক মোড চালু' : '☀️ লাইট মোড চালু');
+            } catch (e) {
+                showToast('❌ সেভ হয়নি');
+            }
         });
 
+        // 5. Logout
         document.getElementById('logout-btn').addEventListener('click', () => {
             modal.classList.remove('active');
             document.getElementById('confirm-dialog').classList.add('active');
@@ -285,11 +367,11 @@
             document.getElementById('confirm-dialog').classList.remove('active');
             auth.signOut().then(() => {
                 showToast('👋 লগআউট হচ্ছে...');
-                setTimeout(() => window.location.href = 'auth.html', 500);
+                setTimeout(() => window.location.href = 'auth.html', 600);
             });
         });
 
-        // Bio edit
+        // ========== BIO EDIT ==========
         const bioModal = document.getElementById('bio-modal');
         const bioInput = document.getElementById('bio-input');
         const bioEl = document.getElementById('bio');
@@ -305,13 +387,17 @@
             const newBio = bioInput.value.trim();
             if (newBio) {
                 bioEl.textContent = newBio;
-                await db.collection('users').doc(currentUser.uid).set({ bio: newBio }, { merge: true });
-                showToast('✅ বায়ো আপডেট হয়েছে!');
+                try {
+                    await db.collection('users').doc(currentUser.uid).set({ bio: newBio }, { merge: true });
+                    showToast('✅ বায়ো আপডেট হয়েছে!');
+                } catch (e) {
+                    showToast('❌ সেভ হয়নি');
+                }
             }
             bioModal.classList.remove('active');
         });
 
-        // ===== MAIN PROFILE LOAD =====
+        // ========== LOAD PROFILE ==========
         async function loadProfile(uid) {
             const isOwn = (uid === currentUser.uid);
             let userData = {};
@@ -319,9 +405,10 @@
             try {
                 const userDoc = await db.collection('users').doc(uid).get();
                 if (userDoc.exists) userData = userDoc.data();
-            } catch(e) { console.error(e); }
+            } catch (e) {
+                console.error(e);
+            }
 
-            // fallback
             if (!userData.username && !userData.displayName) {
                 try {
                     const vids = await db.collection('videos').where('uid', '==', uid).limit(1).get();
@@ -332,13 +419,15 @@
                     } else {
                         userData.username = 'user';
                     }
-                } catch(e) { userData.username = 'user'; }
+                } catch (e) {
+                    userData.username = 'user';
+                }
             }
 
             const displayName = userData.displayName || userData.username || userData.name || 'ইউজার';
             const username = (userData.username || displayName).toLowerCase().replace(/\s+/g, '_');
 
-            // Avatar fix
+            // Avatar
             const avatarEl = document.getElementById('profile-avatar');
             avatarEl.innerHTML = '';
             if (userData.photoURL && userData.photoURL.startsWith('http')) {
@@ -357,13 +446,24 @@
             document.getElementById('bio').textContent = userData.bio || 'হ্যালো, আমি WWC ব্যবহার করছি';
             document.getElementById('page-title').textContent = isOwn ? 'প্রোফাইল' : `@${username}`;
 
+            // Restore toggles
             if (isOwn) {
                 if (userData.isPrivate) privacyToggle.classList.add('active');
                 else privacyToggle.classList.remove('active');
+
                 if (userData.notificationsEnabled !== false) notifToggle.classList.add('active');
                 else notifToggle.classList.remove('active');
+
+                if (userData.darkMode) {
+                    darkToggle.classList.add('active');
+                    document.body.style.background = '#000';
+                    document.body.style.color = '#fff';
+                } else {
+                    darkToggle.classList.remove('active');
+                }
             }
 
+            // Follow button
             const followBtn = document.getElementById('follow-btn');
             if (!isOwn && uid) {
                 followBtn.style.display = 'block';
@@ -387,10 +487,12 @@
 
                 const following = await db.collection('follows').where('follower', '==', uid).get();
                 document.getElementById('following-count').textContent = following.size;
-            } catch(e) { console.error('Stats error:', e); }
+            } catch (e) {
+                console.error('Stats error:', e);
+            }
         }
 
-        // ===== FIXED VIDEO LOAD (no orderBy to avoid index error) =====
+        // ========== VIDEO LOAD (no orderBy to avoid index error) ==========
         async function loadContent(uid, tab) {
             const grid = document.getElementById('video-grid');
             grid.innerHTML = '<div class="empty-grid"><i class="fas fa-spinner fa-spin"></i><br>লোড হচ্ছে...</div>';
@@ -398,11 +500,10 @@
             let videos = [];
             try {
                 if (tab === 'videos') {
-                    // orderBy বাদ দিয়ে শুধু where ব্যবহার (index লাগে না)
                     const snap = await db.collection('videos').where('uid', '==', uid).get();
                     snap.forEach(doc => videos.push({ id: doc.id, ...doc.data() }));
 
-                    // client-side sort
+                    // Client-side sort
                     videos.sort((a, b) => {
                         const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt || 0);
                         const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt || 0);
@@ -416,7 +517,7 @@
                             try {
                                 const v = await db.collection('videos').doc(videoId).get();
                                 if (v.exists) videos.push({ id: v.id, ...v.data() });
-                            } catch(e) {}
+                            } catch (e) {}
                         }
                     }
                 } else if (tab === 'saved') {
@@ -427,11 +528,11 @@
                             try {
                                 const v = await db.collection('videos').doc(videoId).get();
                                 if (v.exists) videos.push({ id: v.id, ...v.data() });
-                            } catch(e) {}
+                            } catch (e) {}
                         }
                     }
                 }
-            } catch(e) {
+            } catch (e) {
                 console.error('Content load error:', e);
             }
 
@@ -446,7 +547,7 @@
                 item.className = 'grid-item';
                 const url = v.videoURL || v.downloadURL || '';
                 item.innerHTML = `<video src="${url}" muted playsinline preload="metadata"></video>`;
-                item.onclick = () => window.location.href = `../index.html`;
+                item.onclick = () => window.location.href = '../index.html';
                 grid.appendChild(item);
             });
         }
@@ -461,7 +562,7 @@
                     btn.textContent = 'ফলো';
                     btn.classList.remove('following');
                 }
-            } catch(e) {}
+            } catch (e) {}
         }
 
         async function toggleFollow(uid, btn) {
@@ -474,13 +575,17 @@
                     btn.classList.remove('following');
                     showToast('আনফলো করা হয়েছে');
                 } else {
-                    await ref.set({ follower: currentUser.uid, following: uid, createdAt: Date.now() });
+                    await ref.set({
+                        follower: currentUser.uid,
+                        following: uid,
+                        createdAt: Date.now()
+                    });
                     btn.textContent = 'ফলোয়িং';
                     btn.classList.add('following');
                     showToast('ফলো করা হয়েছে');
                 }
                 await loadStats(uid);
-            } catch(e) {
+            } catch (e) {
                 console.error(e);
                 showToast('কিছু ভুল হয়েছে');
             }
