@@ -1,7 +1,6 @@
 // ========================================
-// WWC - TIKTOK STYLE COMPLETE APP (FIXED)
-// All features: Like, Comment, Save, Follow, Profile, Search
-// Path + username + profile link fixed
+// WWC - TIKTOK STYLE COMPLETE APP (FINAL)
+// Like, Comment, Save, Follow, Profile, Search + Notifications
 // ========================================
 
 // ===== DOM REFS =====
@@ -272,7 +271,7 @@ function createVideoCard(video) {
 }
 
 // ========================================
-// LIKE / SAVE / FOLLOW / COMMENT / SHARE
+// LIKE (with Notification)
 // ========================================
 async function toggleLike(btn) {
     if (!currentUser) { showToast('লগইন করুন'); return; }
@@ -300,6 +299,28 @@ async function toggleLike(btn) {
             await likeRef.set({ userId: currentUser.uid, videoId, createdAt: Date.now() });
             await videoRef.update({ likes: firebase.firestore.FieldValue.increment(1) });
             likedVideos.add(videoId);
+
+            // ===== নোটিফিকেশন তৈরি =====
+            try {
+                const videoDoc = await videoRef.get();
+                if (videoDoc.exists) {
+                    const videoData = videoDoc.data();
+                    if (videoData.uid && videoData.uid !== currentUser.uid) {
+                        await db.collection('notifications').add({
+                            toUserId: videoData.uid,
+                            fromUserId: currentUser.uid,
+                            fromUsername: (currentUserData && currentUserData.username) || currentUser.displayName || 'user',
+                            fromPhotoURL: (currentUserData && currentUserData.photoURL) || currentUser.photoURL || '',
+                            type: 'like',
+                            videoId: videoId,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                            read: false
+                        });
+                    }
+                }
+            } catch (ne) {
+                console.error('Like notification error:', ne);
+            }
         }
     } catch (e) {
         btn.classList.toggle('liked', isLiked);
@@ -309,6 +330,9 @@ async function toggleLike(btn) {
     btn.disabled = false;
 }
 
+// ========================================
+// SAVE
+// ========================================
 async function toggleSave(btn) {
     if (!currentUser) { showToast('লগইন করুন'); return; }
     if (btn.disabled) return;
@@ -345,6 +369,9 @@ async function toggleSave(btn) {
     btn.disabled = false;
 }
 
+// ========================================
+// FOLLOW (with Notification)
+// ========================================
 async function toggleFollow(btn) {
     if (!currentUser) { showToast('লগইন করুন'); return; }
     if (btn.disabled) return;
@@ -365,11 +392,30 @@ async function toggleFollow(btn) {
             btn.textContent = '+';
             showToast('আনফলো করা হয়েছে');
         } else {
-            await followRef.set({ follower: currentUser.uid, following: targetUid, createdAt: Date.now() });
+            await followRef.set({
+                follower: currentUser.uid,
+                following: targetUid,
+                createdAt: Date.now()
+            });
             followingUsers.add(targetUid);
             btn.classList.add('following');
             btn.textContent = '✓';
             showToast('✅ ফলো করা হয়েছে');
+
+            // ===== নোটিফিকেশন তৈরি =====
+            try {
+                await db.collection('notifications').add({
+                    toUserId: targetUid,
+                    fromUserId: currentUser.uid,
+                    fromUsername: (currentUserData && currentUserData.username) || currentUser.displayName || 'user',
+                    fromPhotoURL: (currentUserData && currentUserData.photoURL) || currentUser.photoURL || '',
+                    type: 'follow',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    read: false
+                });
+            } catch (ne) {
+                console.error('Follow notification error:', ne);
+            }
         }
     } catch (e) {
         console.error('Follow error:', e);
@@ -378,6 +424,9 @@ async function toggleFollow(btn) {
     btn.disabled = false;
 }
 
+// ========================================
+// COMMENT (with Notification)
+// ========================================
 function openComment(videoId) {
     if (!currentUser) { showToast('লগইন করুন'); return; }
     currentVideoId = videoId;
@@ -453,12 +502,39 @@ async function submitComment() {
         commentInput.value = '';
         await loadComments(currentVideoId);
         showToast('💬 মন্তব্য যোগ করা হয়েছে');
+
+        // ===== নোটিফিকেশন তৈরি =====
+        try {
+            const videoDoc = await db.collection('videos').doc(currentVideoId).get();
+            if (videoDoc.exists) {
+                const videoData = videoDoc.data();
+                if (videoData.uid && videoData.uid !== currentUser.uid) {
+                    await db.collection('notifications').add({
+                        toUserId: videoData.uid,
+                        fromUserId: currentUser.uid,
+                        fromUsername: username,
+                        fromPhotoURL: (currentUserData && currentUserData.photoURL) || currentUser.photoURL || '',
+                        type: 'comment',
+                        text: text,
+                        videoId: currentVideoId,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        read: false
+                    });
+                }
+            }
+        } catch (ne) {
+            console.error('Comment notification error:', ne);
+        }
+
     } catch (e) {
         console.error('Comment error:', e);
         showToast('❌ মন্তব্য করতে ব্যর্থ হয়েছে');
     }
 }
 
+// ========================================
+// SHARE
+// ========================================
 async function shareVideo(videoId) {
     const url = `\( {window.location.origin} \){window.location.pathname}?video=${videoId}`;
     try {
@@ -582,7 +658,7 @@ function setupVideoObserver() {
 }
 
 // ========================================
-// GO TO PROFILE (FIXED PATH)
+// GO TO PROFILE
 // ========================================
 function goToProfile(uid) {
     if (!uid) return;
@@ -627,4 +703,4 @@ function showToast(message) {
     toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 2500);
 }
 
-console.log('✅ WWC TikTok Style App Loaded (Fixed)!');
+console.log('✅ WWC TikTok Style App Loaded (with Notifications)!');
