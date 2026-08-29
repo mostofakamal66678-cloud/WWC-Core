@@ -6,8 +6,8 @@
     <meta name="theme-color" content="#000000">
     <title>Upload · WWC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
     <style>
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
         body {
             background: #000;
             color: #fff;
@@ -70,9 +70,7 @@
             color: #444;
             margin-top: 4px;
         }
-        .upload-box input {
-            display: none;
-        }
+        .upload-box input { display: none; }
         .preview-container {
             margin-top: 16px;
             border-radius: 12px;
@@ -93,17 +91,9 @@
             background: #0a0a0a;
             border-top: 1px solid #222;
         }
-        .preview-container .info .name {
-            font-size: 14px;
-            font-weight: 600;
-        }
-        .preview-container .info .size {
-            font-size: 12px;
-            color: #888;
-        }
-        .form-group {
-            margin-top: 16px;
-        }
+        .preview-container .info .name { font-size: 14px; font-weight: 600; }
+        .preview-container .info .size { font-size: 12px; color: #888; }
+        .form-group { margin-top: 16px; }
         .form-group label {
             display: block;
             font-size: 12px;
@@ -124,13 +114,8 @@
             outline: none;
             font-family: inherit;
         }
-        .form-group input:focus, .form-group textarea:focus {
-            border-color: #25f4ee;
-        }
-        .form-group textarea {
-            min-height: 60px;
-            resize: vertical;
-        }
+        .form-group input:focus, .form-group textarea:focus { border-color: #25f4ee; }
+        .form-group textarea { min-height: 60px; resize: vertical; }
         .upload-btn {
             width: 100%;
             padding: 16px;
@@ -144,13 +129,8 @@
             margin-top: 16px;
             transition: transform 0.15s;
         }
-        .upload-btn:active {
-            transform: scale(0.97);
-        }
-        .upload-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
+        .upload-btn:active { transform: scale(0.97); }
+        .upload-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .progress-container {
             display: none;
             margin-top: 16px;
@@ -203,12 +183,8 @@
             background: none;
             border: 0;
         }
-        .nav-item i {
-            font-size: 22px;
-        }
-        .nav-item.active {
-            color: #fff;
-        }
+        .nav-item i { font-size: 22px; }
+        .nav-item.active { color: #fff; }
         .nav-item.upload-btn {
             background: linear-gradient(45deg, #fe2c55, #25f4ee);
             width: 48px;
@@ -221,10 +197,7 @@
             flex: 0 0 auto;
             margin: 0 6px;
         }
-        .nav-item.upload-btn i {
-            font-size: 20px;
-            color: #000;
-        }
+        .nav-item.upload-btn i { font-size: 20px; color: #000; }
         .back-btn {
             color: #fff;
             font-size: 22px;
@@ -260,16 +233,13 @@
             white-space: nowrap;
             border: 1px solid rgba(255,255,255,0.1);
         }
-        .toast.show {
-            opacity: 1;
-        }
+        .toast.show { opacity: 1; }
     </style>
 </head>
 <body>
 
-<!-- টপ বার -->
 <div style="position:fixed;top:0;left:0;right:0;z-index:100;height:50px;display:flex;align-items:center;padding:0 16px;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.06)">
-    <button class="back-btn" onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i></button>
+    <button class="back-btn" onclick="window.location.href='../index.html'"><i class="fas fa-arrow-left"></i></button>
     <span style="font-size:17px;font-weight:700;flex:1;text-align:center;">আপলোড</span>
     <div style="width:40px;"></div>
 </div>
@@ -314,20 +284,23 @@
     </div>
 </div>
 
-<!-- বটম নেভ -->
 <nav class="bottom-nav">
-    <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
+    <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
     <a href="friends.html" class="nav-item"><i class="fas fa-user-friends"></i><span>বন্ধু</span></a>
     <a href="upload.html" class="nav-item active upload-btn"><i class="fas fa-plus"></i></a>
     <a href="inbox.html" class="nav-item"><i class="fas fa-message"></i><span>ইনবক্স</span></a>
     <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>প্রোফাইল</span></a>
 </nav>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+<script src="firebase-config.js"></script>
+
 <script>
-// Firebase ইতিমধ্যে initialized
 const uploadBox = document.getElementById('uploadBox');
 const fileInput = document.getElementById('fileInput');
 const previewContainer = document.getElementById('previewContainer');
@@ -345,26 +318,43 @@ const toast = document.getElementById('toast');
 
 let selectedFile = null;
 let currentUser = null;
+let currentUserData = null;
 let toastTimer = null;
 
-auth.onAuthStateChanged((user) => {
+auth.onAuthStateChanged(async (user) => {
     if (!user) { window.location.href = 'auth.html'; return; }
     currentUser = user;
+
+    try {
+        const doc = await db.collection('users').doc(user.uid).get();
+        if (doc.exists) {
+            currentUserData = doc.data();
+        } else {
+            currentUserData = {
+                username: user.displayName || 'wwc_user',
+                displayName: user.displayName || 'WWC User',
+                photoURL: user.photoURL || ''
+            };
+        }
+    } catch (e) {
+        currentUserData = {
+            username: user.displayName || 'wwc_user',
+            displayName: user.displayName || 'WWC User',
+            photoURL: user.photoURL || ''
+        };
+    }
 });
 
-// Char count
 captionInput.addEventListener('input', () => {
     charCount.textContent = captionInput.value.length;
 });
 
-// File selection
 uploadBox.addEventListener('click', () => fileInput.click());
 
 fileInput.addEventListener('change', (e) => {
     if (e.target.files.length) handleFile(e.target.files[0]);
 });
 
-// Drag and drop
 uploadBox.addEventListener('dragover', (e) => {
     e.preventDefault();
     uploadBox.classList.add('dragover');
@@ -394,7 +384,6 @@ function handleFile(file) {
     selectedFile = file;
     uploadBtn.disabled = false;
 
-    // Show preview
     previewContainer.style.display = 'block';
     videoPreview.src = URL.createObjectURL(file);
     videoPreview.load();
@@ -404,7 +393,6 @@ function handleFile(file) {
     showToast('✅ ভিডিও সিলেক্ট করা হয়েছে');
 }
 
-// Upload
 uploadBtn.addEventListener('click', async () => {
     if (!selectedFile || !currentUser) {
         showToast('❌ ভিডিও সিলেক্ট করুন');
@@ -418,8 +406,8 @@ uploadBtn.addEventListener('click', async () => {
     progressText.textContent = 'আপলোড: 0%';
 
     try {
-        const fileName = `videos/${currentUser.uid}/${Date.now()}_${selectedFile.name}`;
-        const storageRef = storage.ref(fileName);
+        const storageFileName = `videos/\( {currentUser.uid}/ \){Date.now()}_${selectedFile.name}`;
+        const storageRef = storage.ref(storageFileName);
         const uploadTask = storageRef.put(selectedFile);
 
         uploadTask.on('state_changed',
@@ -437,10 +425,13 @@ uploadBtn.addEventListener('click', async () => {
             async () => {
                 const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
 
-                // Save to Firestore
+                const username = (currentUserData && currentUserData.username) || currentUser.displayName || 'wwc_user';
+                const photoURL = (currentUserData && currentUserData.photoURL) || currentUser.photoURL || '';
+
                 await db.collection('videos').add({
                     uid: currentUser.uid,
-                    username: currentUser.displayName || 'wwc_user',
+                    username: username,
+                    photoURL: photoURL,
                     videoURL: downloadURL,
                     caption: captionInput.value.trim() || 'No caption',
                     sound: soundInput.value.trim() || 'Original sound - WWC',
@@ -448,8 +439,6 @@ uploadBtn.addEventListener('click', async () => {
                     comments: 0,
                     saves: 0,
                     shares: 0,
-                    likedBy: [],
-                    savedBy: [],
                     createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 });
 
@@ -458,7 +447,7 @@ uploadBtn.addEventListener('click', async () => {
                 progressText.textContent = '✅ আপলোড সম্পন্ন!';
 
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    window.location.href = '../index.html';
                 }, 1500);
             }
         );
