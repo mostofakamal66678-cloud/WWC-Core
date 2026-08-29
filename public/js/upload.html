@@ -239,7 +239,7 @@
 <body>
 
 <div style="position:fixed;top:0;left:0;right:0;z-index:100;height:50px;display:flex;align-items:center;padding:0 16px;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.06)">
-    <button class="back-btn" onclick="window.location.href='../index.html'"><i class="fas fa-arrow-left"></i></button>
+    <button class="back-btn" onclick="window.location.href='../../index.html'"><i class="fas fa-arrow-left"></i></button>
     <span style="font-size:17px;font-weight:700;flex:1;text-align:center;">আপলোড</span>
     <div style="width:40px;"></div>
 </div>
@@ -285,7 +285,7 @@
 </div>
 
 <nav class="bottom-nav">
-    <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
+    <a href="../../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
     <a href="friends.html" class="nav-item"><i class="fas fa-user-friends"></i><span>বন্ধু</span></a>
     <a href="upload.html" class="nav-item active upload-btn"><i class="fas fa-plus"></i></a>
     <a href="inbox.html" class="nav-item"><i class="fas fa-message"></i><span>ইনবক্স</span></a>
@@ -406,7 +406,7 @@ uploadBtn.addEventListener('click', async () => {
     progressText.textContent = 'আপলোড: 0%';
 
     try {
-        const storageFileName = `videos/\( {currentUser.uid}/ \){Date.now()}_${selectedFile.name}`;
+        const storageFileName = `videos/${currentUser.uid}/${Date.now()}_${selectedFile.name}`;
         const storageRef = storage.ref(storageFileName);
         const uploadTask = storageRef.put(selectedFile);
 
@@ -447,7 +447,7 @@ uploadBtn.addEventListener('click', async () => {
                 progressText.textContent = '✅ আপলোড সম্পন্ন!';
 
                 setTimeout(() => {
-                    window.location.href = '../index.html';
+                    window.location.href = '../../index.html';
                 }, 1500);
             }
         );
