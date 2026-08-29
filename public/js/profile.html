@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; min-height:100vh; padding-bottom:70px; transition: background 0.3s, color 0.3s; }
+        body { background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; min-height:100vh; padding-bottom:70px; }
         
         .top { position:sticky; top:0; z-index:50; background:#000; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #222; }
         .top h1 { font-size:17px; font-weight:700; }
@@ -36,11 +36,11 @@
 
         .video-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; padding:3px; }
         .video-grid .grid-item { aspect-ratio:9/16; background:#111; overflow:hidden; position:relative; border-radius:4px; }
-        .video-grid .grid-item video, .video-grid .grid-item img { width:100%; height:100%; object-fit:cover; }
+        .video-grid .grid-item video { width:100%; height:100%; object-fit:cover; }
         .empty-grid { text-align:center; color:#666; padding:60px 20px; font-size:14px; line-height:1.6; }
         .empty-grid i { font-size:48px; display:block; margin-bottom:16px; opacity:0.4; }
 
-        .settings-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; justify-content:flex-end; align-items:flex-end; backdrop-filter:blur(8px); }
+        .settings-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; justify-content:flex-end; align-items:flex-end; }
         .settings-modal.active { display:flex; }
         .settings-box { background:#1a1a1a; border-radius:20px 20px 0 0; padding:20px 16px 30px; width:100%; max-width:500px; margin:0 auto; border-top:1px solid #333; }
         .settings-box .settings-handle { width:40px; height:4px; background:#555; border-radius:2px; margin:0 auto 16px; }
@@ -58,7 +58,7 @@
         .settings-box .logout-item { color:#fe2c55; border-top:1px solid #333; margin-top:8px; padding-top:14px; }
         .settings-box .logout-item i { color:#fe2c55; }
 
-        .bio-modal, .confirm-dialog { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:250; justify-content:center; align-items:center; backdrop-filter:blur(6px); }
+        .bio-modal, .confirm-dialog { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:250; justify-content:center; align-items:center; }
         .bio-modal.active, .confirm-dialog.active { display:flex; }
         .bio-box, .confirm-box { background:#1a1a1a; border-radius:16px; padding:24px 20px 20px; width:90%; max-width:340px; border:1px solid #333; }
         .bio-box h3, .confirm-box h3 { font-size:17px; margin-bottom:12px; text-align:center; }
@@ -79,14 +79,6 @@
         .nav-item.active { color:#fff; }
         .nav-item.upload-btn { background:linear-gradient(45deg,#fe2c55,#25f4ee); width:48px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#000; flex:0 0 auto; margin:0 6px; }
         .nav-item.upload-btn i { font-size:20px; color:#000; }
-
-        body.light-mode { background:#f5f5f5; color:#1a1a1a; }
-        body.light-mode .top, body.light-mode .bottom-nav, body.light-mode .profile-bio, body.light-mode .profile-header, body.light-mode .profile-tabs, body.light-mode .settings-box { background:#fff; border-color:#e0e0e0; }
-        body.light-mode .top h1, body.light-mode .settings-box .settings-header h3, body.light-mode .profile-bio .name, body.light-mode .profile-tabs .tab.active { color:#1a1a1a; }
-        body.light-mode .stat-item .label, body.light-mode .profile-bio .username, body.light-mode .profile-tabs .tab { color:#888; }
-        body.light-mode .settings-box .settings-item { color:#333; }
-        body.light-mode .bio-box { background:#fff; border-color:#ddd; }
-        body.light-mode .bio-box textarea { background:#f5f5f5; color:#1a1a1a; border-color:#ddd; }
     </style>
 </head>
 <body>
@@ -156,31 +148,26 @@
                 <h3>সেটিংস</h3>
                 <button id="close-settings"><i class="fas fa-times"></i></button>
             </div>
-
             <div class="settings-item" id="edit-profile">
                 <i class="fas fa-user-edit"></i>
                 <span>প্রোফাইল এডিট</span>
                 <span class="arrow"><i class="fas fa-chevron-right"></i></span>
             </div>
-
             <div class="settings-item" id="privacy">
                 <i class="fas fa-lock"></i>
                 <span>প্রাইভেসি</span>
                 <div class="toggle-track" id="privacy-toggle"><div class="toggle-thumb"></div></div>
             </div>
-
             <div class="settings-item" id="notifications">
                 <i class="fas fa-bell"></i>
                 <span>নোটিফিকেশন</span>
                 <div class="toggle-track active" id="notif-toggle"><div class="toggle-thumb"></div></div>
             </div>
-
             <div class="settings-item" id="dark-mode">
                 <i class="fas fa-moon"></i>
                 <span>ডার্ক মোড</span>
                 <div class="toggle-track" id="dark-toggle"><div class="toggle-thumb"></div></div>
             </div>
-
             <div class="settings-item logout-item" id="logout-btn">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>লগআউট</span>
@@ -240,7 +227,9 @@
             });
         });
 
-        document.getElementById('back-btn').addEventListener('click', () => window.location.href = '../index.html');
+        document.getElementById('back-btn').addEventListener('click', () => {
+            window.location.href = '../index.html';
+        });
 
         // Settings
         const modal = document.getElementById('settings-modal');
@@ -248,7 +237,6 @@
         document.getElementById('close-settings').addEventListener('click', () => modal.classList.remove('active'));
         modal.addEventListener('click', (e) => { if (e.target === e.currentTarget) modal.classList.remove('active'); });
 
-        // প্রোফাইল এডিট (নাম)
         document.getElementById('edit-profile').addEventListener('click', () => {
             modal.classList.remove('active');
             const currentName = document.getElementById('display-name').textContent;
@@ -261,34 +249,31 @@
                 db.collection('users').doc(currentUser.uid).set({
                     username: name,
                     displayName: name
-                }, { merge: true }).catch(err => console.error(err));
+                }, { merge: true }).catch(console.error);
                 showToast('✅ নাম আপডেট হয়েছে!');
             }
         });
 
-        // প্রাইভেসি
         const privacyToggle = document.getElementById('privacy-toggle');
         toggleSwitch(privacyToggle, (isPrivate) => {
             db.collection('users').doc(currentUser.uid).set({ isPrivate }, { merge: true });
-            showToast(isPrivate ? '🔒 অ্যাকাউন্ট প্রাইভেট হয়েছে' : '🔓 অ্যাকাউন্ট পাবলিক হয়েছে');
+            showToast(isPrivate ? '🔒 অ্যাকাউন্ট প্রাইভেট' : '🔓 অ্যাকাউন্ট পাবলিক');
         });
 
-        // নোটিফিকেশন
         const notifToggle = document.getElementById('notif-toggle');
         toggleSwitch(notifToggle, (enabled) => {
             db.collection('users').doc(currentUser.uid).set({ notificationsEnabled: enabled }, { merge: true });
             showToast(enabled ? '🔔 নোটিফিকেশন চালু' : '🔕 নোটিফিকেশন বন্ধ');
         });
 
-        // ডার্ক মোড
         const darkToggle = document.getElementById('dark-toggle');
         toggleSwitch(darkToggle, (isLight) => {
-            document.body.classList.toggle('light-mode', isLight);
+            document.body.style.background = isLight ? '#f5f5f5' : '#000';
+            document.body.style.color = isLight ? '#1a1a1a' : '#fff';
             db.collection('users').doc(currentUser.uid).set({ darkMode: isLight }, { merge: true });
             showToast(isLight ? '☀️ লাইট মোড' : '🌙 ডার্ক মোড');
         });
 
-        // লগআউট
         document.getElementById('logout-btn').addEventListener('click', () => {
             modal.classList.remove('active');
             document.getElementById('confirm-dialog').classList.add('active');
@@ -304,7 +289,7 @@
             });
         });
 
-        // বায়ো এডিট
+        // Bio edit
         const bioModal = document.getElementById('bio-modal');
         const bioInput = document.getElementById('bio-input');
         const bioEl = document.getElementById('bio');
@@ -326,16 +311,17 @@
             bioModal.classList.remove('active');
         });
 
-        // প্রোফাইল লোড
+        // ===== MAIN PROFILE LOAD =====
         async function loadProfile(uid) {
             const isOwn = (uid === currentUser.uid);
             let userData = {};
+
             try {
                 const userDoc = await db.collection('users').doc(uid).get();
                 if (userDoc.exists) userData = userDoc.data();
-            } catch(e) {}
+            } catch(e) { console.error(e); }
 
-            // fallback from videos if no user doc
+            // fallback
             if (!userData.username && !userData.displayName) {
                 try {
                     const vids = await db.collection('videos').where('uid', '==', uid).limit(1).get();
@@ -349,14 +335,21 @@
                 } catch(e) { userData.username = 'user'; }
             }
 
-            const displayName = userData.displayName || userData.username || 'ইউজার';
+            const displayName = userData.displayName || userData.username || userData.name || 'ইউজার';
             const username = (userData.username || displayName).toLowerCase().replace(/\s+/g, '_');
 
+            // Avatar fix
             const avatarEl = document.getElementById('profile-avatar');
-            if (userData.photoURL) {
-                avatarEl.innerHTML = `<img src="\( {userData.photoURL}" alt="avatar" onerror="this.parentElement.textContent=' \){displayName[0].toUpperCase()}'">`;
+            avatarEl.innerHTML = '';
+            if (userData.photoURL && userData.photoURL.startsWith('http')) {
+                const img = document.createElement('img');
+                img.src = userData.photoURL;
+                img.onerror = () => {
+                    avatarEl.textContent = displayName[0] ? displayName[0].toUpperCase() : 'U';
+                };
+                avatarEl.appendChild(img);
             } else {
-                avatarEl.textContent = displayName[0].toUpperCase();
+                avatarEl.textContent = displayName[0] ? displayName[0].toUpperCase() : 'U';
             }
 
             document.getElementById('display-name').textContent = displayName;
@@ -369,13 +362,6 @@
                 else privacyToggle.classList.remove('active');
                 if (userData.notificationsEnabled !== false) notifToggle.classList.add('active');
                 else notifToggle.classList.remove('active');
-                if (userData.darkMode) {
-                    document.body.classList.add('light-mode');
-                    darkToggle.classList.add('active');
-                } else {
-                    document.body.classList.remove('light-mode');
-                    darkToggle.classList.remove('active');
-                }
             }
 
             const followBtn = document.getElementById('follow-btn');
@@ -395,21 +381,33 @@
             try {
                 const vids = await db.collection('videos').where('uid', '==', uid).get();
                 document.getElementById('video-count').textContent = vids.size;
+
                 const followers = await db.collection('follows').where('following', '==', uid).get();
                 document.getElementById('follower-count').textContent = followers.size;
+
                 const following = await db.collection('follows').where('follower', '==', uid).get();
                 document.getElementById('following-count').textContent = following.size;
-            } catch(e) {}
+            } catch(e) { console.error('Stats error:', e); }
         }
 
+        // ===== FIXED VIDEO LOAD (no orderBy to avoid index error) =====
         async function loadContent(uid, tab) {
             const grid = document.getElementById('video-grid');
             grid.innerHTML = '<div class="empty-grid"><i class="fas fa-spinner fa-spin"></i><br>লোড হচ্ছে...</div>';
+
             let videos = [];
             try {
                 if (tab === 'videos') {
-                    const snap = await db.collection('videos').where('uid', '==', uid).orderBy('createdAt', 'desc').get();
+                    // orderBy বাদ দিয়ে শুধু where ব্যবহার (index লাগে না)
+                    const snap = await db.collection('videos').where('uid', '==', uid).get();
                     snap.forEach(doc => videos.push({ id: doc.id, ...doc.data() }));
+
+                    // client-side sort
+                    videos.sort((a, b) => {
+                        const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt || 0);
+                        const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt || 0);
+                        return tb - ta;
+                    });
                 } else if (tab === 'liked') {
                     const likes = await db.collection('likes').where('userId', '==', uid).get();
                     for (const l of likes.docs) {
@@ -434,7 +432,7 @@
                     }
                 }
             } catch(e) {
-                console.error(e);
+                console.error('Content load error:', e);
             }
 
             if (videos.length === 0) {
@@ -448,7 +446,7 @@
                 item.className = 'grid-item';
                 const url = v.videoURL || v.downloadURL || '';
                 item.innerHTML = `<video src="${url}" muted playsinline preload="metadata"></video>`;
-                item.onclick = () => window.location.href = `../index.html?video=${v.id}`;
+                item.onclick = () => window.location.href = `../index.html`;
                 grid.appendChild(item);
             });
         }
