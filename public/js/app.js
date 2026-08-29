@@ -1,6 +1,7 @@
 // ========================================
-// WWC - TIKTOK STYLE COMPLETE APP
+// WWC - TIKTOK STYLE COMPLETE APP (FIXED)
 // All features: Like, Comment, Save, Follow, Profile, Search
+// Path + username + profile link fixed
 // ========================================
 
 // ===== DOM REFS =====
@@ -18,6 +19,7 @@ const closeComment = document.getElementById('close-comment');
 
 // ===== STATE =====
 let currentUser = null;
+let currentUserData = null;
 let allVideos = [];
 let likedVideos = new Set();
 let savedVideos = new Set();
@@ -30,26 +32,50 @@ let currentVideoId = null;
 // ========================================
 auth.onAuthStateChanged(async (user) => {
     if (!user) {
-        window.location.href = 'auth.html';
+        window.location.href = 'public/js/auth.html';
         return;
     }
     currentUser = user;
     console.log('✅ User logged in:', currentUser.uid);
+    await loadCurrentUserProfile();
     await loadUserData();
     await loadVideos();
 });
 
+async function loadCurrentUserProfile() {
+    try {
+        const doc = await db.collection('users').doc(currentUser.uid).get();
+        if (doc.exists) {
+            currentUserData = doc.data();
+        } else {
+            currentUserData = {
+                username: currentUser.displayName || 'wwc_user',
+                displayName: currentUser.displayName || 'WWC User',
+                photoURL: currentUser.photoURL || ''
+            };
+            await db.collection('users').doc(currentUser.uid).set({
+                uid: currentUser.uid,
+                username: currentUserData.username,
+                displayName: currentUserData.displayName,
+                photoURL: currentUserData.photoURL,
+                bio: 'হ্যালো, আমি WWC ব্যবহার করছি',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true });
+        }
+    } catch (e) {
+        console.error('Profile load error:', e);
+        currentUserData = { username: 'wwc_user', displayName: 'WWC User' };
+    }
+}
+
 async function loadUserData() {
     try {
-        // Load likes
         const likesSnap = await db.collection('likes').where('userId', '==', currentUser.uid).get();
         likesSnap.forEach(doc => likedVideos.add(doc.data().videoId));
         
-        // Load saves
         const savesSnap = await db.collection('saves').where('userId', '==', currentUser.uid).get();
         savesSnap.forEach(doc => savedVideos.add(doc.data().videoId));
         
-        // Load following
         const followsSnap = await db.collection('follows').where('follower', '==', currentUser.uid).get();
         followsSnap.forEach(doc => followingUsers.add(doc.data().following));
     } catch (e) {
@@ -113,7 +139,7 @@ function renderFeed() {
 }
 
 // ========================================
-// ✅ CREATE VIDEO CARD - TikTok Style
+// CREATE VIDEO CARD
 // ========================================
 function createVideoCard(video) {
     const card = document.createElement('div');
@@ -130,24 +156,20 @@ function createVideoCard(video) {
     const caption = video.caption || '';
     const sound = video.sound || '🎵 Original sound';
 
-    // ✅ Profile pic click handler
-    const goToProfile = (uid) => {
-        if (uid) window.location.href = `profile.html?uid=${uid}`;
-    };
-
     card.innerHTML = `
         <video src="${videoUrl}" loop muted playsinline preload="metadata"></video>
         <div class="mute-indicator"><i class="fas fa-volume-mute"></i></div>
 
         <div class="side-actions">
             <div class="profile-pic-wrap">
-                <img class="profile-pic" src="${photoUrl || './images/profile.png'}" onerror="this.src='./images/profile.png'" data-uid="${video.uid}">
+                <img class="profile-pic" src="${photoUrl || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(username) + '&background=25f4ee&color=000'}" 
+                     onerror="this.src='https://ui-avatars.com/api/?name=U&background=25f4ee&color=000'" data-uid="${video.uid}">
                 ${video.uid && video.uid !== currentUser?.uid ? `
-                    <button class="follow-btn ${isFollowing ? 'following' : ''}" data-uid="${video.uid}">${isFollowing ? '✓' : '+'}</button>
+                    <button class="follow-btn \( {isFollowing ? 'following' : ''}" data-uid=" \){video.uid}">${isFollowing ? '✓' : '+'}</button>
                 ` : ''}
             </div>
 
-            <button class="action-btn like-btn ${isLiked ? 'liked' : ''}" data-video-id="${video.id}">
+            <button class="action-btn like-btn \( {isLiked ? 'liked' : ''}" data-video-id=" \){video.id}">
                 <i class="fas fa-heart"></i>
                 <span class="count">${formatNumber(video.likes || 0)}</span>
             </button>
@@ -157,7 +179,7 @@ function createVideoCard(video) {
                 <span class="count">${formatNumber(video.comments || 0)}</span>
             </button>
 
-            <button class="action-btn save-btn ${isSaved ? 'saved' : ''}" data-video-id="${video.id}">
+            <button class="action-btn save-btn \( {isSaved ? 'saved' : ''}" data-video-id=" \){video.id}">
                 <i class="fas fa-bookmark"></i>
                 <span class="count">${formatNumber(video.saves || 0)}</span>
             </button>
@@ -173,7 +195,7 @@ function createVideoCard(video) {
         </div>
 
         <div class="bottom-info">
-            <span class="username" data-uid="${video.uid}">@${username}</span>
+            <span class="username" data-uid="\( {video.uid}">@ \){username}</span>
             <div class="caption">${caption}</div>
             <div class="music-info" data-uid="${video.uid}">
                 <i class="fas fa-music"></i>
@@ -182,11 +204,9 @@ function createVideoCard(video) {
         </div>
     `;
 
-    // ===== ✅ VIDEO EVENTS =====
     const videoEl = card.querySelector('video');
     const muteIndicator = card.querySelector('.mute-indicator');
 
-    // Click = mute toggle
     videoEl.addEventListener('click', (e) => {
         e.stopPropagation();
         videoEl.muted = !videoEl.muted;
@@ -195,100 +215,64 @@ function createVideoCard(video) {
         setTimeout(() => muteIndicator.classList.remove('show'), 800);
     });
 
-    // Double click = like
     videoEl.addEventListener('dblclick', (e) => {
         e.preventDefault();
         const likeBtn = card.querySelector('.like-btn');
         if (likeBtn) toggleLike(likeBtn);
     });
 
-    // ===== ✅ PROFILE CLICK (TikTok Style) =====
-    // Profile pic click
     const profilePic = card.querySelector('.profile-pic');
     if (profilePic) {
         profilePic.addEventListener('click', (e) => {
             e.stopPropagation();
-            const uid = profilePic.dataset.uid;
-            if (uid) goToProfile(uid);
+            goToProfile(profilePic.dataset.uid);
         });
     }
 
-    // Username click
     const usernameEl = card.querySelector('.username');
     if (usernameEl) {
         usernameEl.addEventListener('click', (e) => {
             e.stopPropagation();
-            const uid = usernameEl.dataset.uid;
-            if (uid) goToProfile(uid);
+            goToProfile(usernameEl.dataset.uid);
         });
     }
 
-    // Music disc click
     const musicDisc = card.querySelector('.music-disc');
     if (musicDisc) {
         musicDisc.addEventListener('click', (e) => {
             e.stopPropagation();
-            const uid = musicDisc.dataset.uid;
-            if (uid) goToProfile(uid);
+            goToProfile(musicDisc.dataset.uid);
         });
     }
 
-    // Music info click
     const musicInfo = card.querySelector('.music-info');
     if (musicInfo) {
         musicInfo.addEventListener('click', (e) => {
             e.stopPropagation();
-            const uid = musicInfo.dataset.uid;
-            if (uid) goToProfile(uid);
+            goToProfile(musicInfo.dataset.uid);
         });
     }
 
-    // ===== ✅ BUTTON EVENTS =====
     const likeBtn = card.querySelector('.like-btn');
-    if (likeBtn) {
-        likeBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleLike(likeBtn);
-        });
-    }
+    if (likeBtn) likeBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleLike(likeBtn); });
 
     const commentBtn = card.querySelector('.comment-btn');
-    if (commentBtn) {
-        commentBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            openComment(commentBtn.dataset.videoId);
-        });
-    }
+    if (commentBtn) commentBtn.addEventListener('click', (e) => { e.stopPropagation(); openComment(commentBtn.dataset.videoId); });
 
     const saveBtn = card.querySelector('.save-btn');
-    if (saveBtn) {
-        saveBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleSave(saveBtn);
-        });
-    }
+    if (saveBtn) saveBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleSave(saveBtn); });
 
     const shareBtn = card.querySelector('.share-btn');
-    if (shareBtn) {
-        shareBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            shareVideo(shareBtn.dataset.videoId);
-        });
-    }
+    if (shareBtn) shareBtn.addEventListener('click', (e) => { e.stopPropagation(); shareVideo(shareBtn.dataset.videoId); });
 
     const followBtn = card.querySelector('.follow-btn');
-    if (followBtn) {
-        followBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleFollow(followBtn);
-        });
-    }
+    if (followBtn) followBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleFollow(followBtn); });
 
     return card;
 }
 
 // ========================================
-// ✅ LIKE
+// LIKE / SAVE / FOLLOW / COMMENT / SHARE
 // ========================================
 async function toggleLike(btn) {
     if (!currentUser) { showToast('লগইন করুন'); return; }
@@ -306,7 +290,7 @@ async function toggleLike(btn) {
 
     try {
         const videoRef = db.collection('videos').doc(videoId);
-        const likeRef = db.collection('likes').doc(`${currentUser.uid}_${videoId}`);
+        const likeRef = db.collection('likes').doc(`\( {currentUser.uid}_ \){videoId}`);
 
         if (isLiked) {
             await likeRef.delete();
@@ -325,9 +309,6 @@ async function toggleLike(btn) {
     btn.disabled = false;
 }
 
-// ========================================
-// ✅ SAVE
-// ========================================
 async function toggleSave(btn) {
     if (!currentUser) { showToast('লগইন করুন'); return; }
     if (btn.disabled) return;
@@ -344,7 +325,7 @@ async function toggleSave(btn) {
 
     try {
         const videoRef = db.collection('videos').doc(videoId);
-        const saveRef = db.collection('saves').doc(`${currentUser.uid}_${videoId}`);
+        const saveRef = db.collection('saves').doc(`\( {currentUser.uid}_ \){videoId}`);
 
         if (isSaved) {
             await saveRef.delete();
@@ -364,9 +345,6 @@ async function toggleSave(btn) {
     btn.disabled = false;
 }
 
-// ========================================
-// ✅ FOLLOW
-// ========================================
 async function toggleFollow(btn) {
     if (!currentUser) { showToast('লগইন করুন'); return; }
     if (btn.disabled) return;
@@ -378,7 +356,7 @@ async function toggleFollow(btn) {
     const isFollowing = btn.classList.contains('following');
 
     try {
-        const followRef = db.collection('follows').doc(`${currentUser.uid}_${targetUid}`);
+        const followRef = db.collection('follows').doc(`\( {currentUser.uid}_ \){targetUid}`);
 
         if (isFollowing) {
             await followRef.delete();
@@ -400,9 +378,6 @@ async function toggleFollow(btn) {
     btn.disabled = false;
 }
 
-// ========================================
-// ✅ COMMENT
-// ========================================
 function openComment(videoId) {
     if (!currentUser) { showToast('লগইন করুন'); return; }
     currentVideoId = videoId;
@@ -448,10 +423,7 @@ async function loadComments(videoId) {
     }
 }
 
-if (commentSubmit) {
-    commentSubmit.addEventListener('click', submitComment);
-}
-
+if (commentSubmit) commentSubmit.addEventListener('click', submitComment);
 if (commentInput) {
     commentInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') submitComment();
@@ -464,10 +436,12 @@ async function submitComment() {
     const text = commentInput.value.trim();
     if (!text) return;
 
+    const username = (currentUserData && currentUserData.username) || currentUser.displayName || 'WWC User';
+
     try {
         await db.collection('videos').doc(currentVideoId).collection('comments').add({
             uid: currentUser.uid,
-            username: currentUser.displayName || 'WWC User',
+            username: username,
             text: text,
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
@@ -485,11 +459,8 @@ async function submitComment() {
     }
 }
 
-// ========================================
-// ✅ SHARE
-// ========================================
 async function shareVideo(videoId) {
-    const url = `${window.location.origin}${window.location.pathname}?video=${videoId}`;
+    const url = `\( {window.location.origin} \){window.location.pathname}?video=${videoId}`;
     try {
         if (navigator.share) {
             await navigator.share({ title: 'WWC', text: 'এই ভিডিওটি দেখুন! 🎬', url });
@@ -505,7 +476,7 @@ async function shareVideo(videoId) {
 }
 
 // ========================================
-// ✅ SEARCH
+// SEARCH
 // ========================================
 if (searchBtn) {
     searchBtn.addEventListener('click', () => {
@@ -536,17 +507,27 @@ if (searchInput) {
             (v.name || '').toLowerCase().includes(query)
         );
 
-        if (!found.length) {
+        const unique = [];
+        const seen = new Set();
+        found.forEach(v => {
+            if (v.uid && !seen.has(v.uid)) {
+                seen.add(v.uid);
+                unique.push(v);
+            }
+        });
+
+        if (!unique.length) {
             searchResults.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">😕 কোনো ফলাফল পাওয়া যায়নি</div>';
             return;
         }
 
         searchResults.innerHTML = '';
-        found.forEach(v => {
+        unique.forEach(v => {
             const div = document.createElement('div');
             div.className = 'search-result-item';
             div.innerHTML = `
-                <img src="${v.photoURL || './images/profile.png'}" onerror="this.src='./images/profile.png'">
+                <img src="${v.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(v.username || 'U') + '&background=25f4ee&color=000'}" 
+                     onerror="this.src='https://ui-avatars.com/api/?name=U&background=25f4ee&color=000'">
                 <span class="search-result-name">@${escapeHtml(v.username || 'WWC User')}</span>
             `;
             div.addEventListener('click', () => {
@@ -558,7 +539,7 @@ if (searchInput) {
 }
 
 // ========================================
-// ✅ TABS
+// TABS
 // ========================================
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -570,7 +551,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 // ========================================
-// ✅ VIDEO OBSERVER
+// VIDEO OBSERVER
 // ========================================
 function setupVideoObserver() {
     const videos = document.querySelectorAll('.video-card video');
@@ -601,15 +582,15 @@ function setupVideoObserver() {
 }
 
 // ========================================
-// ✅ GO TO PROFILE
+// GO TO PROFILE (FIXED PATH)
 // ========================================
 function goToProfile(uid) {
     if (!uid) return;
-    window.location.href = `profile.html?uid=${uid}`;
+    window.location.href = `public/js/profile.html?uid=${uid}`;
 }
 
 // ========================================
-// ✅ HELPERS
+// HELPERS
 // ========================================
 function formatNumber(num) {
     num = Number(num) || 0;
@@ -646,4 +627,4 @@ function showToast(message) {
     toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 2500);
 }
 
-console.log('✅ WWC TikTok Style App Loaded!');
+console.log('✅ WWC TikTok Style App Loaded (Fixed)!');
