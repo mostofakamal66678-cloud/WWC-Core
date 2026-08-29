@@ -1,5 +1,6 @@
 // ========================================
-// WWC (World Wide Connect) - টিকটক-স্টাইল ফিড (সব বাটন কার্যকরী + বাগ ফিক্সড)
+// WWC (World Wide Connect) - টিকটক-স্টাইল ফিড
+// (profile.html ও upload.html-এর সাথে মিলিয়ে ফিল্ড নাম ঠিক করা হয়েছে: uid, follower/following, comments, saves)
 // ========================================
 
 let currentUser = null;
@@ -12,7 +13,7 @@ let followingIds = new Set();
 let globalMuted = true;
 let activeCommentVideoId = null;
 let searchTimeout = null;
-const userProfileCache = {}; // userId -> {username, photoURL} | null
+const userProfileCache = {}; // uid -> user doc data | null
 
 const PAGE_SIZE = 5;
 
@@ -49,10 +50,11 @@ async function loadMySaves() {
     } catch (e) { console.error('সেভ লোড সমস্যা:', e); }
 }
 
+// profile.html-এর ফরম্যাট অনুযায়ী: follows ডকুমেন্টে ফিল্ড হলো follower / following
 async function loadMyFollowing() {
     try {
-        const snap = await db.collection('follows').where('followerId', '==', currentUser.uid).get();
-        snap.forEach(doc => followingIds.add(doc.data().followingId));
+        const snap = await db.collection('follows').where('follower', '==', currentUser.uid).get();
+        snap.forEach(doc => followingIds.add(doc.data().following));
     } catch (e) { console.error('ফলো লোড সমস্যা:', e); }
 }
 
@@ -66,8 +68,8 @@ function setupTopTabs() {
 }
 
 // ===== ইউজারের আসল প্রোফাইল ছবি/নাম লোড (users কালেকশন থেকে, ক্যাশসহ) =====
-function applyRealProfile(card, userId) {
-    if (!userId) return;
+function applyRealProfile(card, uid) {
+    if (!uid) return;
 
     const apply = (profile) => {
         if (!profile) return;
@@ -76,18 +78,18 @@ function applyRealProfile(card, userId) {
         }
     };
 
-    if (userProfileCache[userId] !== undefined) {
-        apply(userProfileCache[userId]);
+    if (userProfileCache[uid] !== undefined) {
+        apply(userProfileCache[uid]);
         return;
     }
 
-    db.collection('users').doc(userId).get()
+    db.collection('users').doc(uid).get()
         .then(doc => {
             const profile = doc.exists ? doc.data() : null;
-            userProfileCache[userId] = profile;
+            userProfileCache[uid] = profile;
             apply(profile);
         })
-        .catch(() => { userProfileCache[userId] = null; });
+        .catch(() => { userProfileCache[uid] = null; });
 }
 
 // ===== সার্চ =====
@@ -123,7 +125,6 @@ async function runSearch(q) {
 
     results.innerHTML = '<div class="feed-loading" style="height:auto;padding:40px 20px;"><i class="fas fa-spinner fa-spin"></i></div>';
 
-    // ইউজারনেম সবসময় ছোট হাতের অক্ষরে সেভ করা হয়, তাই সার্চ কোয়েরিও lowercase করা হচ্ছে
     const qLower = q.toLowerCase();
 
     try {
@@ -213,9 +214,12 @@ function setupInfiniteScroll() {
 
 // ===== একটা ভিডিও কার্ড তৈরি (হুবহু TikTok লেআউট, সব বাটন কার্যকরী) =====
 function buildVideoCard(videoId, data, src) {
+    // upload.html ভিডিও সেভ করে 'uid' ফিল্ড দিয়ে
+    const ownerUid = data.uid || data.userId || '';
+
     const isLiked = likedVideoIds.has(videoId);
     const isSaved = savedVideoIds.has(videoId);
-    const isFollowing = followingIds.has(data.userId) || data.userId === currentUser.uid;
+    const isFollowing = followingIds.has(ownerUid) || ownerUid === currentUser.uid;
 
     const hasOwnAvatar = !!(data.userAvatar || data.avatar || data.photoURL);
     const avatar = data.userAvatar || data.avatar || data.photoURL ||
@@ -224,7 +228,7 @@ function buildVideoCard(videoId, data, src) {
     const card = document.createElement('div');
     card.className = 'video-card';
     card.dataset.id = videoId;
-    card.dataset.userId = data.userId || '';
+    card.dataset.uid = ownerUid;
 
     card.innerHTML = `
         <video src="${src}" loop ${globalMuted ? 'muted' : ''} playsinline></video>
@@ -232,8 +236,8 @@ function buildVideoCard(videoId, data, src) {
 
         <div class="side-actions">
             <div class="profile-pic-wrap">
-                <img class="profile-pic" src="${avatar}" alt="profile" data-uid="${data.userId || ''}">
-                ${!isFollowing ? `<button class="follow-btn" data-uid="${data.userId || ''}"><i class="fas fa-plus"></i></button>` : ''}
+                <img class="profile-pic" src="${avatar}" alt="profile" data-uid="${ownerUid}">
+                ${!isFollowing ? `<button class="follow-btn" data-uid="${ownerUid}"><i class="fas fa-plus"></i></button>` : ''}
             </div>
 
             <button class="action-btn like-btn ${isLiked ? 'liked' : ''}" data-id="${videoId}">
@@ -243,12 +247,12 @@ function buildVideoCard(videoId, data, src) {
 
             <button class="action-btn comment-btn" data-id="${videoId}">
                 <i class="fas fa-comment-dots"></i>
-                <span class="count">${formatCount(data.commentCount || 0)}</span>
+                <span class="count">${formatCount(data.comments || 0)}</span>
             </button>
 
             <button class="action-btn save-btn ${isSaved ? 'saved' : ''}" data-id="${videoId}">
                 <i class="fas fa-bookmark"></i>
-                <span class="count">${formatCount(data.saveCount || 0)}</span>
+                <span class="count">${formatCount(data.saves || 0)}</span>
             </button>
 
             <button class="action-btn share-btn">
@@ -256,27 +260,25 @@ function buildVideoCard(videoId, data, src) {
                 <span class="count">শেয়ার</span>
             </button>
 
-            <div class="music-disc" data-uid="${data.userId || ''}">
+            <div class="music-disc" data-uid="${ownerUid}">
                 <img src="${avatar}" alt="music">
             </div>
         </div>
 
         <div class="bottom-info">
-            <div class="username" data-uid="${data.userId || ''}">@${escapeHtml(data.username || 'user')}</div>
+            <div class="username" data-uid="${ownerUid}">@${escapeHtml(data.username || 'user')}</div>
             <div class="caption">${escapeHtml(data.caption || '')}</div>
-            <div class="music-info" data-uid="${data.userId || ''}">
+            <div class="music-info" data-uid="${ownerUid}">
                 <i class="fas fa-music"></i>
                 <span class="music-text">${escapeHtml(data.musicName || 'অরিজিনাল সাউন্ড - ' + (data.username || 'user'))}</span>
             </div>
         </div>
     `;
 
-    // ভিডিও ডকুমেন্টে নিজস্ব অ্যাভাটার না থাকলে, users কালেকশন থেকে আসল প্রোফাইল ছবি টেনে বসানো
     if (!hasOwnAvatar) {
-        applyRealProfile(card, data.userId);
+        applyRealProfile(card, ownerUid);
     }
 
-    // অটোপ্লে / পজ
     const video = card.querySelector('video');
     const observer = new IntersectionObserver(([entry]) => {
         if (entry.isIntersecting) video.play().catch(() => {});
@@ -284,7 +286,6 @@ function buildVideoCard(videoId, data, src) {
     }, { threshold: 0.6 });
     observer.observe(card);
 
-    // ট্যাপ করলে মিউট টগল
     video.addEventListener('click', () => {
         globalMuted = !globalMuted;
         document.querySelectorAll('.video-card video').forEach(v => v.muted = globalMuted);
@@ -294,44 +295,37 @@ function buildVideoCard(videoId, data, src) {
         setTimeout(() => indicator.classList.remove('show'), 600);
     });
 
-    // মিউজিক ডিস্ক ঘুরবে শুধু প্লে অবস্থায়
     video.addEventListener('play', () => card.querySelector('.music-disc').classList.add('spinning'));
     video.addEventListener('pause', () => card.querySelector('.music-disc').classList.remove('spinning'));
 
-    // লাইক
     card.querySelector('.like-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         toggleLike(videoId, e.currentTarget);
     });
 
-    // কমেন্ট
     card.querySelector('.comment-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         openComments(videoId);
     });
 
-    // সেভ
     card.querySelector('.save-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         toggleSave(videoId, e.currentTarget);
     });
 
-    // শেয়ার
     card.querySelector('.share-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         shareVideo(videoId);
     });
 
-    // ফলো
     const followBtn = card.querySelector('.follow-btn');
     if (followBtn) {
         followBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            followUser(data.userId, followBtn);
+            followUser(ownerUid, followBtn);
         });
     }
 
-    // প্রোফাইলে যাওয়া (প্রোফাইল ছবি, ইউজারনেম, মিউজিক ডিস্ক — সবগুলোতে ক্লিক করলে)
     const goToProfile = (e) => {
         e.stopPropagation();
         const uid = e.currentTarget.dataset.uid;
@@ -397,11 +391,11 @@ async function toggleSave(videoId, btnEl) {
     try {
         if (isSaved) {
             await saveRef.delete();
-            await videoRef.update({ saveCount: firebase.firestore.FieldValue.increment(-1) });
+            await videoRef.update({ saves: firebase.firestore.FieldValue.increment(-1) });
             savedVideoIds.delete(videoId);
         } else {
             await saveRef.set({ userId: currentUser.uid, videoId, createdAt: Date.now() });
-            await videoRef.update({ saveCount: firebase.firestore.FieldValue.increment(1) });
+            await videoRef.update({ saves: firebase.firestore.FieldValue.increment(1) });
             savedVideoIds.add(videoId);
         }
     } catch (e) {
@@ -411,21 +405,15 @@ async function toggleSave(videoId, btnEl) {
     }
 }
 
-// ===== ফলো (users ডকুমেন্টের followers/following কাউন্টও আপডেট হয়) =====
+// ===== ফলো (profile.html-এর ফরম্যাট অনুযায়ী: follower / following ফিল্ড) =====
 async function followUser(targetUid, btnEl) {
     if (!currentUser || !targetUid || targetUid === currentUser.uid) return;
     const followId = `${currentUser.uid}_${targetUid}`;
     try {
         await db.collection('follows').doc(followId).set({
-            followerId: currentUser.uid,
-            followingId: targetUid,
+            follower: currentUser.uid,
+            following: targetUid,
             createdAt: Date.now()
-        });
-        await db.collection('users').doc(targetUid).update({
-            followers: firebase.firestore.FieldValue.increment(1)
-        });
-        await db.collection('users').doc(currentUser.uid).update({
-            following: firebase.firestore.FieldValue.increment(1)
         });
         followingIds.add(targetUid);
         btnEl.remove();
@@ -513,7 +501,7 @@ async function submitComment() {
             createdAt: Date.now()
         });
         await db.collection('videos').doc(activeCommentVideoId).update({
-            commentCount: firebase.firestore.FieldValue.increment(1)
+            comments: firebase.firestore.FieldValue.increment(1)
         });
 
         const cardCountSpan = document.querySelector(`.comment-btn[data-id="${activeCommentVideoId}"] .count`);
