@@ -2,252 +2,481 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <title>আপলোড - WWC</title>
+    <title>Upload · WWC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; min-height:100vh; padding-bottom:70px; }
-        .top { position:sticky; top:0; z-index:50; background:#000; padding:12px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid #222; }
-        .top h1 { font-size:17px; font-weight:700; }
-        .top button { background:none; border:none; color:#fff; font-size:16px; cursor:pointer; }
-        .upload-area { padding:24px 16px; }
-        .preview-box { width:100%; max-width:280px; margin:0 auto 20px; aspect-ratio:9/16; background:#111; border-radius:12px; border:2px dashed #333; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; position:relative; cursor:pointer; }
-        .preview-box.has-video { border-style:solid; border-color:#25f4ee; }
-        .preview-box video { width:100%; height:100%; object-fit:cover; }
-        .preview-box .placeholder { text-align:center; color:#666; }
-        .preview-box .placeholder i { font-size:40px; margin-bottom:10px; display:block; }
-        .preview-box input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; }
-        .thumbnail-preview { width:100%; max-width:200px; border-radius:8px; margin:10px auto; display:none; }
-        .field { margin-bottom:16px; }
-        .field label { display:block; font-size:13px; color:#888; margin-bottom:6px; }
-        .field textarea { width:100%; background:#1a1a1a; border:1px solid #333; border-radius:10px; padding:12px 14px; color:#fff; font-size:15px; outline:none; min-height:80px; resize:vertical; }
-        .upload-btn { width:100%; padding:14px; border:none; border-radius:10px; background:linear-gradient(45deg,#fe2c55,#25f4ee); color:#000; font-size:16px; font-weight:700; cursor:pointer; margin-top:8px; }
-        .upload-btn:disabled { opacity:0.5; cursor:not-allowed; }
-        .progress-wrap { margin-top:16px; display:none; }
-        .progress-bar-bg { height:6px; background:#222; border-radius:3px; overflow:hidden; }
-        .progress-bar { height:100%; width:0%; background:linear-gradient(90deg,#fe2c55,#25f4ee); transition:width 0.2s; }
-        .progress-text { text-align:center; color:#25f4ee; font-size:14px; margin-top:8px; }
-        .error-box { display:none; margin-top:12px; padding:12px; background:#2a1010; border:1px solid #fe2c55; border-radius:8px; color:#ff8a8a; font-size:13px; line-height:1.5; }
-        .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:60px; background:#000; display:flex; justify-content:space-around; align-items:center; border-top:1px solid #222; z-index:100; padding-bottom:env(safe-area-inset-bottom); }
-        .nav-item { color:#888; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:11px; gap:3px; flex:1; }
-        .nav-item i { font-size:22px; }
-        .nav-item.active { color:#fff; }
-        .nav-item.upload-btn-nav { background:linear-gradient(45deg,#fe2c55,#25f4ee); width:48px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#000; flex:0 0 auto; margin:0 6px; }
-        .nav-item.upload-btn-nav i { font-size:20px; color:#000; }
+        body {
+            background: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-top: 60px;
+            padding-bottom: 80px;
+            min-height: 100vh;
+        }
+        .upload-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+        .upload-header {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            gap: 12px;
+        }
+        .upload-header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            flex: 1;
+        }
+        .upload-header h1 i {
+            color: #fe2c55;
+            margin-right: 8px;
+        }
+        .upload-box {
+            border: 2px dashed #333;
+            border-radius: 16px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s;
+            background: #0a0a0a;
+        }
+        .upload-box.dragover {
+            border-color: #25f4ee;
+            background: rgba(37, 244, 238, 0.05);
+        }
+        .upload-box i {
+            font-size: 50px;
+            color: #444;
+            display: block;
+            margin-bottom: 12px;
+        }
+        .upload-box .main-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: #aaa;
+        }
+        .upload-box .sub-text {
+            font-size: 13px;
+            color: #555;
+            margin-top: 4px;
+        }
+        .upload-box .format-text {
+            font-size: 12px;
+            color: #444;
+            margin-top: 4px;
+        }
+        .upload-box input {
+            display: none;
+        }
+        .preview-container {
+            margin-top: 16px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #111;
+            display: none;
+        }
+        .preview-container video {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            display: block;
+        }
+        .preview-container .info {
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            background: #0a0a0a;
+            border-top: 1px solid #222;
+        }
+        .preview-container .info .name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .preview-container .info .size {
+            font-size: 12px;
+            color: #888;
+        }
+        .form-group {
+            margin-top: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #888;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            background: #111;
+            color: #fff;
+            font-size: 15px;
+            outline: none;
+            font-family: inherit;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: #25f4ee;
+        }
+        .form-group textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+        .upload-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #25f4ee, #fe2c55);
+            color: #fff;
+            font-size: 17px;
+            font-weight: 700;
+            border: 0;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: transform 0.15s;
+        }
+        .upload-btn:active {
+            transform: scale(0.97);
+        }
+        .upload-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .progress-container {
+            display: none;
+            margin-top: 16px;
+            background: #111;
+            border-radius: 12px;
+            padding: 16px;
+        }
+        .progress-bar {
+            height: 4px;
+            background: #222;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-bar .bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #25f4ee, #fe2c55);
+            transition: width 0.3s;
+        }
+        .progress-text {
+            text-align: center;
+            margin-top: 8px;
+            font-size: 13px;
+            color: #888;
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: #000;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #222;
+            z-index: 100;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .nav-item {
+            color: #888;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            gap: 2px;
+            flex: 1;
+            cursor: pointer;
+            background: none;
+            border: 0;
+        }
+        .nav-item i {
+            font-size: 22px;
+        }
+        .nav-item.active {
+            color: #fff;
+        }
+        .nav-item.upload-btn {
+            background: linear-gradient(45deg, #fe2c55, #25f4ee);
+            width: 48px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            flex: 0 0 auto;
+            margin: 0 6px;
+        }
+        .nav-item.upload-btn i {
+            font-size: 20px;
+            color: #000;
+        }
+        .back-btn {
+            color: #fff;
+            font-size: 22px;
+            background: none;
+            border: 0;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .char-count {
+            text-align: right;
+            font-size: 12px;
+            color: #555;
+            margin-top: 4px;
+        }
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(30,30,30,0.95);
+            color: #fff;
+            padding: 10px 24px;
+            border-radius: 24px;
+            font-size: 14px;
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            white-space: nowrap;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .toast.show {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
-    <div class="top">
-        <button onclick="location.href='../index.html'"><i class="fas fa-times"></i></button>
-        <h1>নতুন ভিডিও</h1>
-        <div style="width:24px"></div>
+
+<!-- টপ বার -->
+<div style="position:fixed;top:0;left:0;right:0;z-index:100;height:50px;display:flex;align-items:center;padding:0 16px;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.06)">
+    <button class="back-btn" onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i></button>
+    <span style="font-size:17px;font-weight:700;flex:1;text-align:center;">আপলোড</span>
+    <div style="width:40px;"></div>
+</div>
+
+<div class="upload-container">
+    <div class="upload-header">
+        <h1><i class="fas fa-cloud-upload-alt"></i>নতুন ভিডিও</h1>
     </div>
 
-    <div class="upload-area">
-        <!-- প্রিভিউ বক্স -->
-        <div class="preview-box" id="preview-box">
-            <div class="placeholder" id="placeholder">
-                <i class="fas fa-video"></i>
-                ভিডিও সিলেক্ট করুন
-            </div>
-            <video id="preview-video" style="display:none" muted loop playsinline></video>
-            <input type="file" id="videoFile" accept="video/*">
-        </div>
-
-        <!-- থাম্বনেইল প্রিভিউ (নতুন যোগ করা) -->
-        <canvas id="thumbnail-canvas" style="display:none;"></canvas>
-        <img id="thumbnail-preview" class="thumbnail-preview" />
-
-        <div class="field">
-            <label>ক্যাপশন</label>
-            <textarea id="caption" placeholder="ক্যাপশন লিখুন..."></textarea>
-        </div>
-
-        <button class="upload-btn" id="upload-btn">আপলোড করুন</button>
-
-        <div class="progress-wrap" id="progress-wrap">
-            <div class="progress-bar-bg"><div class="progress-bar" id="progress-bar"></div></div>
-            <div class="progress-text" id="progress-text">আপলোড: 0%</div>
-        </div>
-        <div class="error-box" id="error-box"></div>
+    <div class="upload-box" id="uploadBox">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <div class="main-text">ভিডিও সিলেক্ট করুন</div>
+        <div class="sub-text">ট্যাপ করে ব্রাউজ করুন</div>
+        <div class="format-text">MP4, WebM, MOV • Max 100MB</div>
+        <input type="file" id="fileInput" accept="video/*">
     </div>
 
-    <nav class="bottom-nav">
-        <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
-        <a href="friends.html" class="nav-item"><i class="fas fa-users"></i><span>বন্ধু</span></a>
-        <a href="upload.html" class="nav-item upload-btn-nav"><i class="fas fa-plus"></i></a>
-        <a href="inbox.html" class="nav-item"><i class="fas fa-message"></i><span>ইনবক্স</span></a>
-        <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>প্রোফাইল</span></a>
-    </nav>
+    <div class="preview-container" id="previewContainer">
+        <video id="videoPreview" controls></video>
+        <div class="info">
+            <span class="name" id="fileName">video.mp4</span>
+            <span class="size" id="fileSize">0 MB</span>
+        </div>
+    </div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
-    <script src="firebase-config.js"></script>
+    <div class="form-group">
+        <label>ক্যাপশন</label>
+        <input type="text" id="captionInput" placeholder="ক্যাপশন লিখুন..." maxlength="200">
+        <div class="char-count"><span id="charCount">0</span>/200</div>
+    </div>
 
-    <script>
-        auth.onAuthStateChanged(user => {
-            if (!user) location.href = 'login.html';
-        });
+    <div class="form-group">
+        <label>সাউন্ড / মিউজিক</label>
+        <input type="text" id="soundInput" placeholder="Original sound - WWC">
+    </div>
 
-        const fileInput = document.getElementById('videoFile');
-        const previewBox = document.getElementById('preview-box');
-        const previewVideo = document.getElementById('preview-video');
-        const placeholder = document.getElementById('placeholder');
-        const errorBox = document.getElementById('error-box');
-        const progressWrap = document.getElementById('progress-wrap');
-        const progressBar = document.getElementById('progress-bar');
-        const progressText = document.getElementById('progress-text');
+    <button class="upload-btn" id="uploadBtn" disabled>আপলোড করুন</button>
 
-        // ========== থাম্বনেইল জেনারেট ==========
-        function generateThumbnail(file) {
-            const video = document.createElement('video');
-            const canvas = document.getElementById('thumbnail-canvas');
-            const ctx = canvas.getContext('2d');
-            const preview = document.getElementById('thumbnail-preview');
-            
-            video.src = URL.createObjectURL(file);
-            video.onloadeddata = () => {
-                canvas.width = 200;
-                canvas.height = 200 * (video.videoHeight / video.videoWidth);
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-                preview.src = canvas.toDataURL('image/jpeg');
-                preview.style.display = 'block';
-            };
-        }
+    <div class="progress-container" id="progressContainer">
+        <div class="progress-bar"><div class="bar" id="progressBar"></div></div>
+        <div class="progress-text" id="progressText">আপলোড: 0%</div>
+    </div>
+</div>
 
-        function showError(msg) {
-            errorBox.style.display = 'block';
-            errorBox.innerHTML = msg;
-        }
-        function hideError() {
-            errorBox.style.display = 'none';
-            errorBox.innerHTML = '';
-        }
+<!-- বটম নেভ -->
+<nav class="bottom-nav">
+    <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
+    <a href="friends.html" class="nav-item"><i class="fas fa-user-friends"></i><span>বন্ধু</span></a>
+    <a href="upload.html" class="nav-item active upload-btn"><i class="fas fa-plus"></i></a>
+    <a href="inbox.html" class="nav-item"><i class="fas fa-message"></i><span>ইনবক্স</span></a>
+    <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>প্রোফাইল</span></a>
+</nav>
 
-        fileInput.addEventListener('change', () => {
-            hideError();
-            const file = fileInput.files[0];
-            if (!file) return;
-            if (file.size > 100 * 1024 * 1024) {
-                showError('ভিডিও খুব বড় (১০০MB এর বেশি)। ছোট ভিডিও দিন।');
-                fileInput.value = '';
-                return;
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// Firebase ইতিমধ্যে initialized
+const uploadBox = document.getElementById('uploadBox');
+const fileInput = document.getElementById('fileInput');
+const previewContainer = document.getElementById('previewContainer');
+const videoPreview = document.getElementById('videoPreview');
+const fileName = document.getElementById('fileName');
+const fileSize = document.getElementById('fileSize');
+const captionInput = document.getElementById('captionInput');
+const soundInput = document.getElementById('soundInput');
+const uploadBtn = document.getElementById('uploadBtn');
+const progressContainer = document.getElementById('progressContainer');
+const progressBar = document.getElementById('progressBar');
+const progressText = document.getElementById('progressText');
+const charCount = document.getElementById('charCount');
+const toast = document.getElementById('toast');
+
+let selectedFile = null;
+let currentUser = null;
+let toastTimer = null;
+
+auth.onAuthStateChanged((user) => {
+    if (!user) { window.location.href = 'auth.html'; return; }
+    currentUser = user;
+});
+
+// Char count
+captionInput.addEventListener('input', () => {
+    charCount.textContent = captionInput.value.length;
+});
+
+// File selection
+uploadBox.addEventListener('click', () => fileInput.click());
+
+fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length) handleFile(e.target.files[0]);
+});
+
+// Drag and drop
+uploadBox.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadBox.classList.add('dragover');
+});
+
+uploadBox.addEventListener('dragleave', () => {
+    uploadBox.classList.remove('dragover');
+});
+
+uploadBox.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadBox.classList.remove('dragover');
+    if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+});
+
+function handleFile(file) {
+    if (!file) return;
+    if (!file.type.startsWith('video/')) {
+        showToast('❌ ভিডিও ফাইল সিলেক্ট করুন');
+        return;
+    }
+    if (file.size > 100 * 1024 * 1024) {
+        showToast('❌ 100MB এর বেশি বড়');
+        return;
+    }
+
+    selectedFile = file;
+    uploadBtn.disabled = false;
+
+    // Show preview
+    previewContainer.style.display = 'block';
+    videoPreview.src = URL.createObjectURL(file);
+    videoPreview.load();
+    fileName.textContent = file.name;
+    fileSize.textContent = (file.size / 1024 / 1024).toFixed(1) + ' MB';
+
+    showToast('✅ ভিডিও সিলেক্ট করা হয়েছে');
+}
+
+// Upload
+uploadBtn.addEventListener('click', async () => {
+    if (!selectedFile || !currentUser) {
+        showToast('❌ ভিডিও সিলেক্ট করুন');
+        return;
+    }
+
+    uploadBtn.disabled = true;
+    uploadBtn.textContent = 'আপলোড হচ্ছে...';
+    progressContainer.style.display = 'block';
+    progressBar.style.width = '0%';
+    progressText.textContent = 'আপলোড: 0%';
+
+    try {
+        const fileName = `videos/${currentUser.uid}/${Date.now()}_${selectedFile.name}`;
+        const storageRef = storage.ref(fileName);
+        const uploadTask = storageRef.put(selectedFile);
+
+        uploadTask.on('state_changed',
+            (snapshot) => {
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                progressBar.style.width = progress + '%';
+                progressText.textContent = `আপলোড: ${Math.round(progress)}%`;
+            },
+            (error) => {
+                console.error('Upload error:', error);
+                showToast('❌ আপলোড ব্যর্থ হয়েছে');
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = 'আবার চেষ্টা করুন';
+            },
+            async () => {
+                const downloadURL = await uploadTask.snapshot.ref.getDownloadURL();
+
+                // Save to Firestore
+                await db.collection('videos').add({
+                    uid: currentUser.uid,
+                    username: currentUser.displayName || 'wwc_user',
+                    videoURL: downloadURL,
+                    caption: captionInput.value.trim() || 'No caption',
+                    sound: soundInput.value.trim() || 'Original sound - WWC',
+                    likes: 0,
+                    comments: 0,
+                    saves: 0,
+                    shares: 0,
+                    likedBy: [],
+                    savedBy: [],
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                showToast('🎉 ভিডিও আপলোড হয়েছে!');
+                uploadBtn.textContent = '✅ সম্পন্ন';
+                progressText.textContent = '✅ আপলোড সম্পন্ন!';
+
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
             }
-            // থাম্বনেইল জেনারেট
-            generateThumbnail(file);
+        );
+    } catch (e) {
+        console.error('Upload error:', e);
+        showToast('❌ আপলোড ব্যর্থ হয়েছে');
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = 'আবার চেষ্টা করুন';
+    }
+});
 
-            const url = URL.createObjectURL(file);
-            previewVideo.src = url;
-            previewVideo.style.display = 'block';
-            placeholder.style.display = 'none';
-            previewBox.classList.add('has-video');
-            previewVideo.play().catch(() => {});
-        });
+function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+}
+</script>
 
-        document.getElementById('upload-btn').addEventListener('click', async () => {
-            hideError();
-            const file = fileInput.files[0];
-            const caption = document.getElementById('caption').value.trim();
-            const user = auth.currentUser;
-
-            if (!file) return showError('আগে ভিডিও সিলেক্ট করুন।');
-            if (!user) return showError('লগইন নেই। আবার লগইন করুন।');
-
-            const btn = document.getElementById('upload-btn');
-            btn.disabled = true;
-            btn.textContent = 'আপলোড হচ্ছে...';
-            progressWrap.style.display = 'block';
-            progressBar.style.width = '0%';
-            progressText.textContent = 'আপলোড: ০%';
-
-            try {
-                await user.getIdToken(true);
-
-                const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
-                const storageRef = storage.ref(`videos/${user.uid}/${fileName}`);
-
-                const metadata = {
-                    contentType: file.type || 'video/mp4',
-                    customMetadata: { uploadedBy: user.uid }
-                };
-
-                const uploadTask = storageRef.put(file, metadata);
-
-                uploadTask.on('state_changed',
-                    (snap) => {
-                        const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
-                        progressBar.style.width = pct + '%';
-                        progressText.textContent = `আপলোড: ${pct}%`;
-                    },
-                    (err) => {
-                        console.error('Upload error:', err);
-                        let msg = 'আপলোড ব্যর্থ। ';
-                        if (err.code === 'storage/unauthorized') {
-                            msg += 'Firebase Storage Rules অনুমতি দিচ্ছে না। Console → Storage → Rules চেক করুন।';
-                        } else if (err.code === 'storage/canceled') {
-                            msg += 'বাতিল করা হয়েছে।';
-                        } else if (err.code === 'storage/retry-limit-exceeded') {
-                            msg += 'নেটওয়ার্ক সমস্যা। আবার চেষ্টা করুন।';
-                        } else {
-                            msg += (err.message || err.code || 'অজানা সমস্যা');
-                        }
-                        showError(msg);
-                        btn.disabled = false;
-                        btn.textContent = 'আপলোড করুন';
-                        progressWrap.style.display = 'none';
-                    },
-                    async () => {
-                        try {
-                            progressText.textContent = 'লিংক নেওয়া হচ্ছে...';
-                            const url = await uploadTask.snapshot.ref.getDownloadURL();
-
-                            // থাম্বনেইল আপলোড
-                            let thumbnailUrl = '';
-                            const preview = document.getElementById('thumbnail-preview');
-                            if (preview.src && preview.src.startsWith('data:image')) {
-                                const thumbBlob = await fetch(preview.src).then(r => r.blob());
-                                const thumbRef = storage.ref(`thumbnails/${user.uid}/${fileName}.jpg`);
-                                await thumbRef.put(thumbBlob);
-                                thumbnailUrl = await thumbRef.getDownloadURL();
-                            }
-
-                            progressText.textContent = 'ডাটাবেসে সেভ হচ্ছে...';
-                            await db.collection('videos').add({
-                                videoUrl: url,
-                                videoURL: url,
-                                thumbnailUrl: thumbnailUrl,
-                                caption: caption,
-                                username: user.displayName || 'user',
-                                uid: user.uid,
-                                likes: 0,
-                                comments: 0,
-                                saves: 0,
-                                createdAt: Date.now()
-                            });
-
-                            progressBar.style.width = '100%';
-                            progressText.textContent = '✅ আপলোড সম্পন্ন!';
-                            setTimeout(() => location.href = '../index.html', 1000);
-                        } catch (e) {
-                            console.error(e);
-                            showError('ভিডিও আপলোড হয়েছে কিন্তু ডাটাবেসে সেভ হয়নি: ' + e.message);
-                            btn.disabled = false;
-                            btn.textContent = 'আপলোড করুন';
-                        }
-                    }
-                );
-            } catch (e) {
-                console.error(e);
-                showError('সমস্যা: ' + (e.message || e));
-                btn.disabled = false;
-                btn.textContent = 'আপলোড করুন';
-                progressWrap.style.display = 'none';
-            }
-        });
-    </script>
 </body>
 </html>
