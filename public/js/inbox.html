@@ -4,46 +4,61 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <title>Inbox · WWC</title>
+    <title>ইনবক্স · WWC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
     <style>
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
         body {
             background: #000;
             color: #fff;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            padding-top: 60px;
-            padding-bottom: 80px;
             min-height: 100vh;
+            padding-bottom: 70px;
         }
-        .inbox-container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 0 16px;
-        }
-        .inbox-header {
+
+        .top-bar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: #000;
+            padding: 12px 16px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 16px 0;
+            justify-content: space-between;
+            border-bottom: 1px solid #1a1a1a;
         }
-        .inbox-header h1 {
-            font-size: 22px;
+        .top-bar h1 {
+            font-size: 18px;
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .inbox-header h1 i {
-            color: #25f4ee;
-            margin-right: 8px;
+        .top-bar h1 i { color: #25f4ee; }
+        .top-bar .back-btn, .top-bar .search-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
         }
+
         .inbox-tabs {
             display: flex;
-            gap: 0;
-            border-bottom: 1px solid #222;
-            margin-bottom: 16px;
+            border-bottom: 1px solid #1a1a1a;
+            background: #000;
+            position: sticky;
+            top: 57px;
+            z-index: 40;
         }
         .inbox-tabs .tab {
             flex: 1;
-            padding: 12px;
+            padding: 14px 0;
             text-align: center;
             font-size: 14px;
             font-weight: 600;
@@ -62,59 +77,89 @@
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            width: 30px;
+            width: 28px;
             height: 3px;
-            background: #fff;
+            background: #fe2c55;
             border-radius: 3px;
         }
+
+        .notifications-list {
+            padding: 0 16px;
+        }
+
         .notification-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 0;
+            padding: 14px 0;
             border-bottom: 1px solid #141414;
+            cursor: pointer;
+            transition: background 0.15s;
         }
-        .notification-item img {
-            width: 44px;
-            height: 44px;
+        .notification-item:active {
+            background: #111;
+        }
+        .notification-item .avatar {
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             object-fit: cover;
             background: #222;
+            flex-shrink: 0;
         }
         .notification-item .content {
             flex: 1;
+            min-width: 0;
         }
-        .notification-item .content .user {
-            font-weight: 600;
+        .notification-item .content .text {
             font-size: 14px;
+            line-height: 1.4;
         }
-        .notification-item .content .action {
-            font-size: 13px;
-            color: #aaa;
+        .notification-item .content .text .user {
+            font-weight: 700;
         }
         .notification-item .content .time {
-            font-size: 11px;
+            font-size: 12px;
             color: #666;
-            margin-top: 2px;
+            margin-top: 3px;
         }
-        .notification-item .badge {
+        .notification-item .thumb {
+            width: 48px;
+            height: 48px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: #1a1a1a;
+            flex-shrink: 0;
+        }
+        .notification-item .unread-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: #25f4ee;
+            background: #fe2c55;
             flex-shrink: 0;
         }
+
         .empty-state {
             text-align: center;
+            padding: 80px 20px;
             color: #666;
-            padding: 50px 0;
         }
         .empty-state i {
-            font-size: 50px;
-            color: #333;
+            font-size: 56px;
+            margin-bottom: 16px;
+            opacity: 0.4;
             display: block;
-            margin-bottom: 15px;
         }
+        .empty-state .title {
+            font-size: 16px;
+            color: #888;
+            margin-bottom: 6px;
+        }
+        .empty-state .subtitle {
+            font-size: 13px;
+            color: #555;
+        }
+
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -135,19 +180,12 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            font-size: 10px;
-            gap: 2px;
+            font-size: 11px;
+            gap: 3px;
             flex: 1;
-            cursor: pointer;
-            background: none;
-            border: 0;
         }
-        .nav-item i {
-            font-size: 22px;
-        }
-        .nav-item.active {
-            color: #fff;
-        }
+        .nav-item i { font-size: 22px; }
+        .nav-item.active { color: #fff; }
         .nav-item.upload-btn {
             background: linear-gradient(45deg, #fe2c55, #25f4ee);
             width: 48px;
@@ -160,151 +198,207 @@
             flex: 0 0 auto;
             margin: 0 6px;
         }
-        .nav-item.upload-btn i {
-            font-size: 20px;
-            color: #000;
-        }
-        .back-btn {
+        .nav-item.upload-btn i { font-size: 20px; color: #000; }
+
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2a2a2a;
             color: #fff;
-            font-size: 22px;
-            background: none;
-            border: 0;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            z-index: 300;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            border: 1px solid #333;
+            white-space: nowrap;
         }
+        .toast.show { opacity: 1; }
     </style>
 </head>
 <body>
 
-<!-- টপ বার -->
-<div style="position:fixed;top:0;left:0;right:0;z-index:100;height:50px;display:flex;align-items:center;padding:0 16px;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.06)">
-    <button class="back-btn" onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i></button>
-    <span style="font-size:17px;font-weight:700;flex:1;text-align:center;">ইনবক্স</span>
-    <div style="width:40px;"></div>
-</div>
+    <div class="toast" id="toast"></div>
 
-<div class="inbox-container">
-    <div class="inbox-header">
-        <h1><i class="fas fa-inbox"></i>ইনবক্স</h1>
-        <button style="color:#888;background:none;border:0;font-size:18px;cursor:pointer;" onclick="showToast('🔍 খুঁজুন')"><i class="fas fa-search"></i></button>
+    <div class="top-bar">
+        <button class="back-btn" onclick="window.location.href='../index.html'"><i class="fas fa-arrow-left"></i></button>
+        <h1><i class="fas fa-inbox"></i> ইনবক্স</h1>
+        <button class="search-btn"><i class="fas fa-search"></i></button>
     </div>
 
     <div class="inbox-tabs">
-        <button class="tab active" data-tab="all">সব</button>
-        <button class="tab" data-tab="likes">লাইক</button>
-        <button class="tab" data-tab="follows">ফলো</button>
-        <button class="tab" data-tab="comments">কমেন্ট</button>
+        <button class="tab active" data-type="all">সব</button>
+        <button class="tab" data-type="like">লাইক</button>
+        <button class="tab" data-type="follow">ফলো</button>
+        <button class="tab" data-type="comment">কমেন্ট</button>
     </div>
 
-    <div id="notifications-list">
+    <div class="notifications-list" id="notifications-list">
         <div class="empty-state">
-            <i class="fas fa-bell-slash"></i>
-            <div style="font-size:16px;color:#888;">কোনো নোটিফিকেশন নেই</div>
-            <div style="font-size:13px;color:#555;">লাইক, কমেন্ট, ফলো পেলে দেখাবে</div>
+            <i class="fas fa-spinner fa-spin"></i>
+            <div class="title">লোড হচ্ছে...</div>
         </div>
     </div>
-</div>
 
-<!-- বটম নেভ -->
-<nav class="bottom-nav">
-    <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
-    <a href="friends.html" class="nav-item"><i class="fas fa-user-friends"></i><span>বন্ধু</span></a>
-    <a href="upload.html" class="nav-item upload-btn"><i class="fas fa-plus"></i></a>
-    <a href="inbox.html" class="nav-item active"><i class="fas fa-message"></i><span>ইনবক্স</span></a>
-    <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>প্রোফাইল</span></a>
-</nav>
+    <nav class="bottom-nav">
+        <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
+        <a href="friends.html" class="nav-item"><i class="fas fa-users"></i><span>বন্ধু</span></a>
+        <a href="upload.html" class="nav-item upload-btn"><i class="fas fa-plus"></i></a>
+        <a href="inbox.html" class="nav-item active"><i class="fas fa-message"></i><span>ইনবক্স</span></a>
+        <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>প্রোফাইল</span></a>
+    </nav>
 
-<script>
-const notificationsList = document.getElementById('notifications-list');
-let currentUser = null;
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="firebase-config.js"></script>
 
-auth.onAuthStateChanged(async (user) => {
-    if (!user) { window.location.href = 'auth.html'; return; }
-    currentUser = user;
-    await loadNotifications();
-});
+    <script>
+        let currentUser = null;
+        let currentFilter = 'all';
+        let allNotifications = [];
 
-async function loadNotifications() {
-    try {
-        const snap = await db.collection('notifications')
-            .where('userId', '==', currentUser.uid)
-            .orderBy('createdAt', 'desc')
-            .limit(50)
-            .get();
-
-        if (snap.empty) {
-            notificationsList.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-bell-slash"></i>
-                    <div style="font-size:16px;color:#888;">কোনো নোটিফিকেশন নেই</div>
-                </div>
-            `;
-            return;
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => toast.classList.remove('show'), 2500);
         }
 
-        let html = '';
-        snap.forEach(doc => {
-            const data = doc.data();
-            const actionText = data.type === 'like' ? 'আপনার ভিডিও লাইক করেছেন' :
-                              data.type === 'follow' ? 'আপনাকে ফলো করেছেন' :
-                              data.type === 'comment' ? 'কমেন্ট করেছেন: ' + (data.text || '') : '';
-            const time = new Date(data.createdAt).toLocaleDateString('bn', { hour: '2-digit', minute: '2-digit' });
-            const avatar = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(data.fromUsername || 'U') + '&background=25f4ee&color=000&bold=true';
+        function timeAgo(timestamp) {
+            if (!timestamp) return '';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            const now = new Date();
+            const sec = Math.floor((now - date) / 1000);
+            if (sec < 60) return 'এইমাত্র';
+            if (sec < 3600) return Math.floor(sec / 60) + ' মিনিট আগে';
+            if (sec < 86400) return Math.floor(sec / 3600) + ' ঘণ্টা আগে';
+            if (sec < 604800) return Math.floor(sec / 86400) + ' দিন আগে';
+            return date.toLocaleDateString('bn-BD');
+        }
 
-            html += `
-                <div class="notification-item">
-                    <img src="${avatar}" onerror="this.src='./images/profile.png'">
-                    <div class="content">
-                        <div class="user">@${data.fromUsername || 'user'}</div>
-                        <div class="action">${actionText}</div>
-                        <div class="time">${time}</div>
-                    </div>
-                    ${!data.read ? '<div class="badge"></div>' : ''}
-                </div>
-            `;
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            currentUser = user;
+            await loadNotifications();
         });
 
-        notificationsList.innerHTML = html;
-    } catch (e) {
-        console.error('Notifications load error:', e);
-        notificationsList.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><div style="font-size:16px;color:#888;">লোড করতে ব্যর্থ হয়েছে</div></div>';
-    }
-}
+        // Tabs
+        document.querySelectorAll('.inbox-tabs .tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.inbox-tabs .tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentFilter = tab.dataset.type;
+                renderNotifications();
+            });
+        });
 
-// Tabs
-document.querySelectorAll('.inbox-tabs .tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-        document.querySelectorAll('.inbox-tabs .tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        loadNotifications();
-    });
-});
+        async function loadNotifications() {
+            const list = document.getElementById('notifications-list');
+            list.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <div class="title">লোড হচ্ছে...</div>
+                </div>
+            `;
 
-function showToast(msg) {
-    let toast = document.getElementById('toast');
-    if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'toast';
-        toast.style.cssText = `
-            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
-            background: rgba(30,30,30,0.95); color: #fff; padding: 10px 24px;
-            border-radius: 24px; font-size: 14px; z-index: 999;
-            opacity: 0; transition: opacity 0.3s ease;
-            pointer-events: none; white-space: nowrap;
-            border: 1px solid rgba(255,255,255,0.1);
-        `;
-        document.body.appendChild(toast);
-    }
-    toast.textContent = msg;
-    toast.style.opacity = '1';
-    clearTimeout(toast._timer);
-    toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 2000);
-}
-</script>
+            try {
+                // orderBy বাদ দিয়ে শুধু where (index লাগে না)
+                const snap = await db.collection('notifications')
+                    .where('toUserId', '==', currentUser.uid)
+                    .get();
 
+                allNotifications = [];
+                snap.forEach(doc => {
+                    allNotifications.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Client-side sort
+                allNotifications.sort((a, b) => {
+                    const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt || 0);
+                    const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt || 0);
+                    return tb - ta;
+                });
+
+                renderNotifications();
+            } catch (e) {
+                console.error('Notifications error:', e);
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div class="title">লোড করতে ব্যর্থ হয়েছে</div>
+                        <div class="subtitle">পরে আবার চেষ্টা করুন</div>
+                    </div>
+                `;
+            }
+        }
+
+        function renderNotifications() {
+            const list = document.getElementById('notifications-list');
+
+            let filtered = allNotifications;
+            if (currentFilter !== 'all') {
+                filtered = allNotifications.filter(n => n.type === currentFilter);
+            }
+
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-bell-slash"></i>
+                        <div class="title">কোনো নোটিফিকেশন নেই</div>
+                        <div class="subtitle">লাইক, কমেন্ট বা ফলো পেলে এখানে দেখাবে</div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(n => {
+                const avatar = n.fromPhotoURL && n.fromPhotoURL.startsWith('http')
+                    ? n.fromPhotoURL
+                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(n.fromUsername || 'U')}&background=25f4ee&color=000&bold=true`;
+
+                let actionText = '';
+                if (n.type === 'like') actionText = 'আপনার ভিডিও লাইক করেছেন';
+                else if (n.type === 'follow') actionText = 'আপনাকে ফলো করেছেন';
+                else if (n.type === 'comment') actionText = `কমেন্ট করেছেন: “${n.text || ''}”`;
+                else actionText = 'নতুন নোটিফিকেশন';
+
+                html += `
+                    <div class="notification-item" data-id="\( {n.id}" data-from=" \){n.fromUserId || ''}">
+                        <img class="avatar" src="${avatar}" onerror="this.src='https://ui-avatars.com/api/?name=U&background=25f4ee&color=000'">
+                        <div class="content">
+                            <div class="text">
+                                <span class="user">@${n.fromUsername || 'user'}</span> ${actionText}
+                            </div>
+                            <div class="time">${timeAgo(n.createdAt)}</div>
+                        </div>
+                        \( {n.videoThumb ? `<img class="thumb" src=" \){n.videoThumb}">` : ''}
+                        ${!n.read ? '<div class="unread-dot"></div>' : ''}
+                    </div>
+                `;
+            });
+
+            list.innerHTML = html;
+
+            // Click → go to profile
+            list.querySelectorAll('.notification-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const fromUid = item.dataset.from;
+                    if (fromUid) {
+                        window.location.href = `profile.html?uid=${fromUid}`;
+                    }
+                });
+            });
+        }
+    </script>
 </body>
 </html>
