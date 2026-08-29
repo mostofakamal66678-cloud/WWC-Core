@@ -2,171 +2,345 @@
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <title>বন্ধু - WWC</title>
+    <title>Friends · WWC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body { background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; min-height:100vh; padding-bottom:70px; }
-        .top { position:sticky; top:0; z-index:50; background:#000; padding:12px 16px; border-bottom:1px solid #222; }
-        .top h1 { font-size:18px; font-weight:700; text-align:center; }
-        .tabs { display:flex; border-bottom:1px solid #222; }
-        .tab { flex:1; text-align:center; padding:12px; color:#888; font-size:14px; font-weight:600; cursor:pointer; border-bottom:2px solid transparent; }
-        .tab.active { color:#fff; border-bottom-color:#fe2c55; }
-        .list { padding:8px 0; }
-        .user-row { display:flex; align-items:center; padding:12px 16px; gap:12px; }
-        .user-avatar { width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg,#fe2c55,#25f4ee); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; color:#000; flex-shrink:0; }
-        .user-info { flex:1; min-width:0; }
-        .user-name { font-weight:600; font-size:15px; }
-        .user-sub { color:#888; font-size:13px; margin-top:2px; }
-        .follow-btn { padding:8px 18px; border:none; border-radius:6px; background:#fe2c55; color:#fff; font-weight:600; font-size:13px; cursor:pointer; flex-shrink:0; }
-        .follow-btn.following { background:#2a2a2a; color:#fff; }
-        .empty { text-align:center; color:#666; padding:50px 20px; font-size:14px; line-height:1.6; }
-        .bottom-nav { position:fixed; bottom:0; left:0; right:0; height:60px; background:#000; display:flex; justify-content:space-around; align-items:center; border-top:1px solid #222; z-index:100; padding-bottom:env(safe-area-inset-bottom); }
-        .nav-item { color:#888; text-decoration:none; display:flex; flex-direction:column; align-items:center; font-size:11px; gap:3px; flex:1; }
-        .nav-item i { font-size:22px; }
-        .nav-item.active { color:#fff; }
-        .nav-item.upload-btn { background:linear-gradient(45deg,#fe2c55,#25f4ee); width:48px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#000; flex:0 0 auto; margin:0 6px; }
-        .nav-item.upload-btn i { font-size:20px; color:#000; }
+        body {
+            background: #000;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding-top: 60px;
+            padding-bottom: 80px;
+            min-height: 100vh;
+        }
+        .friends-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+        .friends-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+        }
+        .friends-header h1 {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .friends-header h1 i {
+            color: #25f4ee;
+            margin-right: 8px;
+        }
+        .friends-tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid #222;
+            margin-bottom: 16px;
+        }
+        .friends-tabs .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            background: none;
+            border: 0;
+            cursor: pointer;
+            position: relative;
+        }
+        .friends-tabs .tab.active {
+            color: #fff;
+        }
+        .friends-tabs .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background: #fff;
+            border-radius: 3px;
+        }
+        .friend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #141414;
+        }
+        .friend-item img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #222;
+            cursor: pointer;
+        }
+        .friend-item .info {
+            flex: 1;
+            cursor: pointer;
+        }
+        .friend-item .info .name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        .friend-item .info .username {
+            font-size: 12px;
+            color: #888;
+        }
+        .friend-item .follow-btn {
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+        }
+        .friend-item .follow-btn:active {
+            transform: scale(0.95);
+        }
+        .empty-state {
+            text-align: center;
+            color: #666;
+            padding: 50px 0;
+        }
+        .empty-state i {
+            font-size: 50px;
+            color: #333;
+            display: block;
+            margin-bottom: 15px;
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: #000;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #222;
+            z-index: 100;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .nav-item {
+            color: #888;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 10px;
+            gap: 2px;
+            flex: 1;
+            cursor: pointer;
+            background: none;
+            border: 0;
+        }
+        .nav-item i {
+            font-size: 22px;
+        }
+        .nav-item.active {
+            color: #fff;
+        }
+        .nav-item.upload-btn {
+            background: linear-gradient(45deg, #fe2c55, #25f4ee);
+            width: 48px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            flex: 0 0 auto;
+            margin: 0 6px;
+        }
+        .nav-item.upload-btn i {
+            font-size: 20px;
+            color: #000;
+        }
+        .back-btn {
+            color: #fff;
+            font-size: 22px;
+            background: none;
+            border: 0;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
-    <div class="top"><h1>বন্ধু</h1></div>
-    <div class="tabs">
-        <div class="tab active" data-tab="following">Following</div>
-        <div class="tab" data-tab="followers">Followers</div>
-        <div class="tab" data-tab="suggest">সাজেস্টেড</div>
+
+<!-- টপ বার -->
+<div style="position:fixed;top:0;left:0;right:0;z-index:100;height:50px;display:flex;align-items:center;padding:0 16px;background:rgba(0,0,0,0.95);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,0.06)">
+    <button class="back-btn" onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i></button>
+    <span style="font-size:17px;font-weight:700;flex:1;text-align:center;">বন্ধু</span>
+    <div style="width:40px;"></div>
+</div>
+
+<div class="friends-container">
+    <div class="friends-header">
+        <h1><i class="fas fa-user-friends"></i>বন্ধু</h1>
+        <button style="color:#888;background:none;border:0;font-size:18px;cursor:pointer;" onclick="showToast('🔍 খুঁজুন')"><i class="fas fa-search"></i></button>
     </div>
-    <div class="list" id="user-list">
-        <div class="empty">লোড হচ্ছে...</div>
+
+    <div class="friends-tabs">
+        <button class="tab active" data-tab="following">Following</button>
+        <button class="tab" data-tab="followers">Followers</button>
+        <button class="tab" data-tab="suggested">Suggested</button>
     </div>
 
-    <nav class="bottom-nav">
-        <a href="../../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
-        <a href="friends.html" class="nav-item active"><i class="fas fa-users"></i><span>বন্ধু</span></a>
-        <a href="upload.html" class="nav-item upload-btn"><i class="fas fa-plus"></i></a>
-        <a href="inbox.html" class="nav-item"><i class="fas fa-message"></i><span>ইনবক্স</span></a>
-        <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>প্রোফাইল</span></a>
-    </nav>
+    <div id="friends-list">
+        <div class="empty-state">
+            <i class="fas fa-user-plus"></i>
+            <div style="font-size:16px;color:#888;">কাউকে Follow করুন</div>
+            <div style="font-size:13px;color:#555;">বন্ধুরা এখানে দেখাবে</div>
+        </div>
+    </div>
+</div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script src="firebase-config.js"></script>
-    <script>
-        let currentUser = null;
+<!-- বটম নেভ -->
+<nav class="bottom-nav">
+    <a href="index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
+    <a href="friends.html" class="nav-item active"><i class="fas fa-user-friends"></i><span>বন্ধু</span></a>
+    <a href="upload.html" class="nav-item upload-btn"><i class="fas fa-plus"></i></a>
+    <a href="inbox.html" class="nav-item"><i class="fas fa-message"></i><span>ইনবক্স</span></a>
+    <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>প্রোফাইল</span></a>
+</nav>
 
-        auth.onAuthStateChanged(user => {
-            if (!user) { location.href = 'login.html'; return; }
-            currentUser = user;
-            loadList('following');
-        });
+<script>
+// Firebase ইতিমধ্যে initialized
+const friendsList = document.getElementById('friends-list');
+let currentUser = null;
 
-        document.querySelectorAll('.tab').forEach(t => {
-            t.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-                t.classList.add('active');
-                loadList(t.dataset.tab);
-            });
-        });
+auth.onAuthStateChanged(async (user) => {
+    if (!user) { window.location.href = 'auth.html'; return; }
+    currentUser = user;
+    await loadFriends();
+});
 
-        async function loadList(tab) {
-            const list = document.getElementById('user-list');
-            list.innerHTML = '<div class="empty">লোড হচ্ছে...</div>';
+async function loadFriends() {
+    try {
+        // Get user's following list
+        const userDoc = await db.collection('users').doc(currentUser.uid).get();
+        if (!userDoc.exists) return;
+        const userData = userDoc.data();
+        const followingIds = userData.followingIds || [];
 
-            if (tab === 'following') {
-                const snap = await db.collection('follows').where('follower', '==', currentUser.uid).get();
-                if (snap.empty) {
-                    list.innerHTML = '<div class="empty">আপনি এখনো কাউকে ফলো করেননি।<br>হোমে গিয়ে অন্যদের ফলো করুন।</div>';
-                    return;
-                }
-                list.innerHTML = '';
-                for (const doc of snap.docs) {
-                    const uid = doc.data().following;
-                    const name = await getUsername(uid);
-                    list.appendChild(makeRow(uid, name, true));
-                }
-            } else if (tab === 'followers') {
-                const snap = await db.collection('follows').where('following', '==', currentUser.uid).get();
-                if (snap.empty) {
-                    list.innerHTML = '<div class="empty">এখনো কোনো ফলোয়ার নেই।</div>';
-                    return;
-                }
-                list.innerHTML = '';
-                for (const doc of snap.docs) {
-                    const uid = doc.data().follower;
-                    const name = await getUsername(uid);
-                    const isFollowing = await checkFollowing(uid);
-                    list.appendChild(makeRow(uid, name, isFollowing));
-                }
-            } else {
-                const vids = await db.collection('videos').orderBy('createdAt', 'desc').limit(40).get();
-                const myFollows = await db.collection('follows').where('follower', '==', currentUser.uid).get();
-                const followingSet = new Set(myFollows.docs.map(d => d.data().following));
-                followingSet.add(currentUser.uid);
-                const seen = new Set();
-                list.innerHTML = '';
-                vids.forEach(doc => {
-                    const d = doc.data();
-                    if (!d.uid || followingSet.has(d.uid) || seen.has(d.uid)) return;
-                    seen.add(d.uid);
-                    list.appendChild(makeRow(d.uid, d.username || d.name || 'user', false));
-                });
-                if (!list.children.length) list.innerHTML = '<div class="empty">কোনো সাজেশন নেই</div>';
-            }
+        if (!followingIds.length) {
+            friendsList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-user-plus"></i>
+                    <div style="font-size:16px;color:#888;">আপনি কাউকে Follow করেননি</div>
+                    <div style="font-size:13px;color:#555;">ইউজারদের ফলো করুন</div>
+                </div>
+            `;
+            return;
         }
 
-        async function getUsername(uid) {
+        // Load each following user's data
+        let html = '';
+        for (const uid of followingIds) {
             try {
-                const vids = await db.collection('videos').where('uid', '==', uid).limit(1).get();
-                if (!vids.empty) {
-                    const d = vids.docs[0].data();
-                    return d.username || d.name || 'user';
+                const doc = await db.collection('users').doc(uid).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    html += `
+                        <div class="friend-item">
+                            <img src="${data.photoURL || './images/profile.png'}" onerror="this.src='./images/profile.png'" onclick="window.location.href='profile.html?uid=${uid}'">
+                            <div class="info" onclick="window.location.href='profile.html?uid=${uid}'">
+                                <div class="name">${data.name || 'WWC User'}</div>
+                                <div class="username">@${data.username || 'user'}</div>
+                            </div>
+                            <button class="follow-btn" onclick="unfollowUser('${uid}', this)">Following</button>
+                        </div>
+                    `;
                 }
             } catch(e) {}
-            return 'user';
         }
 
-        async function checkFollowing(uid) {
-            const doc = await db.collection('follows').doc(`\( {currentUser.uid}_ \){uid}`).get();
-            return doc.exists;
-        }
-
-        function makeRow(uid, name, isFollowing) {
-            const row = document.createElement('div');
-            row.className = 'user-row';
-            row.innerHTML = `
-                <div class="user-avatar">${(name||'U')[0].toUpperCase()}</div>
-                <div class="user-info">
-                    <div class="user-name">@${name}</div>
-                    <div class="user-sub">WWC ইউজার</div>
+        if (!html) {
+            friendsList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-user-slash"></i>
+                    <div style="font-size:16px;color:#888;">কোনো বন্ধু পাওয়া যায়নি</div>
                 </div>
-                <button class="follow-btn \( {isFollowing ? 'following' : ''}" data-uid=" \){uid}">
-                    ${isFollowing ? 'Following' : 'ফলো'}
-                </button>
             `;
-            const btn = row.querySelector('.follow-btn');
-            btn.addEventListener('click', async () => {
-                const followId = `\( {currentUser.uid}_ \){uid}`;
-                const ref = db.collection('follows').doc(followId);
-                try {
-                    const doc = await ref.get();
-                    if (doc.exists) {
-                        await ref.delete();
-                        btn.textContent = 'ফলো';
-                        btn.classList.remove('following');
-                    } else {
-                        await ref.set({ follower: currentUser.uid, following: uid, createdAt: Date.now() });
-                        btn.textContent = 'Following';
-                        btn.classList.add('following');
-                    }
-                } catch(e) {
-                    alert('ফলো সমস্যা: ' + e.message);
-                }
-            });
-            return row;
+        } else {
+            friendsList.innerHTML = html;
         }
-    </script>
+    } catch (e) {
+        console.error('Friends load error:', e);
+        friendsList.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><div style="font-size:16px;color:#888;">লোড করতে ব্যর্থ হয়েছে</div></div>';
+    }
+}
+
+async function unfollowUser(uid, btn) {
+    if (!currentUser) return;
+    btn.textContent = '...';
+    btn.disabled = true;
+
+    try {
+        const followRef = db.collection('follows').doc(`${currentUser.uid}_${uid}`);
+        await followRef.delete();
+
+        // Update user's following list
+        const userRef = db.collection('users').doc(currentUser.uid);
+        await userRef.update({
+            followingIds: firebase.firestore.FieldValue.arrayRemove(uid)
+        });
+
+        btn.closest('.friend-item').remove();
+        showToast('আনফলো করা হয়েছে');
+    } catch (e) {
+        console.error('Unfollow error:', e);
+        btn.textContent = 'Following';
+        btn.disabled = false;
+    }
+}
+
+// Tabs
+document.querySelectorAll('.friends-tabs .tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.friends-tabs .tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        loadFriends();
+    });
+});
+
+function showToast(msg) {
+    let toast = document.getElementById('toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.style.cssText = `
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+            background: rgba(30,30,30,0.95); color: #fff; padding: 10px 24px;
+            border-radius: 24px; font-size: 14px; z-index: 999;
+            opacity: 0; transition: opacity 0.3s ease;
+            pointer-events: none; white-space: nowrap;
+            border: 1px solid rgba(255,255,255,0.1);
+        `;
+        document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.opacity = '1';
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+}
+</script>
+
 </body>
 </html>
