@@ -79,13 +79,13 @@
   </div>
 
   <div class="message" id="message"></div>
-  <a class="back-home" href="./index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
+  <a class="back-home" href="../index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, setPersistence, browserLocalPersistence, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, setPersistence, browserLocalPersistence, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCgio17aPEfR7d6juqIhn3yi6Mf65W_tO4",
@@ -132,32 +132,41 @@ async function createUserProfile(user, extraData = {}) {
     const userRef = doc(db, 'users', user.uid);
     const existing = await getDoc(userRef);
     if (existing.exists()) return;
-    let username = extraData.username || user.displayName || 'wwc_user';
-    username = String(username).toLowerCase().trim().replace(/[^a-z0-9_]/g, '_').replace(/^_+|_+$/g, '');
-    if (!username) username = 'wwc_user';
-    username = username + '_' + user.uid.substring(0, 6);
 
-    // ফিক্স: রিলেটিভ path ('./images/profile.png') এর বদলে সবসময় কাজ করবে এমন অ্যাভাটার ব্যবহার করা হচ্ছে
+    let baseName = extraData.name || user.displayName || 'wwc_user';
+    let username = String(baseName).toLowerCase().trim()
+      .replace(/[^a-z0-9_]/g, '_')
+      .replace(/^_+|_+$/g, '')
+      .substring(0, 20);
+    if (!username) username = 'wwc_user';
+
+    username = username + '_' + user.uid.substring(0, 5);
+
     const defaultAvatar = 'https://ui-avatars.com/api/?name=' + encodeURIComponent(extraData.name || user.displayName || 'User') + '&background=25f4ee&color=000&bold=true';
 
     await setDoc(userRef, {
       uid: user.uid,
       name: extraData.name || user.displayName || 'WWC User',
+      displayName: extraData.name || user.displayName || 'WWC User',
       username: username,
       email: user.email || '',
       photoURL: user.photoURL || defaultAvatar,
       bio: '🌍 Welcome to World Wide Connect',
-      followers: 0, following: 0, likes: 0,
-      followerIds: [], followingIds: [], savedVideoIds: [],
+      followers: 0,
+      following: 0,
+      likes: 0,
+      isPrivate: false,
+      notificationsEnabled: true,
+      darkMode: false,
       createdAt: new Date().toISOString()
     });
   } catch(e) { console.error('Profile creation error:', e); }
 }
 
-function goHome() { window.location.replace('./index.html'); }
+function goHome() { window.location.replace('../index.html'); }
 
 onAuthStateChanged(auth, (user) => {
-  if (user) window.location.href = './index.html';
+  if (user) window.location.href = '../index.html';
 });
 
 googleBtn.addEventListener('click', async () => {
