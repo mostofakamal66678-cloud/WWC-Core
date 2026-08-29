@@ -140,7 +140,7 @@
                 <div class="hint">শুধুমাত্র অক্ষর, সংখ্যা এবং _ ব্যবহার করুন</div>
             </div>
             <div class="form-group">
-                <label>বায়ো</label>
+                <label>বায়ো</label>
                 <textarea id="edit-bio-input" placeholder="নিজের সম্পর্কে কিছু লিখুন..." maxlength="80"></textarea>
                 <div class="hint"><span id="bio-char">0</span>/80</div>
             </div>
@@ -161,7 +161,7 @@
             <div class="option-item">
                 <div class="left">
                     <div class="title">প্রাইভেট অ্যাকাউন্ট</div>
-                    <div class="desc">শুধুমাত্র অনুমোদিত ফলোয়াররা আপনার ভিডিও দেখতে পারবে</div>
+                    <div class="desc">শুধুমাত্র অনুমোদিত ফলোয়াররা আপনার ভিডিও দেখতে পারবে</div>
                 </div>
                 <div class="toggle-track" id="privacy-private"><div class="toggle-thumb"></div></div>
             </div>
@@ -174,8 +174,8 @@
             </div>
             <div class="option-item">
                 <div class="left">
-                    <div class="title">ডুয়েট ও স্টITCH</div>
-                    <div class="desc">অন্যরা আপনার ভিডিও দিয়ে ডুয়েট/স্টিচ করতে পারবে</div>
+                    <div class="title">ডুয়েট ও স্টITCH</div>
+                    <div class="desc">অন্যরা আপনার ভিডিও দিয়ে ডুয়েট/স্টিচ করতে পারবে</div>
                 </div>
                 <div class="toggle-track active" id="privacy-duet"><div class="toggle-thumb"></div></div>
             </div>
@@ -213,7 +213,7 @@
             </div>
             <div class="option-item">
                 <div class="left">
-                    <div class="title">নতুন ফলোয়ার</div>
+                    <div class="title">নতুন ফলোয়ার</div>
                     <div class="desc">কেউ আপনাকে ফলো করলে জানান</div>
                 </div>
                 <div class="toggle-track active" id="notif-follow"><div class="toggle-thumb"></div></div>
@@ -246,7 +246,7 @@
         <div class="profile-avatar" id="profile-avatar">U</div>
         <div class="profile-stats">
             <div class="stat-item"><div class="num" id="video-count">0</div><div class="label">ভিডিও</div></div>
-            <div class="stat-item"><div class="num" id="follower-count">0</div><div class="label">ফলোয়ার</div></div>
+            <div class="stat-item"><div class="num" id="follower-count">0</div><div class="label">ফলোয়ার</div></div>
             <div class="stat-item"><div class="num" id="following-count">0</div><div class="label">ফলো করছেন</div></div>
         </div>
     </div>
@@ -306,7 +306,7 @@
     </div>
 
     <nav class="bottom-nav">
-        <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
+        <a href="../../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
         <a href="friends.html" class="nav-item"><i class="fas fa-users"></i><span>বন্ধু</span></a>
         <a href="upload.html" class="nav-item upload-btn"><i class="fas fa-plus"></i></a>
         <a href="inbox.html" class="nav-item"><i class="fas fa-message"></i><span>ইনবক্স</span></a>
@@ -353,7 +353,7 @@
         });
 
         document.getElementById('back-btn').addEventListener('click', () => {
-            window.location.href = '../index.html';
+            window.location.href = '../../index.html';
         });
 
         // TABS
@@ -406,9 +406,9 @@
                     name: name,
                     bio: bio
                 }, { merge: true });
-                showToast('✅ প্রোফাইল আপডেট হয়েছে');
+                showToast('✅ প্রোফাইল আপডেট হয়েছে');
             } catch (e) {
-                showToast('❌ সেভ হয়নি');
+                showToast('❌ সেভ হয়নি');
             }
             document.getElementById('edit-profile-modal').classList.remove('active');
         });
@@ -603,16 +603,16 @@
                 item.className = 'grid-item';
                 const url = v.videoURL || v.downloadURL || '';
                 item.innerHTML = `<video src="${url}" muted playsinline preload="metadata"></video>`;
-                item.onclick = () => window.location.href = '../index.html';
+                item.onclick = () => window.location.href = '../../index.html';
                 grid.appendChild(item);
             });
         }
 
         async function updateFollowButton(uid, btn) {
             try {
-                const doc = await db.collection('follows').doc(`\( {currentUser.uid}_ \){uid}`).get();
+                const doc = await db.collection('follows').doc(`${currentUser.uid}_${uid}`).get();
                 if (doc.exists) {
-                    btn.textContent = 'ফলোয়িং';
+                    btn.textContent = 'ফলোয়িং';
                     btn.classList.add('following');
                 } else {
                     btn.textContent = 'ফলো';
@@ -624,21 +624,21 @@
         async function toggleFollow(uid, btn) {
             const isFollowing = btn.classList.contains('following');
             try {
-                const ref = db.collection('follows').doc(`\( {currentUser.uid}_ \){uid}`);
+                const ref = db.collection('follows').doc(`${currentUser.uid}_${uid}`);
                 if (isFollowing) {
                     await ref.delete();
                     btn.textContent = 'ফলো';
                     btn.classList.remove('following');
-                    showToast('আনফলো করা হয়েছে');
+                    showToast('আনফলো করা হয়েছে');
                 } else {
                     await ref.set({ follower: currentUser.uid, following: uid, createdAt: Date.now() });
-                    btn.textContent = 'ফলোয়িং';
+                    btn.textContent = 'ফলোয়িং';
                     btn.classList.add('following');
-                    showToast('ফলো করা হয়েছে');
+                    showToast('ফলো করা হয়েছে');
                 }
                 await loadStats(uid);
             } catch (e) {
-                showToast('কিছু ভুল হয়েছে');
+                showToast('কিছু ভুল হয়েছে');
             }
         }
     </script>
