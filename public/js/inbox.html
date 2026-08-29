@@ -8,226 +8,78 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        body {
-            background: #000;
-            color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            min-height: 100vh;
-            padding-bottom: 70px;
-        }
+        body { background:#000; color:#fff; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; min-height:100vh; padding-bottom:70px; }
 
         .top-bar {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background: #000;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid #1a1a1a;
+            position:sticky; top:0; z-index:50; background:#000;
+            padding:12px 16px; display:flex; align-items:center; justify-content:space-between;
+            border-bottom:1px solid #1a1a1a;
         }
-        .top-bar h1 {
-            font-size: 18px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .top-bar h1 i { color: #25f4ee; }
-        .top-bar .back-btn, .top-bar .search-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 20px;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
+        .top-bar h1 { font-size:18px; font-weight:700; display:flex; align-items:center; gap:8px; }
+        .top-bar h1 i { color:#25f4ee; }
+        .top-bar button { background:none; border:none; color:#fff; font-size:20px; width:40px; height:40px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
 
         .inbox-tabs {
-            display: flex;
-            border-bottom: 1px solid #1a1a1a;
-            background: #000;
-            position: sticky;
-            top: 57px;
-            z-index: 40;
+            display:flex; border-bottom:1px solid #1a1a1a; background:#000;
+            position:sticky; top:57px; z-index:40;
         }
         .inbox-tabs .tab {
-            flex: 1;
-            padding: 14px 0;
-            text-align: center;
-            font-size: 14px;
-            font-weight: 600;
-            color: #666;
-            background: none;
-            border: 0;
-            cursor: pointer;
-            position: relative;
+            flex:1; padding:14px 0; text-align:center; font-size:14px; font-weight:600;
+            color:#666; background:none; border:0; cursor:pointer; position:relative;
         }
-        .inbox-tabs .tab.active {
-            color: #fff;
-        }
+        .inbox-tabs .tab.active { color:#fff; }
         .inbox-tabs .tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 28px;
-            height: 3px;
-            background: #fe2c55;
-            border-radius: 3px;
+            content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+            width:28px; height:3px; background:#fe2c55; border-radius:3px;
         }
 
-        .notifications-list {
-            padding: 0 16px;
-        }
+        .notifications-list { padding:0 16px; }
 
         .notification-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 0;
-            border-bottom: 1px solid #141414;
-            cursor: pointer;
-            transition: background 0.15s;
-        }
-        .notification-item:active {
-            background: #111;
+            display:flex; align-items:center; gap:12px; padding:14px 0;
+            border-bottom:1px solid #141414; cursor:pointer;
         }
         .notification-item .avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            object-fit: cover;
-            background: #222;
-            flex-shrink: 0;
+            width:48px; height:48px; border-radius:50%; object-fit:cover; background:#222; flex-shrink:0;
         }
-        .notification-item .content {
-            flex: 1;
-            min-width: 0;
-        }
-        .notification-item .content .text {
-            font-size: 14px;
-            line-height: 1.4;
-        }
-        .notification-item .content .text .user {
-            font-weight: 700;
-        }
-        .notification-item .content .time {
-            font-size: 12px;
-            color: #666;
-            margin-top: 3px;
-        }
-        .notification-item .thumb {
-            width: 48px;
-            height: 48px;
-            border-radius: 6px;
-            object-fit: cover;
-            background: #1a1a1a;
-            flex-shrink: 0;
-        }
+        .notification-item .content { flex:1; min-width:0; }
+        .notification-item .content .text { font-size:14px; line-height:1.4; }
+        .notification-item .content .text .user { font-weight:700; }
+        .notification-item .content .time { font-size:12px; color:#666; margin-top:3px; }
         .notification-item .unread-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #fe2c55;
-            flex-shrink: 0;
+            width:8px; height:8px; border-radius:50%; background:#fe2c55; flex-shrink:0;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 80px 20px;
-            color: #666;
-        }
-        .empty-state i {
-            font-size: 56px;
-            margin-bottom: 16px;
-            opacity: 0.4;
-            display: block;
-        }
-        .empty-state .title {
-            font-size: 16px;
-            color: #888;
-            margin-bottom: 6px;
-        }
-        .empty-state .subtitle {
-            font-size: 13px;
-            color: #555;
-        }
+        .empty-state { text-align:center; padding:80px 20px; color:#666; }
+        .empty-state i { font-size:56px; margin-bottom:16px; opacity:0.4; display:block; }
+        .empty-state .title { font-size:16px; color:#888; margin-bottom:6px; }
+        .empty-state .subtitle { font-size:13px; color:#555; }
 
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background: #000;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            border-top: 1px solid #222;
-            z-index: 100;
-            padding-bottom: env(safe-area-inset-bottom);
+            position:fixed; bottom:0; left:0; right:0; height:60px; background:#000;
+            display:flex; justify-content:space-around; align-items:center;
+            border-top:1px solid #222; z-index:100; padding-bottom:env(safe-area-inset-bottom);
         }
         .nav-item {
-            color: #888;
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 11px;
-            gap: 3px;
-            flex: 1;
+            color:#888; text-decoration:none; display:flex; flex-direction:column;
+            align-items:center; font-size:11px; gap:3px; flex:1;
         }
-        .nav-item i { font-size: 22px; }
-        .nav-item.active { color: #fff; }
+        .nav-item i { font-size:22px; }
+        .nav-item.active { color:#fff; }
         .nav-item.upload-btn {
-            background: linear-gradient(45deg, #fe2c55, #25f4ee);
-            width: 48px;
-            height: 32px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #000;
-            flex: 0 0 auto;
-            margin: 0 6px;
+            background:linear-gradient(45deg,#fe2c55,#25f4ee); width:48px; height:32px;
+            border-radius:8px; display:flex; align-items:center; justify-content:center;
+            color:#000; flex:0 0 auto; margin:0 6px;
         }
-        .nav-item.upload-btn i { font-size: 20px; color: #000; }
-
-        .toast {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #2a2a2a;
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            z-index: 300;
-            opacity: 0;
-            transition: opacity 0.3s;
-            pointer-events: none;
-            border: 1px solid #333;
-            white-space: nowrap;
-        }
-        .toast.show { opacity: 1; }
+        .nav-item.upload-btn i { font-size:20px; color:#000; }
     </style>
 </head>
 <body>
 
-    <div class="toast" id="toast"></div>
-
     <div class="top-bar">
-        <button class="back-btn" onclick="window.location.href='../index.html'"><i class="fas fa-arrow-left"></i></button>
+        <button onclick="window.location.href='../index.html'"><i class="fas fa-arrow-left"></i></button>
         <h1><i class="fas fa-inbox"></i> ইনবক্স</h1>
-        <button class="search-btn"><i class="fas fa-search"></i></button>
+        <button><i class="fas fa-search"></i></button>
     </div>
 
     <div class="inbox-tabs">
@@ -262,14 +114,6 @@
         let currentFilter = 'all';
         let allNotifications = [];
 
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            toast.textContent = msg;
-            toast.classList.add('show');
-            clearTimeout(toast._timer);
-            toast._timer = setTimeout(() => toast.classList.remove('show'), 2500);
-        }
-
         function timeAgo(timestamp) {
             if (!timestamp) return '';
             const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
@@ -291,7 +135,6 @@
             await loadNotifications();
         });
 
-        // Tabs
         document.querySelectorAll('.inbox-tabs .tab').forEach(tab => {
             tab.addEventListener('click', () => {
                 document.querySelectorAll('.inbox-tabs .tab').forEach(t => t.classList.remove('active'));
@@ -311,17 +154,18 @@
             `;
 
             try {
-                // orderBy বাদ দিয়ে শুধু where (index লাগে না)
-                const snap = await db.collection('notifications')
+                const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 7000));
+                const query = db.collection('notifications')
                     .where('toUserId', '==', currentUser.uid)
                     .get();
+
+                const snap = await Promise.race([query, timeout]);
 
                 allNotifications = [];
                 snap.forEach(doc => {
                     allNotifications.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Client-side sort
                 allNotifications.sort((a, b) => {
                     const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.createdAt || 0);
                     const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.createdAt || 0);
@@ -330,21 +174,16 @@
 
                 renderNotifications();
             } catch (e) {
-                console.error('Notifications error:', e);
-                list.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <div class="title">লোড করতে ব্যর্থ হয়েছে</div>
-                        <div class="subtitle">পরে আবার চেষ্টা করুন</div>
-                    </div>
-                `;
+                console.error(e);
+                allNotifications = [];
+                renderNotifications();
             }
         }
 
         function renderNotifications() {
             const list = document.getElementById('notifications-list');
-
             let filtered = allNotifications;
+
             if (currentFilter !== 'all') {
                 filtered = allNotifications.filter(n => n.type === currentFilter);
             }
@@ -362,18 +201,18 @@
 
             let html = '';
             filtered.forEach(n => {
-                const avatar = n.fromPhotoURL && n.fromPhotoURL.startsWith('http')
+                const avatar = (n.fromPhotoURL && n.fromPhotoURL.startsWith('http'))
                     ? n.fromPhotoURL
-                    : `https://ui-avatars.com/api/?name=${encodeURIComponent(n.fromUsername || 'U')}&background=25f4ee&color=000&bold=true`;
+                    : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(n.fromUsername || 'U') + '&background=25f4ee&color=000&bold=true';
 
                 let actionText = '';
                 if (n.type === 'like') actionText = 'আপনার ভিডিও লাইক করেছেন';
                 else if (n.type === 'follow') actionText = 'আপনাকে ফলো করেছেন';
-                else if (n.type === 'comment') actionText = `কমেন্ট করেছেন: “${n.text || ''}”`;
+                else if (n.type === 'comment') actionText = 'কমেন্ট করেছেন: “' + (n.text || '') + '”';
                 else actionText = 'নতুন নোটিফিকেশন';
 
                 html += `
-                    <div class="notification-item" data-id="\( {n.id}" data-from=" \){n.fromUserId || ''}">
+                    <div class="notification-item" data-from="${n.fromUserId || ''}">
                         <img class="avatar" src="${avatar}" onerror="this.src='https://ui-avatars.com/api/?name=U&background=25f4ee&color=000'">
                         <div class="content">
                             <div class="text">
@@ -381,7 +220,6 @@
                             </div>
                             <div class="time">${timeAgo(n.createdAt)}</div>
                         </div>
-                        \( {n.videoThumb ? `<img class="thumb" src=" \){n.videoThumb}">` : ''}
                         ${!n.read ? '<div class="unread-dot"></div>' : ''}
                     </div>
                 `;
@@ -389,13 +227,10 @@
 
             list.innerHTML = html;
 
-            // Click → go to profile
             list.querySelectorAll('.notification-item').forEach(item => {
                 item.addEventListener('click', () => {
-                    const fromUid = item.dataset.from;
-                    if (fromUid) {
-                        window.location.href = `profile.html?uid=${fromUid}`;
-                    }
+                    const from = item.dataset.from;
+                    if (from) window.location.href = 'profile.html?uid=' + from;
                 });
             });
         }
