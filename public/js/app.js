@@ -1,9 +1,7 @@
 // ========================================
-// WWC - SIMPLE WORKING APP
+// WWC - TIKTOK STYLE COMPLETE APP
+// All features: Like, Comment, Save, Follow, Profile, Search
 // ========================================
-
-// Firebase ইতিমধ্যে firebase-config.js এ initialized আছে
-// তাই এখানে শুধু ব্যবহার করছি
 
 // ===== DOM REFS =====
 const feed = document.getElementById('video-feed');
@@ -27,7 +25,6 @@ let followingUsers = new Set();
 let currentFeed = 'foryou';
 let currentVideoId = null;
 
-
 // ========================================
 // AUTH
 // ========================================
@@ -37,6 +34,7 @@ auth.onAuthStateChanged(async (user) => {
         return;
     }
     currentUser = user;
+    console.log('✅ User logged in:', currentUser.uid);
     await loadUserData();
     await loadVideos();
 });
@@ -64,6 +62,7 @@ async function loadUserData() {
 // ========================================
 async function loadVideos() {
     try {
+        console.log('📹 Loading videos...');
         const snapshot = await db.collection('videos')
             .orderBy('createdAt', 'desc')
             .limit(50)
@@ -72,15 +71,18 @@ async function loadVideos() {
         allVideos = [];
         snapshot.forEach(doc => {
             const data = doc.data();
-            // Make sure uid exists
             if (!data.uid) data.uid = data.userId || '';
             allVideos.push({ id: doc.id, ...data });
         });
 
         console.log('✅ Videos loaded:', allVideos.length);
+        if (allVideos.length === 0) {
+            if (feed) feed.innerHTML = `<div class="feed-loading">🎬 কোনো ভিডিও নেই</div>`;
+            return;
+        }
         renderFeed();
     } catch (e) {
-        console.error('Video load error:', e);
+        console.error('❌ Video load error:', e);
         if (feed) feed.innerHTML = `<div class="feed-loading error">❌ ${e.message}</div>`;
     }
 }
@@ -90,11 +92,6 @@ async function loadVideos() {
 // ========================================
 function renderFeed() {
     if (!feed) return;
-
-    if (!allVideos.length) {
-        feed.innerHTML = `<div class="feed-loading">🎬 কোনো ভিডিও নেই</div>`;
-        return;
-    }
 
     let videos = allVideos;
     if (currentFeed === 'following') {
@@ -116,7 +113,7 @@ function renderFeed() {
 }
 
 // ========================================
-// CREATE VIDEO CARD
+// ✅ CREATE VIDEO CARD - TikTok Style
 // ========================================
 function createVideoCard(video) {
     const card = document.createElement('div');
@@ -133,13 +130,18 @@ function createVideoCard(video) {
     const caption = video.caption || '';
     const sound = video.sound || '🎵 Original sound';
 
+    // ✅ Profile pic click handler
+    const goToProfile = (uid) => {
+        if (uid) window.location.href = `profile.html?uid=${uid}`;
+    };
+
     card.innerHTML = `
         <video src="${videoUrl}" loop muted playsinline preload="metadata"></video>
         <div class="mute-indicator"><i class="fas fa-volume-mute"></i></div>
 
         <div class="side-actions">
             <div class="profile-pic-wrap">
-                <img class="profile-pic" src="${photoUrl || './images/profile.png'}" onerror="this.src='./images/profile.png'">
+                <img class="profile-pic" src="${photoUrl || './images/profile.png'}" onerror="this.src='./images/profile.png'" data-uid="${video.uid}">
                 ${video.uid && video.uid !== currentUser?.uid ? `
                     <button class="follow-btn ${isFollowing ? 'following' : ''}" data-uid="${video.uid}">${isFollowing ? '✓' : '+'}</button>
                 ` : ''}
@@ -165,7 +167,7 @@ function createVideoCard(video) {
                 <span>শেয়ার</span>
             </button>
 
-            <div class="music-disc">
+            <div class="music-disc" data-uid="${video.uid}">
                 <i class="fas fa-music"></i>
             </div>
         </div>
@@ -173,17 +175,18 @@ function createVideoCard(video) {
         <div class="bottom-info">
             <span class="username" data-uid="${video.uid}">@${username}</span>
             <div class="caption">${caption}</div>
-            <div class="music-info">
+            <div class="music-info" data-uid="${video.uid}">
                 <i class="fas fa-music"></i>
                 <span class="music-text">${sound}</span>
             </div>
         </div>
     `;
 
-    // ===== VIDEO EVENTS =====
+    // ===== ✅ VIDEO EVENTS =====
     const videoEl = card.querySelector('video');
     const muteIndicator = card.querySelector('.mute-indicator');
 
+    // Click = mute toggle
     videoEl.addEventListener('click', (e) => {
         e.stopPropagation();
         videoEl.muted = !videoEl.muted;
@@ -192,52 +195,94 @@ function createVideoCard(video) {
         setTimeout(() => muteIndicator.classList.remove('show'), 800);
     });
 
+    // Double click = like
     videoEl.addEventListener('dblclick', (e) => {
         e.preventDefault();
         const likeBtn = card.querySelector('.like-btn');
         if (likeBtn) toggleLike(likeBtn);
     });
 
-    // ===== BUTTON EVENTS =====
-    card.querySelector('.like-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleLike(e.currentTarget);
-    });
+    // ===== ✅ PROFILE CLICK (TikTok Style) =====
+    // Profile pic click
+    const profilePic = card.querySelector('.profile-pic');
+    if (profilePic) {
+        profilePic.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const uid = profilePic.dataset.uid;
+            if (uid) goToProfile(uid);
+        });
+    }
 
-    card.querySelector('.comment-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        openComment(e.currentTarget.dataset.videoId);
-    });
+    // Username click
+    const usernameEl = card.querySelector('.username');
+    if (usernameEl) {
+        usernameEl.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const uid = usernameEl.dataset.uid;
+            if (uid) goToProfile(uid);
+        });
+    }
 
-    card.querySelector('.save-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleSave(e.currentTarget);
-    });
+    // Music disc click
+    const musicDisc = card.querySelector('.music-disc');
+    if (musicDisc) {
+        musicDisc.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const uid = musicDisc.dataset.uid;
+            if (uid) goToProfile(uid);
+        });
+    }
 
-    card.querySelector('.share-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        shareVideo(e.currentTarget.dataset.videoId);
-    });
+    // Music info click
+    const musicInfo = card.querySelector('.music-info');
+    if (musicInfo) {
+        musicInfo.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const uid = musicInfo.dataset.uid;
+            if (uid) goToProfile(uid);
+        });
+    }
+
+    // ===== ✅ BUTTON EVENTS =====
+    const likeBtn = card.querySelector('.like-btn');
+    if (likeBtn) {
+        likeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleLike(likeBtn);
+        });
+    }
+
+    const commentBtn = card.querySelector('.comment-btn');
+    if (commentBtn) {
+        commentBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openComment(commentBtn.dataset.videoId);
+        });
+    }
+
+    const saveBtn = card.querySelector('.save-btn');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleSave(saveBtn);
+        });
+    }
+
+    const shareBtn = card.querySelector('.share-btn');
+    if (shareBtn) {
+        shareBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            shareVideo(shareBtn.dataset.videoId);
+        });
+    }
 
     const followBtn = card.querySelector('.follow-btn');
     if (followBtn) {
         followBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            toggleFollow(e.currentTarget);
+            toggleFollow(followBtn);
         });
     }
-
-    // ===== PROFILE CLICK =====
-    card.querySelector('.profile-pic').addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (video.uid) window.location.href = `profile.html?uid=${video.uid}`;
-    });
-
-    card.querySelector('.username').addEventListener('click', (e) => {
-        e.stopPropagation();
-        const uid = e.currentTarget.dataset.uid;
-        if (uid) window.location.href = `profile.html?uid=${uid}`;
-    });
 
     return card;
 }
@@ -505,7 +550,7 @@ if (searchInput) {
                 <span class="search-result-name">@${escapeHtml(v.username || 'WWC User')}</span>
             `;
             div.addEventListener('click', () => {
-                if (v.uid) window.location.href = `profile.html?uid=${v.uid}`;
+                if (v.uid) goToProfile(v.uid);
             });
             searchResults.appendChild(div);
         });
@@ -556,6 +601,14 @@ function setupVideoObserver() {
 }
 
 // ========================================
+// ✅ GO TO PROFILE
+// ========================================
+function goToProfile(uid) {
+    if (!uid) return;
+    window.location.href = `profile.html?uid=${uid}`;
+}
+
+// ========================================
 // ✅ HELPERS
 // ========================================
 function formatNumber(num) {
@@ -593,4 +646,4 @@ function showToast(message) {
     toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 2500);
 }
 
-console.log('✅ WWC App Loaded!');
+console.log('✅ WWC TikTok Style App Loaded!');
