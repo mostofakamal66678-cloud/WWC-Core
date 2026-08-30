@@ -15,8 +15,17 @@
         .top .back-btn, .top .settings-btn { background:none; border:none; color:#fff; font-size:20px; cursor:pointer; width:40px; height:40px; display:flex; align-items:center; justify-content:center; }
 
         .profile-header { padding:20px 16px 16px; display:flex; align-items:center; gap:16px; border-bottom:1px solid #222; }
-        .profile-avatar { width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg,#fe2c55,#25f4ee); display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:700; color:#000; flex-shrink:0; overflow:hidden; }
+        .avatar-wrap { position:relative; flex-shrink:0; }
+        .profile-avatar { width:80px; height:80px; border-radius:50%; background:linear-gradient(135deg,#fe2c55,#25f4ee); display:flex; align-items:center; justify-content:center; font-size:34px; font-weight:700; color:#000; overflow:hidden; }
         .profile-avatar img { width:100%; height:100%; object-fit:cover; }
+        .profile-avatar.editable { cursor:pointer; }
+        .avatar-edit-badge {
+            position:absolute; bottom:-2px; right:-2px;
+            width:26px; height:26px; border-radius:50%;
+            background:#fe2c55; border:2px solid #000;
+            display:none; align-items:center; justify-content:center;
+            font-size:12px; color:#fff; cursor:pointer;
+        }
         .profile-stats { flex:1; display:flex; justify-content:space-around; }
         .stat-item { text-align:center; }
         .stat-item .num { font-size:20px; font-weight:700; }
@@ -81,7 +90,6 @@
 
         .save-bar { padding:12px 16px; border-top:1px solid #222; }
         .save-bar button { width:100%; padding:14px; border:none; border-radius:12px; background:#fe2c55; color:#fff; font-size:16px; font-weight:700; cursor:pointer; }
-        
         .save-bar button:active { opacity:0.85; }
 
         .confirm-dialog { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:350; justify-content:center; align-items:center; }
@@ -244,7 +252,11 @@
     </div>
 
     <div class="profile-header">
-        <div class="profile-avatar" id="profile-avatar">U</div>
+        <div class="avatar-wrap">
+            <div class="profile-avatar" id="profile-avatar">U</div>
+            <div class="avatar-edit-badge" id="avatar-edit-badge"><i class="fas fa-camera"></i></div>
+            <input type="file" id="avatar-file-input" accept="image/*" style="display:none;">
+        </div>
         <div class="profile-stats">
             <div class="stat-item"><div class="num" id="video-count">0</div><div class="label">ভিডিও</div></div>
             <div class="stat-item"><div class="num" id="follower-count">0</div><div class="label">ফলোয়ার</div></div>
@@ -317,12 +329,14 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
     <script src="firebase-config.js"></script>
 
     <script>
         let currentUser = null;
         let targetUserId = null;
         let currentTab = 'videos';
+        let isOwnProfile = false;
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
@@ -356,6 +370,56 @@
         document.getElementById('back-btn').addEventListener('click', () => {
             window.location.href = '../../index.html';
         });
+
+        // ===== প্রোফাইল ছবি পরিবর্তন =====
+        const profileAvatarEl = document.getElementById('profile-avatar');
+        const avatarEditBadge = document.getElementById('avatar-edit-badge');
+        const avatarFileInput = document.getElementById('avatar-file-input');
+
+        function openAvatarPicker() {
+            if (!isOwnProfile) return;
+            avatarFileInput.click();
+        }
+        profileAvatarEl.addEventListener('click', openAvatarPicker);
+        avatarEditBadge.addEventListener('click', openAvatarPicker);
+
+        avatarFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) uploadAvatar(file);
+            e.target.value = '';
+        });
+
+        async function uploadAvatar(file) {
+            if (!file || !currentUser) return;
+            if (!file.type.startsWith('image/')) {
+                showToast('❌ ছবি ফাইল সিলেক্ট করুন');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('❌ ছবি 5MB এর বেশি বড়');
+                return;
+            }
+
+            showToast('⏳ ছবি আপলোড হচ্ছে...');
+            try {
+                const fileName = `avatars/${currentUser.uid}/${Date.now()}_${file.name}`;
+                const ref = storage.ref(fileName);
+                await ref.put(file);
+                const url = await ref.getDownloadURL();
+
+                await db.collection('users').doc(currentUser.uid).set({ photoURL: url }, { merge: true });
+
+                profileAvatarEl.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = url;
+                profileAvatarEl.appendChild(img);
+
+                showToast('✅ প্রোফাইল ছবি আপডেট হয়েছে');
+            } catch (e) {
+                console.error('Avatar upload error:', e);
+                showToast('❌ ছবি আপলোড ব্যর্থ হয়েছে');
+            }
+        }
 
         // TABS
         document.querySelectorAll('.profile-tabs .tab').forEach(tab => {
@@ -398,7 +462,6 @@
             document.getElementById('display-name').textContent = name;
             document.getElementById('username').textContent = `@${username}`;
             document.getElementById('bio').textContent = bio || 'হ্যালো, আমি WWC ব্যবহার করছি';
-            document.getElementById('profile-avatar').textContent = name[0].toUpperCase();
 
             try {
                 await db.collection('users').doc(currentUser.uid).set({
@@ -473,6 +536,16 @@
         // LOAD PROFILE
         async function loadProfile(uid) {
             const isOwn = (uid === currentUser.uid);
+            isOwnProfile = isOwn;
+
+            if (isOwn) {
+                profileAvatarEl.classList.add('editable');
+                avatarEditBadge.style.display = 'flex';
+            } else {
+                profileAvatarEl.classList.remove('editable');
+                avatarEditBadge.style.display = 'none';
+            }
+
             let userData = {};
 
             try {
@@ -496,15 +569,14 @@
             const displayName = userData.displayName || userData.username || userData.name || 'ইউজার';
             const username = (userData.username || displayName).toLowerCase().replace(/\s+/g, '_');
 
-            const avatarEl = document.getElementById('profile-avatar');
-            avatarEl.innerHTML = '';
+            profileAvatarEl.innerHTML = '';
             if (userData.photoURL && userData.photoURL.startsWith('http')) {
                 const img = document.createElement('img');
                 img.src = userData.photoURL;
-                img.onerror = () => { avatarEl.textContent = displayName[0] ? displayName[0].toUpperCase() : 'U'; };
-                avatarEl.appendChild(img);
+                img.onerror = () => { profileAvatarEl.textContent = displayName[0] ? displayName[0].toUpperCase() : 'U'; };
+                profileAvatarEl.appendChild(img);
             } else {
-                avatarEl.textContent = displayName[0] ? displayName[0].toUpperCase() : 'U';
+                profileAvatarEl.textContent = displayName[0] ? displayName[0].toUpperCase() : 'U';
             }
 
             document.getElementById('display-name').textContent = displayName;
@@ -636,6 +708,15 @@
                     btn.textContent = 'ফলোয়িং';
                     btn.classList.add('following');
                     showToast('ফলো করা হয়েছে');
+
+                    db.collection('notifications').add({
+                        toUserId: uid,
+                        fromUserId: currentUser.uid,
+                        fromUsername: currentUser.displayName || 'user',
+                        type: 'follow',
+                        read: false,
+                        createdAt: Date.now()
+                    }).catch(() => {});
                 }
                 await loadStats(uid);
             } catch (e) {
