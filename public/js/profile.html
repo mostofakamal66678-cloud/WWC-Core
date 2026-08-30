@@ -318,6 +318,25 @@
         </div>
     </div>
 
+    <!-- অন্যের প্রোফাইলে রিপোর্ট/ব্লক অপশন -->
+    <div class="settings-modal" id="user-options-modal">
+        <div class="settings-box">
+            <div class="settings-handle"></div>
+            <div class="settings-header">
+                <h3>অপশন</h3>
+                <button id="close-user-options"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="settings-item" id="report-user-btn" style="color:#fe2c55;">
+                <i class="fas fa-flag" style="color:#fe2c55;"></i>
+                <span>এই ইউজারকে রিপোর্ট করুন</span>
+            </div>
+            <div class="settings-item" id="block-user-btn" style="color:#fe2c55;">
+                <i class="fas fa-user-slash" style="color:#fe2c55;"></i>
+                <span id="block-user-label">ব্লক করুন</span>
+            </div>
+        </div>
+    </div>
+
     <nav class="bottom-nav">
         <a href="../../index.html" class="nav-item"><i class="fas fa-home"></i><span>হোম</span></a>
         <a href="friends.html" class="nav-item"><i class="fas fa-users"></i><span>বন্ধু</span></a>
@@ -433,9 +452,71 @@
 
         // SETTINGS
         const settingsModal = document.getElementById('settings-modal');
-        document.getElementById('settings-btn').addEventListener('click', () => settingsModal.classList.add('active'));
+        const userOptionsModal = document.getElementById('user-options-modal');
+        document.getElementById('settings-btn').addEventListener('click', () => {
+            if (isOwnProfile) {
+                settingsModal.classList.add('active');
+            } else {
+                userOptionsModal.classList.add('active');
+            }
+        });
         document.getElementById('close-settings').addEventListener('click', () => settingsModal.classList.remove('active'));
         settingsModal.addEventListener('click', e => { if (e.target === settingsModal) settingsModal.classList.remove('active'); });
+
+        document.getElementById('close-user-options').addEventListener('click', () => userOptionsModal.classList.remove('active'));
+        userOptionsModal.addEventListener('click', e => { if (e.target === userOptionsModal) userOptionsModal.classList.remove('active'); });
+
+        // রিপোর্ট (প্রোফাইল)
+        document.getElementById('report-user-btn').addEventListener('click', async () => {
+            userOptionsModal.classList.remove('active');
+            try {
+                await db.collection('reports').add({
+                    reporterId: currentUser.uid,
+                    targetType: 'user',
+                    reportedUserId: targetUserId,
+                    reason: 'প্রোফাইল রিপোর্ট',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                showToast('✅ রিপোর্ট পাঠানো হয়েছে, ধন্যবাদ');
+            } catch (e) {
+                console.error('Report error:', e);
+                showToast('❌ রিপোর্ট পাঠাতে সমস্যা হয়েছে');
+            }
+        });
+
+        // ব্লক/আনব্লক (প্রোফাইল)
+        let isBlockedTarget = false;
+        async function refreshBlockLabel() {
+            try {
+                const blockId = currentUser.uid + '_' + targetUserId;
+                const doc = await db.collection('blocks').doc(blockId).get();
+                isBlockedTarget = doc.exists;
+                document.getElementById('block-user-label').textContent = isBlockedTarget ? 'আনব্লক করুন' : 'ব্লক করুন';
+            } catch (e) {}
+        }
+        document.getElementById('block-user-btn').addEventListener('click', async () => {
+            userOptionsModal.classList.remove('active');
+            const blockId = currentUser.uid + '_' + targetUserId;
+            try {
+                if (isBlockedTarget) {
+                    await db.collection('blocks').doc(blockId).delete();
+                    isBlockedTarget = false;
+                    showToast('ব্লক তুলে নেওয়া হয়েছে');
+                } else {
+                    await db.collection('blocks').doc(blockId).set({
+                        blockerId: currentUser.uid,
+                        blockedId: targetUserId,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    isBlockedTarget = true;
+                    showToast('🚫 ইউজার ব্লক করা হয়েছে');
+                }
+                document.getElementById('block-user-label').textContent = isBlockedTarget ? 'আনব্লক করুন' : 'ব্লক করুন';
+            } catch (e) {
+                console.error('Block error:', e);
+                showToast('❌ সমস্যা হয়েছে');
+            }
+        });
 
         // Open Edit
         document.getElementById('open-edit').addEventListener('click', () => {
@@ -609,6 +690,7 @@
                 followBtn.style.display = 'block';
                 await updateFollowButton(uid, followBtn);
                 followBtn.onclick = () => toggleFollow(uid, followBtn);
+                await refreshBlockLabel();
             } else {
                 followBtn.style.display = 'none';
             }
