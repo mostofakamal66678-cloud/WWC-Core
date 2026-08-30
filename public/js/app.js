@@ -91,7 +91,7 @@ async function loadVideos() {
         renderFeed();
     } catch (e) {
         console.error(e);
-        if (feed) feed.innerHTML = '<div class="feed-loading error">ভিডিও লোড হয়নি</div>';
+        if (feed) feed.innerHTML = '<div class="feed-loading error">ভিডিও লোড হয়নি</div>';
     }
 }
 
@@ -251,7 +251,7 @@ async function toggleLike(btn) {
         btn.classList.toggle('liked', isLiked);
         countSpan.textContent = formatNumber(currentCount);
         console.error('Like error:', e);
-        showToast('লাইক সেভ হয়নি');
+        showToast('লাইক সেভ হয়নি');
     }
     btn.disabled = false;
 }
@@ -281,12 +281,12 @@ async function toggleSave(btn) {
             await saveRef.set({ userId: currentUser.uid, videoId: videoId, createdAt: Date.now() });
             await videoRef.update({ saves: firebase.firestore.FieldValue.increment(1) });
             savedVideos.add(videoId);
-            showToast('সেভ করা হয়েছে');
+            showToast('সেভ করা হয়েছে');
         }
     } catch (e) {
         btn.classList.toggle('saved', isSaved);
         countSpan.textContent = formatNumber(currentCount);
-        showToast('সেভ হয়নি');
+        showToast('সেভ হয়নি');
     }
     btn.disabled = false;
 }
@@ -309,13 +309,13 @@ async function toggleFollow(btn) {
             followingUsers.delete(targetUid);
             btn.classList.remove('following');
             btn.textContent = '+';
-            showToast('আনফলো করা হয়েছে');
+            showToast('আনফলো করা হয়েছে');
         } else {
             await followRef.set({ follower: currentUser.uid, following: targetUid, createdAt: Date.now() });
             followingUsers.add(targetUid);
             btn.classList.add('following');
             btn.textContent = '✓';
-            showToast('ফলো করা হয়েছে');
+            showToast('ফলো করা হয়েছে');
         }
     } catch (e) {
         showToast('ফলো ব্যর্থ');
@@ -363,7 +363,7 @@ async function loadComments(videoId) {
             commentList.appendChild(div);
         });
     } catch (e) {
-        commentList.innerHTML = '<div style="text-align:center;color:#f44336;padding:20px;">মন্তব্য লোড হয়নি</div>';
+        commentList.innerHTML = '<div style="text-align:center;color:#f44336;padding:20px;">মন্তব্য লোড হয়নি</div>';
     }
 }
 
@@ -411,7 +411,7 @@ async function submitComment() {
         var video = allVideos.find(function (v) { return v.id === currentVideoId; });
         if (video) video.comments = (video.comments || 0) + 1;
 
-        showToast('মন্তব্য যোগ হয়েছে');
+        showToast('মন্তব্য যোগ হয়েছে');
 
         try {
             var videoDoc = await db.collection('videos').doc(currentVideoId).get();
@@ -445,10 +445,10 @@ async function shareVideo(videoId) {
             await navigator.share({ title: 'WWC', text: 'এই ভিডিও দেখুন!', url: url });
         } else {
             await navigator.clipboard.writeText(url);
-            showToast('লিংক কপি হয়েছে');
+            showToast('লিংক কপি হয়েছে');
         }
     } catch (e) {
-        if (e.name !== 'AbortError') showToast('শেয়ার ব্যর্থ');
+        if (e.name !== 'AbortError') showToast('শেয়ার ব্যর্থ');
     }
 }
 
