@@ -48,6 +48,36 @@
         </div>
     </div>
 
+    <!-- ভিডিও অপশন শিট (রিপোর্ট / ব্লক) -->
+    <div id="video-options-sheet" class="comment-sheet short">
+        <div class="comment-header">
+            <div class="handle"></div>
+            <h3>অপশন</h3>
+            <button id="close-video-options"><i class="fas fa-times"></i></button>
+        </div>
+        <div style="padding:8px 16px 24px;">
+            <button class="option-btn" id="opt-report-video"><i class="fas fa-flag"></i> রিপোর্ট ভিডিও</button>
+            <button class="option-btn danger" id="opt-block-user"><i class="fas fa-user-slash"></i> ইউজার ব্লক করুন</button>
+        </div>
+    </div>
+
+    <!-- রিপোর্ট কারণ শিট -->
+    <div id="report-sheet" class="comment-sheet short">
+        <div class="comment-header">
+            <div class="handle"></div>
+            <h3>কেন রিপোর্ট করছেন?</h3>
+            <button id="close-report"><i class="fas fa-times"></i></button>
+        </div>
+        <div style="padding:8px 16px 24px;">
+            <button class="option-btn report-reason-btn" data-reason="স্প্যাম">স্প্যাম</button>
+            <button class="option-btn report-reason-btn" data-reason="অনুপযুক্ত কন্টেন্ট">অনুপযুক্ত কন্টেন্ট</button>
+            <button class="option-btn report-reason-btn" data-reason="সহিংসতা বা বিপজ্জনক কাজ">সহিংসতা বা বিপজ্জনক কাজ</button>
+            <button class="option-btn report-reason-btn" data-reason="হয়রানি বা বুলিং">হয়রানি বা বুলিং</button>
+            <button class="option-btn report-reason-btn" data-reason="মিথ্যা তথ্য">মিথ্যা তথ্য</button>
+            <button class="option-btn report-reason-btn" data-reason="অন্যান্য">অন্যান্য</button>
+        </div>
+    </div>
+
     <!-- বটম নেভবার -->
     <nav class="bottom-nav">
         <a href="index.html" class="nav-item active">
@@ -82,4 +112,4 @@
     <script src="public/js/app.js"></script>
 
 </body>
-</html>
+    </html>
