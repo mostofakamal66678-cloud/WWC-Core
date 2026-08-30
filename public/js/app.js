@@ -1,8 +1,9 @@
-// ========================================
-// WWC - COMPLETE VIDEO FEED APP
+// =====================================================
+// WWC - WORLD WIDE CONNECT
+// FINAL FEED
 // Like + Save + Comment + Follow
-// Counter + Scroll + Auto Play + Search
-// ========================================
+// Swipe Video + Auto Play + Search
+// =====================================================
 
 const feed = document.getElementById("video-feed");
 
@@ -17,7 +18,6 @@ const commentList = document.getElementById("comment-list");
 const commentInput = document.getElementById("comment-input");
 const commentSubmit = document.getElementById("comment-submit");
 const closeComment = document.getElementById("close-comment");
-
 
 let currentUser = null;
 let currentUserData = null;
@@ -38,56 +38,49 @@ let allUsersCache = null;
 
 let searchDebounce = null;
 
+let isChangingVideo = false;
 
-// ========================================
-// AUTH
-// ========================================
+
+/* =====================================================
+   AUTH
+===================================================== */
 
 auth.onAuthStateChanged(async function (user) {
 
     if (!user) {
-
         window.location.href = "public/js/auth.html";
-
         return;
     }
 
     currentUser = user;
 
     try {
-
         await loadCurrentUserProfile();
-
         await loadUserData();
-
         await loadVideos();
-
     } catch (error) {
-
-        console.error("WWC startup error:", error);
+        console.error("WWC initialization error:", error);
 
         if (feed) {
-
             feed.innerHTML =
                 '<div class="feed-loading error">' +
-                'অ্যাপ লোড করতে সমস্যা হয়েছে' +
-                '</div>';
-
+                "অ্যাপ লোড করতে সমস্যা হয়েছে" +
+                "</div>";
         }
     }
 });
 
 
-// ========================================
-// CURRENT USER PROFILE
-// ========================================
+/* =====================================================
+   CURRENT USER PROFILE
+===================================================== */
 
 async function loadCurrentUserProfile() {
 
     try {
 
-        const ref = db
-            .collection("users")
+        const ref =
+            db.collection("users")
             .doc(currentUser.uid);
 
         const snap = await ref.get();
@@ -98,27 +91,23 @@ async function loadCurrentUserProfile() {
 
         } else {
 
-            const username =
-                currentUser.displayName ||
-                ("wwc_" + currentUser.uid.substring(0, 8));
-
             currentUserData = {
 
                 uid: currentUser.uid,
 
-                username: username,
+                username:
+                    currentUser.displayName ||
+                    "wwc_user",
 
                 displayName:
                     currentUser.displayName ||
                     "WWC User",
 
                 email:
-                    currentUser.email ||
-                    "",
+                    currentUser.email || "",
 
                 photoURL:
-                    currentUser.photoURL ||
-                    "",
+                    currentUser.photoURL || "",
 
                 bio:
                     "হ্যালো, আমি WWC ব্যবহার করছি",
@@ -136,33 +125,25 @@ async function loadCurrentUserProfile() {
     } catch (error) {
 
         console.error(
-            "Profile error:",
+            "Profile load error:",
             error
         );
 
         currentUserData = {
 
-            uid: currentUser.uid,
+            username: "wwc_user",
 
-            username:
-                currentUser.displayName ||
-                "wwc_user",
+            displayName: "WWC User",
 
-            displayName:
-                currentUser.displayName ||
-                "WWC User",
-
-            photoURL:
-                currentUser.photoURL ||
-                ""
+            photoURL: ""
         };
     }
 }
 
 
-// ========================================
-// LOAD USER DATA
-// ========================================
+/* =====================================================
+   LOAD USER DATA
+===================================================== */
 
 async function loadUserData() {
 
@@ -172,11 +153,10 @@ async function loadUserData() {
 
     try {
 
-        // -------------------------------
-        // LIKES
-        // -------------------------------
+        /* ---------- LIKES ---------- */
 
-        const likesSnap = await db
+        const likesSnap =
+            await db
             .collection("likes")
             .where(
                 "userId",
@@ -190,7 +170,6 @@ async function loadUserData() {
             const data = doc.data();
 
             if (data.videoId) {
-
                 likedVideos.add(
                     data.videoId
                 );
@@ -198,11 +177,10 @@ async function loadUserData() {
         });
 
 
-        // -------------------------------
-        // SAVES
-        // -------------------------------
+        /* ---------- SAVES ---------- */
 
-        const savesSnap = await db
+        const savesSnap =
+            await db
             .collection("saves")
             .where(
                 "userId",
@@ -216,7 +194,6 @@ async function loadUserData() {
             const data = doc.data();
 
             if (data.videoId) {
-
                 savedVideos.add(
                     data.videoId
                 );
@@ -224,11 +201,10 @@ async function loadUserData() {
         });
 
 
-        // -------------------------------
-        // FOLLOWS
-        // -------------------------------
+        /* ---------- FOLLOWS ---------- */
 
-        const followsSnap = await db
+        const followsSnap =
+            await db
             .collection("follows")
             .where(
                 "follower",
@@ -242,7 +218,6 @@ async function loadUserData() {
             const data = doc.data();
 
             if (data.following) {
-
                 followingUsers.add(
                     data.following
                 );
@@ -259,9 +234,9 @@ async function loadUserData() {
 }
 
 
-// ========================================
-// LOAD VIDEOS
-// ========================================
+/* =====================================================
+   LOAD VIDEOS
+===================================================== */
 
 async function loadVideos() {
 
@@ -269,18 +244,22 @@ async function loadVideos() {
 
     feed.innerHTML =
         '<div class="feed-loading">' +
-        'ভিডিও লোড হচ্ছে...' +
-        '</div>';
+        "ভিডিও লোড হচ্ছে..." +
+        "</div>";
 
     try {
 
-        const snapshot = await db
+        /*
+         * orderBy ব্যবহার না করে সব ভিডিও এনে
+         * client-side sort করছি।
+         *
+         * এতে createdAt/index সমস্যা কম হবে।
+         */
+
+        const snapshot =
+            await db
             .collection("videos")
-            .orderBy(
-                "createdAt",
-                "desc"
-            )
-            .limit(50)
+            .limit(100)
             .get();
 
         allVideos = [];
@@ -289,36 +268,51 @@ async function loadVideos() {
 
             const data = doc.data();
 
-            const video = {
+            let uid =
+                data.uid ||
+                data.userId ||
+                "";
+
+            let createdAt = 0;
+
+            if (
+                data.createdAt &&
+                typeof data.createdAt.toMillis === "function"
+            ) {
+
+                createdAt =
+                    data.createdAt.toMillis();
+
+            } else if (
+                typeof data.createdAt === "number"
+            ) {
+
+                createdAt =
+                    data.createdAt;
+            }
+
+            allVideos.push({
 
                 id: doc.id,
 
-                ...data
-            };
+                ...data,
 
-            if (!video.uid) {
+                uid: uid,
 
-                video.uid =
-                    video.userId ||
-                    "";
-            }
+                createdAtValue:
+                    createdAt
+            });
+        });
 
-            if (!video.likes) {
 
-                video.likes = 0;
-            }
+        /* ---------- NEWEST FIRST ---------- */
 
-            if (!video.comments) {
+        allVideos.sort(function (a, b) {
 
-                video.comments = 0;
-            }
-
-            if (!video.saves) {
-
-                video.saves = 0;
-            }
-
-            allVideos.push(video);
+            return (
+                b.createdAtValue -
+                a.createdAtValue
+            );
         });
 
 
@@ -326,8 +320,8 @@ async function loadVideos() {
 
             feed.innerHTML =
                 '<div class="feed-loading">' +
-                'এখনো কোনো ভিডিও নেই' +
-                '</div>';
+                "কোনো ভিডিও নেই" +
+                "</div>";
 
             return;
         }
@@ -338,21 +332,21 @@ async function loadVideos() {
     } catch (error) {
 
         console.error(
-            "Video loading error:",
+            "Video load error:",
             error
         );
 
         feed.innerHTML =
             '<div class="feed-loading error">' +
-            'ভিডিও লোড হয়নি। Firebase Rules এবং createdAt চেক করুন।' +
-            '</div>';
+            "ভিডিও লোড হয়নি" +
+            "</div>";
     }
 }
 
 
-// ========================================
-// RENDER FEED
-// ========================================
+/* =====================================================
+   RENDER FEED
+===================================================== */
 
 function renderFeed() {
 
@@ -360,17 +354,15 @@ function renderFeed() {
 
     let videos = allVideos;
 
-
     if (currentFeed === "following") {
 
-        videos = allVideos.filter(
-            function (video) {
+        videos =
+            allVideos.filter(function (video) {
 
                 return followingUsers.has(
                     video.uid
                 );
-            }
-        );
+            });
     }
 
 
@@ -380,10 +372,10 @@ function renderFeed() {
             '<div class="feed-loading">' +
             (
                 currentFeed === "following"
-                    ? "আপনি এখনো কাউকে Follow করেননি"
+                    ? "আপনি কাউকে Follow করেননি"
                     : "কোনো ভিডিও পাওয়া যায়নি"
             ) +
-            '</div>';
+            "</div>";
 
         return;
     }
@@ -402,21 +394,20 @@ function renderFeed() {
 
     setupVideoObserver();
 
-    setupFeedTouch();
+    setupSwipeNavigation();
 }
 
 
-// ========================================
-// CREATE VIDEO CARD
-// ========================================
+/* =====================================================
+   CREATE VIDEO CARD
+===================================================== */
 
 function createVideoCard(video) {
 
     const card =
         document.createElement("div");
 
-    card.className =
-        "video-card";
+    card.className = "video-card";
 
     card.dataset.videoId =
         video.id;
@@ -465,7 +456,7 @@ function createVideoCard(video) {
         "";
 
 
-    let followHTML = "";
+    let followButton = "";
 
 
     if (
@@ -473,7 +464,7 @@ function createVideoCard(video) {
         uid !== currentUser.uid
     ) {
 
-        followHTML =
+        followButton =
             '<button class="follow-btn ' +
             (
                 isFollowing
@@ -481,7 +472,7 @@ function createVideoCard(video) {
                     : ""
             ) +
             '" data-uid="' +
-            escapeAttribute(uid) +
+            escapeAttr(uid) +
             '">' +
             (
                 isFollowing
@@ -494,10 +485,9 @@ function createVideoCard(video) {
 
     card.innerHTML =
 
-        // VIDEO
         '<video ' +
         'src="' +
-        escapeAttribute(videoUrl) +
+        escapeAttr(videoUrl) +
         '" ' +
         'loop ' +
         'muted ' +
@@ -506,151 +496,151 @@ function createVideoCard(video) {
         "</video>" +
 
 
-        // MUTE
         '<div class="mute-indicator">' +
         '<i class="fas fa-volume-mute"></i>' +
         "</div>" +
 
 
-        // SIDE ACTIONS
         '<div class="side-actions">' +
 
 
-        // PROFILE
-        '<div class="profile-pic-wrap">' +
+            '<div class="profile-pic-wrap">' +
 
-        '<img ' +
-        'class="profile-pic" ' +
-        'src="' +
-        escapeAttribute(photoUrl) +
-        '" ' +
-        'data-uid="' +
-        escapeAttribute(uid) +
-        '" ' +
-        'onerror="this.src=\'./images/profile.png\'">' +
+                '<img ' +
+                'class="profile-pic" ' +
+                'src="' +
+                escapeAttr(photoUrl) +
+                '" ' +
+                'data-uid="' +
+                escapeAttr(uid) +
+                '">' +
 
-        followHTML +
+                followButton +
 
-        "</div>" +
+            "</div>" +
 
 
-        // LIKE
-        '<button ' +
-        'class="action-btn like-btn ' +
-        (
-            isLiked
-                ? "liked"
-                : ""
-        ) +
-        '" ' +
-        'data-video-id="' +
-        escapeAttribute(video.id) +
-        '">' +
+            '<button ' +
+            'class="action-btn like-btn ' +
+            (
+                isLiked
+                    ? "liked"
+                    : ""
+            ) +
+            '" ' +
+            'data-video-id="' +
+            escapeAttr(video.id) +
+            '">' +
 
-        '<i class="fas fa-heart"></i>' +
+                '<i class="fas fa-heart"></i>' +
 
-        '<span class="count">' +
-        formatNumber(video.likes) +
-        "</span>" +
+                '<span class="count">' +
+                formatNumber(
+                    video.likes || 0
+                ) +
+                "</span>" +
 
-        "</button>" +
-
-
-        // COMMENT
-        '<button ' +
-        'class="action-btn comment-btn" ' +
-        'data-video-id="' +
-        escapeAttribute(video.id) +
-        '">' +
-
-        '<i class="fas fa-comment"></i>' +
-
-        '<span class="count">' +
-        formatNumber(video.comments) +
-        "</span>" +
-
-        "</button>" +
+            "</button>" +
 
 
-        // SAVE
-        '<button ' +
-        'class="action-btn save-btn ' +
-        (
-            isSaved
-                ? "saved"
-                : ""
-        ) +
-        '" ' +
-        'data-video-id="' +
-        escapeAttribute(video.id) +
-        '">' +
+            '<button ' +
+            'class="action-btn comment-btn" ' +
+            'data-video-id="' +
+            escapeAttr(video.id) +
+            '">' +
 
-        '<i class="fas fa-bookmark"></i>' +
+                '<i class="fas fa-comment"></i>' +
 
-        '<span class="count">' +
-        formatNumber(video.saves) +
-        "</span>" +
+                '<span class="count">' +
+                formatNumber(
+                    video.comments || 0
+                ) +
+                "</span>" +
 
-        "</button>" +
+            "</button>" +
 
 
-        // SHARE
-        '<button ' +
-        'class="action-btn share-btn" ' +
-        'data-video-id="' +
-        escapeAttribute(video.id) +
-        '">' +
+            '<button ' +
+            'class="action-btn save-btn ' +
+            (
+                isSaved
+                    ? "saved"
+                    : ""
+            ) +
+            '" ' +
+            'data-video-id="' +
+            escapeAttr(video.id) +
+            '">' +
 
-        '<i class="fas fa-share"></i>' +
+                '<i class="fas fa-bookmark"></i>' +
 
-        "<span>শেয়ার</span>" +
+                '<span class="count">' +
+                formatNumber(
+                    video.saves || 0
+                ) +
+                "</span>" +
 
-        "</button>" +
+            "</button>" +
 
 
-        // MUSIC
-        '<div class="music-disc">' +
-        '<i class="fas fa-music"></i>' +
-        "</div>" +
+            '<button ' +
+            'class="action-btn share-btn" ' +
+            'data-video-id="' +
+            escapeAttr(video.id) +
+            '">' +
 
+                '<i class="fas fa-share"></i>' +
+
+                "<span>শেয়ার</span>" +
+
+            "</button>" +
+
+
+            '<div class="music-disc">' +
+                '<i class="fas fa-music"></i>' +
+            "</div>" +
 
         "</div>" +
 
 
-        // BOTTOM INFO
         '<div class="bottom-info">' +
 
-        '<span ' +
-        'class="username" ' +
-        'data-uid="' +
-        escapeAttribute(uid) +
-        '">' +
+            '<span ' +
+            'class="username" ' +
+            'data-uid="' +
+            escapeAttr(uid) +
+            '">' +
 
-        "@" +
-        escapeHtml(username) +
+                "@" +
+                escapeHtml(username) +
 
-        "</span>" +
+            "</span>" +
 
-        '<div class="caption">' +
-        escapeHtml(caption) +
-        "</div>" +
 
-        '<div class="music-info">' +
+            '<div class="caption">' +
+                escapeHtml(caption) +
+            "</div>" +
 
-        '<i class="fas fa-music"></i>' +
 
-        '<span class="music-text">' +
-        escapeHtml(sound) +
-        "</span>" +
+            '<div class="music-info">' +
 
-        "</div>" +
+                '<i class="fas fa-music"></i>' +
+
+                '<span class="music-text">' +
+                    escapeHtml(sound) +
+                "</span>" +
+
+            "</div>" +
 
         "</div>";
 
 
+    /* =================================================
+       VIDEO
+    ================================================= */
+
     const videoEl =
         card.querySelector("video");
-
 
     const muteIndicator =
         card.querySelector(
@@ -658,107 +648,99 @@ function createVideoCard(video) {
         );
 
 
-    // -------------------------------
-    // VIDEO CLICK = MUTE / UNMUTE
-    // -------------------------------
+    if (videoEl) {
 
-    videoEl.addEventListener(
-        "click",
-        function (e) {
+        videoEl.addEventListener(
+            "click",
+            function (event) {
 
-            e.stopPropagation();
+                event.stopPropagation();
 
-            videoEl.muted =
-                !videoEl.muted;
+                videoEl.muted =
+                    !videoEl.muted;
 
+                if (muteIndicator) {
 
-            muteIndicator.innerHTML =
-                videoEl.muted
-                    ? '<i class="fas fa-volume-mute"></i>'
-                    : '<i class="fas fa-volume-up"></i>';
+                    muteIndicator.innerHTML =
+                        videoEl.muted
 
+                            ? '<i class="fas fa-volume-mute"></i>'
 
-            muteIndicator.classList.add(
-                "show"
-            );
+                            : '<i class="fas fa-volume-up"></i>';
 
-
-            setTimeout(
-                function () {
-
-                    muteIndicator.classList.remove(
+                    muteIndicator.classList.add(
                         "show"
                     );
 
-                },
-                700
-            );
-        }
-    );
+                    clearTimeout(
+                        muteIndicator._timer
+                    );
 
+                    muteIndicator._timer =
+                        setTimeout(
+                            function () {
 
-    // -------------------------------
-    // DOUBLE CLICK LIKE
-    // -------------------------------
+                                muteIndicator.classList.remove(
+                                    "show"
+                                );
 
-    videoEl.addEventListener(
-        "dblclick",
-        function (e) {
-
-            e.preventDefault();
-
-            e.stopPropagation();
-
-            const likeBtn =
-                card.querySelector(
-                    ".like-btn"
-                );
-
-            if (likeBtn) {
-
-                toggleLike(
-                    likeBtn
-                );
+                            },
+                            700
+                        );
+                }
             }
-        }
-    );
+        );
 
 
-    // -------------------------------
-    // PROFILE
-    // -------------------------------
+        /* DOUBLE CLICK LIKE */
+
+        videoEl.addEventListener(
+            "dblclick",
+            function (event) {
+
+                event.preventDefault();
+
+                const likeBtn =
+                    card.querySelector(
+                        ".like-btn"
+                    );
+
+                if (likeBtn) {
+                    toggleLike(likeBtn);
+                }
+            }
+        );
+    }
+
+
+    /* =================================================
+       PROFILE / USERNAME
+    ================================================= */
 
     card.querySelectorAll(
         "[data-uid]"
-    ).forEach(
-        function (element) {
+    ).forEach(function (element) {
 
-            element.addEventListener(
-                "click",
-                function (e) {
+        element.addEventListener(
+            "click",
+            function (event) {
 
-                    e.stopPropagation();
+                event.stopPropagation();
 
-                    const targetUid =
-                        element.getAttribute(
-                            "data-uid"
-                        );
+                const uid =
+                    element.dataset.uid;
 
-                    if (targetUid) {
-
-                        goToProfile(
-                            targetUid
-                        );
-                    }
+                if (uid) {
+                    goToProfile(uid);
                 }
-            );
-        }
-    );
+            }
+        );
+    });
 
 
-    // -------------------------------
-    // LIKE
-    // -------------------------------
+    /* =================================================
+       LIKE
+    ================================================= */
 
     const likeBtn =
         card.querySelector(
@@ -769,21 +751,19 @@ function createVideoCard(video) {
 
         likeBtn.addEventListener(
             "click",
-            function (e) {
+            function (event) {
 
-                e.stopPropagation();
+                event.stopPropagation();
 
-                toggleLike(
-                    likeBtn
-                );
+                toggleLike(likeBtn);
             }
         );
     }
 
 
-    // -------------------------------
-    // COMMENT
-    // -------------------------------
+    /* =================================================
+       COMMENT
+    ================================================= */
 
     const commentBtn =
         card.querySelector(
@@ -794,9 +774,9 @@ function createVideoCard(video) {
 
         commentBtn.addEventListener(
             "click",
-            function (e) {
+            function (event) {
 
-                e.stopPropagation();
+                event.stopPropagation();
 
                 openComment(
                     commentBtn.dataset.videoId
@@ -806,9 +786,9 @@ function createVideoCard(video) {
     }
 
 
-    // -------------------------------
-    // SAVE
-    // -------------------------------
+    /* =================================================
+       SAVE
+    ================================================= */
 
     const saveBtn =
         card.querySelector(
@@ -819,21 +799,19 @@ function createVideoCard(video) {
 
         saveBtn.addEventListener(
             "click",
-            function (e) {
+            function (event) {
 
-                e.stopPropagation();
+                event.stopPropagation();
 
-                toggleSave(
-                    saveBtn
-                );
+                toggleSave(saveBtn);
             }
         );
     }
 
 
-    // -------------------------------
-    // SHARE
-    // -------------------------------
+    /* =================================================
+       SHARE
+    ================================================= */
 
     const shareBtn =
         card.querySelector(
@@ -844,9 +822,9 @@ function createVideoCard(video) {
 
         shareBtn.addEventListener(
             "click",
-            function (e) {
+            function (event) {
 
-                e.stopPropagation();
+                event.stopPropagation();
 
                 shareVideo(
                     shareBtn.dataset.videoId
@@ -856,9 +834,9 @@ function createVideoCard(video) {
     }
 
 
-    // -------------------------------
-    // FOLLOW
-    // -------------------------------
+    /* =================================================
+       FOLLOW
+    ================================================= */
 
     const followBtn =
         card.querySelector(
@@ -869,9 +847,9 @@ function createVideoCard(video) {
 
         followBtn.addEventListener(
             "click",
-            function (e) {
+            function (event) {
 
-                e.stopPropagation();
+                event.stopPropagation();
 
                 toggleFollow(
                     followBtn
@@ -885,22 +863,23 @@ function createVideoCard(video) {
 }
 
 
-// ========================================
-// LIKE
-// ========================================
+/* =====================================================
+   LIKE
+===================================================== */
 
 async function toggleLike(btn) {
 
     if (!currentUser) {
 
-        showToast("লগইন করুন");
+        showToast(
+            "লগইন করুন"
+        );
 
         return;
     }
 
 
     if (btn.disabled) return;
-
 
     btn.disabled = true;
 
@@ -913,51 +892,58 @@ async function toggleLike(btn) {
         btn.querySelector(".count");
 
 
-    const isLiked =
-        btn.classList.contains("liked");
+    const currentlyLiked =
+        btn.classList.contains(
+            "liked"
+        );
 
 
-    const videoRef =
-        db.collection("videos")
-        .doc(videoId);
+    const oldCount =
+        getCount(
+            countSpan
+        );
 
 
-    const likeRef =
-        db.collection("likes")
-        .doc(
-            currentUser.uid +
-            "_" +
-            videoId
+    /* ---------- UI UPDATE ---------- */
+
+    btn.classList.toggle(
+        "liked",
+        !currentlyLiked
+    );
+
+
+    countSpan.textContent =
+        formatNumber(
+            currentlyLiked
+                ? Math.max(
+                    0,
+                    oldCount - 1
+                )
+                : oldCount + 1
         );
 
 
     try {
 
-        const videoSnap =
-            await videoRef.get();
+        const videoRef =
+            db.collection("videos")
+            .doc(videoId);
 
 
-        if (!videoSnap.exists) {
-
-            throw new Error(
-                "Video does not exist"
+        const likeRef =
+            db.collection("likes")
+            .doc(
+                currentUser.uid +
+                "_" +
+                videoId
             );
-        }
 
 
-        const videoData =
-            videoSnap.data();
+        if (currentlyLiked) {
 
-
-        const oldCount =
-            Number(videoData.likes) || 0;
-
-
-        if (isLiked) {
-
-            // -------------------------
-            // REMOVE LIKE
-            // -------------------------
+            /*
+             * DELETE
+             */
 
             await likeRef.delete();
 
@@ -976,35 +962,11 @@ async function toggleLike(btn) {
             );
 
 
-            btn.classList.remove(
-                "liked"
-            );
-
-
-            countSpan.textContent =
-                formatNumber(
-                    Math.max(
-                        0,
-                        oldCount - 1
-                    )
-                );
-
-
-            updateLocalVideoCount(
-                videoId,
-                "likes",
-                Math.max(
-                    0,
-                    oldCount - 1
-                )
-            );
-
-
         } else {
 
-            // -------------------------
-            // ADD LIKE
-            // -------------------------
+            /*
+             * CREATE
+             */
 
             await likeRef.set({
 
@@ -1035,74 +997,19 @@ async function toggleLike(btn) {
             );
 
 
-            btn.classList.add(
-                "liked"
+            showToast(
+                "লাইক হয়েছে ❤️"
             );
-
-
-            countSpan.textContent =
-                formatNumber(
-                    oldCount + 1
-                );
-
-
-            updateLocalVideoCount(
-                videoId,
-                "likes",
-                oldCount + 1
-            );
-
-
-            // notification
-            if (
-                videoData.uid &&
-                videoData.uid !==
-                currentUser.uid
-            ) {
-
-                try {
-
-                    await db
-                        .collection(
-                            "notifications"
-                        )
-                        .add({
-
-                            toUserId:
-                                videoData.uid,
-
-                            fromUserId:
-                                currentUser.uid,
-
-                            fromUsername:
-                                getCurrentUsername(),
-
-                            fromPhotoURL:
-                                getCurrentPhoto(),
-
-                            type:
-                                "like",
-
-                            videoId:
-                                videoId,
-
-                            createdAt:
-                                firebase.firestore
-                                .FieldValue
-                                .serverTimestamp(),
-
-                            read:
-                                false
-                        });
-
-                } catch (notificationError) {
-
-                    console.log(
-                        "Notification skipped"
-                    );
-                }
-            }
         }
+
+
+        updateLocalVideoCount(
+            videoId,
+            "likes",
+            currentlyLiked
+                ? -1
+                : 1
+        );
 
 
     } catch (error) {
@@ -1113,8 +1020,22 @@ async function toggleLike(btn) {
         );
 
 
+        /* rollback */
+
+        btn.classList.toggle(
+            "liked",
+            currentlyLiked
+        );
+
+
+        countSpan.textContent =
+            formatNumber(
+                oldCount
+            );
+
+
         showToast(
-            "লাইক সংরক্ষণ হয়নি। Firebase Rules চেক করুন।"
+            "লাইক সেভ হয়নি"
         );
     }
 
@@ -1123,22 +1044,23 @@ async function toggleLike(btn) {
 }
 
 
-// ========================================
-// SAVE
-// ========================================
+/* =====================================================
+   SAVE
+===================================================== */
 
 async function toggleSave(btn) {
 
     if (!currentUser) {
 
-        showToast("লগইন করুন");
+        showToast(
+            "লগইন করুন"
+        );
 
         return;
     }
 
 
     if (btn.disabled) return;
-
 
     btn.disabled = true;
 
@@ -1151,51 +1073,58 @@ async function toggleSave(btn) {
         btn.querySelector(".count");
 
 
-    const isSaved =
-        btn.classList.contains("saved");
+    const currentlySaved =
+        btn.classList.contains(
+            "saved"
+        );
 
 
-    const videoRef =
-        db.collection("videos")
-        .doc(videoId);
+    const oldCount =
+        getCount(
+            countSpan
+        );
 
 
-    const saveRef =
-        db.collection("saves")
-        .doc(
-            currentUser.uid +
-            "_" +
-            videoId
+    /* ---------- UI ---------- */
+
+    btn.classList.toggle(
+        "saved",
+        !currentlySaved
+    );
+
+
+    countSpan.textContent =
+        formatNumber(
+            currentlySaved
+                ? Math.max(
+                    0,
+                    oldCount - 1
+                )
+                : oldCount + 1
         );
 
 
     try {
 
-        const videoSnap =
-            await videoRef.get();
+        const videoRef =
+            db.collection("videos")
+            .doc(videoId);
 
 
-        if (!videoSnap.exists) {
-
-            throw new Error(
-                "Video not found"
+        const saveRef =
+            db.collection("saves")
+            .doc(
+                currentUser.uid +
+                "_" +
+                videoId
             );
-        }
 
 
-        const videoData =
-            videoSnap.data();
+        if (currentlySaved) {
 
-
-        const oldCount =
-            Number(videoData.saves) || 0;
-
-
-        if (isSaved) {
-
-            // -------------------------
-            // REMOVE SAVE
-            // -------------------------
+            /*
+             * REMOVE SAVE
+             */
 
             await saveRef.delete();
 
@@ -1214,30 +1143,6 @@ async function toggleSave(btn) {
             );
 
 
-            btn.classList.remove(
-                "saved"
-            );
-
-
-            countSpan.textContent =
-                formatNumber(
-                    Math.max(
-                        0,
-                        oldCount - 1
-                    )
-                );
-
-
-            updateLocalVideoCount(
-                videoId,
-                "saves",
-                Math.max(
-                    0,
-                    oldCount - 1
-                )
-            );
-
-
             showToast(
                 "সংরক্ষণ থেকে সরানো হয়েছে"
             );
@@ -1245,9 +1150,9 @@ async function toggleSave(btn) {
 
         } else {
 
-            // -------------------------
-            // ADD SAVE
-            // -------------------------
+            /*
+             * ADD SAVE
+             */
 
             await saveRef.set({
 
@@ -1278,28 +1183,19 @@ async function toggleSave(btn) {
             );
 
 
-            btn.classList.add(
-                "saved"
-            );
-
-
-            countSpan.textContent =
-                formatNumber(
-                    oldCount + 1
-                );
-
-
-            updateLocalVideoCount(
-                videoId,
-                "saves",
-                oldCount + 1
-            );
-
-
             showToast(
-                "ভিডিও সংরক্ষণ করা হয়েছে"
+                "সংরক্ষণ করা হয়েছে 🔖"
             );
         }
+
+
+        updateLocalVideoCount(
+            videoId,
+            "saves",
+            currentlySaved
+                ? -1
+                : 1
+        );
 
 
     } catch (error) {
@@ -1310,8 +1206,20 @@ async function toggleSave(btn) {
         );
 
 
+        btn.classList.toggle(
+            "saved",
+            currentlySaved
+        );
+
+
+        countSpan.textContent =
+            formatNumber(
+                oldCount
+            );
+
+
         showToast(
-            "সংরক্ষণ হয়নি। Firebase Rules চেক করুন।"
+            "সংরক্ষণ হয়নি"
         );
     }
 
@@ -1320,15 +1228,17 @@ async function toggleSave(btn) {
 }
 
 
-// ========================================
-// FOLLOW
-// ========================================
+/* =====================================================
+   FOLLOW
+===================================================== */
 
 async function toggleFollow(btn) {
 
     if (!currentUser) {
 
-        showToast("লগইন করুন");
+        showToast(
+            "লগইন করুন"
+        );
 
         return;
     }
@@ -1345,7 +1255,6 @@ async function toggleFollow(btn) {
         !targetUid ||
         targetUid === currentUser.uid
     ) {
-
         return;
     }
 
@@ -1353,24 +1262,24 @@ async function toggleFollow(btn) {
     btn.disabled = true;
 
 
-    const isFollowing =
+    const currentlyFollowing =
         btn.classList.contains(
             "following"
         );
 
 
-    const followRef =
-        db.collection("follows")
-        .doc(
-            currentUser.uid +
-            "_" +
-            targetUid
-        );
-
-
     try {
 
-        if (isFollowing) {
+        const followRef =
+            db.collection("follows")
+            .doc(
+                currentUser.uid +
+                "_" +
+                targetUid
+            );
+
+
+        if (currentlyFollowing) {
 
             await followRef.delete();
 
@@ -1384,9 +1293,7 @@ async function toggleFollow(btn) {
                 "following"
             );
 
-
-            btn.textContent =
-                "+";
+            btn.textContent = "+";
 
 
             showToast(
@@ -1420,7 +1327,6 @@ async function toggleFollow(btn) {
                 "following"
             );
 
-
             btn.textContent =
                 "✓";
 
@@ -1433,43 +1339,51 @@ async function toggleFollow(btn) {
             try {
 
                 await db
-                    .collection(
-                        "notifications"
-                    )
-                    .add({
+                .collection(
+                    "notifications"
+                )
+                .add({
 
-                        toUserId:
-                            targetUid,
+                    toUserId:
+                        targetUid,
 
-                        fromUserId:
-                            currentUser.uid,
+                    fromUserId:
+                        currentUser.uid,
 
-                        fromUsername:
-                            getCurrentUsername(),
+                    fromUsername:
+                        (
+                            currentUserData &&
+                            currentUserData.username
+                        ) ||
+                        "user",
 
-                        fromPhotoURL:
-                            getCurrentPhoto(),
+                    fromPhotoURL:
+                        (
+                            currentUserData &&
+                            currentUserData.photoURL
+                        ) ||
+                        "",
 
-                        type:
-                            "follow",
+                    type:
+                        "follow",
 
-                        createdAt:
-                            firebase.firestore
-                            .FieldValue
-                            .serverTimestamp(),
+                    createdAt:
+                        firebase.firestore
+                        .FieldValue
+                        .serverTimestamp(),
 
-                        read:
-                            false
-                    });
+                    read:
+                        false
+                });
 
             } catch (notificationError) {
 
-                console.log(
-                    "Follow notification skipped"
+                console.error(
+                    "Follow notification error:",
+                    notificationError
                 );
             }
         }
-
 
     } catch (error) {
 
@@ -1478,9 +1392,8 @@ async function toggleFollow(btn) {
             error
         );
 
-
         showToast(
-            "ফলো সংরক্ষণ হয়নি"
+            "ফলো ব্যর্থ"
         );
     }
 
@@ -1489,15 +1402,17 @@ async function toggleFollow(btn) {
 }
 
 
-// ========================================
-// COMMENTS - OPEN
-// ========================================
+/* =====================================================
+   COMMENT OPEN
+===================================================== */
 
 function openComment(videoId) {
 
     if (!currentUser) {
 
-        showToast("লগইন করুন");
+        showToast(
+            "লগইন করুন"
+        );
 
         return;
     }
@@ -1521,9 +1436,9 @@ function openComment(videoId) {
 }
 
 
-// ========================================
-// CLOSE COMMENT
-// ========================================
+/* =====================================================
+   COMMENT CLOSE
+===================================================== */
 
 if (closeComment) {
 
@@ -1541,9 +1456,9 @@ if (closeComment) {
 }
 
 
-// ========================================
-// LOAD COMMENTS
-// ========================================
+/* =====================================================
+   LOAD COMMENTS
+===================================================== */
 
 async function loadComments(videoId) {
 
@@ -1551,8 +1466,8 @@ async function loadComments(videoId) {
 
 
     commentList.innerHTML =
-        '<div style="text-align:center;color:#666;padding:25px;">' +
-        "মন্তব্য লোড হচ্ছে..." +
+        '<div style="text-align:center;color:#666;padding:20px;">' +
+        "লোড হচ্ছে..." +
         "</div>";
 
 
@@ -1560,21 +1475,21 @@ async function loadComments(videoId) {
 
         const snapshot =
             await db
-                .collection("videos")
-                .doc(videoId)
-                .collection("comments")
-                .orderBy(
-                    "createdAt",
-                    "desc"
-                )
-                .limit(50)
-                .get();
+            .collection("videos")
+            .doc(videoId)
+            .collection("comments")
+            .orderBy(
+                "createdAt",
+                "desc"
+            )
+            .limit(50)
+            .get();
 
 
         if (snapshot.empty) {
 
             commentList.innerHTML =
-                '<div style="text-align:center;color:#666;padding:25px;">' +
+                '<div style="text-align:center;color:#666;padding:20px;">' +
                 "কোনো মন্তব্য নেই" +
                 "</div>";
 
@@ -1636,16 +1551,16 @@ async function loadComments(videoId) {
 
 
         commentList.innerHTML =
-            '<div style="text-align:center;color:#f44336;padding:25px;">' +
+            '<div style="text-align:center;color:#f44336;padding:20px;">' +
             "মন্তব্য লোড হয়নি" +
             "</div>";
     }
 }
 
 
-// ========================================
-// COMMENT SUBMIT
-// ========================================
+/* =====================================================
+   COMMENT SUBMIT
+===================================================== */
 
 if (commentSubmit) {
 
@@ -1660,11 +1575,11 @@ if (commentInput) {
 
     commentInput.addEventListener(
         "keydown",
-        function (e) {
+        function (event) {
 
-            if (e.key === "Enter") {
+            if (event.key === "Enter") {
 
-                e.preventDefault();
+                event.preventDefault();
 
                 submitComment();
             }
@@ -1673,10 +1588,6 @@ if (commentInput) {
 }
 
 
-// ========================================
-// SUBMIT COMMENT
-// ========================================
-
 async function submitComment() {
 
     if (
@@ -1684,7 +1595,6 @@ async function submitComment() {
         !currentVideoId ||
         !commentInput
     ) {
-
         return;
     }
 
@@ -1697,46 +1607,41 @@ async function submitComment() {
 
 
     const username =
-        getCurrentUsername();
-
-
-    const videoId =
-        currentVideoId;
+        (
+            currentUserData &&
+            currentUserData.username
+        ) ||
+        currentUser.displayName ||
+        "user";
 
 
     try {
 
         const videoRef =
             db.collection("videos")
-            .doc(videoId);
+            .doc(currentVideoId);
 
 
-        const commentRef =
-            videoRef
-                .collection("comments")
-                .doc();
+        await videoRef
+            .collection("comments")
+            .add({
+
+                uid:
+                    currentUser.uid,
+
+                username:
+                    username,
+
+                text:
+                    text,
+
+                createdAt:
+                    firebase.firestore
+                    .FieldValue
+                    .serverTimestamp()
+            });
 
 
-        // Add comment
-        await commentRef.set({
-
-            uid:
-                currentUser.uid,
-
-            username:
-                username,
-
-            text:
-                text,
-
-            createdAt:
-                firebase.firestore
-                .FieldValue
-                .serverTimestamp()
-        });
-
-
-        // Increase counter
         await videoRef.update({
 
             comments:
@@ -1750,83 +1655,54 @@ async function submitComment() {
 
 
         await loadComments(
-            videoId
+            currentVideoId
         );
 
 
-        updateCommentCounter(
-            videoId
+        /* ---------- UPDATE UI COUNT ---------- */
+
+        const commentBtn =
+            document.querySelector(
+                '.comment-btn[data-video-id="' +
+                currentVideoId +
+                '"]'
+            );
+
+
+        if (commentBtn) {
+
+            const countSpan =
+                commentBtn.querySelector(
+                    ".count"
+                );
+
+
+            if (countSpan) {
+
+                const oldCount =
+                    getCount(
+                        countSpan
+                    );
+
+
+                countSpan.textContent =
+                    formatNumber(
+                        oldCount + 1
+                    );
+            }
+        }
+
+
+        updateLocalVideoCount(
+            currentVideoId,
+            "comments",
+            1
         );
 
 
         showToast(
-            "মন্তব্য যোগ হয়েছে"
+            "মন্তব্য যোগ হয়েছে 💬"
         );
-
-
-        // notification
-        try {
-
-            const videoSnap =
-                await videoRef.get();
-
-
-            if (videoSnap.exists) {
-
-                const videoData =
-                    videoSnap.data();
-
-
-                if (
-                    videoData.uid &&
-                    videoData.uid !==
-                    currentUser.uid
-                ) {
-
-                    await db
-                        .collection(
-                            "notifications"
-                        )
-                        .add({
-
-                            toUserId:
-                                videoData.uid,
-
-                            fromUserId:
-                                currentUser.uid,
-
-                            fromUsername:
-                                username,
-
-                            fromPhotoURL:
-                                getCurrentPhoto(),
-
-                            type:
-                                "comment",
-
-                            text:
-                                text,
-
-                            videoId:
-                                videoId,
-
-                            createdAt:
-                                firebase.firestore
-                                .FieldValue
-                                .serverTimestamp(),
-
-                            read:
-                                false
-                        });
-                }
-            }
-
-        } catch (notificationError) {
-
-            console.log(
-                "Comment notification skipped"
-            );
-        }
 
 
     } catch (error) {
@@ -1836,66 +1712,16 @@ async function submitComment() {
             error
         );
 
-
         showToast(
-            "মন্তব্য সংরক্ষণ হয়নি। Firebase Rules চেক করুন।"
+            "মন্তব্য ব্যর্থ"
         );
     }
 }
 
 
-// ========================================
-// UPDATE COMMENT COUNTER
-// ========================================
-
-function updateCommentCounter(videoId) {
-
-    const btn =
-        document.querySelector(
-            '.comment-btn[data-video-id="' +
-            cssEscape(videoId) +
-            '"]'
-        );
-
-
-    if (!btn) return;
-
-
-    const span =
-        btn.querySelector(
-            ".count"
-        );
-
-
-    if (!span) return;
-
-
-    const video =
-        allVideos.find(
-            function (v) {
-
-                return v.id === videoId;
-            }
-        );
-
-
-    if (!video) return;
-
-
-    video.comments =
-        Number(video.comments || 0) + 1;
-
-
-    span.textContent =
-        formatNumber(
-            video.comments
-        );
-}
-
-
-// ========================================
-// SHARE
-// ========================================
+/* =====================================================
+   SHARE
+===================================================== */
 
 async function shareVideo(videoId) {
 
@@ -1917,10 +1743,10 @@ async function shareVideo(videoId) {
             await navigator.share({
 
                 title:
-                    "WWC - World Wide Connect",
+                    "WWC",
 
                 text:
-                    "এই ভিডিওটি দেখুন!",
+                    "এই ভিডিও দেখুন!",
 
                 url:
                     url
@@ -1933,7 +1759,7 @@ async function shareVideo(videoId) {
             );
 
             showToast(
-                "ভিডিও লিংক কপি হয়েছে"
+                "লিংক কপি হয়েছে"
             );
         }
 
@@ -1952,445 +1778,514 @@ async function shareVideo(videoId) {
 }
 
 
-// ========================================
-// SEARCH OPEN
-// ========================================
+/* =====================================================
+   VIDEO OBSERVER
+===================================================== */
 
-if (searchBtn) {
+function setupVideoObserver() {
 
-    searchBtn.addEventListener(
-        "click",
-        function () {
-
-            searchOverlay.classList.add(
-                "open"
-            );
-
-            setTimeout(
-                function () {
-
-                    searchInput.focus();
-
-                },
-                250
-            );
-        }
-    );
-}
-
-
-// ========================================
-// SEARCH CLOSE
-// ========================================
-
-if (searchBack) {
-
-    searchBack.addEventListener(
-        "click",
-        function () {
-
-            searchOverlay.classList.remove(
-                "open"
-            );
-
-            searchInput.value = "";
-
-            searchResults.innerHTML =
-                '<div class="feed-loading" style="height:auto;padding:30px;">' +
-                "ইউজারনেম লিখে খুঁজুন" +
-                "</div>";
-        }
-    );
-}
-
-
-// ========================================
-// SEARCH USERS
-// ========================================
-
-async function fetchAllUsersForSearch() {
-
-    if (allUsersCache) {
-
-        return allUsersCache;
-    }
-
-
-    try {
-
-        const snap =
-            await db
-                .collection("users")
-                .limit(300)
-                .get();
-
-
-        allUsersCache = [];
-
-
-        snap.forEach(
-            function (doc) {
-
-                allUsersCache.push({
-
-                    uid:
-                        doc.id,
-
-                    ...doc.data()
-                });
-            }
+    const videos =
+        document.querySelectorAll(
+            ".video-card video"
         );
 
 
-    } catch (error) {
-
-        console.error(
-            "Search users error:",
-            error
-        );
-
-        allUsersCache = [];
-    }
-
-
-    return allUsersCache;
-}
-
-
-// ========================================
-// RUN SEARCH
-// ========================================
-
-async function runUserSearch(query) {
-
-    if (!searchResults) return;
-
-
-    if (!query) {
-
-        searchResults.innerHTML =
-            '<div style="text-align:center;color:#666;padding:25px;">' +
-            "খুঁজতে কিছু লিখুন" +
-            "</div>";
-
+    if (!videos.length) {
         return;
     }
 
 
-    searchResults.innerHTML =
-        '<div style="text-align:center;color:#666;padding:25px;">' +
-        '<i class="fas fa-spinner fa-spin"></i>' +
-        "</div>";
+    if (videoObserver) {
 
-
-    const q =
-        query.toLowerCase();
-
-
-    const users =
-        await fetchAllUsersForSearch();
-
-
-    const matchedUsers =
-        users.filter(
-            function (u) {
-
-                const username =
-                    (
-                        u.username ||
-                        ""
-                    ).toLowerCase();
-
-
-                const name =
-                    (
-                        u.name ||
-                        u.displayName ||
-                        ""
-                    ).toLowerCase();
-
-
-                const email =
-                    (
-                        u.email ||
-                        ""
-                    ).toLowerCase();
-
-
-                return (
-                    username.includes(q) ||
-                    name.includes(q) ||
-                    email.includes(q)
-                );
-            }
-        );
-
-
-    const matchedVideos =
-        allVideos.filter(
-            function (v) {
-
-                const caption =
-                    (
-                        v.caption ||
-                        ""
-                    ).toLowerCase();
-
-
-                const sound =
-                    (
-                        v.sound ||
-                        ""
-                    ).toLowerCase();
-
-
-                const username =
-                    (
-                        v.username ||
-                        ""
-                    ).toLowerCase();
-
-
-                return (
-                    caption.includes(q) ||
-                    sound.includes(q) ||
-                    username.includes(q)
-                );
-            }
-        );
-
-
-    if (
-        !matchedUsers.length &&
-        !matchedVideos.length
-    ) {
-
-        searchResults.innerHTML =
-            '<div style="text-align:center;color:#666;padding:25px;">' +
-            "😕 কোনো ফলাফল পাওয়া যায়নি" +
-            "</div>";
-
-        return;
+        videoObserver.disconnect();
     }
 
 
-    searchResults.innerHTML = "";
+    videoObserver =
+        new IntersectionObserver(
+            function (entries) {
+
+                entries.forEach(
+                    function (entry) {
+
+                        const video =
+                            entry.target;
+
+                        const card =
+                            video.closest(
+                                ".video-card"
+                            );
 
 
-    // USERS
-    if (matchedUsers.length) {
-
-        const header =
-            document.createElement(
-                "div"
-            );
-
-        header.style.cssText =
-            "padding:14px 16px 5px;color:#777;font-size:12px;font-weight:700;";
-
-        header.textContent =
-            "ইউজার";
-
-        searchResults.appendChild(
-            header
-        );
+                        const disc =
+                            card
+                                ? card.querySelector(
+                                    ".music-disc"
+                                )
+                                : null;
 
 
-        matchedUsers.forEach(
-            function (u) {
+                        if (
+                            entry.isIntersecting &&
+                            entry.intersectionRatio >= 0.55
+                        ) {
 
-                const div =
-                    document.createElement(
-                        "div"
-                    );
+                            /*
+                             * অন্য ভিডিও বন্ধ
+                             */
 
+                            document
+                                .querySelectorAll(
+                                    ".video-card video"
+                                )
+                                .forEach(
+                                    function (otherVideo) {
 
-                div.className =
-                    "search-result-item";
+                                        if (
+                                            otherVideo !==
+                                            video
+                                        ) {
 
-
-                const avatar =
-                    u.photoURL ||
-                    "./images/profile.png";
-
-
-                div.innerHTML =
-
-                    '<img src="' +
-                    escapeAttribute(
-                        avatar
-                    ) +
-                    '" onerror="this.src=\'./images/profile.png\'">' +
-
-                    "<div>" +
-
-                    '<div class="search-result-name">' +
-                    "@" +
-                    escapeHtml(
-                        u.username ||
-                        "user"
-                    ) +
-                    "</div>" +
-
-                    (
-                        u.name
-                            ? '<div style="font-size:12px;color:#888;margin-top:2px;">' +
-                              escapeHtml(
-                                  u.name
-                              ) +
-                              "</div>"
-                            : ""
-                    ) +
-
-                    "</div>";
+                                            otherVideo.pause();
+                                        }
+                                    }
+                                );
 
 
-                div.addEventListener(
-                    "click",
-                    function () {
+                            video.play()
+                                .then(
+                                    function () {
 
-                        goToProfile(
-                            u.uid
-                        );
+                                        if (disc) {
+
+                                            disc.classList.add(
+                                                "spinning"
+                                            );
+                                        }
+                                    }
+                                )
+                                .catch(
+                                    function (error) {
+
+                                        console.log(
+                                            "Autoplay:",
+                                            error
+                                        );
+                                    }
+                                );
+
+                        } else {
+
+                            video.pause();
+
+
+                            if (disc) {
+
+                                disc.classList.remove(
+                                    "spinning"
+                                );
+                            }
+                        }
                     }
                 );
 
-
-                searchResults.appendChild(
-                    div
-                );
+            },
+            {
+                threshold: [
+                    0.25,
+                    0.55,
+                    0.75
+                ]
             }
         );
-    }
 
 
-    // VIDEOS
-    if (matchedVideos.length) {
+    videos.forEach(
+        function (video) {
 
-        const header =
-            document.createElement(
-                "div"
+            videoObserver.observe(
+                video
             );
+        }
+    );
 
 
-        header.style.cssText =
-            "padding:16px 16px 5px;color:#777;font-size:12px;font-weight:700;";
+    /*
+     * প্রথম ভিডিও চালু
+     */
 
+    setTimeout(
+        function () {
 
-        header.textContent =
-            "ভিডিও";
+            if (
+                videos[0] &&
+                videos[0].paused
+            ) {
 
-
-        searchResults.appendChild(
-            header
-        );
-
-
-        matchedVideos.forEach(
-            function (v) {
-
-                const div =
-                    document.createElement(
-                        "div"
+                videos[0]
+                    .play()
+                    .catch(
+                        function () {}
                     );
-
-
-                div.className =
-                    "search-result-item";
-
-
-                div.innerHTML =
-
-                    '<div style="width:44px;height:44px;border-radius:8px;background:#1b1b1b;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
-
-                    '<i class="fas fa-play" style="color:#777;"></i>' +
-
-                    "</div>" +
-
-                    '<div style="min-width:0;">' +
-
-                    '<div class="search-result-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' +
-
-                    escapeHtml(
-                        v.caption ||
-                        "ক্যাপশন নেই"
-                    ) +
-
-                    "</div>" +
-
-                    '<div style="font-size:12px;color:#888;margin-top:2px;">@' +
-
-                    escapeHtml(
-                        v.username ||
-                        "user"
-                    ) +
-
-                    "</div>" +
-
-                    "</div>";
-
-
-                div.addEventListener(
-                    "click",
-                    function () {
-
-                        goToVideo(
-                            v.id
-                        );
-                    }
-                );
-
-
-                searchResults.appendChild(
-                    div
-                );
             }
-        );
-    }
+
+        },
+        500
+    );
 }
 
 
-// ========================================
-// SEARCH INPUT
-// ========================================
+/* =====================================================
+   MOBILE SWIPE NAVIGATION
+===================================================== */
 
-if (searchInput) {
+function setupSwipeNavigation() {
 
-    searchInput.addEventListener(
-        "input",
-        function (e) {
-
-            clearTimeout(
-                searchDebounce
-            );
+    if (!feed) return;
 
 
-            const query =
-                e.target.value.trim();
+    let startY = 0;
+    let startX = 0;
+
+    let startTime = 0;
 
 
-            searchDebounce =
-                setTimeout(
-                    function () {
+    /*
+     * পুরোনো listener আটকানোর জন্য
+     */
 
-                        runUserSearch(
-                            query
-                        );
+    if (feed._swipeReady) {
+        return;
+    }
 
-                    },
-                    300
-                );
+    feed._swipeReady = true;
+
+
+    feed.addEventListener(
+        "touchstart",
+        function (event) {
+
+            if (
+                event.touches.length !== 1
+            ) {
+                return;
+            }
+
+
+            startY =
+                event.touches[0].clientY;
+
+            startX =
+                event.touches[0].clientX;
+
+            startTime =
+                Date.now();
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    feed.addEventListener(
+        "touchend",
+        function (event) {
+
+            if (
+                event.changedTouches.length !== 1
+            ) {
+                return;
+            }
+
+
+            const endY =
+                event.changedTouches[0].clientY;
+
+            const endX =
+                event.changedTouches[0].clientX;
+
+
+            const diffY =
+                startY - endY;
+
+            const diffX =
+                startX - endX;
+
+
+            const duration =
+                Date.now() -
+                startTime;
+
+
+            /*
+             * Horizontal swipe হলে ignore
+             */
+
+            if (
+                Math.abs(diffX) >
+                Math.abs(diffY)
+            ) {
+                return;
+            }
+
+
+            /*
+             * খুব ছোট movement ignore
+             */
+
+            if (
+                Math.abs(diffY) < 60
+            ) {
+                return;
+            }
+
+
+            /*
+             * খুব দ্রুত/অস্বাভাবিক gesture ignore
+             */
+
+            if (
+                duration < 50
+            ) {
+                return;
+            }
+
+
+            if (
+                isChangingVideo
+            ) {
+                return;
+            }
+
+
+            if (diffY > 0) {
+
+                /*
+                 * Swipe UP
+                 * পরবর্তী ভিডিও
+                 */
+
+                scrollToNextVideo();
+
+            } else {
+
+                /*
+                 * Swipe DOWN
+                 * আগের ভিডিও
+                 */
+
+                scrollToPreviousVideo();
+            }
+
+        },
+        {
+            passive: true
         }
     );
 }
 
 
-// ========================================
-// TABS
-// ========================================
+/* =====================================================
+   NEXT VIDEO
+===================================================== */
+
+function scrollToNextVideo() {
+
+    if (!feed) return;
+
+
+    const cards =
+        Array.from(
+            feed.querySelectorAll(
+                ".video-card"
+            )
+        );
+
+
+    if (!cards.length) return;
+
+
+    const current =
+        getCurrentVisibleCard(
+            cards
+        );
+
+
+    let index =
+        cards.indexOf(current);
+
+
+    if (index < 0) {
+        index = 0;
+    }
+
+
+    const next =
+        cards[index + 1];
+
+
+    if (!next) {
+        return;
+    }
+
+
+    isChangingVideo = true;
+
+
+    next.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+
+    setTimeout(
+        function () {
+
+            isChangingVideo = false;
+
+        },
+        550
+    );
+}
+
+
+/* =====================================================
+   PREVIOUS VIDEO
+===================================================== */
+
+function scrollToPreviousVideo() {
+
+    if (!feed) return;
+
+
+    const cards =
+        Array.from(
+            feed.querySelectorAll(
+                ".video-card"
+            )
+        );
+
+
+    if (!cards.length) return;
+
+
+    const current =
+        getCurrentVisibleCard(
+            cards
+        );
+
+
+    let index =
+        cards.indexOf(current);
+
+
+    if (index <= 0) {
+        return;
+    }
+
+
+    const previous =
+        cards[index - 1];
+
+
+    isChangingVideo = true;
+
+
+    previous.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+
+    setTimeout(
+        function () {
+
+            isChangingVideo = false;
+
+        },
+        550
+    );
+}
+
+
+/* =====================================================
+   FIND CURRENT VIDEO
+===================================================== */
+
+function getCurrentVisibleCard(
+    cards
+) {
+
+    let bestCard = cards[0];
+
+    let bestVisibility = 0;
+
+
+    cards.forEach(
+        function (card) {
+
+            const rect =
+                card.getBoundingClientRect();
+
+
+            const visibleTop =
+                Math.max(
+                    0,
+                    rect.top
+                );
+
+
+            const visibleBottom =
+                Math.min(
+                    window.innerHeight,
+                    rect.bottom
+                );
+
+
+            const visibleHeight =
+                Math.max(
+                    0,
+                    visibleBottom -
+                    visibleTop
+                );
+
+
+            const ratio =
+                visibleHeight /
+                Math.max(
+                    1,
+                    window.innerHeight
+                );
+
+
+            if (
+                ratio >
+                bestVisibility
+            ) {
+
+                bestVisibility =
+                    ratio;
+
+                bestCard =
+                    card;
+            }
+        }
+    );
+
+
+    return bestCard;
+}
+
+
+/* =====================================================
+   TAB BUTTONS
+===================================================== */
 
 document
-    .querySelectorAll(".tab-btn")
+    .querySelectorAll(
+        ".tab-btn"
+    )
     .forEach(
         function (btn) {
 
@@ -2420,7 +2315,9 @@ document
                     currentFeed =
                         btn.dataset.tab ===
                         "following"
+
                             ? "following"
+
                             : "foryou";
 
 
@@ -2431,325 +2328,444 @@ document
     );
 
 
-// ========================================
-// VIDEO OBSERVER
-// ========================================
+/* =====================================================
+   SEARCH OPEN
+===================================================== */
 
-function setupVideoObserver() {
+if (searchBtn) {
 
-    const videos =
-        document.querySelectorAll(
-            ".video-card video"
-        );
+    searchBtn.addEventListener(
+        "click",
+        function () {
 
+            searchOverlay.classList.add(
+                "open"
+            );
 
-    if (!videos.length) return;
+            setTimeout(
+                function () {
 
+                    searchInput.focus();
 
-    if (videoObserver) {
-
-        videoObserver.disconnect();
-    }
-
-
-    videoObserver =
-        new IntersectionObserver(
-            function (entries) {
-
-                entries.forEach(
-                    function (entry) {
-
-                        const video =
-                            entry.target;
-
-
-                        const card =
-                            video.closest(
-                                ".video-card"
-                            );
-
-
-                        const disc =
-                            card
-                                ? card.querySelector(
-                                      ".music-disc"
-                                  )
-                                : null;
-
-
-                        if (
-                            entry.isIntersecting &&
-                            entry.intersectionRatio >=
-                                0.55
-                        ) {
-
-                            // Pause all other videos
-
-                            document
-                                .querySelectorAll(
-                                    ".video-card video"
-                                )
-                                .forEach(
-                                    function (v) {
-
-                                        if (
-                                            v !==
-                                            video
-                                        ) {
-
-                                            v.pause();
-                                        }
-                                    }
-                                );
-
-
-                            video
-                                .play()
-                                .then(
-                                    function () {}
-                                )
-                                .catch(
-                                    function () {}
-                                );
-
-
-                            if (disc) {
-
-                                disc.classList.add(
-                                    "spinning"
-                                );
-                            }
-
-                        } else {
-
-                            video.pause();
-
-
-                            if (disc) {
-
-                                disc.classList.remove(
-                                    "spinning"
-                                );
-                            }
-                        }
-                    }
-                );
-
-            },
-            {
-                threshold: [
-                    0,
-                    0.55,
-                    0.8,
-                    1
-                ]
-            }
-        );
-
-
-    videos.forEach(
-        function (video) {
-
-            videoObserver.observe(
-                video
+                },
+                250
             );
         }
     );
+}
 
 
-    // First video
+/* =====================================================
+   SEARCH CLOSE
+===================================================== */
 
-    setTimeout(
+if (searchBack) {
+
+    searchBack.addEventListener(
+        "click",
         function () {
 
-            if (videos[0]) {
+            searchOverlay.classList.remove(
+                "open"
+            );
 
-                videos[0]
-                    .play()
-                    .catch(
-                        function () {}
-                    );
-            }
+            searchInput.value = "";
 
-        },
-        500
-    );
-}
-
-
-// ========================================
-// FEED TOUCH / SCROLL
-// ========================================
-
-function setupFeedTouch() {
-
-    if (!feed) return;
-
-
-    let startY = 0;
-    let startTime = 0;
-
-
-    feed.addEventListener(
-        "touchstart",
-        function (e) {
-
-            if (!e.touches.length)
-                return;
-
-
-            startY =
-                e.touches[0].clientY;
-
-
-            startTime =
-                Date.now();
-
-        },
-        {
-            passive: true
-        }
-    );
-
-
-    feed.addEventListener(
-        "touchend",
-        function (e) {
-
-            if (!e.changedTouches.length)
-                return;
-
-
-            const endY =
-                e.changedTouches[0].clientY;
-
-
-            const diff =
-                startY - endY;
-
-
-            const elapsed =
-                Date.now() - startTime;
-
-
-            // Strong swipe
-
-            if (
-                Math.abs(diff) > 60 &&
-                elapsed < 900
-            ) {
-
-                const cards =
-                    Array.from(
-                        feed.querySelectorAll(
-                            ".video-card"
-                        )
-                    );
-
-
-                if (!cards.length)
-                    return;
-
-
-                let currentIndex =
-                    getCurrentCardIndex(
-                        cards
-                    );
-
-
-                if (diff > 0) {
-
-                    // SWIPE UP
-
-                    currentIndex =
-                        Math.min(
-                            currentIndex + 1,
-                            cards.length - 1
-                        );
-
-                } else {
-
-                    // SWIPE DOWN
-
-                    currentIndex =
-                        Math.max(
-                            currentIndex - 1,
-                            0
-                        );
-                }
-
-
-                if (cards[currentIndex]) {
-
-                    cards[currentIndex].scrollIntoView(
-                        {
-                            behavior: "smooth",
-                            block: "start"
-                        }
-                    );
-                }
-            }
-
-        },
-        {
-            passive: true
+            searchResults.innerHTML =
+                '<div style="text-align:center;color:#666;padding:20px;">' +
+                "ইউজারনেম লিখে খুঁজুন" +
+                "</div>";
         }
     );
 }
 
 
-// ========================================
-// GET CURRENT CARD
-// ========================================
+/* =====================================================
+   LOAD USERS FOR SEARCH
+===================================================== */
 
-function getCurrentCardIndex(cards) {
+async function fetchAllUsersForSearch() {
 
-    let bestIndex = 0;
+    if (allUsersCache) {
 
-    let bestDistance =
-        Infinity;
-
-
-    const feedTop =
-        feed.getBoundingClientRect().top;
+        return allUsersCache;
+    }
 
 
-    cards.forEach(
-        function (card, index) {
+    try {
 
-            const rect =
-                card.getBoundingClientRect();
+        const snapshot =
+            await db
+            .collection("users")
+            .limit(300)
+            .get();
 
 
-            const distance =
-                Math.abs(
-                    rect.top -
-                    feedTop
+        allUsersCache = [];
+
+
+        snapshot.forEach(
+            function (doc) {
+
+                allUsersCache.push({
+
+                    uid:
+                        doc.id,
+
+                    ...doc.data()
+                });
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Search users error:",
+            error
+        );
+
+        allUsersCache = [];
+    }
+
+
+    return allUsersCache;
+}
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+async function runUserSearch(query) {
+
+    if (!searchResults) return;
+
+
+    if (!query) {
+
+        searchResults.innerHTML =
+            '<div style="text-align:center;color:#666;padding:20px;">' +
+            "খুঁজতে কিছু লিখুন" +
+            "</div>";
+
+        return;
+    }
+
+
+    searchResults.innerHTML =
+        '<div style="text-align:center;color:#666;padding:20px;">' +
+        '<i class="fas fa-spinner fa-spin"></i>' +
+        "</div>";
+
+
+    const q =
+        query.toLowerCase();
+
+
+    const users =
+        await fetchAllUsersForSearch();
+
+
+    const matchedUsers =
+        users.filter(
+            function (user) {
+
+                const username =
+                    (
+                        user.username ||
+                        ""
+                    ).toLowerCase();
+
+
+                const name =
+                    (
+                        user.name ||
+                        user.displayName ||
+                        ""
+                    ).toLowerCase();
+
+
+                const email =
+                    (
+                        user.email ||
+                        ""
+                    ).toLowerCase();
+
+
+                return (
+                    username.includes(q) ||
+                    name.includes(q) ||
+                    email.includes(q)
+                );
+            }
+        );
+
+
+    const matchedVideos =
+        allVideos.filter(
+            function (video) {
+
+                const caption =
+                    (
+                        video.caption ||
+                        ""
+                    ).toLowerCase();
+
+
+                const sound =
+                    (
+                        video.sound ||
+                        ""
+                    ).toLowerCase();
+
+
+                const username =
+                    (
+                        video.username ||
+                        ""
+                    ).toLowerCase();
+
+
+                return (
+                    caption.includes(q) ||
+                    sound.includes(q) ||
+                    username.includes(q)
+                );
+            }
+        );
+
+
+    if (
+        !matchedUsers.length &&
+        !matchedVideos.length
+    ) {
+
+        searchResults.innerHTML =
+            '<div style="text-align:center;color:#666;padding:20px;">' +
+            "😕 কোনো ফলাফল পাওয়া যায়নি" +
+            "</div>";
+
+        return;
+    }
+
+
+    searchResults.innerHTML = "";
+
+
+    /* ---------- USERS ---------- */
+
+    if (matchedUsers.length) {
+
+        const header =
+            document.createElement(
+                "div"
+            );
+
+        header.style.cssText =
+            "padding:12px 16px 4px;" +
+            "color:#666;" +
+            "font-size:12px;" +
+            "font-weight:700;";
+
+        header.textContent =
+            "ইউজার";
+
+        searchResults.appendChild(
+            header
+        );
+
+
+        matchedUsers.forEach(
+            function (user) {
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+                div.className =
+                    "search-result-item";
+
+
+                const avatar =
+                    user.photoURL ||
+                    "./images/profile.png";
+
+
+                div.innerHTML =
+
+                    '<img src="' +
+                    escapeAttr(avatar) +
+                    '">' +
+
+                    "<div>" +
+
+                        '<div class="search-result-name">' +
+                        "@" +
+                        escapeHtml(
+                            user.username ||
+                            "user"
+                        ) +
+                        "</div>" +
+
+                        (
+                            user.name
+                                ? '<div style="font-size:12px;color:#888;margin-top:2px;">' +
+                                  escapeHtml(
+                                      user.name
+                                  ) +
+                                  "</div>"
+                                : ""
+                        ) +
+
+                    "</div>";
+
+
+                div.addEventListener(
+                    "click",
+                    function () {
+
+                        goToProfile(
+                            user.uid
+                        );
+                    }
                 );
 
 
-            if (
-                distance <
-                bestDistance
-            ) {
-
-                bestDistance =
-                    distance;
-
-                bestIndex =
-                    index;
+                searchResults.appendChild(
+                    div
+                );
             }
-        }
-    );
+        );
+    }
 
 
-    return bestIndex;
+    /* ---------- VIDEOS ---------- */
+
+    if (matchedVideos.length) {
+
+        const header =
+            document.createElement(
+                "div"
+            );
+
+        header.style.cssText =
+            "padding:16px 16px 4px;" +
+            "color:#666;" +
+            "font-size:12px;" +
+            "font-weight:700;";
+
+        header.textContent =
+            "ভিডিও";
+
+        searchResults.appendChild(
+            header
+        );
+
+
+        matchedVideos.forEach(
+            function (video) {
+
+                const div =
+                    document.createElement(
+                        "div"
+                    );
+
+                div.className =
+                    "search-result-item";
+
+
+                div.innerHTML =
+
+                    '<div style="width:42px;height:42px;border-radius:8px;background:#1a1a1a;display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
+
+                        '<i class="fas fa-play" style="color:#666;font-size:14px;"></i>' +
+
+                    "</div>" +
+
+                    '<div style="min-width:0;">' +
+
+                        '<div class="search-result-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' +
+
+                            escapeHtml(
+                                video.caption ||
+                                "ক্যাপশন নেই"
+                            ) +
+
+                        "</div>" +
+
+                        '<div style="font-size:12px;color:#888;margin-top:2px;">' +
+
+                            "@" +
+                            escapeHtml(
+                                video.username ||
+                                "user"
+                            ) +
+
+                        "</div>" +
+
+                    "</div>";
+
+
+                div.addEventListener(
+                    "click",
+                    function () {
+
+                        goToVideo(
+                            video.id
+                        );
+                    }
+                );
+
+
+                searchResults.appendChild(
+                    div
+                );
+            }
+        );
+    }
 }
 
 
-// ========================================
-// GO TO VIDEO
-// ========================================
+/* =====================================================
+   SEARCH INPUT
+===================================================== */
+
+if (searchInput) {
+
+    searchInput.addEventListener(
+        "input",
+        function (event) {
+
+            clearTimeout(
+                searchDebounce
+            );
+
+
+            const query =
+                event.target.value.trim();
+
+
+            searchDebounce =
+                setTimeout(
+                    function () {
+
+                        runUserSearch(
+                            query
+                        );
+
+                    },
+                    300
+                );
+        }
+    );
+}
+
+
+/* =====================================================
+   GO TO VIDEO
+===================================================== */
 
 function goToVideo(videoId) {
 
@@ -2764,32 +2780,34 @@ function goToVideo(videoId) {
     const target =
         document.querySelector(
             '.video-card[data-video-id="' +
-            cssEscape(videoId) +
+            videoId +
             '"]'
         );
 
 
     if (target) {
 
-        target.scrollIntoView(
-            {
-                behavior: "smooth",
-                block: "start"
-            }
-        );
+        target.scrollIntoView({
+
+            behavior:
+                "smooth",
+
+            block:
+                "start"
+        });
 
     } else {
 
         showToast(
-            "ভিডিওটি এখন ফিডে নেই"
+            "ভিডিওটি ফিডে লোড নেই"
         );
     }
 }
 
 
-// ========================================
-// GO TO PROFILE
-// ========================================
+/* =====================================================
+   GO TO PROFILE
+===================================================== */
 
 function goToProfile(uid) {
 
@@ -2802,69 +2820,104 @@ function goToProfile(uid) {
 }
 
 
-// ========================================
-// UPDATE LOCAL VIDEO COUNT
-// ========================================
+/* =====================================================
+   UPDATE LOCAL COUNT
+===================================================== */
 
 function updateLocalVideoCount(
     videoId,
     field,
-    value
+    amount
 ) {
 
     const video =
         allVideos.find(
-            function (v) {
+            function (item) {
 
-                return v.id === videoId;
+                return item.id === videoId;
             }
         );
 
 
-    if (video) {
+    if (!video) return;
 
-        video[field] =
-            Number(value) || 0;
+
+    video[field] =
+        Math.max(
+            0,
+            Number(
+                video[field] || 0
+            ) + amount
+        );
+}
+
+
+/* =====================================================
+   GET COUNT
+===================================================== */
+
+function getCount(span) {
+
+    if (!span) {
+        return 0;
     }
-}
 
 
-// ========================================
-// CURRENT USERNAME
-// ========================================
+    const text =
+        span.textContent || "0";
 
-function getCurrentUsername() {
+
+    /*
+     * K / M count এখানে দরকার হলে
+     * approximate করা হচ্ছে।
+     */
+
+    const clean =
+        text
+            .trim()
+            .toUpperCase();
+
+
+    if (
+        clean.endsWith("M")
+    ) {
+
+        return Math.round(
+            parseFloat(
+                clean
+                    .replace("M", "")
+            ) * 1000000
+        );
+    }
+
+
+    if (
+        clean.endsWith("K")
+    ) {
+
+        return Math.round(
+            parseFloat(
+                clean
+                    .replace("K", "")
+            ) * 1000
+        );
+    }
+
 
     return (
-        currentUserData &&
-        (
-            currentUserData.username ||
-            currentUserData.displayName
-        )
-    ) ||
-        currentUser.displayName ||
-        "user";
+        parseInt(
+            clean.replace(
+                /[^\d]/g,
+                ""
+            )
+        ) || 0
+    );
 }
 
 
-// ========================================
-// CURRENT PHOTO
-// ========================================
-
-function getCurrentPhoto() {
-
-    return (
-        currentUserData &&
-        currentUserData.photoURL
-    ) ||
-        currentUser.photoURL ||
-        "";
-}
-
-
-// ========================================
-// FORMAT NUMBER
-// ========================================
+/* =====================================================
+   FORMAT NUMBER
+===================================================== */
 
 function formatNumber(num) {
 
@@ -2872,7 +2925,9 @@ function formatNumber(num) {
         Number(num) || 0;
 
 
-    if (num >= 1000000) {
+    if (
+        num >= 1000000
+    ) {
 
         return (
             num / 1000000
@@ -2880,7 +2935,9 @@ function formatNumber(num) {
     }
 
 
-    if (num >= 1000) {
+    if (
+        num >= 1000
+    ) {
 
         return (
             num / 1000
@@ -2892,9 +2949,9 @@ function formatNumber(num) {
 }
 
 
-// ========================================
-// ESCAPE HTML
-// ========================================
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
 
 function escapeHtml(text) {
 
@@ -2902,7 +2959,6 @@ function escapeHtml(text) {
         text === null ||
         text === undefined
     ) {
-
         return "";
     }
 
@@ -2921,58 +2977,47 @@ function escapeHtml(text) {
 }
 
 
-// ========================================
-// ESCAPE ATTRIBUTE
-// ========================================
+/* =====================================================
+   ESCAPE ATTRIBUTE
+===================================================== */
 
-function escapeAttribute(text) {
+function escapeAttr(text) {
 
     if (
         text === null ||
         text === undefined
     ) {
-
         return "";
     }
 
 
     return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-}
-
-
-// ========================================
-// CSS ESCAPE
-// ========================================
-
-function cssEscape(text) {
-
-    if (
-        window.CSS &&
-        typeof window.CSS.escape ===
-            "function"
-    ) {
-
-        return window.CSS.escape(
-            String(text)
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#39;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
         );
-    }
-
-
-    return String(text).replace(
-        /["\\]/g,
-        "\\$&"
-    );
 }
 
 
-// ========================================
-// TOAST
-// ========================================
+/* =====================================================
+   TOAST
+===================================================== */
 
 function showToast(message) {
 
@@ -2992,6 +3037,24 @@ function showToast(message) {
 
         toast.id =
             "toast";
+
+
+        toast.style.cssText =
+            "position:fixed;" +
+            "bottom:110px;" +
+            "left:50%;" +
+            "transform:translateX(-50%);" +
+            "background:rgba(30,30,30,0.95);" +
+            "color:#fff;" +
+            "padding:10px 24px;" +
+            "border-radius:24px;" +
+            "font-size:14px;" +
+            "z-index:999;" +
+            "opacity:0;" +
+            "transition:opacity 0.25s;" +
+            "pointer-events:none;" +
+            "white-space:nowrap;" +
+            "border:1px solid rgba(255,255,255,0.1);";
 
 
         document.body.appendChild(
@@ -3026,10 +3089,10 @@ function showToast(message) {
 }
 
 
-// ========================================
-// DEBUG
-// ========================================
+/* =====================================================
+   INITIAL LOG
+===================================================== */
 
 console.log(
-    "WWC COMPLETE APP LOADED"
+    "WWC FINAL APP LOADED"
 );
