@@ -79,7 +79,7 @@
   </div>
 
   <div class="message" id="message"></div>
-  <a class="back-home" href="../index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
+  <a class="back-home" href="../../index.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
 </div>
 
 <script type="module">
@@ -163,10 +163,10 @@ async function createUserProfile(user, extraData = {}) {
   } catch(e) { console.error('Profile creation error:', e); }
 }
 
-function goHome() { window.location.replace('../index.html'); }
+function goHome() { window.location.replace('../../index.html'); }
 
 onAuthStateChanged(auth, (user) => {
-  if (user) window.location.href = '../index.html';
+  if (user) window.location.href = '../../index.html';
 });
 
 googleBtn.addEventListener('click', async () => {
