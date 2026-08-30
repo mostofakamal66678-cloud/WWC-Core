@@ -1,5 +1,5 @@
 // ========================================
-// WWC - FINAL FIXED APP (Like + Comment Count Fixed)
+// WWC - FINAL FIXED APP (Like + Comment Count Fixed + Search Improved)
 // ========================================
 
 const feed = document.getElementById('video-feed');
@@ -23,6 +23,8 @@ let followingUsers = new Set();
 let currentFeed = 'foryou';
 let currentVideoId = null;
 let videoObserver = null;
+let allUsersCache = null;
+let searchDebounce = null;
 
 auth.onAuthStateChanged(async (user) => {
     if (!user) {
@@ -316,6 +318,18 @@ async function toggleFollow(btn) {
             btn.classList.add('following');
             btn.textContent = '✓';
             showToast('ফলো করা হয়েছে');
+
+            try {
+                await db.collection('notifications').add({
+                    toUserId: targetUid,
+                    fromUserId: currentUser.uid,
+                    fromUsername: (currentUserData && currentUserData.username) || 'user',
+                    fromPhotoURL: (currentUserData && currentUserData.photoURL) || '',
+                    type: 'follow',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    read: false
+                });
+            } catch (ne) {}
         }
     } catch (e) {
         showToast('ফলো ব্যর্থ');
@@ -452,6 +466,7 @@ async function shareVideo(videoId) {
     }
 }
 
+// ===== সার্চ (ইউজার + ভিডিও দুটোতেই খুঁজবে) =====
 if (searchBtn) {
     searchBtn.addEventListener('click', function () {
         if (searchOverlay) searchOverlay.classList.add('open');
@@ -464,41 +479,121 @@ if (searchBack) {
         if (searchInput) searchInput.value = '';
     });
 }
-if (searchInput) {
-    searchInput.addEventListener('input', function (e) {
-        var query = e.target.value.trim().toLowerCase();
-        if (!searchResults) return;
-        if (!query) {
-            searchResults.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">ইউজারনেম লিখুন</div>';
-            return;
-        }
-        var found = allVideos.filter(function (v) {
-            return (v.username || '').toLowerCase().indexOf(query) !== -1;
+
+async function fetchAllUsersForSearch() {
+    if (allUsersCache) return allUsersCache;
+    try {
+        const snap = await db.collection('users').limit(300).get();
+        allUsersCache = [];
+        snap.forEach(function (doc) {
+            allUsersCache.push({ uid: doc.id, ...doc.data() });
         });
-        var unique = [];
-        var seen = {};
-        found.forEach(function (v) {
-            if (v.uid && !seen[v.uid]) {
-                seen[v.uid] = true;
-                unique.push(v);
-            }
-        });
-        if (!unique.length) {
-            searchResults.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">কোনো ফলাফল নেই</div>';
-            return;
-        }
-        searchResults.innerHTML = '';
-        unique.forEach(function (v) {
+    } catch (e) {
+        console.error('ইউজার লিস্ট লোড সমস্যা:', e);
+        allUsersCache = [];
+    }
+    return allUsersCache;
+}
+
+async function runUserSearch(query) {
+    if (!searchResults) return;
+    if (!query) {
+        searchResults.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">খুঁজতে কিছু লিখুন</div>';
+        return;
+    }
+
+    searchResults.innerHTML = '<div style="text-align:center;color:#666;padding:20px;"><i class="fas fa-spinner fa-spin"></i></div>';
+
+    const q = query.toLowerCase();
+
+    // ===== ইউজার খোঁজা (username, name/displayName, email দিয়ে) =====
+    const users = await fetchAllUsersForSearch();
+    const matchedUsers = users.filter(function (u) {
+        const uname = (u.username || '').toLowerCase();
+        const name = (u.name || u.displayName || '').toLowerCase();
+        const email = (u.email || '').toLowerCase();
+        return uname.indexOf(q) !== -1 || name.indexOf(q) !== -1 || email.indexOf(q) !== -1;
+    });
+
+    // ===== ভিডিও খোঁজা (ক্যাপশন, সাউন্ড, ইউজারনেম দিয়ে — যা লোড হয়ে আছে তার মধ্যে) =====
+    const matchedVideos = allVideos.filter(function (v) {
+        const caption = (v.caption || '').toLowerCase();
+        const sound = (v.sound || '').toLowerCase();
+        const uname = (v.username || '').toLowerCase();
+        return caption.indexOf(q) !== -1 || sound.indexOf(q) !== -1 || uname.indexOf(q) !== -1;
+    });
+
+    if (!matchedUsers.length && !matchedVideos.length) {
+        searchResults.innerHTML = '<div style="text-align:center;color:#666;padding:20px;">😕 কোনো ফলাফল পাওয়া যায়নি</div>';
+        return;
+    }
+
+    searchResults.innerHTML = '';
+
+    if (matchedUsers.length) {
+        var userHeader = document.createElement('div');
+        userHeader.style.cssText = 'padding:12px 16px 4px;color:#666;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;';
+        userHeader.textContent = 'ইউজার';
+        searchResults.appendChild(userHeader);
+
+        matchedUsers.forEach(function (u) {
+            var avatar = (u.photoURL && u.photoURL.startsWith('http'))
+                ? u.photoURL
+                : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(u.name || u.username || 'U') + '&background=25f4ee&color=000&bold=true';
+
             var div = document.createElement('div');
             div.className = 'search-result-item';
             div.innerHTML =
-                '<img src="' + (v.photoURL || './images/profile.png') + '" onerror="this.src=\'./images/profile.png\'">' +
-                '<span class="search-result-name">@' + escapeHtml(v.username || 'WWC User') + '</span>';
+                '<img src="' + avatar + '" onerror="this.src=\'https://ui-avatars.com/api/?name=U&background=25f4ee&color=000\'">' +
+                '<div>' +
+                    '<div class="search-result-name">@' + escapeHtml(u.username || 'user') + '</div>' +
+                    (u.name ? '<div style="font-size:12px;color:#888;margin-top:2px;">' + escapeHtml(u.name) + '</div>' : '') +
+                '</div>';
             div.addEventListener('click', function () {
-                if (v.uid) goToProfile(v.uid);
+                goToProfile(u.uid);
             });
             searchResults.appendChild(div);
         });
+    }
+
+    if (matchedVideos.length) {
+        var videoHeader = document.createElement('div');
+        videoHeader.style.cssText = 'padding:16px 16px 4px;color:#666;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;';
+        videoHeader.textContent = 'ভিডিও';
+        searchResults.appendChild(videoHeader);
+
+        matchedVideos.forEach(function (v) {
+            var div = document.createElement('div');
+            div.className = 'search-result-item';
+            div.innerHTML =
+                '<div style="width:42px;height:42px;border-radius:8px;background:#1a1a1a;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="fas fa-play" style="color:#666;font-size:14px;"></i></div>' +
+                '<div style="min-width:0;">' +
+                    '<div class="search-result-name" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + escapeHtml(v.caption || 'ক্যাপশন নেই') + '</div>' +
+                    '<div style="font-size:12px;color:#888;margin-top:2px;">@' + escapeHtml(v.username || 'user') + '</div>' +
+                '</div>';
+            div.addEventListener('click', function () {
+                goToVideo(v.id);
+            });
+            searchResults.appendChild(div);
+        });
+    }
+}
+
+function goToVideo(videoId) {
+    if (searchOverlay) searchOverlay.classList.remove('open');
+    var target = document.querySelector('.video-card[data-video-id="' + videoId + '"]');
+    if (target) {
+        target.scrollIntoView({ behavior: 'instant', block: 'start' });
+    } else {
+        showToast('ভিডিওটা এই মুহূর্তে ফিডে লোড নেই');
+    }
+}
+
+if (searchInput) {
+    searchInput.addEventListener('input', function (e) {
+        clearTimeout(searchDebounce);
+        var query = e.target.value.trim();
+        searchDebounce = setTimeout(function () { runUserSearch(query); }, 300);
     });
 }
 
