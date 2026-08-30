@@ -3,957 +3,466 @@
     padding: 0;
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
 }
-
-html,
-body {
-    width: 100%;
+html, body {
     height: 100%;
+    width: 100%;
     overflow: hidden;
     background: #000;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     color: #fff;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
 }
-
-body {
-    overscroll-behavior: none;
-    touch-action: pan-y;
-}
-
-/* ==============================
-   TOP BAR
-============================== */
 
 .top-bar {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    height: 58px;
+    height: 52px;
     padding-top: env(safe-area-inset-top);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 90;
-    pointer-events: none;
-    background: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0.65),
-        rgba(0, 0, 0, 0)
-    );
+    background: linear-gradient(to bottom, rgba(0,0,0,0.55), transparent);
 }
-
 .top-tabs {
     display: flex;
-    gap: 24px;
-    pointer-events: auto;
+    gap: 22px;
 }
-
 .tab-btn {
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(255,255,255,0.6);
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    padding: 5px 0;
+    padding: 4px 0;
     position: relative;
 }
-
-.tab-btn.active {
-    color: #fff;
-}
-
+.tab-btn.active { color: #fff; }
 .tab-btn.active::after {
-    content: "";
+    content: '';
     display: block;
     width: 22px;
     height: 3px;
     background: #fff;
     margin: 5px auto 0;
-    border-radius: 3px;
+    border-radius: 2px;
 }
-
 .search-btn {
     position: absolute;
     right: 14px;
-    top: 12px;
     background: transparent;
     border: none;
     color: #fff;
-    font-size: 21px;
+    font-size: 19px;
     cursor: pointer;
-    pointer-events: auto;
-    padding: 8px;
 }
-
-/* ==============================
-   VIDEO FEED
-============================== */
 
 .video-feed {
-    position: fixed;
-    inset: 0;
-    width: 100%;
+    height: 100vh;
     height: 100dvh;
-
-    overflow-y: auto;
-    overflow-x: hidden;
-
+    width: 100%;
+    overflow-y: scroll;
     scroll-snap-type: y mandatory;
-    scroll-behavior: smooth;
-
-    -webkit-overflow-scrolling: touch;
-
     scrollbar-width: none;
-
-    touch-action: pan-y;
-    overscroll-behavior-y: contain;
 }
-
-.video-feed::-webkit-scrollbar {
-    display: none;
-}
+.video-feed::-webkit-scrollbar { display: none; }
 
 .feed-loading {
-    width: 100%;
-    height: 100dvh;
-
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-
     text-align: center;
-
-    color: #aaa;
-    font-size: 18px;
-
-    padding: 20px;
+    color: #888;
+    font-size: 20px;
+    padding: 0 20px;
 }
-
-.feed-loading.error {
-    color: #ff4d4d;
-    font-size: 14px;
-}
-
-/* ==============================
-   VIDEO CARD
-============================== */
+.feed-loading.error { color: #f44336; font-size: 14px; }
 
 .video-card {
     position: relative;
-
-    width: 100%;
+    height: 100vh;
     height: 100dvh;
-    min-height: 100dvh;
-
+    width: 100%;
     scroll-snap-align: start;
-    scroll-snap-stop: normal;
-
+    scroll-snap-stop: always;
     background: #000;
-
     overflow: hidden;
-
-    touch-action: pan-y;
 }
-
 .video-card video {
-    position: absolute;
-
-    top: 0;
-    left: 0;
-
     width: 100%;
     height: 100%;
-
     object-fit: cover;
-
-    display: block;
-
-    background: #000;
-
-    -webkit-user-select: none;
-    user-select: none;
-
-    touch-action: manipulation;
 }
-
-/* Bottom gradient */
-
-.video-card::after {
-    content: "";
-
-    position: absolute;
-
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    height: 42%;
-
-    background: linear-gradient(
-        to top,
-        rgba(0, 0, 0, 0.82),
-        rgba(0, 0, 0, 0)
-    );
-
-    pointer-events: none;
-
-    z-index: 1;
-}
-
-/* ==============================
-   MUTE INDICATOR
-============================== */
 
 .mute-indicator {
     position: absolute;
-
     top: 50%;
     left: 50%;
-
-    transform: translate(-50%, -50%) scale(0.7);
-
+    transform: translate(-50%,-50%) scale(0.7);
     width: 70px;
     height: 70px;
-
     border-radius: 50%;
-
-    background: rgba(0, 0, 0, 0.55);
-
+    background: rgba(0,0,0,0.5);
     display: flex;
     align-items: center;
     justify-content: center;
-
     font-size: 28px;
-
     opacity: 0;
-
     pointer-events: none;
-
-    transition:
-        opacity 0.2s ease,
-        transform 0.2s ease;
-
-    z-index: 20;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 10;
 }
-
 .mute-indicator.show {
     opacity: 1;
-
-    transform:
-        translate(-50%, -50%)
-        scale(1);
+    transform: translate(-50%,-50%) scale(1);
 }
 
-/* ==============================
-   SIDE ACTIONS
-============================== */
+.video-card::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 40%;
+    background: linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+    pointer-events: none;
+    z-index: 1;
+}
 
+/* ========== সার্চ ওভারলে ========== */
+.search-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: #000;
+    z-index: 300;
+    transform: translateX(100%);
+    transition: transform 0.25s ease;
+    display: flex;
+    flex-direction: column;
+}
+.search-overlay.open {
+    transform: translateX(0);
+}
+.search-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    padding-top: calc(12px + env(safe-area-inset-top));
+    border-bottom: 1px solid #1e1e1e;
+}
+.search-top button {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+.search-top input {
+    flex: 1;
+    background: #1e1e1e;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 16px;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+}
+.search-results {
+    flex: 1;
+    overflow-y: auto;
+}
+.search-result-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #141414;
+    cursor: pointer;
+}
+.search-result-item:active { background: #151515; }
+.search-result-item img {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.search-result-name {
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* ========== ডান পাশের অ্যাকশন বাটন (হুবহু TikTok) ========== */
 .side-actions {
     position: absolute;
-
     right: 8px;
-    bottom: 105px;
-
+    bottom: 100px;
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    gap: 17px;
-
-    z-index: 10;
-
-    user-select: none;
+    gap: 18px;
+    z-index: 5;
 }
 
 .profile-pic-wrap {
     position: relative;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
 }
-
 .profile-pic {
-    width: 48px;
-    height: 48px;
-
+    width: 46px;
+    height: 46px;
     border-radius: 50%;
-
     border: 2px solid #fff;
-
     object-fit: cover;
-
     display: block;
-
     cursor: pointer;
 }
-
 .follow-btn {
     position: absolute;
-
     bottom: -9px;
     left: 50%;
-
     transform: translateX(-50%);
-
-    width: 21px;
-    height: 21px;
-
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-
     background: #fe2c55;
-
     border: 2px solid #000;
-
     color: #fff;
-
-    font-size: 11px;
-
+    font-size: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
-
     padding: 0;
-
     cursor: pointer;
-
-    z-index: 15;
 }
-
-.follow-btn.following {
-    background: #555;
-}
-
-/* ==============================
-   ACTION BUTTON
-============================== */
 
 .action-btn {
     background: transparent;
-
     border: none;
-
     color: #fff;
-
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    justify-content: center;
-
     gap: 4px;
-
     font-size: 11px;
     font-weight: 600;
-
     cursor: pointer;
-
-    min-width: 48px;
-
-    text-shadow:
-        0 1px 4px rgba(0, 0, 0, 0.8);
-
-    -webkit-user-select: none;
-    user-select: none;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
 }
-
 .action-btn i {
     font-size: 30px;
-
-    filter:
-        drop-shadow(
-            0 2px 5px rgba(0, 0, 0, 0.65)
-        );
-
-    transition:
-        transform 0.15s ease;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
 }
-
-.action-btn:active i {
-    transform: scale(1.22);
-}
-
-.action-btn.like-btn.liked i {
-    color: #fe2c55;
-}
-
-.action-btn.save-btn.saved i {
-    color: #ffd400;
-}
-
-.action-btn:disabled {
-    opacity: 0.85;
-}
-
-/* ==============================
-   MUSIC DISC
-============================== */
+.action-btn:active i { transform: scale(1.2); }
+.action-btn.like-btn.liked i { color: #fe2c55; }
+.action-btn.save-btn.saved i { color: #ffd400; }
 
 .music-disc {
-    width: 44px;
-    height: 44px;
-
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
-
-    background:
-        #222;
-
-    border: 3px solid #444;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
+    background: #111 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 42 42"><circle cx="21" cy="21" r="20" fill="%23222" stroke="%23555" stroke-width="1"/></svg>') center/cover;
+    border: 3px solid #333;
     overflow: hidden;
-
-    margin-top: 5px;
-
+    margin-top: 6px;
     animation: spin 4s linear infinite;
-
     animation-play-state: paused;
-
     cursor: pointer;
-
-    font-size: 18px;
 }
-
-.music-disc.spinning {
-    animation-play-state: running;
+.music-disc img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
 }
-
+.music-disc.spinning { animation-play-state: running; }
 @keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
-/* ==============================
-   BOTTOM INFORMATION
-============================== */
-
+/* ========== নিচের তথ্য: ইউজারনেম, ক্যাপশন, মিউজিক ========== */
 .bottom-info {
     position: absolute;
-
-    left: 14px;
+    left: 12px;
     right: 90px;
-
-    bottom: 105px;
-
+    bottom: 100px;
     z-index: 5;
-
-    pointer-events: none;
 }
-
 .bottom-info .username {
-    display: inline-block;
-
     font-weight: 700;
-
     font-size: 16px;
-
-    margin-bottom: 7px;
-
-    text-shadow:
-        0 1px 5px rgba(0, 0, 0, 0.9);
-
+    margin-bottom: 6px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
     cursor: pointer;
-
-    pointer-events: auto;
+    display: inline-block;
 }
-
 .bottom-info .caption {
     font-size: 14px;
-
     line-height: 1.4;
-
-    text-shadow:
-        0 1px 5px rgba(0, 0, 0, 0.9);
-
+    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
     display: -webkit-box;
-
     -webkit-line-clamp: 2;
-
     -webkit-box-orient: vertical;
-
     overflow: hidden;
-
     margin-bottom: 8px;
 }
-
 .music-info {
     display: flex;
-
     align-items: center;
-
     gap: 8px;
-
     font-size: 13px;
-
     color: #eee;
-
     overflow: hidden;
-
     cursor: pointer;
-
-    pointer-events: auto;
 }
-
-.music-info i {
-    font-size: 13px;
-
-    flex-shrink: 0;
-}
-
+.music-info i { font-size: 13px; flex-shrink: 0; }
 .music-info .music-text {
     white-space: nowrap;
-
     overflow: hidden;
-
     text-overflow: ellipsis;
 }
 
-/* ==============================
-   COMMENT SHEET
-============================== */
-
+/* ========== কমেন্ট শিট ========== */
 .comment-sheet {
     position: fixed;
-
     left: 0;
     right: 0;
     bottom: 0;
-
-    height: 65dvh;
-
+    height: 65vh;
     background: #121212;
-
-    border-radius:
-        18px 18px 0 0;
-
+    border-radius: 16px 16px 0 0;
     display: flex;
     flex-direction: column;
-
-    transform:
-        translateY(100%);
-
-    transition:
-        transform 0.3s ease;
-
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
     z-index: 200;
-
-    padding-bottom:
-        env(safe-area-inset-bottom);
+    padding-bottom: env(safe-area-inset-bottom);
 }
-
-.comment-sheet.open {
-    transform: translateY(0);
-}
-
+.comment-sheet.open { transform: translateY(0); }
 .comment-header {
     position: relative;
-
-    padding: 15px 16px;
-
+    padding: 14px 16px;
     text-align: center;
-
-    border-bottom:
-        1px solid #222;
-
-    flex-shrink: 0;
+    border-bottom: 1px solid #222;
 }
-
 .comment-header .handle {
     position: absolute;
-
     top: 6px;
     left: 50%;
-
-    transform:
-        translateX(-50%);
-
-    width: 38px;
+    transform: translateX(-50%);
+    width: 36px;
     height: 4px;
-
     background: #444;
-
-    border-radius: 3px;
+    border-radius: 2px;
 }
-
-.comment-header h3 {
-    font-size: 15px;
-
-    font-weight: 600;
-}
-
+.comment-header h3 { font-size: 15px; font-weight: 600; }
 .comment-header button {
     position: absolute;
-
     right: 12px;
     top: 12px;
-
     background: none;
-
     border: none;
-
     color: #aaa;
-
     font-size: 18px;
-
-    padding: 5px;
 }
-
-.comment-list {
-    flex: 1;
-
-    overflow-y: auto;
-
-    -webkit-overflow-scrolling: touch;
-
-    padding: 12px 16px;
-}
-
-.comment-item {
-    padding: 10px 0;
-
-    border-bottom:
-        1px solid #1d1d1d;
-}
-
-.comment-item .comment-user {
-    font-size: 13px;
-
-    font-weight: 600;
-
-    color: #25f4ee;
-
-    margin-bottom: 3px;
-}
-
-.comment-item .comment-text {
-    font-size: 14px;
-
-    line-height: 1.4;
-
-    color: #eee;
-}
-
+.comment-list { flex: 1; overflow-y: auto; padding: 12px 16px; }
+.comment-item { padding: 10px 0; border-bottom: 1px solid #1a1a1a; }
+.comment-item .comment-user { font-size: 13px; font-weight: 600; color: #25f4ee; margin-bottom: 3px; }
+.comment-item .comment-text { font-size: 14px; line-height: 1.4; color: #eee; }
 .comment-input-box {
     display: flex;
-
     align-items: center;
-
     gap: 10px;
-
-    padding:
-        12px 16px;
-
-    border-top:
-        1px solid #222;
-
-    flex-shrink: 0;
+    padding: 12px 16px;
+    border-top: 1px solid #222;
 }
-
 .comment-input-box input {
     flex: 1;
-
     background: #1e1e1e;
-
     border: none;
-
     border-radius: 20px;
-
     padding: 10px 16px;
-
     color: #fff;
-
     font-size: 14px;
-
     outline: none;
 }
-
 .comment-input-box button {
-    background:
-        linear-gradient(
-            45deg,
-            #fe2c55,
-            #25f4ee
-        );
-
+    background: linear-gradient(45deg,#fe2c55,#25f4ee);
     border: none;
-
     width: 38px;
     height: 38px;
-
     border-radius: 50%;
-
     color: #000;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     font-size: 14px;
-
     flex-shrink: 0;
 }
 
-/* ==============================
-   SEARCH
-============================== */
-
-.search-overlay {
-    position: fixed;
-
-    inset: 0;
-
-    background: #000;
-
-    z-index: 300;
-
-    transform:
-        translateX(100%);
-
-    transition:
-        transform 0.25s ease;
-
-    display: flex;
-    flex-direction: column;
+/* ========== রিপোর্ট/অপশন শিট ========== */
+.comment-sheet.short {
+    height: auto;
+    max-height: 70vh;
 }
-
-.search-overlay.open {
-    transform: translateX(0);
-}
-
-.search-top {
-    display: flex;
-
-    align-items: center;
-
-    gap: 10px;
-
-    padding:
-        12px 14px;
-
-    padding-top:
-        calc(
-            12px +
-            env(safe-area-inset-top)
-        );
-
-    border-bottom:
-        1px solid #1e1e1e;
-}
-
-.search-top button {
+.option-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
     background: none;
-
     border: none;
-
     color: #fff;
-
-    font-size: 18px;
-
-    padding: 5px;
-}
-
-.search-top input {
-    flex: 1;
-
-    background: #1e1e1e;
-
-    border: none;
-
-    border-radius: 20px;
-
-    padding:
-        10px 16px;
-
-    color: #fff;
-
-    font-size: 14px;
-
-    outline: none;
-}
-
-.search-results {
-    flex: 1;
-
-    overflow-y: auto;
-
-    -webkit-overflow-scrolling: touch;
-}
-
-.search-result-item {
-    display: flex;
-
-    align-items: center;
-
-    gap: 12px;
-
-    padding:
-        12px 16px;
-
-    border-bottom:
-        1px solid #141414;
-
+    padding: 14px 4px;
+    font-size: 15px;
+    border-bottom: 1px solid #1a1a1a;
     cursor: pointer;
 }
+.option-btn:last-child { border-bottom: none; }
+.option-btn i { width: 24px; margin-right: 10px; color: #888; }
+.option-btn.danger { color: #fe2c55; }
+.option-btn.danger i { color: #fe2c55; }
+.options-btn i { font-size: 26px !important; }
 
-.search-result-item:active {
-    background: #151515;
-}
-
-.search-result-item img {
-    width: 42px;
-    height: 42px;
-
-    border-radius: 50%;
-
-    object-fit: cover;
-}
-
-.search-result-name {
-    font-size: 15px;
-
-    font-weight: 600;
-}
-
-/* ==============================
-   BOTTOM NAV
-============================== */
-
+/* ========== বটম নেভবার ========== */
 .bottom-nav {
     position: fixed;
-
     bottom: 0;
     left: 0;
     right: 0;
-
-    height: calc(
-        60px +
-        env(safe-area-inset-bottom)
-    );
-
-    padding-bottom:
-        env(safe-area-inset-bottom);
-
+    height: 60px;
     background: #000;
-
     display: flex;
-
     justify-content: space-around;
-
     align-items: center;
-
-    border-top:
-        1px solid #222;
-
+    border-top: 1px solid #222;
     z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom);
 }
-
 .nav-item {
     color: #888;
-
     text-decoration: none;
-
     display: flex;
     flex-direction: column;
-
     align-items: center;
-    justify-content: center;
-
     font-size: 11px;
-
     gap: 3px;
-
     flex: 1;
-
-    height: 60px;
 }
-
-.nav-item i {
-    font-size: 22px;
-}
-
-.nav-item.active {
-    color: #fff;
-}
-
+.nav-item i { font-size: 22px; }
+.nav-item.active { color: #fff; }
 .nav-item.upload-btn {
-    background:
-        linear-gradient(
-            45deg,
-            #fe2c55,
-            #25f4ee
-        );
-
-    width: 50px;
-    height: 34px;
-
-    border-radius: 9px;
-
+    background: linear-gradient(45deg, #fe2c55, #25f4ee);
+    width: 48px;
+    height: 32px;
+    border-radius: 8px;
     display: flex;
-
     align-items: center;
     justify-content: center;
-
     color: #000;
-
-    flex:
-        0 0 50px;
-
-    margin:
-        0 5px;
+    flex: 0 0 auto;
+    margin: 0 6px;
 }
-
-.nav-item.upload-btn i {
-    font-size: 21px;
-
-    color: #000;
-}
-
-/* ==============================
-   TOAST
-============================== */
-
-#toast {
-    position: fixed;
-
-    bottom: 110px;
-
-    left: 50%;
-
-    transform:
-        translateX(-50%);
-
-    background:
-        rgba(30, 30, 30, 0.95);
-
-    color: #fff;
-
-    padding:
-        10px 22px;
-
-    border-radius: 24px;
-
-    font-size: 14px;
-
-    z-index: 999;
-
-    opacity: 0;
-
-    transition:
-        opacity 0.25s ease;
-
-    pointer-events: none;
-
-    white-space: nowrap;
-
-    border:
-        1px solid
-        rgba(255, 255, 255, 0.1);
-}
+.nav-item.upload-btn i { font-size: 20px; color: #000; }
